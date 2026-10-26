@@ -1,0 +1,4 @@
+{
+  "random_buff": "      Running 4.4.1-stable\nERROR: Attempted to push_back an object into a TypedArray, that does not inherit from 'GDScript'.\n   at: validate_object (core/variant/container_type_validate.h:146)\nERROR: Condition \"!_p->typed.validate(value, \"push_back\")\" is true.\n   at: push_back (core/variant/array.cpp:283)\n",
+  "used_abilities": "      Running 4.4.1-stable\nSCRIPT ERROR: Trying to assign an array of type \"Array\" to a variable of type \"Array[AbilityResource]\".\n          at: BattleProfile.get_used_abilities (res://probe.gd:292)\n"
+}

@@ -1,0 +1,902 @@
+[
+  {
+    "id": "armor_shield",
+    "name": "Armor Shield",
+    "kind": "buff",
+    "color": [
+      0.4446,
+      0.60112,
+      0.78,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/stats/armor_shield.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": -1
+  },
+  {
+    "id": "arthurs_mark",
+    "name": "Arthur's Mark",
+    "kind": "penalty",
+    "color": [
+      0.996078,
+      0.952941,
+      0.752941,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/status_effects/arthurs_mark_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 1
+  },
+  {
+    "id": "black_curse",
+    "name": "Black Curse",
+    "kind": "penalty",
+    "color": [
+      0.278431,
+      0.278431,
+      0.380392,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/curse_icon.png",
+    "application_message": "CURSED",
+    "application_sound": "res://assets/sfx/curse.wav",
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 1
+  },
+  {
+    "id": "bleed",
+    "name": "Bleed",
+    "kind": "penalty",
+    "color": [
+      0.705882,
+      0.12549,
+      0.270588,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/bleed.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": true,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 100
+  },
+  {
+    "id": "blindness",
+    "name": "Blindness",
+    "kind": "penalty",
+    "color": [
+      0.2418,
+      0.342653,
+      0.62,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/blindness_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": true,
+    "limit": 10
+  },
+  {
+    "id": "blue_team",
+    "name": "Blue Team",
+    "kind": "rule",
+    "color": [
+      0.278431,
+      0.509804,
+      0.901961,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/status_effects/team_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 1
+  },
+  {
+    "id": "cinder_essence",
+    "name": "Cinder Essence",
+    "kind": "blessing",
+    "color": [
+      0.976471,
+      0.6,
+      0.105882,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/cinder_essence_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": -1
+  },
+  {
+    "id": "clarity",
+    "name": "Clarity",
+    "kind": "buff",
+    "color": [
+      0.54,
+      0.639667,
+      1.0,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/clarity_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 1
+  },
+  {
+    "id": "combat_insight",
+    "name": "Combat Insight",
+    "kind": "buff",
+    "color": [
+      0.627451,
+      0.87451,
+      1.0,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/status_effects/combat_insight_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 25
+  },
+  {
+    "id": "confusion",
+    "name": "Confusion",
+    "kind": "debuff",
+    "color": [
+      0.717647,
+      0.482353,
+      0.254902,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/status_effects/confusion_icon.png",
+    "application_message": "CONFUSED",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": true,
+    "limit": 2
+  },
+  {
+    "id": "counter_attack_charge",
+    "name": "Counter Attack Charge",
+    "kind": "buff",
+    "color": [
+      0.972549,
+      0.635294,
+      0.105882,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/counter_attack_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": true,
+    "limit": 1
+  },
+  {
+    "id": "curse",
+    "name": "Curse",
+    "kind": "debuff",
+    "color": [
+      0.654902,
+      0.388235,
+      0.658824,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/curse_icon.png",
+    "application_message": "CURSED",
+    "application_sound": "res://assets/sfx/curse.wav",
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 1
+  },
+  {
+    "id": "curse_of_the_tower",
+    "name": "Curse of the Tower",
+    "kind": "penalty",
+    "color": [
+      0.860369,
+      0.860369,
+      0.860369,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/difficulty_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": true,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 100
+  },
+  {
+    "id": "debuff_immunity",
+    "name": "Debuff Immunity",
+    "kind": "buff",
+    "color": [
+      0.996078,
+      0.952941,
+      0.752941,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/status_effects/debuff_immunity.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": true,
+    "limit": 10
+  },
+  {
+    "id": "dread",
+    "name": "Dread",
+    "kind": "buff",
+    "color": [
+      0.380392,
+      0.278431,
+      0.337255,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/dread.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": true,
+    "limit": 2
+  },
+  {
+    "id": "electro_charge",
+    "name": "Electro Charge",
+    "kind": "debuff",
+    "color": [
+      0.0,
+      0.666667,
+      1.0,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/electro_charge.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": -1
+  },
+  {
+    "id": "elusive",
+    "name": "Elusive",
+    "kind": "buff",
+    "color": [
+      0.616418,
+      0.630935,
+      0.83496,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/elusive_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": true,
+    "limit": 1
+  },
+  {
+    "id": "enervation",
+    "name": "Enervation",
+    "kind": "penalty",
+    "color": [
+      0.580392,
+      0.647059,
+      0.6,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/weakness_icon.png",
+    "application_message": "ENERVATED",
+    "application_sound": "res://assets/sfx/apply_weakness.wav",
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": true,
+    "limit": 10
+  },
+  {
+    "id": "ephemeral_armor",
+    "name": "Ephemeral Armor",
+    "kind": "buff",
+    "color": [
+      0.462745,
+      0.380392,
+      0.67451,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/stats/armor_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": -1
+  },
+  {
+    "id": "ephemeral_lock",
+    "name": "Ephemeral Lock",
+    "kind": "penalty",
+    "color": [
+      0.462745,
+      0.380392,
+      0.67451,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/silence_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 1
+  },
+  {
+    "id": "ephemeral_shell",
+    "name": "Ephemeral Shell",
+    "kind": "buff",
+    "color": [
+      0.462745,
+      0.380392,
+      0.67451,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/item_sets/ancient_shell.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 8
+  },
+  {
+    "id": "exhaustion",
+    "name": "Exhaustion",
+    "kind": "debuff",
+    "color": [
+      0.831373,
+      0.713726,
+      0.298039,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/exhaustion_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 1
+  },
+  {
+    "id": "fear",
+    "name": "Fear",
+    "kind": "debuff",
+    "color": [
+      0.211765,
+      0.662745,
+      0.658824,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/fear_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 1
+  },
+  {
+    "id": "focused",
+    "name": "Focused",
+    "kind": "buff",
+    "color": [
+      0.505882,
+      0.52549,
+      0.67451,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/perfect_focus.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": true,
+    "limit": 1
+  },
+  {
+    "id": "freeze",
+    "name": "Freeze",
+    "kind": "penalty",
+    "color": [
+      0.352941,
+      0.533333,
+      1.0,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/freeze_icon.png",
+    "application_message": "FROZEN",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 1
+  },
+  {
+    "id": "fury",
+    "name": "Fury",
+    "kind": "buff",
+    "color": [
+      1.0,
+      0.278431,
+      0.00784314,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/fury_icon.png",
+    "application_message": "FURY",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": -1
+  },
+  {
+    "id": "golden_heart",
+    "name": "Golden Heart",
+    "kind": "buff",
+    "color": [
+      0.972549,
+      0.635294,
+      0.105882,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/max_health_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 1
+  },
+  {
+    "id": "golden_lock",
+    "name": "Golden Lock",
+    "kind": "debuff",
+    "color": [
+      0.972549,
+      0.635294,
+      0.105882,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/silence_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 1
+  },
+  {
+    "id": "grace",
+    "name": "Grace",
+    "kind": "blessing",
+    "color": [
+      0.96,
+      0.86256,
+      0.6816,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/grace.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": true,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": -1
+  },
+  {
+    "id": "inherited_sin",
+    "name": "Inherited Sin",
+    "kind": "debuff",
+    "color": [
+      0.517647,
+      0.211765,
+      0.25098,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/status_effects/inherited_sin_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 1
+  },
+  {
+    "id": "invulnerability",
+    "name": "Invulnerability",
+    "kind": "buff",
+    "color": [
+      0.996078,
+      0.952941,
+      0.752941,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/status_effects/invulnerability_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": true,
+    "limit": 99
+  },
+  {
+    "id": "lethality",
+    "name": "Lethality",
+    "kind": "penalty",
+    "color": [
+      0.701961,
+      0.72549,
+      0.819608,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/stats/lethality_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": true,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 100
+  },
+  {
+    "id": "madness",
+    "name": "Madness",
+    "kind": "debuff",
+    "color": [
+      0.407,
+      0.411767,
+      0.55,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/madness_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": true,
+    "limit": 2
+  },
+  {
+    "id": "magic_blitz",
+    "name": "Magic Blitz",
+    "kind": "buff",
+    "color": [
+      0.721569,
+      0.666667,
+      0.913725,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/magic_blitz.png",
+    "application_message": "Magic Blitz",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": -1
+  },
+  {
+    "id": "magic_shield",
+    "name": "Magic Shield",
+    "kind": "blessing",
+    "color": [
+      0.541176,
+      0.694118,
+      1.0,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/magic_shield_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": true,
+    "limit": 3
+  },
+  {
+    "id": "malice_shield",
+    "name": "Malice Shield",
+    "kind": "buff",
+    "color": [
+      0.301961,
+      0.266667,
+      0.360784,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/malice_shield.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 99
+  },
+  {
+    "id": "multi_attack_charge",
+    "name": "Multi Attack Charge",
+    "kind": "buff",
+    "color": [
+      0.627451,
+      0.87451,
+      1.0,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/multi_attack_charge_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": true,
+    "limit": 1
+  },
+  {
+    "id": "omni_blitz",
+    "name": "Omni Blitz",
+    "kind": "buff",
+    "color": [
+      0.788235,
+      0.486275,
+      0.639216,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/magic_blitz.png",
+    "application_message": "Omni Blitz",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": -1
+  },
+  {
+    "id": "poison",
+    "name": "Poison",
+    "kind": "debuff",
+    "color": [
+      0.360784,
+      0.537255,
+      0.388235,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/toxicity_icon.png",
+    "application_message": "POISONED",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": -1
+  },
+  {
+    "id": "purification",
+    "name": "Purification",
+    "kind": "blessing",
+    "color": [
+      1.0,
+      0.980816,
+      0.891909,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/purification_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 99
+  },
+  {
+    "id": "red_team",
+    "name": "Red Team",
+    "kind": "rule",
+    "color": [
+      0.929412,
+      0.227451,
+      0.333333,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/status_effects/team_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 1
+  },
+  {
+    "id": "silence",
+    "name": "Silence",
+    "kind": "debuff",
+    "color": [
+      0.301961,
+      0.337255,
+      0.619608,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/silence_icon.png",
+    "application_message": "SILENCED",
+    "application_sound": "res://assets/sfx/silence.wav",
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 1
+  },
+  {
+    "id": "slowness",
+    "name": "Slowness",
+    "kind": "debuff",
+    "color": [
+      0.627451,
+      0.87451,
+      1.0,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/slowness_icon.png",
+    "application_message": "SLOWED",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": true,
+    "is_temporary": false,
+    "limit": 2
+  },
+  {
+    "id": "sparkle",
+    "name": "Sparkle",
+    "kind": "debuff",
+    "color": [
+      0.666667,
+      0.890196,
+      0.811765,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/sparkle_icon.png",
+    "application_message": "SPARKLE",
+    "application_sound": "res://assets/sfx/sparkle_apply.wav",
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": -1
+  },
+  {
+    "id": "stun",
+    "name": "Stun",
+    "kind": "penalty",
+    "color": [
+      0.568627,
+      0.435294,
+      0.572549,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/stun_icon.png",
+    "application_message": "STUNNED",
+    "application_sound": "res://assets/sfx/stun.wav",
+    "is_percent": false,
+    "affected_by_tenacity": true,
+    "is_temporary": true,
+    "limit": 1
+  },
+  {
+    "id": "stun_attack_charge",
+    "name": "Stun Attack Charge",
+    "kind": "buff",
+    "color": [
+      0.45098,
+      0.435294,
+      0.572549,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/stun_attack_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": true,
+    "limit": 1
+  },
+  {
+    "id": "timeout",
+    "name": "Timeout",
+    "kind": "penalty",
+    "color": [
+      0.545098,
+      0.576471,
+      0.686275,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/timeout_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": true,
+    "limit": 99
+  },
+  {
+    "id": "toxic_transmute",
+    "name": "Toxic Transmute",
+    "kind": "blessing",
+    "color": [
+      0.258824,
+      0.643137,
+      0.34902,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/toxic_transmute_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 1
+  },
+  {
+    "id": "vimblow",
+    "name": "Vimblow",
+    "kind": "buff",
+    "color": [
+      0.0784314,
+      0.627451,
+      0.180392,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/vimblow_icon.png",
+    "application_message": "",
+    "application_sound": null,
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": false,
+    "limit": 99
+  },
+  {
+    "id": "weakness",
+    "name": "Weakness",
+    "kind": "debuff",
+    "color": [
+      0.352941,
+      0.533333,
+      1.0,
+      1.0
+    ],
+    "icon": "res://assets/textures/icons/weakness_icon.png",
+    "application_message": "WEAKENED",
+    "application_sound": "res://assets/sfx/apply_weakness.wav",
+    "is_percent": false,
+    "affected_by_tenacity": false,
+    "is_temporary": true,
+    "limit": 10
+  }
+]

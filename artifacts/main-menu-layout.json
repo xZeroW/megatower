@@ -1,0 +1,845 @@
+{
+	"viewport": [
+		640,
+		360
+	],
+	"visuals": [
+		{
+			"kind": "ColorRect",
+			"palette": 1,
+			"path": "/root/MainMenuState/CanvasLayer/BackgroundColor",
+			"rect": [
+				0.0,
+				0.0,
+				640.0,
+				360.0
+			]
+		},
+		{
+			"kind": "SubViewportContainer",
+			"path": "/root/MainMenuState/CanvasLayer/SubViewportContainer",
+			"rect": [
+				0.0,
+				0.0,
+				640.0,
+				360.0
+			]
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 2,
+			"path": "/root/MainMenuState/CanvasLayer/FadeRect2",
+			"rect": [
+				0.0,
+				0.0,
+				640.0,
+				360.0
+			],
+			"texture": "res://scenes/states/main_menu_state/main_menu_state.tscn::GradientTexture2D_7e6ej"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 1,
+			"path": "/root/MainMenuState/CanvasLayer/FadeRect",
+			"rect": [
+				0.0,
+				0.0,
+				640.0,
+				360.0
+			],
+			"texture": "res://scenes/states/main_menu_state/main_menu_state.tscn::GradientTexture2D_257kg"
+		},
+		{
+			"kind": "ColorRect",
+			"path": "/root/MainMenuState/CanvasLayer/FadeColorRect2",
+			"rect": [
+				0.0,
+				0.0,
+				640.0,
+				360.0
+			]
+		},
+		{
+			"kind": "Control",
+			"path": "/root/MainMenuState/CanvasLayer/Control",
+			"rect": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 0,
+			"path": "/root/MainMenuState/CanvasLayer/Control/TextureRect",
+			"rect": [
+				197.0,
+				39.0,
+				245.0,
+				65.0
+			],
+			"texture": "res://assets/textures/ui/logo.png"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 0,
+			"path": "/root/MainMenuState/CanvasLayer/Control/TextureRect2",
+			"rect": [
+				197.0,
+				39.0,
+				245.0,
+				65.0
+			],
+			"texture": "res://assets/textures/ui/logo.png"
+		},
+		{
+			"kind": "VBoxContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer",
+			"rect": [
+				227.5,
+				148.5,
+				185.0,
+				151.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/EnterTheTowerButton",
+			"rect": [
+				227.5,
+				148.5,
+				185.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/EnterTheTowerButton/OutlineMarginContainer",
+			"rect": [
+				227.5,
+				148.5,
+				185.0,
+				29.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				23,
+				0,
+				22,
+				0
+			],
+			"palette": 4,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/EnterTheTowerButton/NinePatchRect",
+			"rect": [
+				227.5,
+				148.5,
+				185.0,
+				29.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				61.0,
+				29.0
+			],
+			"texture": "res://assets/textures/ui/normal_generic_button.png"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 1,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/EnterTheTowerButton/NinePatchRect/IconTextureRect",
+			"rect": [
+				277.0,
+				148.5,
+				86.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/EnterTheTowerButton/MarginContainer",
+			"rect": [
+				227.5,
+				148.5,
+				185.0,
+				29.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/EnterTheTowerButton/MarginContainer/HBoxContainer",
+			"rect": [
+				252.5,
+				148.5,
+				135.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/EnterTheTowerButton/MarginContainer/HBoxContainer/MarginContainer",
+			"rect": [
+				252.5,
+				148.5,
+				0.0,
+				29.0
+			]
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 1,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/EnterTheTowerButton/MarginContainer/HBoxContainer/NameLabel",
+			"rect": [
+				252.5,
+				155.5,
+				135.0,
+				15.0
+			],
+			"text": "ENTER THE TOWER"
+		},
+		{
+			"kind": "VBoxContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2",
+			"rect": [
+				227.5,
+				192.5,
+				185.0,
+				63.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer",
+			"rect": [
+				227.5,
+				192.5,
+				185.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/ProfileButton",
+			"rect": [
+				227.5,
+				192.5,
+				51.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/ProfileButton/OutlineMarginContainer",
+			"rect": [
+				227.5,
+				192.5,
+				51.0,
+				29.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				23,
+				0,
+				22,
+				0
+			],
+			"palette": 1,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/ProfileButton/OutlineMarginContainer/OutlineNinePatchRect",
+			"rect": [
+				226.5,
+				191.5,
+				53.0,
+				31.0
+			],
+			"texture": "res://assets/textures/ui/left_generic_button_outline.png"
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				23,
+				0,
+				22,
+				0
+			],
+			"palette": 4,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/ProfileButton/NinePatchRect",
+			"rect": [
+				227.5,
+				192.5,
+				51.0,
+				29.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				53.0,
+				29.0
+			],
+			"texture": "res://assets/textures/ui/right_generic_button.png"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 1,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/ProfileButton/NinePatchRect/IconTextureRect",
+			"rect": [
+				252.5,
+				199.5,
+				15.0,
+				15.0
+			],
+			"texture": "res://assets/textures/icons/profile_icon.png"
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/ProfileButton/MarginContainer",
+			"rect": [
+				227.5,
+				192.5,
+				51.0,
+				29.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/ProfileButton/MarginContainer/HBoxContainer",
+			"rect": [
+				252.5,
+				192.5,
+				1.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/ProfileButton/MarginContainer/HBoxContainer/MarginContainer",
+			"rect": [
+				252.5,
+				192.5,
+				0.0,
+				29.0
+			]
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 1,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/ProfileButton/MarginContainer/HBoxContainer/NameLabel",
+			"rect": [
+				252.5,
+				199.5,
+				1.0,
+				15.0
+			],
+			"text": ""
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/LibraryButton",
+			"rect": [
+				282.5,
+				192.5,
+				130.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/LibraryButton/OutlineMarginContainer",
+			"rect": [
+				282.5,
+				192.5,
+				130.0,
+				29.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				23,
+				0,
+				22,
+				0
+			],
+			"palette": 1,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/LibraryButton/OutlineMarginContainer/OutlineNinePatchRect",
+			"rect": [
+				281.5,
+				191.5,
+				132.0,
+				31.0
+			],
+			"texture": "res://assets/textures/ui/right_generic_button_outline.png"
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				23,
+				0,
+				22,
+				0
+			],
+			"palette": 4,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/LibraryButton/NinePatchRect",
+			"rect": [
+				282.5,
+				192.5,
+				130.0,
+				29.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				53.0,
+				29.0
+			],
+			"texture": "res://assets/textures/ui/left_generic_button.png"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 1,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/LibraryButton/NinePatchRect/IconTextureRect",
+			"rect": [
+				304.5,
+				192.5,
+				86.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/LibraryButton/MarginContainer",
+			"rect": [
+				282.5,
+				192.5,
+				130.0,
+				29.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/LibraryButton/MarginContainer/HBoxContainer",
+			"rect": [
+				294.5,
+				192.5,
+				93.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/LibraryButton/MarginContainer/HBoxContainer/MarginContainer",
+			"rect": [
+				294.5,
+				192.5,
+				0.0,
+				29.0
+			]
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 1,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/HBoxContainer/LibraryButton/MarginContainer/HBoxContainer/NameLabel",
+			"rect": [
+				294.5,
+				199.5,
+				93.0,
+				15.0
+			],
+			"text": "LIBRARY"
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/WorkshopButton",
+			"rect": [
+				227.5,
+				226.5,
+				185.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/WorkshopButton/OutlineMarginContainer",
+			"rect": [
+				227.5,
+				226.5,
+				185.0,
+				29.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				23,
+				0,
+				22,
+				0
+			],
+			"palette": 4,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/WorkshopButton/NinePatchRect",
+			"rect": [
+				227.5,
+				226.5,
+				185.0,
+				29.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				61.0,
+				29.0
+			],
+			"texture": "res://assets/textures/ui/normal_generic_button.png"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 1,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/WorkshopButton/NinePatchRect/IconTextureRect",
+			"rect": [
+				277.0,
+				226.5,
+				86.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/WorkshopButton/MarginContainer",
+			"rect": [
+				227.5,
+				226.5,
+				185.0,
+				29.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/WorkshopButton/MarginContainer/HBoxContainer",
+			"rect": [
+				252.5,
+				226.5,
+				135.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/WorkshopButton/MarginContainer/HBoxContainer/MarginContainer",
+			"rect": [
+				252.5,
+				226.5,
+				0.0,
+				29.0
+			]
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 1,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/VBoxContainer2/WorkshopButton/MarginContainer/HBoxContainer/NameLabel",
+			"rect": [
+				252.5,
+				233.5,
+				135.0,
+				15.0
+			],
+			"text": "WORKSHOP"
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/QuitButton",
+			"rect": [
+				227.5,
+				270.5,
+				185.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/QuitButton/OutlineMarginContainer",
+			"rect": [
+				227.5,
+				270.5,
+				185.0,
+				29.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				23,
+				0,
+				22,
+				0
+			],
+			"palette": 4,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/QuitButton/NinePatchRect",
+			"rect": [
+				227.5,
+				270.5,
+				185.0,
+				29.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				61.0,
+				29.0
+			],
+			"texture": "res://assets/textures/ui/normal_generic_button.png"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 1,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/QuitButton/NinePatchRect/IconTextureRect",
+			"rect": [
+				277.0,
+				270.5,
+				86.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/QuitButton/MarginContainer",
+			"rect": [
+				227.5,
+				270.5,
+				185.0,
+				29.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/QuitButton/MarginContainer/HBoxContainer",
+			"rect": [
+				252.5,
+				270.5,
+				135.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/QuitButton/MarginContainer/HBoxContainer/MarginContainer",
+			"rect": [
+				252.5,
+				270.5,
+				0.0,
+				29.0
+			]
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 1,
+			"path": "/root/MainMenuState/CanvasLayer/VBoxContainer/QuitButton/MarginContainer/HBoxContainer/NameLabel",
+			"rect": [
+				252.5,
+				277.5,
+				135.0,
+				15.0
+			],
+			"text": "QUIT"
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				5,
+				5,
+				5,
+				5
+			],
+			"palette": 2,
+			"path": "/root/MainMenuState/CanvasLayer/GenericPanel",
+			"rect": [
+				0.0,
+				0.0,
+				640.0,
+				360.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				32.0,
+				32.0
+			],
+			"texture": "res://assets/textures/ui/panel_border_full.png"
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 4,
+			"path": "/root/MainMenuState/CanvasLayer/PhaseLabel",
+			"rect": [
+				537.0,
+				336.0,
+				95.0,
+				16.0
+			],
+			"text": "x.xx"
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				3,
+				2,
+				0,
+				4
+			],
+			"palette": 2,
+			"path": "/root/MainMenuState/CanvasLayer/GenericPanel4",
+			"rect": [
+				605.0,
+				2.0,
+				33.0,
+				33.0
+			],
+			"region": [
+				0.0,
+				2.0,
+				4.0,
+				5.0
+			],
+			"texture": "res://assets/textures/ui/normal_panel_background.png"
+		},
+		{
+			"kind": "VBoxContainer",
+			"path": "/root/MainMenuState/CanvasLayer/HBoxContainer",
+			"rect": [
+				8.0,
+				284.0,
+				60.0,
+				68.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/HBoxContainer/DiscordButton",
+			"rect": [
+				8.0,
+				284.0,
+				32.0,
+				32.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/HBoxContainer/DiscordButton/OutlineMarginContainer",
+			"rect": [
+				8.0,
+				284.0,
+				32.0,
+				32.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				0,
+				0,
+				0,
+				0
+			],
+			"palette": 0,
+			"path": "/root/MainMenuState/CanvasLayer/HBoxContainer/DiscordButton/NinePatchRect",
+			"rect": [
+				8.0,
+				284.0,
+				32.0,
+				32.0
+			],
+			"texture": "res://assets/textures/icons/discord_logo.png"
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/HBoxContainer/CreditsButton",
+			"rect": [
+				8.0,
+				320.0,
+				32.0,
+				32.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/HBoxContainer/CreditsButton/OutlineMarginContainer",
+			"rect": [
+				8.0,
+				320.0,
+				32.0,
+				32.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				0,
+				0,
+				0,
+				0
+			],
+			"palette": 0,
+			"path": "/root/MainMenuState/CanvasLayer/HBoxContainer/CreditsButton/NinePatchRect",
+			"rect": [
+				8.0,
+				320.0,
+				32.0,
+				32.0
+			],
+			"texture": "res://assets/textures/icons/credits_logo.png"
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/OptionsButton",
+			"rect": [
+				609.0,
+				5.0,
+				26.0,
+				26.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/MainMenuState/CanvasLayer/OptionsButton/OutlineMarginContainer",
+			"rect": [
+				609.0,
+				5.0,
+				26.0,
+				26.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				0,
+				0,
+				0,
+				0
+			],
+			"palette": 0,
+			"path": "/root/MainMenuState/CanvasLayer/OptionsButton/NinePatchRect",
+			"rect": [
+				609.0,
+				5.0,
+				26.0,
+				26.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				26.0,
+				26.0
+			],
+			"texture": "res://assets/textures/icons/options_button.png"
+		}
+	]
+}

@@ -1,0 +1,2505 @@
+{
+ "enemies": [
+  {
+   "id": "res://resources/enemies/armored_goblin.tres",
+   "name": "Armored Goblin",
+   "texture": "res://assets/textures/enemies/armored_goblin.png",
+   "floor_number": 2,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "armor",
+     "amount": 4.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_health",
+     "amount": 6.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/steal.tres"
+   ],
+   "passives": [
+    "res://resources/passives/escape.tres"
+   ],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/armored_spirit.tres",
+   "name": "Armored Spirit",
+   "texture": "res://assets/textures/enemies/armored_spirit.png",
+   "floor_number": 4,
+   "flying": true,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 7.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/bat.tres",
+   "name": "Bat",
+   "texture": "res://assets/textures/enemies/bat.png",
+   "floor_number": 0,
+   "flying": true,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/blinded_priest.tres",
+   "name": "Blinded Priest",
+   "texture": "res://assets/textures/enemies/blinded_priest.png",
+   "floor_number": 10,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "magic_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/multi_cleanse.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/blood_ghoul.tres",
+   "name": "Blood Ghoul",
+   "texture": "res://assets/textures/enemies/blood_ghoul.png",
+   "floor_number": 3,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 11.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "life_steal",
+     "amount": 7.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "penetration",
+     "amount": 25.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/boar.tres",
+   "name": "Boar",
+   "texture": "res://assets/textures/enemies/boar.png",
+   "floor_number": 0,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 4.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/headbutt.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/braskap.tres",
+   "name": "Braskap",
+   "texture": "res://assets/textures/enemies/braskap.png",
+   "floor_number": 9,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 24.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "elemental_resistance",
+     "amount": 24.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 6.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "toxicity",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [
+    "res://resources/passives/plated_rot.tres"
+   ],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/bravura.tres",
+   "name": "Bravura",
+   "texture": "res://assets/textures/enemies/bravura.png",
+   "floor_number": 6,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [
+    [
+     {
+      "resource": "total_attacks",
+      "amount": 1.0,
+      "is_modifier": false,
+      "boosting_sets": []
+     }
+    ]
+   ],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "penetration",
+     "amount": 45.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "recovery",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/brother.tres",
+   "name": "Brother",
+   "texture": "res://assets/textures/enemies/brother.png",
+   "floor_number": 7,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "physical_attack",
+     "amount": 34.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_health",
+     "amount": 18.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [
+    "res://resources/passives/beyond_the_grave.tres"
+   ],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/cloud_dragon.tres",
+   "name": "Cloud Dragon",
+   "texture": "res://assets/textures/enemies/cloud_dragon.png",
+   "floor_number": 9,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 10.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 7.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 8.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    null,
+    "res://resources/abilities/galefire.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/cursed_abomination.tres",
+   "name": "Cursed Abomination",
+   "texture": "res://assets/textures/enemies/cursed_abomination.png",
+   "floor_number": 11,
+   "flying": true,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "malice",
+     "amount": 4.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [
+    "res://resources/passives/undying_curse.tres"
+   ],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/death.tres",
+   "name": "Death",
+   "texture": "res://assets/textures/enemies/death.png",
+   "floor_number": 29,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 125.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 17.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/death_strike.tres"
+   ],
+   "passives": [
+    "res://resources/passives/undead_blessing.tres"
+   ],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/efis.tres",
+   "name": "Efis",
+   "texture": "res://assets/textures/enemies/efis.png",
+   "floor_number": 2,
+   "flying": true,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 8.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/confusion_strike.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/eldrids_flesh.tres",
+   "name": "Eldrid's Flesh",
+   "texture": "res://assets/textures/enemies/eldrids_flesh.png",
+   "floor_number": 13,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [
+    "res://resources/item_sets/flesh.tres"
+   ],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 24.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 10.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "life_steal",
+     "amount": 45.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "penetration",
+     "amount": 10.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/fire_dragon.tres",
+   "name": "Fire Dragon",
+   "texture": "res://assets/textures/enemies/fire_dragon.png",
+   "floor_number": 6,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 11.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 4.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 4.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/fronk.tres",
+   "name": "Fronk",
+   "texture": "res://assets/textures/enemies/fronk.png",
+   "floor_number": 0,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "magic_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/multi_shield.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/giant_spider.tres",
+   "name": "Giant Spider",
+   "texture": "res://assets/textures/enemies/giant_spider.png",
+   "floor_number": 3,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 9.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/goblin.tres",
+   "name": "Goblin",
+   "texture": "res://assets/textures/enemies/goblin.png",
+   "floor_number": 1,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/steal.tres"
+   ],
+   "passives": [
+    "res://resources/passives/escape.tres"
+   ],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/golden_guardian.tres",
+   "name": "Golden Guardian",
+   "texture": "res://assets/textures/enemies/golden_guardian.png",
+   "floor_number": 13,
+   "flying": false,
+   "starting_status_effects": [
+    [
+     {
+      "resource": "golden_heart",
+      "amount": 1
+     }
+    ]
+   ],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 24.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 48.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [
+    "res://resources/passives/golden_altruism.tres"
+   ],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/graven.tres",
+   "name": "Graven",
+   "texture": "res://assets/textures/enemies/graven.png",
+   "floor_number": 28,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "total_attacks",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 426.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_health",
+     "amount": 28.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 14.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [
+    "res://resources/passives/prime_guard.tres"
+   ],
+   "is_unique": true,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/harpy.tres",
+   "name": "Harpy",
+   "texture": "res://assets/textures/enemies/harpy.png",
+   "floor_number": 5,
+   "flying": true,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 10.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "agility",
+     "amount": 25.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/iron_golem.tres",
+   "name": "Iron Golem",
+   "texture": "res://assets/textures/enemies/iron_golem.png",
+   "floor_number": 25,
+   "flying": false,
+   "starting_status_effects": [
+    [
+     {
+      "resource": "armor_shield",
+      "amount": 2
+     }
+    ],
+    [
+     {
+      "resource": "armor_shield",
+      "amount": 1
+     }
+    ],
+    [
+     {
+      "resource": "armor_shield",
+      "amount": 1
+     }
+    ]
+   ],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 10.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 75.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armored_attack",
+     "amount": 25.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor_steal",
+     "amount": 45.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "toughness",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/jellyrak.tres",
+   "name": "Jellyrak",
+   "texture": "res://assets/textures/enemies/jellyrak.png",
+   "floor_number": 2,
+   "flying": true,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/stun_attack.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/jupiter.tres",
+   "name": "Jupiter",
+   "texture": "res://assets/textures/enemies/jupiter.png",
+   "floor_number": 19,
+   "flying": true,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 64.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "magic_attack",
+     "amount": 7.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "agility",
+     "amount": 25.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [
+    null,
+    "res://resources/passives/exploited_opportunity.tres"
+   ],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/kotya.tres",
+   "name": "Kotya",
+   "texture": "res://assets/textures/enemies/kotya.png",
+   "floor_number": 8,
+   "flying": false,
+   "starting_status_effects": [
+    null,
+    null,
+    [
+     {
+      "resource": "clarity",
+      "amount": 1
+     }
+    ]
+   ],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 12.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    null,
+    "res://resources/abilities/repulse.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/leafing.tres",
+   "name": "Leafing",
+   "texture": "res://assets/textures/enemies/leafing.png",
+   "floor_number": 0,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/magma_golem.tres",
+   "name": "Magma Golem",
+   "texture": "res://assets/textures/enemies/magma_golem.png",
+   "floor_number": 8,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [
+    "res://resources/item_sets/magma.tres"
+   ],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 12.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 6.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 4.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/mars.tres",
+   "name": "Mars",
+   "texture": "res://assets/textures/enemies/mars.png",
+   "floor_number": 11,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 15.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 17.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/triple_attack.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/moon.tres",
+   "name": "Moon",
+   "texture": "res://assets/textures/enemies/moon.png",
+   "floor_number": 10,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 25.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 10.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/stun_attack.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/morizon.tres",
+   "name": "Morizon",
+   "texture": "res://assets/textures/enemies/morizon.png",
+   "floor_number": 10,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 8.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "magic_attack",
+     "amount": 7.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/multi_magic_shield.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/neptune.tres",
+   "name": "Neptune",
+   "texture": "res://assets/textures/enemies/neptune.png",
+   "floor_number": 12,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 45.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 8.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 15.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/mind_control.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/overseer.tres",
+   "name": "Overseer",
+   "texture": "res://assets/textures/enemies/overseer.png",
+   "floor_number": 8,
+   "flying": true,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 10.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 7.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "dazzle",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/pebbling.tres",
+   "name": "Pebbling",
+   "texture": "res://assets/textures/enemies/pebbling.png",
+   "floor_number": 0,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 4.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/perfect_slave.tres",
+   "name": "Perfect Slave",
+   "texture": "res://assets/textures/enemies/perfect_slave.png",
+   "floor_number": 59,
+   "flying": false,
+   "starting_status_effects": [
+    [],
+    [
+     {
+      "resource": "invulnerability",
+      "amount": 1
+     }
+    ],
+    [
+     {
+      "resource": "invulnerability",
+      "amount": 1
+     }
+    ],
+    [
+     {
+      "resource": "invulnerability",
+      "amount": 1
+     }
+    ],
+    [
+     {
+      "resource": "debuff_immunity",
+      "amount": 1
+     }
+    ],
+    [
+     {
+      "resource": "debuff_immunity",
+      "amount": 1
+     }
+    ],
+    [
+     {
+      "resource": "debuff_immunity",
+      "amount": 1
+     }
+    ]
+   ],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 125.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 16.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "recovery",
+     "amount": 10.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 6.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [
+    "res://resources/passives/fear_of_pain.tres",
+    "res://resources/passives/edens_wish.tres"
+   ],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/pinto.tres",
+   "name": "Pinto",
+   "texture": "res://assets/textures/enemies/pinto.png",
+   "floor_number": 12,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "physical_attack",
+     "amount": 7.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_health",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/drop_of_chaos.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/rat.tres",
+   "name": "Rat",
+   "texture": "res://assets/textures/enemies/rat.png",
+   "floor_number": 0,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/red_orc.tres",
+   "name": "Red Orc",
+   "texture": "res://assets/textures/enemies/red_orc.png",
+   "floor_number": 5,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 13.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/steady_grip.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/rogue.tres",
+   "name": "Rogue",
+   "texture": "res://assets/textures/enemies/rogue.png",
+   "floor_number": 2,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "agility",
+     "amount": 25.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/ruined_king.tres",
+   "name": "Ruined King",
+   "texture": "res://assets/textures/enemies/ruined_king.png",
+   "floor_number": 9,
+   "flying": false,
+   "starting_status_effects": [
+    [
+     {
+      "resource": "black_curse",
+      "amount": 1
+     }
+    ]
+   ],
+   "active_item_sets": [],
+   "stats_per_level": [
+    [
+     {
+      "resource": "elemental_resistance",
+      "amount": 5.0,
+      "is_modifier": false,
+      "boosting_sets": []
+     },
+     {
+      "resource": "total_attacks",
+      "amount": 1.0,
+      "is_modifier": false,
+      "boosting_sets": []
+     }
+    ],
+    [
+     {
+      "resource": "elemental_resistance",
+      "amount": 5.0,
+      "is_modifier": false,
+      "boosting_sets": []
+     }
+    ],
+    [
+     {
+      "resource": "elemental_resistance",
+      "amount": 5.0,
+      "is_modifier": false,
+      "boosting_sets": []
+     }
+    ],
+    [
+     {
+      "resource": "elemental_resistance",
+      "amount": 5.0,
+      "is_modifier": false,
+      "boosting_sets": []
+     }
+    ]
+   ],
+   "base_stats": [
+    {
+     "resource": "total_attacks",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_health",
+     "amount": 18.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 8.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "elemental_resistance",
+     "amount": 10.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [
+    "res://resources/passives/edge_of_the_ruined.tres"
+   ],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/saturn.tres",
+   "name": "Saturn",
+   "texture": "res://assets/textures/enemies/saturn.png",
+   "floor_number": 20,
+   "flying": false,
+   "starting_status_effects": [
+    [
+     {
+      "resource": "armor_shield",
+      "amount": 3
+     }
+    ],
+    [
+     {
+      "resource": "armor_shield",
+      "amount": 1
+     }
+    ],
+    [
+     {
+      "resource": "armor_shield",
+      "amount": 1
+     }
+    ],
+    [
+     {
+      "resource": "armor_shield",
+      "amount": 1
+     }
+    ]
+   ],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 85.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 50.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 18.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/shatter_strike.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/shadow_ghost.tres",
+   "name": "Shadow Ghost",
+   "texture": "res://assets/textures/enemies/shadow_ghost.png",
+   "floor_number": 7,
+   "flying": true,
+   "starting_status_effects": [],
+   "active_item_sets": [
+    "res://resources/item_sets/darkness.tres"
+   ],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "total_attacks",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_health",
+     "amount": 12.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/shadow_wizard.tres",
+   "name": "Shadow Wizard",
+   "texture": "res://assets/textures/enemies/shadow_wizard.png",
+   "floor_number": 1,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 4.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "magic_attack",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/spell_bind.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/skeleton_warrior.tres",
+   "name": "Skeleton Warrior",
+   "texture": "res://assets/textures/enemies/skeleton_warrior.png",
+   "floor_number": 1,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [
+    "res://resources/item_sets/warrior.tres"
+   ],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/slime.tres",
+   "name": "Slime",
+   "texture": "res://assets/textures/enemies/slime.png",
+   "floor_number": 0,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/toxic_attack.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/slorn.tres",
+   "name": "Slorn",
+   "texture": "res://assets/textures/enemies/slorn.png",
+   "floor_number": 2,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [
+    "res://resources/item_sets/blackthorn.tres"
+   ],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/snow_pix.tres",
+   "name": "Snow Pix",
+   "texture": "res://assets/textures/enemies/snow_pix.png",
+   "floor_number": 0,
+   "flying": true,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "magic_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/frozen_strike.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/snow_wraith.tres",
+   "name": "Snow Wraith",
+   "texture": "res://assets/textures/enemies/snow_wraith.png",
+   "floor_number": 5,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 10.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/frozen_strike.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/stone_golem.tres",
+   "name": "Stone Golem",
+   "texture": "res://assets/textures/enemies/stone_golem.png",
+   "floor_number": 3,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 14.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "toughness",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/sun.tres",
+   "name": "Sun",
+   "texture": "res://assets/textures/enemies/sun.png",
+   "floor_number": 24,
+   "flying": true,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 4.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 84.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 6.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "magic_attack",
+     "amount": 12.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [
+    null,
+    null,
+    "res://resources/passives/luminous_trial.tres"
+   ],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/thunder_dragon.tres",
+   "name": "Thunder Dragon",
+   "texture": "res://assets/textures/enemies/thunder_dragon.png",
+   "floor_number": 12,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [
+    "res://resources/item_sets/thunder.tres"
+   ],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 12.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 8.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 10.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "electricity",
+     "amount": 15.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/uranus.tres",
+   "name": "Uranus",
+   "texture": "res://assets/textures/enemies/uranus.png",
+   "floor_number": 22,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 76.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "freeze_attack",
+     "amount": 20.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 45.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/astral_dissolution.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/venomous_spider.tres",
+   "name": "Venomous Spider",
+   "texture": "res://assets/textures/enemies/venomous_spider.png",
+   "floor_number": 5,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 12.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "toxicity",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/venom_spit.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/venus.tres",
+   "name": "Venus",
+   "texture": "res://assets/textures/enemies/venus.png",
+   "floor_number": 16,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 25.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 15.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 45.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/multi_heal.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/void_squid.tres",
+   "name": "Void Squid",
+   "texture": "res://assets/textures/enemies/void_squid.png",
+   "floor_number": 7,
+   "flying": true,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 15.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 4.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/mind_control.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/windwatcher.tres",
+   "name": "Windwatcher",
+   "texture": "res://assets/textures/enemies/windwatcher.png",
+   "floor_number": 26,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [
+    "res://resources/item_sets/swiftness.tres"
+   ],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 25.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 9.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 10.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "agility",
+     "amount": 125.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [
+    "res://resources/passives/winds_grace.tres"
+   ],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/witch.tres",
+   "name": "Witch",
+   "texture": "res://assets/textures/enemies/witch.png",
+   "floor_number": 3,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 12.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "magic_attack",
+     "amount": 4.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [
+    "res://resources/passives/evil_mark.tres",
+    "res://resources/passives/cursed_chain.tres"
+   ],
+   "is_unique": false,
+   "hide_stats": false
+  },
+  {
+   "id": "res://resources/enemies/wizard_skeleton.tres",
+   "name": "Wizard Skeleton",
+   "texture": "res://assets/textures/enemies/wizard_skeleton.png",
+   "floor_number": 3,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "magic_attack",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [
+    "res://resources/abilities/barrier.tres"
+   ],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  }
+ ],
+ "special_enemies": [
+  {
+   "id": "res://resources/special_enemies/common_chest.tres",
+   "name": "Common Chest",
+   "texture": "res://assets/textures/enemies/common_chest.png",
+   "floor_number": 0,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "total_attacks",
+     "amount": 0.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_health",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": true
+  },
+  {
+   "id": "res://resources/special_enemies/golden_chest.tres",
+   "name": "Golden Chest",
+   "texture": "res://assets/textures/enemies/golden_chest.png",
+   "floor_number": 0,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "total_attacks",
+     "amount": 0.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_health",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": true
+  },
+  {
+   "id": "res://resources/special_enemies/heart_of_the_tower.tres",
+   "name": "Heart of the Tower",
+   "texture": "res://assets/textures/enemies/heart_of_the_tower.png",
+   "floor_number": 0,
+   "flying": true,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": true
+  },
+  {
+   "id": "res://resources/special_enemies/merchant.tres",
+   "name": "Merchant",
+   "texture": "res://assets/textures/enemies/merchant.png",
+   "floor_number": 0,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": true
+  },
+  {
+   "id": "res://resources/special_enemies/mystic_bison.tres",
+   "name": "Mystic Bison",
+   "texture": "res://assets/textures/enemies/mystic_bison.png",
+   "floor_number": 0,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [],
+   "abilities": [],
+   "passives": [],
+   "is_unique": true,
+   "hide_stats": true
+  },
+  {
+   "id": "res://resources/special_enemies/mystic_trader.tres",
+   "name": "Mystic Trader",
+   "texture": "res://assets/textures/enemies/mystic_trader.png",
+   "floor_number": 0,
+   "flying": true,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [],
+   "abilities": [],
+   "passives": [],
+   "is_unique": true,
+   "hide_stats": true
+  },
+  {
+   "id": "res://resources/special_enemies/training_dummy.tres",
+   "name": "Training Dummy",
+   "texture": "res://assets/textures/enemies/training_dummy.png",
+   "floor_number": 0,
+   "flying": false,
+   "starting_status_effects": [],
+   "active_item_sets": [],
+   "stats_per_level": [],
+   "base_stats": [
+    {
+     "resource": "max_health",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "abilities": [],
+   "passives": [],
+   "is_unique": false,
+   "hide_stats": false
+  }
+ ]
+}

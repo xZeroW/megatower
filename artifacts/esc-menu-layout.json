@@ -1,0 +1,572 @@
+{
+	"viewport": [
+		640,
+		360
+	],
+	"visuals": [
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen",
+			"rect": [
+				0.0,
+				0.0,
+				640.0,
+				360.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer",
+			"rect": [
+				0.0,
+				0.0,
+				640.0,
+				360.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				3,
+				3,
+				3,
+				3
+			],
+			"palette": 1,
+			"path": "/root/EscMenuScreen/MarginContainer/GenericPanel",
+			"rect": [
+				2.0,
+				2.0,
+				636.0,
+				356.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				7.0,
+				7.0
+			],
+			"texture": "res://assets/textures/ui/normal_panel_background.png"
+		},
+		{
+			"kind": "VBoxContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer",
+			"rect": [
+				225.0,
+				2.0,
+				190.0,
+				356.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer",
+			"rect": [
+				225.0,
+				111.0,
+				190.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer/RestartButton",
+			"rect": [
+				225.0,
+				111.0,
+				97.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer/RestartButton/OutlineMarginContainer",
+			"rect": [
+				225.0,
+				111.0,
+				97.0,
+				29.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				23,
+				0,
+				22,
+				0
+			],
+			"palette": 4,
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer/RestartButton/NinePatchRect",
+			"rect": [
+				225.0,
+				111.0,
+				97.0,
+				29.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				53.0,
+				29.0
+			],
+			"texture": "res://assets/textures/ui/right_generic_button.png"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 1,
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer/RestartButton/NinePatchRect/IconTextureRect",
+			"rect": [
+				230.5,
+				111.0,
+				86.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer/RestartButton/MarginContainer",
+			"rect": [
+				225.0,
+				111.0,
+				97.0,
+				29.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer/RestartButton/MarginContainer/HBoxContainer",
+			"rect": [
+				260.0,
+				111.0,
+				42.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer/RestartButton/MarginContainer/HBoxContainer/MarginContainer",
+			"rect": [
+				260.0,
+				111.0,
+				0.0,
+				29.0
+			]
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 1,
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer/RestartButton/MarginContainer/HBoxContainer/NameLabel",
+			"rect": [
+				260.0,
+				118.0,
+				42.0,
+				15.0
+			],
+			"text": "RESTART"
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer/ResumeButton",
+			"rect": [
+				329.0,
+				111.0,
+				86.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer/ResumeButton/OutlineMarginContainer",
+			"rect": [
+				329.0,
+				111.0,
+				86.0,
+				29.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				23,
+				0,
+				22,
+				0
+			],
+			"palette": 5,
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer/ResumeButton/NinePatchRect",
+			"rect": [
+				329.0,
+				111.0,
+				86.0,
+				29.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				53.0,
+				29.0
+			],
+			"texture": "res://assets/textures/ui/left_generic_button.png"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 1,
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer/ResumeButton/NinePatchRect/IconTextureRect",
+			"rect": [
+				329.0,
+				111.0,
+				86.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer/ResumeButton/MarginContainer",
+			"rect": [
+				329.0,
+				111.0,
+				86.0,
+				29.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer/ResumeButton/MarginContainer/HBoxContainer",
+			"rect": [
+				349.0,
+				111.0,
+				36.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer/ResumeButton/MarginContainer/HBoxContainer/MarginContainer",
+			"rect": [
+				349.0,
+				111.0,
+				0.0,
+				29.0
+			]
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 1,
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/HBoxContainer/ResumeButton/MarginContainer/HBoxContainer/NameLabel",
+			"rect": [
+				349.0,
+				118.0,
+				36.0,
+				15.0
+			],
+			"text": "RESUME"
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/LibraryButton",
+			"rect": [
+				225.0,
+				147.0,
+				190.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/LibraryButton/OutlineMarginContainer",
+			"rect": [
+				225.0,
+				147.0,
+				190.0,
+				29.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				23,
+				0,
+				22,
+				0
+			],
+			"palette": 4,
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/LibraryButton/NinePatchRect",
+			"rect": [
+				225.0,
+				147.0,
+				190.0,
+				29.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				61.0,
+				29.0
+			],
+			"texture": "res://assets/textures/ui/normal_generic_button.png"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 1,
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/LibraryButton/NinePatchRect/IconTextureRect",
+			"rect": [
+				277.0,
+				147.0,
+				86.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/LibraryButton/MarginContainer",
+			"rect": [
+				225.0,
+				147.0,
+				190.0,
+				29.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/LibraryButton/MarginContainer/HBoxContainer",
+			"rect": [
+				250.0,
+				147.0,
+				140.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/LibraryButton/MarginContainer/HBoxContainer/MarginContainer",
+			"rect": [
+				250.0,
+				147.0,
+				0.0,
+				29.0
+			]
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 1,
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/LibraryButton/MarginContainer/HBoxContainer/NameLabel",
+			"rect": [
+				250.0,
+				154.0,
+				140.0,
+				15.0
+			],
+			"text": "LIBRARY"
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/OptionsButton",
+			"rect": [
+				225.0,
+				183.0,
+				190.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/OptionsButton/OutlineMarginContainer",
+			"rect": [
+				225.0,
+				183.0,
+				190.0,
+				29.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				23,
+				0,
+				22,
+				0
+			],
+			"palette": 4,
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/OptionsButton/NinePatchRect",
+			"rect": [
+				225.0,
+				183.0,
+				190.0,
+				29.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				61.0,
+				29.0
+			],
+			"texture": "res://assets/textures/ui/normal_generic_button.png"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 1,
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/OptionsButton/NinePatchRect/IconTextureRect",
+			"rect": [
+				277.0,
+				183.0,
+				86.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/OptionsButton/MarginContainer",
+			"rect": [
+				225.0,
+				183.0,
+				190.0,
+				29.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/OptionsButton/MarginContainer/HBoxContainer",
+			"rect": [
+				250.0,
+				183.0,
+				140.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/OptionsButton/MarginContainer/HBoxContainer/MarginContainer",
+			"rect": [
+				250.0,
+				183.0,
+				0.0,
+				29.0
+			]
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 1,
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/OptionsButton/MarginContainer/HBoxContainer/NameLabel",
+			"rect": [
+				250.0,
+				190.0,
+				140.0,
+				15.0
+			],
+			"text": "OPTIONS"
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/SaveAndExitButton",
+			"rect": [
+				225.0,
+				219.0,
+				190.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/SaveAndExitButton/OutlineMarginContainer",
+			"rect": [
+				225.0,
+				219.0,
+				190.0,
+				29.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				23,
+				0,
+				22,
+				0
+			],
+			"palette": 4,
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/SaveAndExitButton/NinePatchRect",
+			"rect": [
+				225.0,
+				219.0,
+				190.0,
+				29.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				61.0,
+				29.0
+			],
+			"texture": "res://assets/textures/ui/normal_generic_button.png"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 1,
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/SaveAndExitButton/NinePatchRect/IconTextureRect",
+			"rect": [
+				277.0,
+				219.0,
+				86.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/SaveAndExitButton/MarginContainer",
+			"rect": [
+				225.0,
+				219.0,
+				190.0,
+				29.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/SaveAndExitButton/MarginContainer/HBoxContainer",
+			"rect": [
+				250.0,
+				219.0,
+				140.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/SaveAndExitButton/MarginContainer/HBoxContainer/MarginContainer",
+			"rect": [
+				250.0,
+				219.0,
+				0.0,
+				29.0
+			]
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 1,
+			"path": "/root/EscMenuScreen/MarginContainer/VBoxContainer/SaveAndExitButton/MarginContainer/HBoxContainer/NameLabel",
+			"rect": [
+				250.0,
+				226.0,
+				140.0,
+				15.0
+			],
+			"text": "SAVE & EXIT"
+		},
+		{
+			"kind": "Control",
+			"path": "/root/EscMenuScreen/LibraryHolder",
+			"rect": [
+				0.0,
+				0.0,
+				640.0,
+				360.0
+			]
+		}
+	]
+}

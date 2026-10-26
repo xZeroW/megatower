@@ -1,0 +1,2053 @@
+{
+  "item_sets": [
+    {
+      "id": "res://resources/item_sets/ancient_ice.tres",
+      "name": "Ancient Ice",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/ancient_ice.gd",
+      "icon": "res://assets/textures/icons/item_sets/ancient_ice.png",
+      "color": [
+        0.494118,
+        0.827451,
+        1.0,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/ancient_shell.tres",
+      "name": "Ancient Shell",
+      "game_logic_script": "res://resources/item_set_scripts/ancient_shell.gd",
+      "bb_script": "res://resources/bb_scripts/ancient_shell.gd",
+      "icon": "res://assets/textures/icons/item_sets/ancient_shell.png",
+      "color": [
+        0.351563,
+        0.304688,
+        0.265625,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/arcanum.tres",
+      "name": "Arcanum",
+      "game_logic_script": "res://resources/item_set_scripts/arcanum.gd",
+      "bb_script": "res://resources/bb_scripts/arcanum.gd",
+      "icon": "res://assets/textures/icons/item_sets/arcanum_icon.png",
+      "color": [
+        0.14902,
+        0.682353,
+        0.835294,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/bastolic.tres",
+      "name": "Bastolic",
+      "game_logic_script": "res://resources/item_set_scripts/bastolic.gd",
+      "bb_script": "res://resources/bb_scripts/bastolic.gd",
+      "icon": "res://assets/textures/icons/item_sets/bastolic_icon.png",
+      "color": [
+        0.737255,
+        0.333333,
+        0.639216,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/berserker.tres",
+      "name": "Berserker",
+      "game_logic_script": "res://resources/item_set_scripts/berserker.gd",
+      "bb_script": "res://resources/bb_scripts/berserker.gd",
+      "icon": "res://assets/textures/icons/item_sets/berserker_icon.png",
+      "color": [
+        0.309804,
+        0.305882,
+        0.290196,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/blackthorn.tres",
+      "name": "Blackthorn",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/blackthorn.gd",
+      "icon": "res://assets/textures/icons/item_sets/blackthorn_icon.png",
+      "color": [
+        0.328125,
+        0.238281,
+        0.269531,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/cataclysm.tres",
+      "name": "Cataclysm",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": "res://assets/textures/icons/item_sets/cataclysm_icon.png",
+      "color": [
+        0.576471,
+        0.498039,
+        0.431373,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/celestial.tres",
+      "name": "Celestial",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/celestial.gd",
+      "icon": "res://assets/textures/icons/item_sets/celestial_icon.png",
+      "color": [
+        0.737255,
+        0.290196,
+        0.607843,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/chromalure.tres",
+      "name": "Chromalure",
+      "game_logic_script": "res://resources/item_set_scripts/chromalure.gd",
+      "bb_script": "res://resources/bb_scripts/chromalure.gd",
+      "icon": "res://assets/textures/icons/item_sets/chromalure_icon.png",
+      "color": [
+        0.257813,
+        0.640625,
+        0.347656,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/consumable.tres",
+      "name": "Consumable",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": "res://assets/textures/icons/item_sets/consumable.png",
+      "color": [
+        0.349144,
+        0.349176,
+        0.409201,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/cursed.tres",
+      "name": "Cursed",
+      "game_logic_script": "res://resources/item_set_scripts/cursed.gd",
+      "bb_script": "res://resources/bb_scripts/cursed.gd",
+      "icon": "res://assets/textures/icons/item_sets/cursed_icon.png",
+      "color": [
+        0.28125,
+        0.226563,
+        0.363281,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/darkness.tres",
+      "name": "Darkness",
+      "game_logic_script": "res://resources/item_set_scripts/darkness.gd",
+      "bb_script": "res://resources/bb_scripts/darkness.gd",
+      "icon": "res://assets/textures/icons/item_sets/darkness_icon.png",
+      "color": [
+        0.277344,
+        0.277344,
+        0.378906,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/demonic.tres",
+      "name": "Demonic",
+      "game_logic_script": "res://resources/item_set_scripts/demonic.gd",
+      "bb_script": "res://resources/bb_scripts/demonic.gd",
+      "icon": "res://assets/textures/icons/item_sets/demonic_icon.png",
+      "color": [
+        0.517647,
+        0.211765,
+        0.25098,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/essential.tres",
+      "name": "Essential",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": "res://assets/textures/icons/item_sets/essential_icon.png",
+      "color": [
+        0.6177,
+        0.689185,
+        0.87,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/flesh.tres",
+      "name": "Flesh",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/flesh.gd",
+      "icon": "res://assets/textures/icons/item_sets/flesh_icon.png",
+      "color": [
+        0.726563,
+        0.457031,
+        0.414063,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/generic.tres",
+      "name": "Generic",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/generic.gd",
+      "icon": "res://assets/textures/icons/item_sets/generic_icon.png",
+      "color": [
+        0.698039,
+        0.721569,
+        0.815686,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/golden.tres",
+      "name": "Golden",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": "res://assets/textures/icons/item_sets/golden_icon.png",
+      "color": [
+        0.972549,
+        0.635294,
+        0.105882,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/hunter.tres",
+      "name": "Hunter",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/hunter.gd",
+      "icon": "res://assets/textures/icons/item_sets/hunter_icon.png",
+      "color": [
+        0.496094,
+        0.554688,
+        0.265625,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/jade.tres",
+      "name": "Jade",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": "res://assets/textures/icons/item_sets/jade.png",
+      "color": [
+        0.12549,
+        0.839216,
+        0.780392,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/legacy.tres",
+      "name": "Legacy",
+      "game_logic_script": "res://resources/item_set_scripts/legacy.gd",
+      "bb_script": "res://resources/bb_scripts/legacy.gd",
+      "icon": "res://assets/textures/icons/item_sets/legacy_icon.png",
+      "color": [
+        0.996078,
+        0.952941,
+        0.752941,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/magma.tres",
+      "name": "Magma",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/magma.gd",
+      "icon": "res://assets/textures/icons/magma_icon.png",
+      "color": [
+        0.980392,
+        0.415686,
+        0.0392157,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/mercenary.tres",
+      "name": "Mercenary",
+      "game_logic_script": "res://resources/item_set_scripts/mercenary.gd",
+      "bb_script": "res://resources/bb_scripts/mercenary.gd",
+      "icon": "res://assets/textures/icons/item_sets/mercenary_icon.png",
+      "color": [
+        0.427451,
+        0.298039,
+        0.254902,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/orion.tres",
+      "name": "Orion",
+      "game_logic_script": "res://resources/item_set_scripts/orion.gd",
+      "bb_script": "res://resources/bb_scripts/orion.gd",
+      "icon": "res://assets/textures/icons/item_sets/orion_icon.png",
+      "color": [
+        0.726563,
+        0.457031,
+        0.414063,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/phantom.tres",
+      "name": "Phantom",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": "res://assets/textures/icons/item_sets/phantom_icon.png",
+      "color": [
+        0.12549,
+        0.839216,
+        0.780392,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/poverty.tres",
+      "name": "Poverty",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/poverty.gd",
+      "icon": "res://assets/textures/icons/item_sets/poverty.png",
+      "color": [
+        0.313726,
+        0.290196,
+        0.286275,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/reforge.tres",
+      "name": "Reforge",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": "res://assets/textures/icons/dismantle_icon.png",
+      "color": [
+        0.367565,
+        0.367865,
+        0.462613,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/royal.tres",
+      "name": "Royal",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/royal.gd",
+      "icon": "res://assets/textures/icons/item_sets/royal_icon.png",
+      "color": [
+        0.0,
+        0.509804,
+        0.827451,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/scout.tres",
+      "name": "Scout",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/scout.gd",
+      "icon": "res://assets/textures/icons/item_sets/scout.png",
+      "color": [
+        0.733333,
+        0.458824,
+        0.278431,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/shadow.tres",
+      "name": "Shadow",
+      "game_logic_script": "res://resources/item_set_scripts/shadow.gd",
+      "bb_script": "res://resources/bb_scripts/shadow.gd",
+      "icon": "res://assets/textures/icons/item_sets/shadow_icon.png",
+      "color": [
+        0.282353,
+        0.278431,
+        0.278431,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/silver.tres",
+      "name": "Silver",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/silver.gd",
+      "icon": "res://assets/textures/icons/item_sets/silver_icon.png",
+      "color": [
+        0.542969,
+        0.574219,
+        0.683594,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/swiftness.tres",
+      "name": "Swiftness",
+      "game_logic_script": "res://resources/item_set_scripts/swiftness.gd",
+      "bb_script": "res://resources/bb_scripts/swiftness.gd",
+      "icon": "res://assets/textures/icons/item_sets/swiftness_icon.png",
+      "color": [
+        0.752941,
+        0.941176,
+        1.0,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/thunder.tres",
+      "name": "Thunder",
+      "game_logic_script": "res://resources/item_set_scripts/thunder.gd",
+      "bb_script": "res://resources/bb_scripts/thunder.gd",
+      "icon": "res://assets/textures/icons/item_sets/thunder.png",
+      "color": [
+        0.96875,
+        0.769531,
+        0.226563,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/tome.tres",
+      "name": "Tome",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": "res://assets/textures/icons/item_sets/tome.png",
+      "color": [
+        0.4466,
+        0.482173,
+        0.58,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/unchained.tres",
+      "name": "Unchained",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/unchained.gd",
+      "icon": "res://assets/textures/icons/item_sets/unchained_icon.png",
+      "color": [
+        0.701961,
+        0.72549,
+        0.819608,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/vampiric.tres",
+      "name": "Vampiric",
+      "game_logic_script": "res://resources/item_set_scripts/vampiric.gd",
+      "bb_script": "res://resources/bb_scripts/vampiric.gd",
+      "icon": "res://assets/textures/icons/item_sets/vampiric_icon.png",
+      "color": [
+        0.658824,
+        0.180392,
+        0.309804,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/warrior.tres",
+      "name": "Warrior",
+      "game_logic_script": "res://resources/item_set_scripts/warrior.gd",
+      "bb_script": "res://resources/bb_scripts/warrior.gd",
+      "icon": "res://assets/textures/icons/item_sets/warrior.png",
+      "color": [
+        0.5,
+        0.480469,
+        0.476563,
+        1.0
+      ],
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/item_sets/wood.tres",
+      "name": "Wood",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/wood.gd",
+      "icon": "res://assets/textures/icons/item_sets/wood_icon.png",
+      "color": [
+        0.472656,
+        0.402344,
+        0.332031,
+        1.0
+      ],
+      "bonus_stats": [
+        [
+          {
+            "resource": "luck",
+            "amount": 25.0,
+            "is_modifier": false,
+            "boosting_sets": []
+          }
+        ],
+        null,
+        [
+          {
+            "resource": "luck",
+            "amount": 10.0,
+            "is_modifier": false,
+            "boosting_sets": []
+          }
+        ]
+      ]
+    },
+    {
+      "id": "res://resources/item_sets/zephyron.tres",
+      "name": "Zephyron",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/zephyron.gd",
+      "icon": "res://assets/textures/icons/item_sets/zephyrons_icon.png",
+      "color": [
+        0.398438,
+        0.296875,
+        0.6875,
+        1.0
+      ],
+      "bonus_stats": []
+    }
+  ],
+  "passives": [
+    {
+      "id": "res://resources/passives/absolution.tres",
+      "name": "Absolution",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/absolution.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/all_is_mine.tres",
+      "name": "All Is Mine",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/all_is_mine.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/arcane_control.tres",
+      "name": "Arcane Control",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/arcane_control.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/arcane_equilibrium.tres",
+      "name": "Arcane Equilibrium",
+      "game_logic_script": "res://resources/passive_scripts/arcane_equilibrium.gd",
+      "bb_script": "res://resources/bb_scripts/arcane_equilibrium.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/battleborn.tres",
+      "name": "Battleborn",
+      "game_logic_script": "res://resources/passive_scripts/battleborn.gd",
+      "bb_script": "res://resources/bb_scripts/battleborn.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/battleforged_heart.tres",
+      "name": "Battleforged Heart",
+      "game_logic_script": "res://resources/passive_scripts/battleforged_heart.gd",
+      "bb_script": "res://resources/bb_scripts/battleforged_heart.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/beyond_the_grave.tres",
+      "name": "Beyond the Grave",
+      "game_logic_script": "res://resources/passive_scripts/beyond_the_grave.gd",
+      "bb_script": "res://resources/bb_scripts/beyond_the_grave.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/bloodedges_blood_slash.tres",
+      "name": "Bloodedge's Blood Slash",
+      "game_logic_script": "res://resources/passive_scripts/bloodedges_blood_slash.gd",
+      "bb_script": "res://resources/bb_scripts/bloodedges_blood_slash.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/cinder_touch.tres",
+      "name": "Cinder Touch",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/cinder_touch.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/combat_instinct.tres",
+      "name": "Combat Instinct",
+      "game_logic_script": "res://resources/passive_scripts/combat_instinct.gd",
+      "bb_script": "res://resources/bb_scripts/combat_instinct.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/consuming_darkness.tres",
+      "name": "Consuming Darkness",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/consuming_darkness.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/crimson_pact.tres",
+      "name": "Crimson Pact",
+      "game_logic_script": "res://resources/passive_scripts/crimson_pact.gd",
+      "bb_script": "res://resources/bb_scripts/crimson_pact.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/critical_focus.tres",
+      "name": "Critical Focus",
+      "game_logic_script": "res://resources/passive_scripts/critical_focus.gd",
+      "bb_script": "res://resources/bb_scripts/critical_focus.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/crystal_hardening.tres",
+      "name": "Crystal Hardening",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/crystal_hardening.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/crystal_insight.tres",
+      "name": "Crystal Insight",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/crystal_insight.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/cursed_chain.tres",
+      "name": "Cursed Chain",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/cursed_chain.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/edens_wish.tres",
+      "name": "Eden's Wish",
+      "game_logic_script": "res://resources/passive_scripts/edens_wish.gd",
+      "bb_script": "res://resources/bb_scripts/edens_wish.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/edge_of_death.tres",
+      "name": "Edge of Death",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/edge_of_death.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/edge_of_the_ruined.tres",
+      "name": "Edge of the Ruined",
+      "game_logic_script": "res://resources/passive_scripts/edge_of_the_ruined.gd",
+      "bb_script": "res://resources/bb_scripts/edge_of_the_ruined.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/eldrids_fury.tres",
+      "name": "Eldrid's Fury",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/eldrids_fury.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/empty_bastion.tres",
+      "name": "Empty Bastion",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/empty_bastion.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/emulator.tres",
+      "name": "Emulator",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/emulator.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/escape.tres",
+      "name": "Escape",
+      "game_logic_script": null,
+      "bb_script": null,
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/evil_mark.tres",
+      "name": "Evil Mark",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/evil_mark.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/exploited_opportunity.tres",
+      "name": "Exploited Opportunity",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/exploited_opportunity.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/faded_discipline.tres",
+      "name": "Faded Discipline",
+      "game_logic_script": "res://resources/passive_scripts/faded_discipline.gd",
+      "bb_script": "res://resources/bb_scripts/faded_discipline.gd",
+      "bonus_stats": [
+        {
+          "resource": "total_attacks",
+          "amount": 5.0,
+          "is_modifier": false,
+          "boosting_sets": []
+        }
+      ]
+    },
+    {
+      "id": "res://resources/passives/faultbreaker.tres",
+      "name": "Faultbreaker",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/faultbreaker.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/fear_of_pain.tres",
+      "name": "Fear of Pain",
+      "game_logic_script": "res://resources/passive_scripts/fear_of_pain.gd",
+      "bb_script": "res://resources/bb_scripts/fear_of_pain.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/folly_of_kings.tres",
+      "name": "Folly of Kings",
+      "game_logic_script": "res://resources/passive_scripts/folly_of_kings.gd",
+      "bb_script": "res://resources/bb_scripts/folly_of_kings.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/freedom_drive.tres",
+      "name": "Freedom Drive",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/freedom_drive.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/frozen_heart.tres",
+      "name": "Frozen Heart",
+      "game_logic_script": null,
+      "bb_script": null,
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/golden_altruism.tres",
+      "name": "Golden Altruism",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/golden_altruism.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/growing_anger.tres",
+      "name": "Growing Anger",
+      "game_logic_script": "res://resources/passive_scripts/growing_anger.gd",
+      "bb_script": "res://resources/bb_scripts/growing_anger.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/iron_pact.tres",
+      "name": "Iron Pact",
+      "game_logic_script": "res://resources/passive_scripts/iron_pact.gd",
+      "bb_script": "res://resources/bb_scripts/iron_pact.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/ironclad.tres",
+      "name": "Ironclad",
+      "game_logic_script": null,
+      "bb_script": null,
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/judgments_call.tres",
+      "name": "Judgment's Call",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/judgments_call.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/liberation.tres",
+      "name": "Liberation",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/liberation.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/litany_of_malice.tres",
+      "name": "Litany of Malice",
+      "game_logic_script": "res://resources/passive_scripts/litany_of_malice.gd",
+      "bb_script": "res://resources/bb_scripts/litany_of_malice.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/luminous_trial.tres",
+      "name": "Luminous Trial",
+      "game_logic_script": "res://resources/passive_scripts/luminous_trial.gd",
+      "bb_script": "res://resources/bb_scripts/luminous_trial.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/magic_flux.tres",
+      "name": "Magic Flux",
+      "game_logic_script": null,
+      "bb_script": null,
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/magical_frostflare.tres",
+      "name": "Magical Frostflare",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/magical_frostflare.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/mana_steal.tres",
+      "name": "Mana Steal",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/mana_steal.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/manaflow.tres",
+      "name": "Manaflow",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/manaflow.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/mimicry.tres",
+      "name": "Mimicry",
+      "game_logic_script": "res://resources/passive_scripts/mimicry.gd",
+      "bb_script": "res://resources/bb_scripts/mimicry.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/plated_rot.tres",
+      "name": "Plated Rot",
+      "game_logic_script": "res://resources/passive_scripts/plated_rot.gd",
+      "bb_script": "res://resources/bb_scripts/plated_rot.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/potential_seeker.tres",
+      "name": "Potential Seeker",
+      "game_logic_script": null,
+      "bb_script": null,
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/prime_guard.tres",
+      "name": "Prime Guard",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/prime_guard.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/shaded_essence.tres",
+      "name": "Shaded Essence",
+      "game_logic_script": null,
+      "bb_script": null,
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/shattered_breath.tres",
+      "name": "Shattered Breath",
+      "game_logic_script": "res://resources/passive_scripts/shattered_breath.gd",
+      "bb_script": "res://resources/bb_scripts/shattered_breath.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/shatterwave.tres",
+      "name": "Shatterwave",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/shatterwave.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/spell_block.tres",
+      "name": "Spell Block",
+      "game_logic_script": "res://resources/passive_scripts/spell_block.gd",
+      "bb_script": "res://resources/bb_scripts/spell_block.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/spirit_of_the_unbroken.tres",
+      "name": "Spirit of the Unbroken",
+      "game_logic_script": null,
+      "bb_script": null,
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/strike_of_destiny.tres",
+      "name": "Strike of Destiny",
+      "game_logic_script": "res://resources/passive_scripts/strike_of_destiny.gd",
+      "bb_script": "res://resources/bb_scripts/strike_of_destiny.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/thunderstrike.tres",
+      "name": "Thunderstrike",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/thunderstrike.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/toxic_redemption.tres",
+      "name": "Toxic Redemption",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/toxic_redemption.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/toxshield.tres",
+      "name": "Toxshield",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/toxshield.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/undead_blessing.tres",
+      "name": "Undead Blessing",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/undead_blessing.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/undying_curse.tres",
+      "name": "Undying Curse",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/undying_curse.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/vengeful_edge.tres",
+      "name": "Vengeful Edge",
+      "game_logic_script": "res://resources/passive_scripts/vengeful_edge.gd",
+      "bb_script": "res://resources/bb_scripts/vengeful_edge.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/warriors_resolute.tres",
+      "name": "Warrior's Resolute",
+      "game_logic_script": "res://resources/passive_scripts/warriors_resolute.gd",
+      "bb_script": "res://resources/bb_scripts/warriors_resolute.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/whispers_of_anger.tres",
+      "name": "Whispers of Anger",
+      "game_logic_script": null,
+      "bb_script": null,
+      "bonus_stats": [
+        {
+          "resource": "crit_chance",
+          "amount": 5.0,
+          "is_modifier": false,
+          "boosting_sets": []
+        }
+      ]
+    },
+    {
+      "id": "res://resources/passives/winds_grace.tres",
+      "name": "Wind\u2019s Grace",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/winds_grace.gd",
+      "bonus_stats": []
+    },
+    {
+      "id": "res://resources/passives/wrath_of_the_broken_flesh.tres",
+      "name": "Wrath of the Broken Flesh",
+      "game_logic_script": "res://resources/passive_scripts/wrath_of_the_broken_flesh.gd",
+      "bb_script": "res://resources/bb_scripts/wrath_of_the_broken_flesh.gd",
+      "bonus_stats": []
+    }
+  ],
+  "abilities": [
+    {
+      "id": "res://resources/abilities/arcane_roulette.tres",
+      "name": "Arcane Roulette",
+      "game_logic_script": "res://resources/ability_scripts/arcane_roulette.gd",
+      "bb_script": "res://resources/bb_scripts/arcane_roulette.gd",
+      "icon": "res://assets/textures/icons/abilities/arcane_roulette_icon.png",
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 2,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": true,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/astral_dissolution.tres",
+      "name": "Astral Dissolution",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/astral_dissolution.gd",
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 2,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": false,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/barrier.tres",
+      "name": "Barrier",
+      "game_logic_script": "res://resources/ability_scripts/barrier.gd",
+      "bb_script": null,
+      "icon": "res://assets/textures/icons/magic_shield_icon.png",
+      "bonus_stats": [],
+      "mana_cost": 1,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": true,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/bloodlust_aura.tres",
+      "name": "Bloodlust Aura",
+      "game_logic_script": "res://resources/ability_scripts/bloodlust_aura.gd",
+      "bb_script": "res://resources/bb_scripts/bloodlust_aura.gd",
+      "icon": "res://assets/textures/icons/abilities/bloodlust_aura_icon.png",
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 1,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/burden_of_power.tres",
+      "name": "Burden of Power",
+      "game_logic_script": "res://resources/ability_scripts/burden_of_power.gd",
+      "bb_script": "res://resources/bb_scripts/burden_of_power.gd",
+      "icon": "res://assets/textures/icons/abilities/burden_of_power_icon.png",
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 1,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": [
+        {
+          "resource": "dread",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "id": "res://resources/abilities/confusion_strike.tres",
+      "name": "Confusion Strike",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 1,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/death_strike.tres",
+      "name": "Death Strike",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/death_strike.gd",
+      "icon": null,
+      "bonus_stats": [
+        {
+          "resource": "crit_chance",
+          "amount": 5.0,
+          "is_modifier": false,
+          "boosting_sets": []
+        }
+      ],
+      "mana_cost": 1,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/drain_react.tres",
+      "name": "Drain React",
+      "game_logic_script": "res://resources/ability_scripts/drain_react.gd",
+      "bb_script": "res://resources/bb_scripts/drain_react.gd",
+      "icon": "res://assets/textures/icons/weakness_icon.png",
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 1,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/drop_of_chaos.tres",
+      "name": "Drop of Chaos",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": false,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/enchanted_attack.tres",
+      "name": "Enchanted attack",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 1,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/fear_of_faith.tres",
+      "name": "Fear of Faith",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 2,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/frozen_strike.tres",
+      "name": "Frozen Strike",
+      "game_logic_script": "res://resources/ability_scripts/frozen_strike.gd",
+      "bb_script": "res://resources/bb_scripts/frozen_strike.gd",
+      "icon": "res://assets/textures/icons/abilities/frozen_strike.png",
+      "bonus_stats": [],
+      "mana_cost": 1,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": true,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/frozen_wind.tres",
+      "name": "Frozen Wind",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 2,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/galefire.tres",
+      "name": "Galefire",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 1,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": false,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/harness.tres",
+      "name": "Harness",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 1,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/headbutt.tres",
+      "name": "Headbutt",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 1,
+      "quick_cast": true,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/heart_of_iron.tres",
+      "name": "Heart of Iron",
+      "game_logic_script": "res://resources/ability_scripts/heart_of_iron.gd",
+      "bb_script": "res://resources/bb_scripts/heart_of_iron.gd",
+      "icon": "res://assets/textures/icons/heart_of_iron.png",
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 1,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/iron_will.tres",
+      "name": "Iron Will",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 3,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/mana_regen.tres",
+      "name": "Mana Regen",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 1,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/mind_control.tres",
+      "name": "Mind Control",
+      "game_logic_script": "res://resources/ability_scripts/mind_control.gd",
+      "bb_script": null,
+      "icon": "res://assets/textures/icons/abilities/mind_control.png",
+      "bonus_stats": [],
+      "mana_cost": 2,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/multi_cleanse.tres",
+      "name": "Multi Cleanse",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 3,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/multi_heal.tres",
+      "name": "Multi Heal",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 1,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/multi_magic_shield.tres",
+      "name": "Multi Magic Shield",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 2,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/multi_shield.tres",
+      "name": "Multi Shield",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 2,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/multi_stun.tres",
+      "name": "Multi Stun",
+      "game_logic_script": "res://resources/ability_scripts/multi_stun.gd",
+      "bb_script": "res://resources/bb_scripts/multi_stun.gd",
+      "icon": "res://assets/textures/icons/multi_stun_icon.png",
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 1,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": true,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/my_justice.tres",
+      "name": "My Justice",
+      "game_logic_script": "res://resources/ability_scripts/my_justice.gd",
+      "bb_script": "res://resources/bb_scripts/my_justice.gd",
+      "icon": "res://assets/textures/icons/my_justice_icon.png",
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 1,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": [
+        {
+          "resource": "counter_attack_charge",
+          "amount": 1
+        },
+        {
+          "resource": "invulnerability",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "id": "res://resources/abilities/my_way.tres",
+      "name": "My Way",
+      "game_logic_script": "res://resources/ability_scripts/my_way.gd",
+      "bb_script": "res://resources/bb_scripts/my_way.gd",
+      "icon": "res://assets/textures/icons/counter_attack_icon.png",
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 2,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": true,
+      "status_effects_on_activation": [
+        {
+          "resource": "counter_attack_charge",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "id": "res://resources/abilities/normal_attack.tres",
+      "name": "Normal Attack",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/noxious_empowerment.tres",
+      "name": "Noxious Empowerment",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 1,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/persistent_payback.tres",
+      "name": "Persistent Payback",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": [
+        {
+          "resource": "counter_attack_charge",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "id": "res://resources/abilities/prowlers_strike.tres",
+      "name": "Prowler's Strike",
+      "game_logic_script": "res://resources/ability_scripts/prowlers_strike.gd",
+      "bb_script": "res://resources/bb_scripts/prowlers_strike.gd",
+      "icon": "res://assets/textures/icons/prowlers_strike_icon.png",
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 3,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": true,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/purify.tres",
+      "name": "Purify",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 2,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/replay.tres",
+      "name": "Replay",
+      "game_logic_script": "res://resources/ability_scripts/replay.gd",
+      "bb_script": "res://resources/bb_scripts/replay.gd",
+      "icon": "res://assets/textures/icons/replay_ability_icon.png",
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 1,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": true,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/repulse.tres",
+      "name": "Repulse",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 1,
+      "quick_cast": true,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/safeguard.tres",
+      "name": "Safeguard",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 1,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/shatter_strike.tres",
+      "name": "Shatter Strike",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 1,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/silhouette.tres",
+      "name": "Silhouette",
+      "game_logic_script": "res://resources/ability_scripts/silhouette.gd",
+      "bb_script": "res://resources/bb_scripts/silhouette.gd",
+      "icon": "res://assets/textures/icons/elusive_icon.png",
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 1,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": true,
+      "status_effects_on_activation": [
+        {
+          "resource": "elusive",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "id": "res://resources/abilities/spell_bind.tres",
+      "name": "Spell Bind",
+      "game_logic_script": "res://resources/ability_scripts/spell_bind.gd",
+      "bb_script": "res://resources/bb_scripts/spell_bind.gd",
+      "icon": "res://assets/textures/icons/silence_icon.png",
+      "bonus_stats": [],
+      "mana_cost": 1,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/steady_grip.tres",
+      "name": "Steady Grip",
+      "game_logic_script": "res://resources/ability_scripts/steady_grip.gd",
+      "bb_script": "res://resources/bb_scripts/steady_grip.gd",
+      "icon": "res://assets/textures/icons/extra_attack_icon.png",
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 3,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": true,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/steal.tres",
+      "name": "Steal",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 1,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/stun_attack.tres",
+      "name": "Stun Attack",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 1,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/stun_strike.tres",
+      "name": "Stun Strike",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 3,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/toxic_attack.tres",
+      "name": "Toxic Attack",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/toxic_attack.gd",
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 0,
+      "use_limit": 1,
+      "quick_cast": true,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/triple_attack.tres",
+      "name": "Triple Attack",
+      "game_logic_script": null,
+      "bb_script": null,
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 3,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    },
+    {
+      "id": "res://resources/abilities/venom_spit.tres",
+      "name": "Venom Spit",
+      "game_logic_script": null,
+      "bb_script": "res://resources/bb_scripts/venom_spit.gd",
+      "icon": null,
+      "bonus_stats": [],
+      "mana_cost": 1,
+      "use_limit": 0,
+      "quick_cast": false,
+      "non_target": true,
+      "to_attack": false,
+      "status_effects_on_activation": []
+    }
+  ],
+  "specializations": [
+    {
+      "id": "res://resources/specializations/beastbound.tres",
+      "name": "Beastbound",
+      "original_item_set": "res://resources/item_sets/hunter.tres",
+      "synergy_item_set": "res://resources/item_sets/warrior.tres",
+      "color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/bloodcaster.tres",
+      "name": "Bloodcaster",
+      "original_item_set": "res://resources/item_sets/vampiric.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.66,
+        0.2244,
+        0.4422,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/bloodmoon.tres",
+      "name": "Bloodmoon",
+      "original_item_set": "res://resources/item_sets/shadow.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.658824,
+        0.180392,
+        0.309804,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/challenger.tres",
+      "name": "Challenger",
+      "original_item_set": "res://resources/item_sets/demonic.tres",
+      "synergy_item_set": "res://resources/item_sets/legacy.tres",
+      "color": [
+        0.611765,
+        0.886275,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/chromaguard.tres",
+      "name": "Chromaguard",
+      "original_item_set": "res://resources/item_sets/chromalure.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.462745,
+        0.380392,
+        0.67451,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/chromaspite.tres",
+      "name": "Chromaspite",
+      "original_item_set": "res://resources/item_sets/chromalure.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.607843,
+        0.262745,
+        0.301961,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/chromathorn.tres",
+      "name": "Chromathorn",
+      "original_item_set": "res://resources/item_sets/blackthorn.tres",
+      "synergy_item_set": "res://resources/item_sets/chromalure.tres",
+      "color": [
+        0.329412,
+        0.239216,
+        0.270588,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/cinderthorn.tres",
+      "name": "Cinderthorn",
+      "original_item_set": "res://resources/item_sets/blackthorn.tres",
+      "synergy_item_set": "res://resources/item_sets/magma.tres",
+      "color": [
+        0.980392,
+        0.415686,
+        0.0392157,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/dauntless.tres",
+      "name": "Dauntless",
+      "original_item_set": "res://resources/item_sets/warrior.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.401647,
+        0.488853,
+        0.648452,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/debilitator.tres",
+      "name": "Debilitator",
+      "original_item_set": "res://resources/item_sets/darkness.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.38,
+        0.2774,
+        0.33554,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/deserter.tres",
+      "name": "Deserter",
+      "original_item_set": "res://resources/item_sets/mercenary.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.66,
+        0.5412,
+        0.396,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/echomancer.tres",
+      "name": "Echomancer",
+      "original_item_set": "res://resources/item_sets/unchained.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.603922,
+        1.0,
+        0.827451,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/evadium.tres",
+      "name": "Evadium",
+      "original_item_set": "res://resources/item_sets/arcanum.tres",
+      "synergy_item_set": null,
+      "color": [
+        1.0,
+        0.37,
+        0.5695,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/faithbound.tres",
+      "name": "Faithbound",
+      "original_item_set": "res://resources/item_sets/mercenary.tres",
+      "synergy_item_set": "res://resources/item_sets/silver.tres",
+      "color": [
+        0.541176,
+        0.572549,
+        0.682353,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/harbinger.tres",
+      "name": "Harbinger",
+      "original_item_set": "res://resources/item_sets/legacy.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.603922,
+        0.247059,
+        0.407843,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/invulnerium.tres",
+      "name": "Invulnerium",
+      "original_item_set": "res://resources/item_sets/arcanum.tres",
+      "synergy_item_set": "res://resources/item_sets/legacy.tres",
+      "color": [
+        0.996078,
+        0.952941,
+        0.752941,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/lionheart.tres",
+      "name": "Lionheart",
+      "original_item_set": "res://resources/item_sets/legacy.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.984314,
+        0.654902,
+        0.407843,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/mindbreaker.tres",
+      "name": "Mindbreaker",
+      "original_item_set": "res://resources/item_sets/darkness.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.36,
+        0.444,
+        0.6,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/mindthorn.tres",
+      "name": "Mindthorn",
+      "original_item_set": "res://resources/item_sets/blackthorn.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.4851,
+        0.527835,
+        0.77,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/moonlighter.tres",
+      "name": "Moonlighter",
+      "original_item_set": "res://resources/item_sets/shadow.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.799917,
+        0.870971,
+        0.896386,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/nighthrust.tres",
+      "name": "Nighthrust",
+      "original_item_set": "res://resources/item_sets/shadow.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.623529,
+        0.482353,
+        0.913725,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/pursuer.tres",
+      "name": "Pursuer",
+      "original_item_set": "res://resources/item_sets/scout.tres",
+      "synergy_item_set": "res://resources/item_sets/cataclysm.tres",
+      "color": [
+        0.701961,
+        0.72549,
+        0.819608,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/quickblade.tres",
+      "name": "Quickblade",
+      "original_item_set": "res://resources/item_sets/warrior.tres",
+      "synergy_item_set": "res://resources/item_sets/swiftness.tres",
+      "color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/rampager.tres",
+      "name": "Rampager",
+      "original_item_set": "res://resources/item_sets/warrior.tres",
+      "synergy_item_set": null,
+      "color": [
+        1.0,
+        0.396078,
+        0.392157,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/striker.tres",
+      "name": "Striker",
+      "original_item_set": "res://resources/item_sets/scout.tres",
+      "synergy_item_set": "res://resources/item_sets/shadow.tres",
+      "color": [
+        0.282353,
+        0.278431,
+        0.278431,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/stunium.tres",
+      "name": "Stunium",
+      "original_item_set": "res://resources/item_sets/arcanum.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.568627,
+        0.435294,
+        0.572549,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/thornfrost.tres",
+      "name": "Thornfrost",
+      "original_item_set": "res://resources/item_sets/blackthorn.tres",
+      "synergy_item_set": "res://resources/item_sets/ancient_ice.tres",
+      "color": [
+        0.494118,
+        0.827451,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/thunderborn.tres",
+      "name": "Thunderborn",
+      "original_item_set": "res://resources/item_sets/warrior.tres",
+      "synergy_item_set": "res://resources/item_sets/thunder.tres",
+      "color": [
+        0.858824,
+        0.643137,
+        0.388235,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/vampiercer.tres",
+      "name": "Vampiercer",
+      "original_item_set": "res://resources/item_sets/vampiric.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.45098,
+        0.4,
+        0.498039,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/venomire.tres",
+      "name": "Venomire",
+      "original_item_set": "res://resources/item_sets/vampiric.tres",
+      "synergy_item_set": "res://resources/item_sets/chromalure.tres",
+      "color": [
+        0.360784,
+        0.537255,
+        0.388235,
+        1.0
+      ]
+    },
+    {
+      "id": "res://resources/specializations/windwalker.tres",
+      "name": "Windwalker",
+      "original_item_set": "res://resources/item_sets/scout.tres",
+      "synergy_item_set": null,
+      "color": [
+        0.752941,
+        0.941176,
+        1.0,
+        1.0
+      ]
+    }
+  ]
+}

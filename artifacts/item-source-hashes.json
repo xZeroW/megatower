@@ -1,0 +1,7 @@
+{
+  "classes/objects/item.gd": "74a7e23256cfb970b53950f5f1960c71a8584a9f4f9da1fd90e8564c3b669f21",
+  "classes/resource/item_resource.gd": "393a1b60346eb1a53c124a7b7afc50ae9164e86d6863c70a349df8b8cb132a7b",
+  "classes/static/stat.gd": "1a4640f41eb4a3288a2b13b441d98463d2f90940e5854c97de1e461c571c845e",
+  "classes/resource/bonus_stat.gd": "f5cbabb910f1828428ad22f579b3aca0541494a2af6ab285b17b65dad25ca379",
+  "classes/utils/stat_utils.gd": "56fe7eefb4735f2a36740309a4a8dfe460da239973660992164517ec2ec9fe8f"
+}

@@ -1,0 +1,7333 @@
+{
+ "scripts": {
+  "absolution": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Every time you attack, deal 5 "
+    },
+    {
+     "name": "MAGIC_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "to a random enemy"
+    }
+   ],
+   "sha256": "5b629c43befb0ff70548f2fc4e40790a808fb08421b07438e5578c49338cc3da",
+   "uses_specialization": false
+  },
+  "accuracy": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Determines your chance of hitting a target"
+    }
+   ],
+   "sha256": "771824eb4dbc54a9cead42028269b8a758dee5e500850b3dd85b513a0ddb1574",
+   "uses_specialization": false
+  },
+  "active_armor": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Remaining "
+    },
+    {
+     "name": "ARMOR",
+     "op": "stat"
+    }
+   ],
+   "sha256": "c375a04cc8d5e4e3b11ee875cf0d7fd95a04e3bf1cf919f017281cfb2467ed96",
+   "uses_specialization": false
+  },
+  "adaptive_attack": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Increases your current attack damage"
+    }
+   ],
+   "sha256": "0378cfb6488fe0a1bf1a4897ea64978fad2e2c6f0e6f2f560e71d98670fcbcf4",
+   "uses_specialization": false
+  },
+  "agility": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Determines your chance to "
+    },
+    {
+     "name": "DODGE",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Reduced by your "
+    },
+    {
+     "name": "ACTIVE_ARMOR",
+     "op": "stat"
+    }
+   ],
+   "sha256": "3a988e272977cf42a920d8f01dee406ca72fe62ea15511d5c11b54543d02070d",
+   "uses_specialization": false
+  },
+  "all_is_mine": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "At the start of the turn, steal all"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "buffs from the target"
+    }
+   ],
+   "sha256": "238d87592460214ab23af27cb9f5c5fc1c406c0155dbab3921a5b45e763b616d",
+   "uses_specialization": false
+  },
+  "ancient_ice": {
+   "ops": [
+    {
+     "amount": 1,
+     "op": "counter_hint",
+     "set": "ANCIENT_ICE"
+    },
+    {
+     "amount": 1,
+     "op": "counter_display",
+     "set": "ANCIENT_ICE"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Receive "
+    },
+    {
+     "name": "EPHEMERAL_ARMOR",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " that equals to "
+    },
+    {
+     "name": "FREEZE_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "  dealt to enemies with "
+    },
+    {
+     "name": "FREEZE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " At the end of your first turn, apply "
+    },
+    {
+     "name": "FREEZE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to all"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "  enemies"
+    }
+   ],
+   "sha256": "fd575ccfcf0a8f0b33c9e039372a08dfaba4be7b9ff4867350f50b2ea478ec8d",
+   "uses_specialization": false
+  },
+  "ancient_shell": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "If you used a stance this turn:"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 1,
+     "op": "counter_hint",
+     "set": "ANCIENT_SHELL"
+    },
+    {
+     "amount": 1,
+     "op": "counter_display",
+     "set": "ANCIENT_SHELL"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "name": "TOUGHNESS",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " will reduce all types of damage"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 3,
+     "op": "counter_hint",
+     "set": "ANCIENT_SHELL"
+    },
+    {
+     "amount": 3,
+     "op": "counter_display",
+     "set": "ANCIENT_SHELL"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Receive "
+    },
+    {
+     "name": "EPHEMERAL_SHELL",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " at the end of the turn"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 5,
+     "op": "counter_hint",
+     "set": "ANCIENT_SHELL"
+    },
+    {
+     "amount": 5,
+     "op": "counter_display",
+     "set": "ANCIENT_SHELL"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Removes "
+    },
+    {
+     "name": "EPHEMERAL_LOCK",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " at the end of the turn"
+    }
+   ],
+   "sha256": "992158e001e8d8d7b3680f0624e78e1222ee4ef3b52268a6628ad095b2a70127",
+   "uses_specialization": false
+  },
+  "anti_steal": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Protects you from "
+    },
+    {
+     "name": "STEAL",
+     "op": "ability"
+    }
+   ],
+   "sha256": "a88bf5322a44db8b41d2d9769aff43f95b7f3b873ad4941eb4ce895d6f3d02b7",
+   "uses_specialization": false
+  },
+  "arcane_control": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Every time you avoid an attack, break your"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "name": "MAGIC_SHIELD",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " and immediately refill it"
+    }
+   ],
+   "sha256": "d5b69c207d765927910f96541458c42cceaa484733708c13304cd7df354a568c",
+   "uses_specialization": false
+  },
+  "arcane_equilibrium": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "At the end of every turn, convert everyone's"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "name": "INVULNERABILITY",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " into "
+    },
+    {
+     "name": "MAGIC_SHIELD",
+     "op": "status"
+    }
+   ],
+   "sha256": "198d7b4922c7c6bb4e3d604f4605c77e22d01edff14e307ff06fae4702c68ef9",
+   "uses_specialization": false
+  },
+  "arcane_roulette": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Every time your "
+    },
+    {
+     "name": "MAGIC_SHIELD",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " breaks, attack a random"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "enemy"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "ACTIVATION CONDITION: have an active "
+    },
+    {
+     "name": "MAGIC_SHIELD",
+     "op": "status"
+    }
+   ],
+   "sha256": "a612693090a153fb8553e566c68fca72d11226d9f9fc10200af69666975abbb2",
+   "uses_specialization": false
+  },
+  "arcanum": {
+   "ops": [
+    {
+     "amount": 1,
+     "op": "counter_hint",
+     "set": "ARCANUM"
+    },
+    {
+     "amount": 1,
+     "op": "counter_display",
+     "set": "ARCANUM"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " While "
+    },
+    {
+     "name": "MAGIC_SHIELD",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " is active, gain "
+    },
+    {
+     "color": "stat:MAGIC_DAMAGE",
+     "op": "text",
+     "text": "+375%"
+    },
+    {
+     "name": "MAGIC_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "cases": [
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " When your "
+        },
+        {
+         "name": "MAGIC_SHIELD",
+         "op": "status"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " breaks, "
+        },
+        {
+         "name": "STUN",
+         "op": "status"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " all enemies"
+        }
+       ],
+       "specialization": "STUNIUM"
+      }
+     ],
+     "op": "match_specialization"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 2,
+     "op": "counter_hint",
+     "set": "ARCANUM"
+    },
+    {
+     "amount": 2,
+     "op": "counter_display",
+     "set": "ARCANUM"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Gain a "
+    },
+    {
+     "name": "MAGIC_SHIELD",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " at the end of the turn"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 4,
+     "op": "counter_hint",
+     "set": "ARCANUM"
+    },
+    {
+     "amount": 4,
+     "op": "counter_display",
+     "set": "ARCANUM"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Gain a "
+    },
+    {
+     "name": "MAGIC_SHIELD",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " after killing an enemy"
+    },
+    {
+     "cases": [
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " The first time your "
+        },
+        {
+         "name": "MAGIC_SHIELD",
+         "op": "status"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " breaks, gain "
+        },
+        {
+         "name": "INVULNERABILITY",
+         "op": "status"
+        }
+       ],
+       "specialization": "INVULNERIUM"
+      },
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.> "
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " Every time you "
+        },
+        {
+         "name": "DODGE",
+         "op": "action"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": ", "
+        },
+        {
+         "name": "COUNTER_ATTACK",
+         "op": "action"
+        }
+       ],
+       "specialization": "EVADIUM"
+      }
+     ],
+     "op": "match_specialization"
+    }
+   ],
+   "replacement_functions": [
+    "get_text_replacements"
+   ],
+   "sha256": "b17b33ebb532883b00187705d679b713d2cf714e9d321cf97fb892ea53740171",
+   "uses_specialization": true
+  },
+  "armor": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Absorb damage in place of "
+    },
+    {
+     "name": "HEALTH",
+     "op": "stat"
+    }
+   ],
+   "sha256": "f32c1a126aa5dd2f06f80925e8c91645018c5290b942dcc43dba6198eb567c78",
+   "uses_specialization": false
+  },
+  "armor_shield": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Next time you about to get hit, break one shield and"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "ignore "
+    },
+    {
+     "mode": "UNKNOWN",
+     "name": "ARMOR",
+     "op": "stat"
+    },
+    {
+     "color": "stat:ARMOR",
+     "op": "text",
+     "text": "+1"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " damage"
+    }
+   ],
+   "sha256": "ca4b4b4aa150246b116659122eb0a3a3873c13ec7022456628e83bfc3563e318",
+   "uses_specialization": false
+  },
+  "armor_shields": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "The amount of "
+    },
+    {
+     "name": "ARMOR_SHIELD",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " stacks you will"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "get at the start of the battle"
+    }
+   ],
+   "sha256": "888830059aba8c055271f26bc5d44bf624d63b6edbcd8555002d2ad56671fc28",
+   "uses_specialization": false
+  },
+  "armor_steal": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "The amount of "
+    },
+    {
+     "name": "ARMOR",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to steal from the target on hit"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "You cannot steal more than your missing "
+    },
+    {
+     "name": "ARMOR",
+     "op": "stat"
+    }
+   ],
+   "sha256": "f73afc9ccaa78368c437f988bac1de3a2ff05d7ad750e3b749be7be2d54f21e8",
+   "uses_specialization": false
+  },
+  "armored_attack": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Converts % of your "
+    },
+    {
+     "name": "ACTIVE_ARMOR",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to "
+    },
+    {
+     "name": "ARMOR_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " dealt on hit"
+    }
+   ],
+   "sha256": "2313da7d768acbdfc295f96f2f3d881c05a14744f24f85768e429f290598fc35",
+   "uses_specialization": false
+  },
+  "arthurs_mark": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "The target with this mark is unable to "
+    },
+    {
+     "name": "BLOCK",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ", "
+    },
+    {
+     "name": "PARRY",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " or "
+    },
+    {
+     "name": "DODGE",
+     "op": "action"
+    }
+   ],
+   "sha256": "78e05d69b05309bc14bf7e8db4f0d41879107815c1456752c9414663fb8ce427",
+   "uses_specialization": false
+  },
+  "ascend": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Start an ascended run from floor 1, the "
+    },
+    {
+     "name": "DIAMOND",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "you earn will be multiplied by 2"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": " (+1 each level)"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "ORANGE_RED",
+     "op": "text",
+     "text": "Floor 2+ items used in previous runs will be"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "ORANGE_RED",
+     "op": "text",
+     "text": "removed"
+    }
+   ],
+   "sha256": "0b3f777b036b623ebfb27b4bbfce9b1a9ddbc37a5d602928af3a119fe440401f",
+   "uses_specialization": false
+  },
+  "astral_dissolution": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Remove all buffs from the target"
+    }
+   ],
+   "sha256": "6551f7bb74419d0ff2d1abc4209727fb831f5d8a0fff1c124d028b4af926fd07",
+   "uses_specialization": false
+  },
+  "backstab": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Backstab an enemy dealing attack damage"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Enemy "
+    },
+    {
+     "name": "MAX_HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " is above 75%: The damage is reduced by 45%"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Enemy "
+    },
+    {
+     "name": "MAX_HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " is below or equal to 75%: The attack"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "  will be a "
+    },
+    {
+     "name": "CRITICAL_STRIKE",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " and have +25% "
+    },
+    {
+     "name": "ACCURACY",
+     "op": "stat"
+    }
+   ],
+   "sha256": "96d646c58f8f459ab78386788c02e3e8e801c117a5bb04cc71432fe54e54d496",
+   "uses_specialization": false
+  },
+  "battleborn": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Every time you "
+    },
+    {
+     "name": "PARRY",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ", "
+    },
+    {
+     "name": "STUN",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " the target"
+    }
+   ],
+   "sha256": "0d335eed0b7dbaeb268938936124dde1120592d14d207cb1ba82d4f36f154e11",
+   "uses_specialization": false
+  },
+  "battleforged_heart": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "After your "
+    },
+    {
+     "name": "ARMOR",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " is damaged, convert"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "that amount to "
+    },
+    {
+     "name": "MAX_HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "resets every battle"
+    }
+   ],
+   "sha256": "febc0f702d5e967e396af73064cf0ba4b98a68c03e5e298d76ba7cd109ba8549",
+   "uses_specialization": false
+  },
+  "berserker": {
+   "ops": [
+    {
+     "amount": 1,
+     "op": "counter_hint",
+     "set": "BERSERKER"
+    },
+    {
+     "amount": 1,
+     "op": "counter_display",
+     "set": "BERSERKER"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Gain bonus "
+    },
+    {
+     "name": "TOTAL_ATTACKS",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " based on missing "
+    },
+    {
+     "name": "HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ":"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " 25% -> +1 "
+    },
+    {
+     "name": "TOTAL_ATTACKS",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " 50% -> +3 "
+    },
+    {
+     "name": "TOTAL_ATTACKS",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " 75% -> +6 "
+    },
+    {
+     "name": "TOTAL_ATTACKS",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 2,
+     "op": "counter_hint",
+     "set": "BERSERKER"
+    },
+    {
+     "amount": 2,
+     "op": "counter_display",
+     "set": "BERSERKER"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " While below 25% "
+    },
+    {
+     "name": "HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ", gain 100% "
+    },
+    {
+     "name": "TENACITY",
+     "op": "stat"
+    }
+   ],
+   "sha256": "3de602c4bd53e0b02b0a5e82d6838288a43e528aa16cbc7c6469cac822d12b77",
+   "uses_specialization": false
+  },
+  "beyond_the_grave": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "At the end of the turn, transform opponents status effects"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "name": "WEAKNESS",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " into "
+    },
+    {
+     "name": "ENERVATION",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "name": "CURSE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " into "
+    },
+    {
+     "name": "BLACK_CURSE",
+     "op": "status"
+    }
+   ],
+   "sha256": "d9f4dd6004d208f12bf78f51a8a1ab9fa536423a4c3e8f20978eeaa78cc51731",
+   "uses_specialization": false
+  },
+  "blackthorn": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "After getting hit from an attack:"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Deal "
+    },
+    {
+     "mode": "UNKNOWN",
+     "name": "ACTIVE_ARMOR",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " as "
+    },
+    {
+     "name": "MAGIC_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to the attacker"
+    },
+    {
+     "cases": [
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " Everytime you get hit, apply "
+        },
+        {
+         "name": "POISON",
+         "op": "status"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " on the"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "  attacker that equals to your "
+        },
+        {
+         "name": "TOXICITY",
+         "op": "stat"
+        }
+       ],
+       "specialization": "CHROMATHORN"
+      },
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " Get +25% "
+        },
+        {
+         "name": "WISDOM",
+         "op": "stat"
+        },
+        {
+         "color": "DIM_GRAY",
+         "op": "text",
+         "text": " (resets every battle)"
+        }
+       ],
+       "specialization": "MINDTHORN"
+      },
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " "
+        },
+        {
+         "name": "IMMOLATE",
+         "op": "action"
+        }
+       ],
+       "specialization": "CINDERTHORN"
+      },
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " apply 2 stacks of "
+        },
+        {
+         "name": "WEAKNESS",
+         "op": "status"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " on the attacker"
+        }
+       ],
+       "specialization": "THORNFROST"
+      }
+     ],
+     "op": "match_specialization"
+    }
+   ],
+   "sha256": "0462c5b8834dcb007d428276b5c00ccefc3053662dd3935d07b9081ccba3c843",
+   "uses_specialization": true
+  },
+  "bleed": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "After every attack, take "
+    },
+    {
+     "name": "BLEED_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to your "
+    },
+    {
+     "name": "HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "that equal to % "
+    },
+    {
+     "name": "BLEED",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " stacks on you multiplied by your"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "name": "MAX_HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "every turn lose 2% "
+    },
+    {
+     "name": "BLEED",
+     "op": "status"
+    }
+   ],
+   "sha256": "fabb139137b1d9b107bbebc81197a116d532dca6984cb8d344bb995ecef1952e",
+   "uses_specialization": false
+  },
+  "blindness": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Reduces your "
+    },
+    {
+     "name": "ACCURACY",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " by 100%"
+    }
+   ],
+   "sha256": "190f17ff94c49e427f9033fb09896a6c21cc2e582239284c895e2b0255f3339e",
+   "uses_specialization": false
+  },
+  "bloodedge": {
+   "ops": [
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "\"used to get stronger every kill\""
+    }
+   ],
+   "sha256": "f4b272d684749495c2abc85463da29dcf738b079e463dd81f78c81fd5956315c",
+   "uses_specialization": false
+  },
+  "bloodedges_blood_slash": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Every time you're about to attack, convert 10%"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "of your "
+    },
+    {
+     "name": "HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to "
+    },
+    {
+     "name": "PHYSICAL_ATTACK",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "resets every battle"
+    }
+   ],
+   "sha256": "29b80529cae571562311a8fd37b09b969372c8acff3091454e7d60f9c496b343",
+   "uses_specialization": false
+  },
+  "bloodlust_aura": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Apply "
+    },
+    {
+     "name": "MADNESS",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to all enemies"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "ACTIVATION CONDITION: "
+    },
+    {
+     "name": "HEAL",
+     "op": "keyword"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": " 25% of"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "your "
+    },
+    {
+     "name": "MAX_HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": " in one turn"
+    }
+   ],
+   "sha256": "aaa37369b7bf36c6f1681484ad82545bb9b90ade42ddc45ca150005944feac04",
+   "uses_specialization": false
+  },
+  "burden_of_power": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Steal 75% attack damage from all enemies with "
+    },
+    {
+     "name": "FEAR",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "at the start of the turn"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "ACTIVATION CONDITION: Applied "
+    },
+    {
+     "name": "FEAR",
+     "op": "status"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": " on an enemy"
+    }
+   ],
+   "sha256": "4daf67b4e852011bc68f3c7eca6af418541f4bc934ff1daa63a99c3186efe608",
+   "uses_specialization": false
+  },
+  "celestial": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Upon taking any damage, transform it into "
+    },
+    {
+     "name": "ELEMENTAL_POWER",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "resets every battle"
+    }
+   ],
+   "sha256": "962b9ff91e566877ae826ac2b271e60484b712f4caa3447aac47e58fd3c89ad6",
+   "uses_specialization": false
+  },
+  "chromalure": {
+   "ops": [
+    {
+     "amount": 1,
+     "op": "counter_hint",
+     "set": "CHROMALURE"
+    },
+    {
+     "amount": 1,
+     "op": "counter_display",
+     "set": "CHROMALURE"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " After applying "
+    },
+    {
+     "name": "POISON",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ", deal "
+    },
+    {
+     "name": "POISON_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " that"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "  equals to that amount to the target"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 3,
+     "op": "counter_hint",
+     "set": "CHROMALURE"
+    },
+    {
+     "amount": 3,
+     "op": "counter_display",
+     "set": "CHROMALURE"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " At the start of every turn, recieve "
+    },
+    {
+     "name": "TOXIC_TRANSMUTE",
+     "op": "status"
+    },
+    {
+     "amount": 0,
+     "op": "counter_hint",
+     "set": "CHROMALURE"
+    },
+    {
+     "cases": [
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " Convert 75% of your "
+        },
+        {
+         "name": "PHYSICAL_ATTACK",
+         "op": "stat"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " to"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " "
+        },
+        {
+         "name": "TOXICITY",
+         "op": "stat"
+        }
+       ],
+       "specialization": "CHROMASPITE"
+      }
+     ],
+     "op": "match_specialization"
+    }
+   ],
+   "sha256": "e487dabb49fd08ee6bab5fb9ee2a7fb7555e86307fd63a2065461171e9b7069b",
+   "uses_specialization": true
+  },
+  "cinder_essence": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "At the start of the turn, consume "
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "all stacks of "
+    },
+    {
+     "name": "CINDER_ESSENCE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "and "
+    },
+    {
+     "name": "IMMOLATE",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " for each one"
+    }
+   ],
+   "sha256": "82ed77a7a4724d77a3d47c64e1269be97ce189e0b7445b86b85b021fde22588b",
+   "uses_specialization": false
+  },
+  "cinder_touch": {
+   "ops": [
+    {
+     "name": "IMMOLATE",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " on hit"
+    }
+   ],
+   "sha256": "7478ffb3e02be142d6c4598e6179581d8bf63b30a4c062c8ff9813846b5ad08b",
+   "uses_specialization": false
+  },
+  "clarity": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "The next time you are about to receive "
+    },
+    {
+     "name": "STUN",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "consume 1 "
+    },
+    {
+     "name": "CLARITY",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " stack and negate it"
+    }
+   ],
+   "sha256": "7eb4c95042a6eb384b3370af97a113b9a53d592c7279a74a04f2ebef9ee6c372",
+   "uses_specialization": false
+  },
+  "cleanse": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Removes a random debuff and reduces your "
+    },
+    {
+     "name": "FAITH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " by 25%"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "resets every battle"
+    }
+   ],
+   "sha256": "82f71c1b4b07eb7c344d67cf7d91e6ef548e54cc5b7cea93a5d98a17467e7d4f",
+   "uses_specialization": false
+  },
+  "combat": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Increases "
+    },
+    {
+     "name": "PHYSICAL_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " output by total "
+    },
+    {
+     "name": "COMBAT",
+     "op": "stat"
+    }
+   ],
+   "sha256": "1cb60a2400459af7ab891771b58e0f5e26833984b4210112076ff1de96aee766",
+   "uses_specialization": false
+  },
+  "combat_insight": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "The next time you're about to be attacked and"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "you have 5 or more stacks of "
+    },
+    {
+     "name": "COMBAT_INSIGHT",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "consume them and "
+    },
+    {
+     "name": "PARRY",
+     "op": "action"
+    }
+   ],
+   "sha256": "4d7568143224e7de54c5fb8644eb4fefd69e10f8bdcb28d00ac22b88874cabb6",
+   "uses_specialization": false
+  },
+  "combat_instinct": {
+   "ops": [
+    {
+     "name": "PARRY",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " damage is doubled"
+    }
+   ],
+   "sha256": "f81cc63d11dbcccaa1dd18a3124746907052f36055a0a24284ab2c949426cbf9",
+   "uses_specialization": false
+  },
+  "confrontation": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " All enemies gain +1 to "
+    },
+    {
+     "name": "TOTAL_ATTACKS",
+     "op": "stat"
+    }
+   ],
+   "sha256": "51086e04f6e7d38b40fdaf4f9944d361830420778ddeb04766678e617d4556c9",
+   "uses_specialization": false
+  },
+  "confusion": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Reduces "
+    },
+    {
+     "name": "ACCURACY",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " by 100%"
+    }
+   ],
+   "sha256": "785ca8f12303c3447285c9b2874eb0fdc0fa1a77755b09598a3c8dc51d2db566",
+   "uses_specialization": false
+  },
+  "consuming_darkness": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "When an enemy with "
+    },
+    {
+     "name": "FEAR",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " and "
+    },
+    {
+     "name": "CONFUSION",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " is killed,"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "gain all it's base stats "
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "(resets every battle)"
+    }
+   ],
+   "sha256": "af799fea85aaa7f61cccd43d3e1382b04b1a28e7b27df337558c2e1dbe8b618e",
+   "uses_specialization": false
+  },
+  "counter_attack": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Attack the attacker"
+    }
+   ],
+   "sha256": "6f691f99cd5c2389ba8c603f77f64e882f10a208723122d49ed5708c9f098bdc",
+   "uses_specialization": false
+  },
+  "crimson_pact": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Upon dropping below 45% "
+    },
+    {
+     "name": "HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ", apply"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "name": "CONFUSION",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to all enemies"
+    }
+   ],
+   "sha256": "415ac1485d66e8f7bfe610f3ee23b7a0ce5028aa39eb2182b223d5dc2aecf248",
+   "uses_specialization": false
+  },
+  "critical_damage": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Increases "
+    },
+    {
+     "name": "CRITICAL_STRIKE",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " and "
+    },
+    {
+     "name": "OMNI_CRIT",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " damage"
+    }
+   ],
+   "sha256": "403dd705f267bdba9d82e26e2086af0e810778a64ee93756383d97ca0488dbab",
+   "uses_specialization": false
+  },
+  "critical_focus": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Your "
+    },
+    {
+     "name": "CRITICAL_STRIKE",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " or "
+    },
+    {
+     "name": "OMNI_CRIT",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " attacks"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "will have +25% "
+    },
+    {
+     "name": "ACCURACY",
+     "op": "stat"
+    }
+   ],
+   "sha256": "f1065eccc29cd86701cdc7ce5b7906567944e6fe84497d4135c42b326c5e616c",
+   "uses_specialization": false
+  },
+  "crystal_hardening": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Receive 0 damage on the first turn"
+    }
+   ],
+   "sha256": "794330d5022ccae8e709de22e35772642ca92df16eaeaa4ef0b1ff20282e0ee2",
+   "uses_specialization": false
+  },
+  "crystal_insight": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Gain +100% "
+    },
+    {
+     "name": "MAGIC_ATTACK",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " on the first turn"
+    }
+   ],
+   "sha256": "763fb7668b63d29c18b42a8ee37c51bd8aa0a272ca8735633897d96c4c3c8f44",
+   "uses_specialization": false
+  },
+  "curse": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Reduces all healing by 75%"
+    }
+   ],
+   "sha256": "0a83cb5491b35691c0ad43ca7de2b174551aa664ed1f479b821585afaacbeed5",
+   "uses_specialization": false
+  },
+  "curse_of_the_tower": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Every turn receive "
+    },
+    {
+     "name": "TRUE_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " that equals to 1% of your "
+    },
+    {
+     "name": "MAX_HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "(recieved when a battle takes too long)"
+    }
+   ],
+   "sha256": "8b7ddbbbf145a99178588944475c3126ad945714b94ea5efb8c2447a0082b832",
+   "uses_specialization": false
+  },
+  "cursed": {
+   "ops": [
+    {
+     "amount": 1,
+     "op": "counter_hint",
+     "set": "CURSED"
+    },
+    {
+     "amount": 1,
+     "op": "counter_display",
+     "set": "CURSED"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " At the start of the battle, receive "
+    },
+    {
+     "name": "CURSE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " and 5 stacks of "
+    },
+    {
+     "name": "MALICE_SHIELD",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 3,
+     "op": "counter_hint",
+     "set": "CURSED"
+    },
+    {
+     "amount": 3,
+     "op": "counter_display",
+     "set": "CURSED"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "name": "MALICE_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " you deal will be spread"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to all enemies with "
+    },
+    {
+     "name": "CURSE",
+     "op": "status"
+    }
+   ],
+   "sha256": "2c993f8d7f094c6dbf7c703ddee9b70df1a164ff19fcd3b0888a3197b491e694",
+   "uses_specialization": false
+  },
+  "cursed_chain": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Apply on-hit status effects even if your attacks"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "don't hit"
+    }
+   ],
+   "sha256": "4ab8e351d7566174d3d99b28372e469f12d860965412659515668a4dfad072f6",
+   "uses_specialization": false
+  },
+  "dazzle": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "The amount of "
+    },
+    {
+     "name": "SPARKLE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " stacks to apply on target on hit"
+    }
+   ],
+   "sha256": "726bb29596be58ffa172c105b0cf1b1032c88d920a0e7c9c754b911264bfc8c2",
+   "uses_specialization": false
+  },
+  "death_strike": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Gain 100% "
+    },
+    {
+     "name": "CRIT_CHANCE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "this turn"
+    }
+   ],
+   "sha256": "08e21f2a8d86893b142afc503e045ec028390a2175f7f5e36d0b1811522cc1fd",
+   "uses_specialization": false
+  },
+  "debuff_immunity": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Stops all debuffs from being applied"
+    }
+   ],
+   "sha256": "3bac4c50c37b3f9f860d503241f2ab0976bc5c5ffb5d37250ae91cf41d324430",
+   "uses_specialization": false
+  },
+  "demonic": {
+   "ops": [
+    {
+     "amount": 1,
+     "op": "counter_hint",
+     "set": "DEMONIC"
+    },
+    {
+     "amount": 1,
+     "op": "counter_display",
+     "set": "DEMONIC"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " For every 25 base "
+    },
+    {
+     "name": "MAX_HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " gain 1% "
+    },
+    {
+     "name": "PHYSICAL_ATTACK",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 3,
+     "op": "counter_hint",
+     "set": "DEMONIC"
+    },
+    {
+     "amount": 3,
+     "op": "counter_display",
+     "set": "DEMONIC"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Receive "
+    },
+    {
+     "name": "MULTI_ATTACK_CHARGE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " at the start of the first turn"
+    },
+    {
+     "cases": [
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " 45% of the damage dealt to an enemy"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "  with an "
+        },
+        {
+         "name": "ARTHURS_MARK",
+         "op": "status"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " will"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "  spread to adjacent enemies"
+        }
+       ],
+       "specialization": "CHALLENGER"
+      }
+     ],
+     "op": "match_specialization"
+    }
+   ],
+   "sha256": "bb0c922754d969d8866beb07ba7ba434eebc78099a89f536f4abcae1077505f7",
+   "uses_specialization": true
+  },
+  "dodge": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Avoid incoming damage"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Every time you "
+    },
+    {
+     "name": "DODGE",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ":"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "reduce "
+    },
+    {
+     "name": "AGILITY",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " by 25%"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "resets every battle"
+    }
+   ],
+   "sha256": "bdefa8cd6323c41fb9a648201387ed9f7a3d42333966b169a1be38ecd9022879",
+   "uses_specialization": false
+  },
+  "drain_react": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Apply 5 stacks of "
+    },
+    {
+     "name": "ENERVATION",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to all enemies"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "ACTIVATION CONDITION: receive a hit from an enemy with "
+    },
+    {
+     "name": "POISON",
+     "op": "status"
+    }
+   ],
+   "sha256": "62dfec25c8e110950a2fb13a5cf9840aead85340a6432bdf83044baedd702e7d",
+   "uses_specialization": false
+  },
+  "dread": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Enemies with "
+    },
+    {
+     "name": "FEAR",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " won't attack you"
+    }
+   ],
+   "sha256": "e55b4da6452356d640881dfbb2d756e7329fe10be1dfaa572c26c25b910bbb5b",
+   "uses_specialization": false
+  },
+  "edens_wish": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "At the start of every turn, grant a random ally"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "a random blessing or buff"
+    }
+   ],
+   "sha256": "26f40d5b9893a26b7a4311ec756cf1a9d240f0b2b35d06a6a43f53bd01ea63d7",
+   "uses_specialization": false
+  },
+  "edge_of_death": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Your "
+    },
+    {
+     "name": "HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " cannot fall below 1 on the first turn"
+    }
+   ],
+   "sha256": "ea72c937376e07bf1df671c42d202db697b64e825d54038209f8f21a198e49e2",
+   "uses_specialization": false
+  },
+  "edge_of_the_ruined": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "While you have "
+    },
+    {
+     "name": "CURSE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " or "
+    },
+    {
+     "name": "BLACK_CURSE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ":"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "attacks will deal extra damage that equals"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "to targets 11% "
+    },
+    {
+     "name": "HEALTH",
+     "op": "stat"
+    }
+   ],
+   "sha256": "3be107d039cc34e3a0702114062b89b49aa04f661b8b88c3752d9f85e8e21519",
+   "uses_specialization": false
+  },
+  "eldrids_fury": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Everytime you heal gain a stack of "
+    },
+    {
+     "name": "VIMBLOW",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "once per turn"
+    }
+   ],
+   "sha256": "99600966e8cefe99ac9dc2a052f7de178511ae164d9cd177a4f701baf3770cc3",
+   "uses_specialization": false
+  },
+  "electricity": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Apply stacks of "
+    },
+    {
+     "name": "ELECTRO_CHARGE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " equal to total "
+    },
+    {
+     "name": "ELECTRICITY",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to the target"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "on hit, adjacent enemies will receive 25% of the stacks"
+    }
+   ],
+   "sha256": "d775b5bb1740b6715a48b6a28ebdf9153756bf78deec7461056bf74228e27411",
+   "uses_specialization": false
+  },
+  "electro_charge": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Deals "
+    },
+    {
+     "name": "ELECTRIC_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " equals to the amount of stacks to the owner every turn"
+    }
+   ],
+   "sha256": "9b819f5012d84d97a36432f86b36cb6bef7fc7a97618b877d57d59ae9e968c81",
+   "uses_specialization": false
+  },
+  "elemental_resistance": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Reduces the following: "
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "name": "FREEZE_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "name": "CINDER_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "name": "ELECTRIC_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "name": "TOXICITY",
+     "op": "stat"
+    }
+   ],
+   "sha256": "90186e11080ad0bd116c7517cb9ff4790ac7ea0b5b298c37c9151a5e9969011c",
+   "uses_specialization": false
+  },
+  "elusive": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "All attacks against you will lose 100% "
+    },
+    {
+     "name": "ACCURACY",
+     "op": "stat"
+    }
+   ],
+   "sha256": "34c4086e1dbbf6a5edd84d61c9f20a3137a6dc954ac180d4554087814fe1ab4b",
+   "uses_specialization": false
+  },
+  "empty_bastion": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Multiplies your "
+    },
+    {
+     "name": "ARMOR",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " by 8, but you start"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "with 0 "
+    },
+    {
+     "name": "ACTIVE_ARMOR",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " every battle "
+    }
+   ],
+   "sha256": "e2b8021600e9037f3a1e2252c478542053b3a5568a8c2873e7d430b3379c90a0",
+   "uses_specialization": false
+  },
+  "emulator": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Reapply debuffs at the end of the turn"
+    }
+   ],
+   "sha256": "64f57778858cc370ac3737758aa6cb54a49589743e4992d3e1d830005f381ff4",
+   "uses_specialization": false
+  },
+  "ephemeral_armor": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Temporary "
+    },
+    {
+     "name": "ARMOR",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " that disappears after the end of the battle"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Receive "
+    },
+    {
+     "name": "EPHEMERAL_LOCK",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " after taking damage"
+    }
+   ],
+   "sha256": "9ee00078153a1aaae139ed245aa8b2de06a5e97482df2ac708a868a2c64faecf",
+   "uses_specialization": false
+  },
+  "ephemeral_lock": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Unable to receive "
+    },
+    {
+     "name": "EPHEMERAL_ARMOR",
+     "op": "status"
+    }
+   ],
+   "sha256": "eb836dcd6a354cb38c7bb53ef278a09e14dee2297a84cb0138df8fc9d779edf8",
+   "uses_specialization": false
+  },
+  "ephemeral_shell": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Received damage is reduced by 12% per stack"
+    }
+   ],
+   "sha256": "fab38ac90638d510969d39590ea61d03bea2566e60bf36e4e1353f76631783fe",
+   "uses_specialization": false
+  },
+  "evade": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "You were attacked but not hit"
+    }
+   ],
+   "sha256": "b9cb8743dcd52bc96295f7593cf0e4360e5af9e403edaff23b8052fe79a8e852",
+   "uses_specialization": false
+  },
+  "evil_mark": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Applies "
+    },
+    {
+     "name": "CURSE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " on your target"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "at the start of the turn"
+    }
+   ],
+   "sha256": "7b4c4bf0b732b92fee73b80a2fcc2d5b99c6ee2a7c5e2b0f7b38305ecc7f1d44",
+   "uses_specialization": false
+  },
+  "excalibur": {
+   "ops": [
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "\"a gift from the lake\""
+    }
+   ],
+   "sha256": "f70111276f5c3a5e68b79e9b0466f1529787077c0d0e5d1d1bbf13a49dc3e629",
+   "uses_specialization": false
+  },
+  "exhaustion": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Limits "
+    },
+    {
+     "name": "TOTAL_ATTACKS",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to 1"
+    }
+   ],
+   "sha256": "ba4676d84fd8ae009939c0cd1f46996bf426dc6366868163ddec0e554c7f8076",
+   "uses_specialization": false
+  },
+  "exploited_opportunity": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "After "
+    },
+    {
+     "name": "DODGE",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ", "
+    },
+    {
+     "name": "STUN",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " the attacker"
+    }
+   ],
+   "sha256": "54c59137a0dafb464561187d173b5978791d0a9f3d6a4afdacf2b6d3465f1b21",
+   "uses_specialization": false
+  },
+  "faded_discipline": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Receive +5 "
+    },
+    {
+     "name": "TOTAL_ATTACKS",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " but your first 5"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "attacks will deal 99% less damage"
+    }
+   ],
+   "sha256": "57fc16d1fd295db0efa9f92951de2626c53931e85161738414c6b134239fd2ea",
+   "uses_specialization": false
+  },
+  "faith": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Determines your chance to "
+    },
+    {
+     "name": "CLEANSE",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ":"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 0,
+     "op": "counter_hint",
+     "set": "SILVER"
+    },
+    {
+     "amount": 0,
+     "op": "counter_display",
+     "set": "SILVER"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " At the end of the turn"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 4,
+     "op": "counter_hint",
+     "set": "SILVER"
+    },
+    {
+     "amount": 4,
+     "op": "counter_display",
+     "set": "SILVER"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " When you receive a debuff"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Reduced by your "
+    },
+    {
+     "name": "GREED",
+     "op": "stat"
+    }
+   ],
+   "sha256": "0e1b7cc013ece267927b1d220ed38d50295909f06405f3619b00b16044c13f2f",
+   "uses_specialization": false
+  },
+  "faultbreaker": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "If your attack leaves the target with 75%"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "name": "ACTIVE_ARMOR",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " or below, "
+    },
+    {
+     "name": "ARMOR_BREAK",
+     "op": "action"
+    }
+   ],
+   "sha256": "3c7f7eb179f0afcf37ace54ed70514d3dffa0199a1b5c37c4ed9fb6b0ff5a055",
+   "uses_specialization": false
+  },
+  "fear": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Unable to receive buffs"
+    }
+   ],
+   "sha256": "c16a639d9c3096dbe5d7ba5ac86726c34aff829135288f10cb5d8ba367d7e1d1",
+   "uses_specialization": false
+  },
+  "fear_of_pain": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Won't attack targets that received damage this turn"
+    }
+   ],
+   "sha256": "f08159b8d258696af3f614ecf46bb06511a2d3626bfc8304f54c6c28941218a8",
+   "uses_specialization": false
+  },
+  "flesh": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Allows to "
+    },
+    {
+     "name": "HEAL",
+     "op": "keyword"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " over your "
+    },
+    {
+     "name": "MAX_HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "the over healed amount is removed at the"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "end of the turn"
+    }
+   ],
+   "sha256": "8ffbb76a225ad5aed0ed21da4376a4c5b48bac24b817df82e1dfcdc36f789a2f",
+   "uses_specialization": false
+  },
+  "flow": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Unable to take a turn while "
+    },
+    {
+     "name": "FLOW",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " is below 0%"
+    }
+   ],
+   "sha256": "46dbbb55bff52382772ffa0b6d9ebeea8744183e4208a178b9e27e656e4bd405",
+   "uses_specialization": false
+  },
+  "focused": {
+   "ops": [],
+   "sha256": "4d90caca66be3ee4e24eb94da24782a8d6190ad19c61f3bbd1508183eafef427",
+   "uses_specialization": false
+  },
+  "folly_of_kings": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Recieve a random status effect every turn"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "and "
+    },
+    {
+     "name": "POLYMORPH",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " every 2 turns"
+    }
+   ],
+   "sha256": "93024963ed2346b30cfd087d454d8e55897a1eab5bcd1cc352296e775ec27b21",
+   "uses_specialization": false
+  },
+  "freedom_drive": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Receive +100% "
+    },
+    {
+     "name": "TENACITY",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " while you have "
+    },
+    {
+     "name": "INVULNERABILITY",
+     "op": "status"
+    }
+   ],
+   "sha256": "ab9323d47fa8ac019ba3b5fb6d91b2df06682761e84b4a07ae42bce56275fce0",
+   "uses_specialization": false
+  },
+  "freeze": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Takes 25% more damage from all sources"
+    }
+   ],
+   "sha256": "639795bbfb9a9b4f5181258fe95905055ccdc3e6adbdff414429d0b4354244e6",
+   "uses_specialization": false
+  },
+  "freeze_attack": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "The amount of "
+    },
+    {
+     "name": "FREEZE_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to deal on hit"
+    }
+   ],
+   "sha256": "30e05826b22b9b92d91653b157f8d8cacdbdf390415498d37d7b647bcf002e77",
+   "uses_specialization": false
+  },
+  "frozen_strike": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Apply 3 stacks "
+    },
+    {
+     "name": "WEAKNESS",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to target on hit"
+    }
+   ],
+   "sha256": "ea8d99849e4e68c928b360e641a7519b50a7ca3cd40ae07bfdfe857d3232b720",
+   "uses_specialization": false
+  },
+  "fury": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Increase your "
+    },
+    {
+     "name": "PHYSICAL_ATTACK",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " by 25% for every stack of "
+    },
+    {
+     "name": "FURY",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "(resets at the end of the battle)"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    }
+   ],
+   "sha256": "b688f56d96fc18dccb6fd2cc9cf7717819416fcd040759785e6f916e04f14977",
+   "uses_specialization": false
+  },
+  "generic": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Counts as +1 to all active item sets"
+    }
+   ],
+   "sha256": "0a4d5733ed012fd010d9b3a299904a1aeb2c2550add6f25ff0f6e99f6551c915",
+   "uses_specialization": false
+  },
+  "gold_on_kill": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Increases "
+    },
+    {
+     "name": "GOLD",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " per kill"
+    }
+   ],
+   "sha256": "dc13b3d83384184f97130b58ed5a73c24ec48ea6346124a18d14df2e7ce8037a",
+   "uses_specialization": false
+  },
+  "golden_altruism": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Grants all allies "
+    },
+    {
+     "name": "GOLDEN_HEART",
+     "op": "status"
+    }
+   ],
+   "sha256": "57ae776bcd994fbbfabef993971d3e6d7fbee039948e21e8b412817a1c54fd0b",
+   "uses_specialization": false
+  },
+  "golden_heart": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Upon dropping to 0 "
+    },
+    {
+     "name": "HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ":"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " revive and "
+    },
+    {
+     "name": "HEAL",
+     "op": "keyword"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " for 25% of your "
+    },
+    {
+     "name": "MAX_HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 3,
+     "op": "counter_hint",
+     "set": "GOLDEN"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "amount": 3,
+     "op": "counter_display",
+     "set": "GOLDEN"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " gain "
+    },
+    {
+     "name": "INVULNERABILITY",
+     "op": "status"
+    }
+   ],
+   "sha256": "41be84060f4bb776f04959e1caf332d369a3fc165cff9b88db73c5790ab5f151",
+   "uses_specialization": false
+  },
+  "grace": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Increases all damage"
+    }
+   ],
+   "sha256": "c149a38f62afc30bf64d0d0fefcf7756eb67486c4ff26fab51d48610c927c202",
+   "uses_specialization": false
+  },
+  "greed": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Multiplies gold earned"
+    }
+   ],
+   "sha256": "a630a3539d9be0141367e1f60e3b1b83b61b5a6a8a4c022a2d4f72afc7361404",
+   "uses_specialization": false
+  },
+  "growing_anger": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Gain 5% "
+    },
+    {
+     "name": "CRIT_CHANCE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " every hit "
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "(resets every battle)"
+    }
+   ],
+   "sha256": "ce9473ee62bbac97d48ab25fbe5c907642e17e718090d0851c8c50557d2b9953",
+   "uses_specialization": false
+  },
+  "heart_of_iron": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Receive "
+    },
+    {
+     "name": "ARMOR",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " that equals to your "
+    },
+    {
+     "name": "HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "ACTIVATION CONDITION: receive 3 hits"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "resets every battle"
+    }
+   ],
+   "sha256": "2189c4ae987e81279c1d0a95d5d34cd988c9a6872ef02043fef140d4228cd2ba",
+   "uses_specialization": false
+  },
+  "honor": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " All enemies gain 1 level"
+    }
+   ],
+   "sha256": "a21aaa633bd526a9e90d06f5aea681420ad1990006cbf839002e808645383949",
+   "uses_specialization": false
+  },
+  "hunter": {
+   "ops": [
+    {
+     "amount": 1,
+     "op": "counter_hint",
+     "set": "HUNTER"
+    },
+    {
+     "amount": 1,
+     "op": "counter_display",
+     "set": "HUNTER"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Every 1% "
+    },
+    {
+     "name": "CRIT_CHANCE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " above 100% will be converted to"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " 10% "
+    },
+    {
+     "name": "CRITICAL_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 3,
+     "op": "counter_hint",
+     "set": "HUNTER"
+    },
+    {
+     "amount": 3,
+     "op": "counter_display",
+     "set": "HUNTER"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Targets cannot "
+    },
+    {
+     "name": "DODGE",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " your "
+    },
+    {
+     "name": "CRITICAL_STRIKE",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " attacks"
+    },
+    {
+     "cases": [
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " "
+        },
+        {
+         "name": "CRIT_CHANCE",
+         "op": "stat"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " will affect "
+        },
+        {
+         "name": "PARRY",
+         "op": "action"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " attacks"
+        }
+       ],
+       "specialization": "BEASTBOUND"
+      }
+     ],
+     "op": "match_specialization"
+    }
+   ],
+   "sha256": "610de8f7d944108e4d817a4870f97b60b848799c7f039de5ee7a33fd3b8f5b2c",
+   "uses_specialization": true
+  },
+  "immolate": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Deal "
+    },
+    {
+     "name": "CINDER_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " that equals to 25% of your "
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "name": "MAX_HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to all enemies in front"
+    }
+   ],
+   "sha256": "f50ad298c5a5d409dc65537d31ae6ac3fc8fdf954f36baba8e87d1286245ef6b",
+   "uses_specialization": false
+  },
+  "invulnerability": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Can't receive any damage"
+    }
+   ],
+   "sha256": "65ce4445a95b66638bbf2114eefc71113d63d7ca3325ae8614ccb9eb5e066f36",
+   "uses_specialization": false
+  },
+  "iron_pact": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Every time your "
+    },
+    {
+     "name": "ACTIVE_ARMOR",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " reaches 0%, consume 10%"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "your "
+    },
+    {
+     "name": "HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " and convert it to "
+    },
+    {
+     "name": "ACTIVE_ARMOR",
+     "op": "stat"
+    }
+   ],
+   "sha256": "9a323067c6bd072d0da30480cc0628edb3ef648b175c391d75bc5b34e9944792",
+   "uses_specialization": false
+  },
+  "judgments_call": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Your attacks will apply debuffs you removed"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "via "
+    },
+    {
+     "name": "CLEANSE",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " (resets every battle)"
+    }
+   ],
+   "sha256": "532d8cedfb2f2ab44ea94a5e8dcc1d248709319fd2cc6e26c75cae67238c847a",
+   "uses_specialization": false
+  },
+  "legacy": {
+   "ops": [
+    {
+     "cases": [
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " Deal +1000% attack damage to enemies with "
+        },
+        {
+         "name": "ARTHURS_MARK",
+         "op": "status"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        }
+       ],
+       "specialization": "HARBINGER"
+      },
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " Reduce damage by 1000% from enemies with "
+        },
+        {
+         "name": "ARTHURS_MARK",
+         "op": "status"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        }
+       ],
+       "specialization": "LIONHEART"
+      }
+     ],
+     "op": "match_specialization"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " At the start of the battle, receive "
+    },
+    {
+     "name": "INVULNERABILITY",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " At the end of your first turn, apply a stack"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "  of "
+    },
+    {
+     "name": "ARTHURS_MARK",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " on a random enemy"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " When an enemy with "
+    },
+    {
+     "name": "ARTHURS_MARK",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " dies,"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "  it will be applied on another enemy"
+    }
+   ],
+   "sha256": "fce6d008ec4839f837346442e48afe4fe3c5093ba5baa615e7f5668b267c386b",
+   "uses_specialization": true
+  },
+  "lethality": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Dealing damage to the target that would leave it below % "
+    },
+    {
+     "name": "MAX_HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "that equals to % "
+    },
+    {
+     "name": "LETHALITY",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " will "
+    },
+    {
+     "name": "EXECUTE",
+     "op": "keyword"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " it"
+    }
+   ],
+   "sha256": "fdd952508fc74149aeb523957ed61e8a07bc03962a9a838f1dead7b1da08679b",
+   "uses_specialization": false
+  },
+  "liberation": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Converts all "
+    },
+    {
+     "name": "ARMOR",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to "
+    },
+    {
+     "name": "ADAPTIVE_ATTACK",
+     "op": "stat"
+    }
+   ],
+   "sha256": "a1904d9ecefd44fe1b68f6bc32b76143ac234b67701327e5050bf231031cba27",
+   "uses_specialization": false
+  },
+  "litany_of_malice": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "For every unique status effect on the target, "
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Deal +25% bonus "
+    },
+    {
+     "name": "MALICE_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to it"
+    }
+   ],
+   "sha256": "e47d72e8a9a02bafb8e532b9fa78c9d5d96ba0fd0b54577b2390bdc384790475",
+   "uses_specialization": false
+  },
+  "luck": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Your chance to perform the following:"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "name": "LUCKY_ATTACK",
+     "op": "action"
+    }
+   ],
+   "sha256": "9d9d8ff02bf413f6ad34a630ca33784112f4f7bc0091843988e2b2483ade6e4a",
+   "uses_specialization": false
+  },
+  "lucky_attack": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Deals 25% extra damage"
+    }
+   ],
+   "sha256": "3e9f3075a909f7843a9e4f2389ac11f5d3ae30cf1550a16da9c3b59ba2893f47",
+   "uses_specialization": false
+  },
+  "luminous_trial": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Applies 1 stacks of "
+    },
+    {
+     "name": "BLINDNESS",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " when entering combat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Opponents get +25% "
+    },
+    {
+     "name": "ACCURACY",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " for every "
+    },
+    {
+     "name": "MISS",
+     "op": "action"
+    }
+   ],
+   "sha256": "277146b3ae901d9e2edf169802835b3a43967eca7a6d12fccbc2ade54760e8e5",
+   "uses_specialization": false
+  },
+  "madness": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Only attack yourself"
+    }
+   ],
+   "sha256": "128a305d7320d5b4d176bec328ea3bc1c9803db0289789fa8b9bde9589f324de",
+   "uses_specialization": false
+  },
+  "magic_attack": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Amount of "
+    },
+    {
+     "name": "MAGIC_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to deal when attacking on hit"
+    }
+   ],
+   "sha256": "6bcf13dcbd7d3d9d4ebdc1fe0e39e1ada5f40e48e7e6166aa3466b2141bb458e",
+   "uses_specialization": false
+  },
+  "magic_shield": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "While active, blocks any damage, then breaks and"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "becomes inactive"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "(will not break from "
+    },
+    {
+     "name": "MAGIC_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": ")"
+    }
+   ],
+   "sha256": "e3b1b94b490048efad942d2fd15d740be2bf54c157a6c459f4a0a8535618338b",
+   "uses_specialization": false
+  },
+  "magical_frostflare": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Receive "
+    },
+    {
+     "name": "EPHEMERAL_ARMOR",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " that equals to "
+    },
+    {
+     "name": "MAGIC_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "dealt to enemies with "
+    },
+    {
+     "name": "FREEZE",
+     "op": "status"
+    }
+   ],
+   "sha256": "8c162b4300b9e92bece353682811a11e98aa4e2d2a58aa2dff2db4f43fe6e32a",
+   "uses_specialization": false
+  },
+  "magma": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Grants 1 stack of "
+    },
+    {
+     "name": "CINDER_ESSENCE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " before"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " \n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "the start of the turn"
+    }
+   ],
+   "sha256": "cf2524980a9dc76d6bba4002de03c891436eb728a39944a6dd5766693966ad24",
+   "uses_specialization": false
+  },
+  "malice": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Every time the owner is attacked, apply "
+    },
+    {
+     "name": "MALICE_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "to the attacker equal to total "
+    },
+    {
+     "name": "MALICE",
+     "op": "stat"
+    }
+   ],
+   "sha256": "894f8e10baa605b6ae66b29756bc939de8e729de011a480d3e5d42366f9bf2d4",
+   "uses_specialization": false
+  },
+  "malice_shield": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Next time you're about to get hit, break one shield and"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "ignore "
+    },
+    {
+     "mode": "UNKNOWN",
+     "name": "MALICE",
+     "op": "stat"
+    },
+    {
+     "color": "stat:MALICE",
+     "op": "text",
+     "text": "+1"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " damage"
+    }
+   ],
+   "sha256": "f21ef55a81e10c6202046eb3bdac5f6f771750244ffe32d3dd098992cbb4e7aa",
+   "uses_specialization": false
+  },
+  "mana": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "A resource that is often consumed when casting an ability"
+    }
+   ],
+   "sha256": "e6b4476cab96222ab1e35d4f66aa2e24364d79ccd637a31bc4f9375f776f5b88",
+   "uses_specialization": false
+  },
+  "mana_steal": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Steal 1 "
+    },
+    {
+     "name": "MANA",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " on hit"
+    }
+   ],
+   "sha256": "05d0dd664c95a58384ae2ef89ddf2be8be18aba89261171fb177a4c0aaa7b7a9",
+   "uses_specialization": false
+  },
+  "manaflow": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Sets your"
+    },
+    {
+     "name": "MAX_MANA",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to 1"
+    }
+   ],
+   "sha256": "267c9c4d9843dc3640e5976b6f51ea361ac9f17d1261984500d81df3060a79fe",
+   "uses_specialization": false
+  },
+  "market_refresh_button": {
+   "ops": [
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "price resets every battle"
+    }
+   ],
+   "sha256": "866fe8c5004361bcf1c873fe2818dc978197e1b83fadff3cab94f53a46f46738",
+   "uses_specialization": false
+  },
+  "max_health": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Largest value that "
+    },
+    {
+     "name": "HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " can be restored to"
+    }
+   ],
+   "sha256": "97ee50e8ba17356d1b7d04b62d2780774a0bb90af8deee19bd4517440b9de517",
+   "uses_specialization": false
+  },
+  "max_mana": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Largest value that "
+    },
+    {
+     "name": "MANA",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " can be restored to"
+    }
+   ],
+   "sha256": "5b81e6594c5fad43fbcd12e5fd44178aa09dfe6ddc1875da7d9ee55cb167d9ca",
+   "uses_specialization": false
+  },
+  "merchant_refresh_button": {
+   "ops": [
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "offers new items"
+    }
+   ],
+   "sha256": "028c41aa2295493ec169b0ab2dee81a444ae5e07f9832fc4afe36a33bb1d6c15",
+   "uses_specialization": false
+  },
+  "merchant_upgrade": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Unlocks "
+    },
+    {
+     "name": "TINKER",
+     "op": "keyword"
+    }
+   ],
+   "sha256": "950d2527427eb71632da4a4fda300beba36bbc58399a925319a38aa33a114b5a",
+   "uses_specialization": false
+  },
+  "mimicry": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Use your target's ability"
+    }
+   ],
+   "sha256": "39899774cb479e64e5447f5c9bcf3c68498053b41465874f2ff8921dd06ab8c5",
+   "uses_specialization": false
+  },
+  "miss": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Attacking but not hitting your target"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "Missing 10 times will end your turn"
+    }
+   ],
+   "sha256": "2a7ea48f87226c86c31a84e71052ab30afc693521bec207dec20c225f762d0d3",
+   "uses_specialization": false
+  },
+  "multi_attack_charge": {
+   "ops": [
+    {
+     "name": "MULTI_ATTACK",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " this turn"
+    }
+   ],
+   "sha256": "c1f68ff70243a4fd008483567d890966744f63de4b8f84ec342ac7a40c4cb169",
+   "uses_specialization": false
+  },
+  "multi_stun": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Receive "
+    },
+    {
+     "name": "MULTI_ATTACK_CHARGE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " and "
+    },
+    {
+     "name": "STUN_ATTACK_CHARGE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ","
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "attack afterwards"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "ACTIVATION CONDITION: parry an attack"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "resets every battle"
+    }
+   ],
+   "sha256": "6da6c6c3369c769a390465adc3d280befa41dc831b3cd68573386ebdd41f8036",
+   "uses_specialization": false
+  },
+  "my_justice": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Receive "
+    },
+    {
+     "name": "INVULNERABILITY",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " and "
+    },
+    {
+     "name": "COUNTER_ATTACK_CHARGE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " this turn"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "ACTIVATION CONDITION: receive "
+    },
+    {
+     "name": "INVULNERABILITY",
+     "op": "status"
+    }
+   ],
+   "sha256": "025c6c5fcd625c7bf40e5d2a29f4ee857f2f20a9cd843b2b5508e41954ac99be",
+   "uses_specialization": false
+  },
+  "my_way": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Receive "
+    },
+    {
+     "name": "COUNTER_ATTACK_CHARGE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " this turn"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "ACTIVATION CONDITION: attack 3 times"
+    }
+   ],
+   "sha256": "02506ed684a9e6542eac0da3492a89a598fae52af72f6a4af6ba56da39a95427",
+   "uses_specialization": false
+  },
+  "mystic_trader_refresh_button": {
+   "ops": [
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "conjures new items"
+    }
+   ],
+   "sha256": "bd2fb5c72c0eabff6d079133d402118064ac9849c02737968fb8357ceeb54cca",
+   "uses_specialization": false
+  },
+  "orion": {
+   "ops": [
+    {
+     "amount": 1,
+     "op": "counter_hint",
+     "set": "ORION"
+    },
+    {
+     "amount": 1,
+     "op": "counter_display",
+     "set": "ORION"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Gain increased damage resistance as your "
+    },
+    {
+     "name": "HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " falls, up to 75% resistance when at 25% "
+    },
+    {
+     "name": "HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 3,
+     "op": "counter_hint",
+     "set": "ORION"
+    },
+    {
+     "amount": 3,
+     "op": "counter_display",
+     "set": "ORION"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " At the end of the first 3 turns, repair 25%"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " of your "
+    },
+    {
+     "name": "ARMOR",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 4,
+     "op": "counter_hint",
+     "set": "ORION"
+    },
+    {
+     "amount": 4,
+     "op": "counter_display",
+     "set": "ORION"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Unable to "
+    },
+    {
+     "name": "HEAL",
+     "op": "keyword"
+    }
+   ],
+   "sha256": "6857732e5867b6c1eaa6719f83baa9b3b2fdf9e29b30984a6a2777643be3e229",
+   "uses_specialization": false
+  },
+  "parry": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Return the damage and status effects to the attacker"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "Getting parried 10 times will end your turn"
+    }
+   ],
+   "sha256": "d3d2b6c740a7a2fe5e98ced9d035d9a69730ebdb7895e88aa06f7e04369d8e1e",
+   "uses_specialization": false
+  },
+  "penetration": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Ignores %"
+    },
+    {
+     "name": "ARMOR",
+     "op": "stat"
+    }
+   ],
+   "sha256": "a67ad33137c3b1e79bfb8ff66bffc4c2713221da35109cc3cd811509a610ff05",
+   "uses_specialization": false
+  },
+  "physical_attack": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Amount of "
+    },
+    {
+     "name": "PHYSICAL_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to deal when attacking on hit"
+    }
+   ],
+   "sha256": "3a0d30acd8330902dbe9dbaa5070e40b335b85186929d4429e377fb399e43cd5",
+   "uses_specialization": false
+  },
+  "plated_rot": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Damage dealt to "
+    },
+    {
+     "name": "ARMOR",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ", will be converted to "
+    },
+    {
+     "name": "MAX_HEALTH",
+     "op": "stat"
+    }
+   ],
+   "sha256": "6ba4844f79cc6a9a06dc75c921c1292b87df43eee1ce5667c572b1faad146e47",
+   "uses_specialization": false
+  },
+  "poison": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Damages health directly at the end of the turn"
+    }
+   ],
+   "sha256": "b8a6ec02e558954d9692d82b5252fdb712565d65537789878b46fa579ef7a341",
+   "uses_specialization": false
+  },
+  "polymorph": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Transforms the strongest enemy into a random enemy"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "and resets their stats"
+    }
+   ],
+   "sha256": "9251e339c8c05ebbc54917fc2d8195454a63662cef6541063ec4d59040b4db9a",
+   "uses_specialization": false
+  },
+  "poverty": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " While below 25% "
+    },
+    {
+     "name": "HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ", gain 75% "
+    },
+    {
+     "name": "CRIT_CHANCE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Gain "
+    },
+    {
+     "name": "ANTI_STEAL",
+     "op": "keyword"
+    }
+   ],
+   "sha256": "c40c2a183f940f30fe169c685dcda15d79e78498ffd403d972dc7b439266ded3",
+   "uses_specialization": false
+  },
+  "power": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Multiplies all "
+    },
+    {
+     "name": "ATTACK_DAMAGE",
+     "op": "keyword"
+    }
+   ],
+   "sha256": "2d718951ea9cdd1a744d0b34ed275b66ec7bdc9f7e3e629c0ee9eb1d6e8f4d1b",
+   "uses_specialization": false
+  },
+  "prime_guard": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Other enemies will take 99% less damage until"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "the owner of the passive is defeated"
+    }
+   ],
+   "sha256": "42168b2c6275da73e57d4824e1b86ff3d3f73abd2f97e69a7114b27d53b6b0e3",
+   "uses_specialization": false
+  },
+  "purification": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "At the end of the turn, conume 1 stack and "
+    },
+    {
+     "name": "CLEANSE",
+     "op": "action"
+    }
+   ],
+   "sha256": "7efecf8dbdcf15ceaba760e0b5937989f35b9193b30b0cab6fe4d46379263c28",
+   "uses_specialization": false
+  },
+  "recovery": {
+   "ops": [
+    {
+     "name": "HEAL",
+     "op": "keyword"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " a portion of your missing "
+    },
+    {
+     "name": "HEALTH",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " each turn"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "based on your "
+    },
+    {
+     "name": "RECOVERY",
+     "op": "stat"
+    }
+   ],
+   "sha256": "86d5d68a7ddf01d1e4adcc384c8017c5d7b0113444376a8f6659116d31b906ac",
+   "uses_specialization": false
+  },
+  "replay": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Activate your last mimicked ability"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "ACTIVATION CONDITION: mimic an ability"
+    }
+   ],
+   "sha256": "280d373fc957a5f5c7c1953d7ccd663dca684fc59bea5b86566837b87f06cd4c",
+   "uses_specialization": false
+  },
+  "resilience": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " All enemies will gain "
+    },
+    {
+     "name": "ARMOR",
+     "op": "stat"
+    }
+   ],
+   "sha256": "8ec6176c51f33a094f9f7b4cae8c603155e9773c324b704ade84ef4eeff1dc81",
+   "uses_specialization": false
+  },
+  "ribbon_of_fortune": {
+   "ops": [
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "+25% of getting an extra item when"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "opening a chest"
+    }
+   ],
+   "sha256": "e94f5438de6781554dea47a50f6d8960d250aa0f3a20892cbbcb0ead0732aacd",
+   "uses_specialization": false
+  },
+  "royal": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Receive an "
+    },
+    {
+     "name": "INHERITED_SIN",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " on the first turn"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "If "
+    },
+    {
+     "name": "CLEANSE",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " removed "
+    },
+    {
+     "name": "INHERITED_SIN",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ", gain 5"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "stacks of "
+    },
+    {
+     "name": "DEBUFF_IMMUNITY",
+     "op": "status"
+    }
+   ],
+   "sha256": "010772bcdb2225e7a12f5ea21b7793e323204ea51faeead6527ff0cf9adfa581",
+   "uses_specialization": false
+  },
+  "sagacity": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Adds a timer to your actions, if the"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "timer reaches 0, end the run"
+    }
+   ],
+   "sha256": "44d5a7394392b0006fd4fccf7a7a5017824d72e6b3a7e621fe7fc048acf00c54",
+   "uses_specialization": false
+  },
+  "shadow": {
+   "ops": [
+    {
+     "cases": [
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " Transforms 200% of lost "
+        },
+        {
+         "name": "HEALTH",
+         "op": "stat"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " into "
+        },
+        {
+         "name": "PHYSICAL_ATTACK",
+         "op": "stat"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DIM_GRAY",
+         "op": "text",
+         "text": "  resets every battle"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        }
+       ],
+       "specialization": "BLOODMOON"
+      }
+     ],
+     "op": "match_specialization"
+    },
+    {
+     "amount": 1,
+     "op": "counter_hint",
+     "set": "SHADOW"
+    },
+    {
+     "amount": 1,
+     "op": "counter_display",
+     "set": "SHADOW"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Every time you avoid an attack, "
+    },
+    {
+     "name": "BACKSTAB",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 3,
+     "op": "counter_hint",
+     "set": "SHADOW"
+    },
+    {
+     "amount": 3,
+     "op": "counter_display",
+     "set": "SHADOW"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Damage avoided while "
+    },
+    {
+     "name": "ELUSIVE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " will be gained"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " as "
+    },
+    {
+     "name": "ADAPTIVE_ATTACK",
+     "op": "stat"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": " - resets every battle"
+    },
+    {
+     "cases": [
+      {
+       "ops": [],
+       "specialization": "MOONLIGHTER"
+      },
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " Gain attack damage avoided with "
+        },
+        {
+         "name": "DODGE",
+         "op": "action"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DIM_GRAY",
+         "op": "text",
+         "text": "  resets every battle"
+        }
+       ],
+       "specialization": "NIGHTHRUST"
+      }
+     ],
+     "op": "match_specialization"
+    }
+   ],
+   "sha256": "9807b1acf6f518f2d2c06ee6fb943248ff147496f40eb1f95302909f764fe7b4",
+   "uses_specialization": true
+  },
+  "shattered_breath": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Every time you "
+    },
+    {
+     "name": "PARRY",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ", apply "
+    },
+    {
+     "name": "EXHAUSTION",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "on target"
+    }
+   ],
+   "sha256": "cac46264e2249aed4c08ad72a18342d34e0075a7026ca78ed5240aadd188ccda",
+   "uses_specialization": false
+  },
+  "shatterwave": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "After hitting an enemy, deal 25% of your"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "attack damage to adjacent enemies"
+    }
+   ],
+   "sha256": "07fe45ae9fbe5c606e7e776f7469093430d76772d7a8b67a6270a10c43c68d34",
+   "uses_specialization": false
+  },
+  "silence": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Unable to use abilities"
+    }
+   ],
+   "sha256": "ba7b5c75885fd2318a45d215c055bbc9006c09368ebfb8e2a5965b0e3eaa205f",
+   "uses_specialization": false
+  },
+  "silhouette": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Become "
+    },
+    {
+     "name": "ELUSIVE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " and attack"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "ACTIVATION CONDITION: "
+    },
+    {
+     "name": "BACKSTAB",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": "resets every battle"
+    }
+   ],
+   "sha256": "003a992fd92b6bf8079047f668f01cfd701865ece06fdeb820ddc1c6314bf1a0",
+   "uses_specialization": false
+  },
+  "slowness": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Reduces "
+    },
+    {
+     "name": "AGILITY",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " by 100%"
+    }
+   ],
+   "sha256": "6bdf5683b23cbb1f5b5f4ab850896fee2be6ff0fe303e7a16d7468e507315471",
+   "uses_specialization": false
+  },
+  "sparkle": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Hitting a target will pop all "
+    },
+    {
+     "name": "SPARKLE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " stacks and will"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "do the following for each stack:"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "- Grant "
+    },
+    {
+     "name": "EPHEMERAL_ARMOR",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to the attacker"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "- Deal "
+    },
+    {
+     "name": "DAZZLE_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to the target"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    }
+   ],
+   "sha256": "7c8dfb4e5534110feb98ea5ba60fa957710280e40445f0d540315de0a6307961",
+   "uses_specialization": false
+  },
+  "spell_bind": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Apply "
+    },
+    {
+     "name": "SILENCE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " on the target"
+    }
+   ],
+   "sha256": "6e3b4260bc38d2da8166c737057e1eaaabe4af7cffdde86883701158df40825e",
+   "uses_specialization": false
+  },
+  "spell_block": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "At the start of the turn, apply "
+    },
+    {
+     "name": "SILENCE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "on first enemy with an ability"
+    }
+   ],
+   "sha256": "96cdcc6480d57f4da1305d54aadfb383fe97590561d7c35c76b2f40f2ba6b08b",
+   "uses_specialization": false
+  },
+  "spelldom": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "The amount of "
+    },
+    {
+     "name": "MAGIC_BLITZ",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " you get on the first turn"
+    }
+   ],
+   "sha256": "d7b6cd2759b61d5c9aa97aa9b0c4a904bb02a416355de130f28569b7090f23da",
+   "uses_specialization": false
+  },
+  "steady_grip": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Increase your "
+    },
+    {
+     "name": "TOTAL_ATTACKS",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " by 1 for this battle"
+    }
+   ],
+   "sha256": "416a2d7bd1c0014504b8d2419a966a72b952f5a54b64fb0390ac2b22dd0976b3",
+   "uses_specialization": false
+  },
+  "strike_of_destiny": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Remove all buffs from the target on hit"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "if you have "
+    },
+    {
+     "name": "INVULNERABILITY",
+     "op": "status"
+    }
+   ],
+   "sha256": "de7eae1ffd394a1b890b04d6dd33a3251613910a1318e12b985300689dfe60c7",
+   "uses_specialization": false
+  },
+  "stun": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Once applied: unable to perform any actions this turn"
+    }
+   ],
+   "sha256": "1ee08d0a9dcf93c768b7df50b202a4867c1f307021fd06d6cc094912eac34ecd",
+   "uses_specialization": false
+  },
+  "stun_attack": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "All your hits will apply "
+    },
+    {
+     "name": "STUN",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " on the target"
+    }
+   ],
+   "sha256": "0fb02cb049864a2aa0b7c36ad16ab1c7d78d42e8e18266657d31d550ed3d8333",
+   "uses_specialization": false
+  },
+  "swarm": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Every battle will be filled with 6 enemies"
+    }
+   ],
+   "sha256": "40dab23cdd10f155bdc8eba2d5f557cd6535cc8c69ede347f9eb83f81358419b",
+   "uses_specialization": false
+  },
+  "swiftness": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Doubles your "
+    },
+    {
+     "name": "TOTAL_ATTACKS",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ", but after every attack"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "lose 5% "
+    },
+    {
+     "name": "ACCURACY",
+     "op": "stat"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": " resets every turn"
+    }
+   ],
+   "sha256": "d5a45bf76f99af13e4821f907e402fbf6f60c7d049c5bb8bdd381b46bcfaf204",
+   "uses_specialization": false
+  },
+  "tenacity": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Chance to not receive the following: "
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "name": "SLOWNESS",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "name": "STUN",
+     "op": "status"
+    }
+   ],
+   "sha256": "8be0dde64cec96758244d39e297aade2be55277fcca04a32550f7902bfe40417",
+   "uses_specialization": false
+  },
+  "thunderstrike": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Apply "
+    },
+    {
+     "name": "STUN",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " on hit if the target has "
+    },
+    {
+     "name": "ELECTRO_CHARGE",
+     "op": "status"
+    }
+   ],
+   "sha256": "32447669b24c87a46a9b7450ca01652aef59f8cef68cf5e048fc88327e828afd",
+   "uses_specialization": false
+  },
+  "tier_i_reward": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Get an extra "
+    },
+    {
+     "name": "DIAMOND",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " from opening a chest"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Start with +{gold} "
+    },
+    {
+     "name": "GOLD",
+     "op": "stat"
+    }
+   ],
+   "replacement_functions": [
+    "get_text_replacements"
+   ],
+   "sha256": "d287a6b54f7afc5879a75cd952d9d9a85976e1631896e2754d1710b13ddf77a3",
+   "uses_specialization": false
+  },
+  "timeout": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Can't do anything this turn"
+    }
+   ],
+   "sha256": "05480163c857bc3d2c55d07af8d665d45e7600ade56f1674a4cee21d714484f1",
+   "uses_specialization": false
+  },
+  "tinker": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "The merchant will do the following to the items you give him:"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Convert reforges and items into tinker kits"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Upgrade reforged items"
+    }
+   ],
+   "sha256": "730781d835fa0f0820ce1fd2552025115669f94d7c35a68fbb4bb2d45c8b9435",
+   "uses_specialization": false
+  },
+  "total_attacks": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "The amount of times you will attack a target"
+    }
+   ],
+   "sha256": "7326696c709b7ad7c7f06f552e6c8cc6c652cc4cca563d932fd8836b774c4245",
+   "uses_specialization": false
+  },
+  "toughness": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Reduces damage taken from attacks"
+    }
+   ],
+   "sha256": "2d0ed72f624bae74c694311869128b624b51d12bb66c858e85b1bc6162fe655a",
+   "uses_specialization": false
+  },
+  "toxic_attack": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "When hitting a target, apply 1 "
+    },
+    {
+     "name": "POISON",
+     "op": "status"
+    }
+   ],
+   "sha256": "659dec1e227b66ea5d61873aed45f0ff08d6064947a9ba2598e2596c14a8a105",
+   "uses_specialization": false
+  },
+  "toxic_redemption": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Upon killing an enemy, remove all "
+    },
+    {
+     "name": "POISON",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " on you and deal "
+    },
+    {
+     "name": "PHYSICAL_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "to all enemies that equals to the amount of the removed poison"
+    }
+   ],
+   "sha256": "edb232d3c2cf64bd7fce1124e00036a10df6f4cf6abf990ee8011637e424eb88",
+   "uses_specialization": false
+  },
+  "toxic_transmute": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Every time your health is about to take damage,"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "negate it, convert it to "
+    },
+    {
+     "name": "POISON",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " and apply"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "on yourself"
+    }
+   ],
+   "sha256": "25a62d5198147f0ed16b0547e3920c0343ac44d215a722e50767bce8e57b7ee1",
+   "uses_specialization": false
+  },
+  "toxicity": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Apply "
+    },
+    {
+     "name": "POISON",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " stack on hit for every "
+    },
+    {
+     "name": "TOXICITY",
+     "op": "stat"
+    }
+   ],
+   "sha256": "8a510edc6b451df3ae323ef14192ac6fbeb48c49bd98cee2d64bdb633873d571",
+   "uses_specialization": false
+  },
+  "toxshield": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Every time "
+    },
+    {
+     "name": "POISON_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " is dealt during your"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "turn gain "
+    },
+    {
+     "name": "EPHEMERAL_ARMOR",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " that equals to"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "that amount"
+    }
+   ],
+   "sha256": "b5342e3711965757e0bfe5e735fa81111784394498e1d977920c5ae137e51d59",
+   "uses_specialization": false
+  },
+  "unavoidable": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "The attack will always land"
+    }
+   ],
+   "sha256": "ba9a66e32776a75c2dc9031582da5302fddf47bca89934946088b37077b76965",
+   "uses_specialization": false
+  },
+  "unchained": {
+   "ops": [
+    {
+     "amount": 1,
+     "op": "counter_hint",
+     "set": "UNCHAINED"
+    },
+    {
+     "amount": 1,
+     "op": "counter_display",
+     "set": "UNCHAINED"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Debuffs will be applied to all enemies"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 2,
+     "op": "counter_hint",
+     "set": "UNCHAINED"
+    },
+    {
+     "amount": 2,
+     "op": "counter_display",
+     "set": "UNCHAINED"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Double the debuffs you apply"
+    }
+   ],
+   "sha256": "257a60fe9b3eb2c987ef470331003b242a88f9e3c1490edbe594f14a880afb6f",
+   "uses_specialization": false
+  },
+  "undead_blessing": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "When an ally dies, gain a stack"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "of "
+    },
+    {
+     "name": "PURIFICATION",
+     "op": "status"
+    }
+   ],
+   "sha256": "e3885eadabd5c1d24b15a3a326601b9f8405ff554b53c94a0678c733837c61f3",
+   "uses_specialization": false
+  },
+  "undying_curse": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Upon death, apply "
+    },
+    {
+     "name": "CURSE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "on the killer"
+    }
+   ],
+   "sha256": "098cefdb79f20741711b88aa39780e5987babdf0d57af0f9202188395a9f9e0c",
+   "uses_specialization": false
+  },
+  "vampiric": {
+   "ops": [
+    {
+     "amount": 1,
+     "op": "counter_hint",
+     "set": "VAMPIRIC"
+    },
+    {
+     "amount": 1,
+     "op": "counter_display",
+     "set": "VAMPIRIC"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " On your first attack on a new target apply 8% "
+    },
+    {
+     "name": "BLEED",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 3,
+     "op": "counter_hint",
+     "set": "VAMPIRIC"
+    },
+    {
+     "amount": 3,
+     "op": "counter_display",
+     "set": "VAMPIRIC"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Every time an enemy takes "
+    },
+    {
+     "name": "BLEED_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ", "
+    },
+    {
+     "name": "HEAL",
+     "op": "keyword"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " for that amount"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 5,
+     "op": "counter_hint",
+     "set": "VAMPIRIC"
+    },
+    {
+     "amount": 5,
+     "op": "counter_display",
+     "set": "VAMPIRIC"
+    },
+    {
+     "name": "BLEED_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " will be converted to "
+    },
+    {
+     "name": "POWER",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": " resets every battle"
+    },
+    {
+     "cases": [
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "Everytime you "
+        },
+        {
+         "name": "HEAL",
+         "op": "keyword"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": ":"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " Deal direct "
+        },
+        {
+         "name": "PHYSICAL_DAMAGE",
+         "op": "stat"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " that equals to the amount you"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "  healed to a selected enemy, bypassing their "
+        },
+        {
+         "name": "ARMOR",
+         "op": "stat"
+        }
+       ],
+       "specialization": "VAMPIERCER"
+      },
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "Everytime you "
+        },
+        {
+         "name": "HEAL",
+         "op": "keyword"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": ":"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " Deal "
+        },
+        {
+         "name": "MAGIC_DAMAGE",
+         "op": "stat"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " that equals to the amount you"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "  healed to a selected enemy"
+        }
+       ],
+       "specialization": "BLOODCASTER"
+      },
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "Everytime you "
+        },
+        {
+         "name": "HEAL",
+         "op": "keyword"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": ":"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " Apply "
+        },
+        {
+         "name": "POISON",
+         "op": "status"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " stacks to the selected enemy that"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "  equals to the amount you healed"
+        }
+       ],
+       "specialization": "VENOMIRE"
+      }
+     ],
+     "op": "match_specialization"
+    }
+   ],
+   "sha256": "1dde805fafaafcb3ab92b8383d3b21a47e6a2297d33b5d8c1be992e0b5a73d11",
+   "uses_specialization": true
+  },
+  "vengeful_edge": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "When you "
+    },
+    {
+     "name": "COUNTER_ATTACK",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": ", "
+    },
+    {
+     "name": "COUNTER_ATTACK",
+     "op": "action"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " again"
+    }
+   ],
+   "sha256": "a0170a5ed80a86288aa5348e4c0e7ba1687fdc43dd3b835d796df238840ded38",
+   "uses_specialization": false
+  },
+  "venom_spit": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Apply stacks of "
+    },
+    {
+     "name": "POISON",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " equal to total"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "name": "TOXICITY",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " to your target"
+    }
+   ],
+   "sha256": "8ab19a9b2cea521f5161c78318e31e57354e26abf22f550010e3760fa320ecb4",
+   "uses_specialization": false
+  },
+  "vimblow": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "When attacking, consume one stack and gain bonus "
+    },
+    {
+     "name": "PHYSICAL_ATTACK",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "equal to 25% of your "
+    },
+    {
+     "name": "MAX_HEALTH",
+     "op": "stat"
+    }
+   ],
+   "sha256": "6a4be347c573aad5d4d399cd88f698c584f9427336d6c96f20f97780b5cb683c",
+   "uses_specialization": false
+  },
+  "warrior": {
+   "ops": [
+    {
+     "amount": 1,
+     "op": "counter_hint",
+     "set": "WARRIOR"
+    },
+    {
+     "amount": 1,
+     "op": "counter_display",
+     "set": "WARRIOR"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Every time you attack, receive "
+    },
+    {
+     "name": "COMBAT_INSIGHT",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 4,
+     "op": "counter_hint",
+     "set": "WARRIOR"
+    },
+    {
+     "amount": 4,
+     "op": "counter_display",
+     "set": "WARRIOR"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " When you get attacked, receive "
+    },
+    {
+     "name": "COMBAT_INSIGHT",
+     "op": "status"
+    },
+    {
+     "amount": 0,
+     "op": "counter_hint",
+     "set": "WARRIOR"
+    },
+    {
+     "cases": [
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": " Everytime you stun an enemy, attack it"
+        }
+       ],
+       "specialization": "THUNDERBORN"
+      },
+      {
+       "ops": [
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "<.>"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "  Every time you "
+        },
+        {
+         "name": "PARRY",
+         "op": "action"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": ", receive +1 "
+        },
+        {
+         "name": "TOTAL_ATTACKS",
+         "op": "stat"
+        },
+        {
+         "color": "DARK_GRAY",
+         "op": "text",
+         "text": "\n"
+        },
+        {
+         "color": "DIM_GRAY",
+         "op": "text",
+         "text": "   resets every battle"
+        }
+       ],
+       "specialization": "QUICKBLADE"
+      }
+     ],
+     "op": "match_specialization"
+    }
+   ],
+   "sha256": "febdb5a03eb6a06368a29f126c772b33c4d6b8d22e4b34d1ddd6d6ba5778a086",
+   "uses_specialization": true
+  },
+  "warriors_resolute": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Receive a "
+    },
+    {
+     "name": "CLARITY",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " in the first 3 turns"
+    }
+   ],
+   "sha256": "e35b7a96914f23a38979a0cbe07906c8ef6c08070a9ab4d71505dfb540d0d740",
+   "uses_specialization": false
+  },
+  "weakness": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Reduces all attack damage by 25% per stack"
+    }
+   ],
+   "sha256": "655c56938a8875666dbe4340ed71950283c083bfc22af0d409e1093b95085e1e",
+   "uses_specialization": false
+  },
+  "winds_grace": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Grants all allies "
+    },
+    {
+     "name": "SWIFTNESS",
+     "op": "item_set"
+    }
+   ],
+   "sha256": "2af60b0d4d3da9901a2fdba0f4d03bfc692985d6e081275a4ddadf0fa168dda0",
+   "uses_specialization": false
+  },
+  "wood": {
+   "ops": [
+    {
+     "amount": 1,
+     "op": "counter_hint",
+     "set": "WOOD"
+    },
+    {
+     "amount": 1,
+     "op": "counter_display",
+     "set": "WOOD"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " +25% "
+    },
+    {
+     "name": "LUCK",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 3,
+     "op": "counter_hint",
+     "set": "WOOD"
+    },
+    {
+     "amount": 3,
+     "op": "counter_display",
+     "set": "WOOD"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " +10% "
+    },
+    {
+     "name": "LUCK",
+     "op": "stat"
+    }
+   ],
+   "sha256": "a1f69821abc4f032f35c8e27bde6892cf1eb17f4645ec4d00b23b8bf2ba28ede",
+   "uses_specialization": false
+  },
+  "wrath_of_the_broken_flesh": {
+   "ops": [
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "Every time your health is damaged, gain a stack of "
+    },
+    {
+     "name": "FURY",
+     "op": "status"
+    }
+   ],
+   "sha256": "f513ae3de42051cda67789ffb22ad0101491f87ed8552b8f9de6f03f6d298212",
+   "uses_specialization": false
+  },
+  "zephyron": {
+   "ops": [
+    {
+     "amount": 1,
+     "op": "counter_hint",
+     "set": "ZEPHYRON"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "amount": 1,
+     "op": "counter_display",
+     "set": "ZEPHYRON"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Gain {amount}% "
+    },
+    {
+     "name": "MAGIC_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " on every turn"
+    },
+    {
+     "color": "DIM_GRAY",
+     "op": "text",
+     "text": " resets every battle"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 2,
+     "op": "counter_hint",
+     "set": "ZEPHYRON"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "amount": 2,
+     "op": "counter_display",
+     "set": "ZEPHYRON"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " Dealt "
+    },
+    {
+     "name": "MAGIC_DAMAGE",
+     "op": "stat"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " will be applied to enemies with "
+    },
+    {
+     "name": "SILENCE",
+     "op": "status"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "\n"
+    },
+    {
+     "amount": 4,
+     "op": "counter_hint",
+     "set": "ZEPHYRON"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": "<.>"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " "
+    },
+    {
+     "amount": 4,
+     "op": "counter_display",
+     "set": "ZEPHYRON"
+    },
+    {
+     "color": "DARK_GRAY",
+     "op": "text",
+     "text": " First activated ability won't consume any "
+    },
+    {
+     "name": "MANA",
+     "op": "stat"
+    }
+   ],
+   "replacement_functions": [
+    "get_text_replacements"
+   ],
+   "sha256": "1a8f4325eb33b4ca9f2f703b09e2aa880208bca7884e25ed7d10e456730a6aaa",
+   "uses_specialization": false
+  }
+ },
+ "unsupported": {
+  "attack_screen_interact_button": "var character: Character = null",
+  "attack_stat_container": "if args.size() < 2:",
+  "bastolic": "var magic_damage_bb: BBContainerData = BBContainerData.new()",
+  "blitz": "if args[0] == StatusEffects.OMNI_BLITZ:",
+  "crit_chance": "var battle_action_bb = BattleActions.get_bb_container_data(BattleActions.CRITICAL_STRIKE)",
+  "critical_strike": "var stat: StatResource = Stats.CRIT_CHANCE",
+  "darkness": "if T.is_initialized():",
+  "difficulity_progress": "var battles_remaining: int = 0",
+  "item_set_token": "var bb_container_data_arr: Array[BBContainerData] = []",
+  "life_steal": "var damage_type_bb = Stats.get_bb_container_data(Stats.PHYSICAL_DAMAGE)",
+  "mercenary": "var display_mode: Stats.DisplayMode = Stats.DisplayMode.UNKNOWN",
+  "prowlers_strike": "var agility_amount: int = 25",
+  "scout": "if is_instance_valid(specialization):",
+  "silver": "var display_mode: Stats.DisplayMode = Stats.DisplayMode.UNKNOWN",
+  "stance": "var owner_name: String = args[0] as String",
+  "thunder": "var display_mode: Stats.DisplayMode = Stats.DisplayMode.UNKNOWN",
+  "wisdom": "var stat: StatResource = Stats.WISDOM"
+ }
+}

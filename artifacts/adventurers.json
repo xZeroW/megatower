@@ -1,0 +1,604 @@
+{
+ "list": [
+  {
+   "id": "res://resources/adventurers/fren.tres",
+   "name": "Fren",
+   "portrait": "res://assets/textures/portraits/fren.png",
+   "blink": "res://assets/textures/portraits/fren_blink.png",
+   "starting_inventory_items": [],
+   "challenge_market_items": [],
+   "starting_market_items": [],
+   "doubled_stat": "agility",
+   "ability": "res://resources/abilities/prowlers_strike.tres",
+   "abilities_to_learn_size": 1,
+   "passive": null,
+   "bonus_stats": [
+    {
+     "resource": "max_health",
+     "amount": 7.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "agility",
+     "amount": 25.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "sockets": [
+    "helmet",
+    "chestplate",
+    "leggings",
+    "boots",
+    "necklace",
+    "weapon",
+    "ring",
+    "ring"
+   ]
+  },
+  {
+   "id": "res://resources/adventurers/pyry.tres",
+   "name": "Pyry",
+   "portrait": "res://assets/textures/portraits/pyry.png",
+   "blink": "res://assets/textures/portraits/pyry_blink.png",
+   "starting_inventory_items": [],
+   "challenge_market_items": [],
+   "starting_market_items": [],
+   "doubled_stat": null,
+   "ability": "res://resources/abilities/burden_of_power.tres",
+   "abilities_to_learn_size": 1,
+   "passive": "res://resources/passives/consuming_darkness.tres",
+   "bonus_stats": [
+    {
+     "resource": "max_health",
+     "amount": 8.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "magic_attack",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "magic_attack",
+     "amount": 25.0,
+     "is_modifier": true,
+     "boosting_sets": []
+    }
+   ],
+   "sockets": [
+    "helmet",
+    "chestplate",
+    "leggings",
+    "boots",
+    "necklace",
+    "weapon",
+    "ring",
+    "ring"
+   ]
+  },
+  {
+   "id": "res://resources/adventurers/sid.tres",
+   "name": "Sid",
+   "portrait": "res://assets/textures/portraits/sid.png",
+   "blink": "res://assets/textures/portraits/sid_blink.png",
+   "starting_inventory_items": [],
+   "challenge_market_items": [],
+   "starting_market_items": [],
+   "doubled_stat": null,
+   "ability": "res://resources/abilities/my_way.tres",
+   "abilities_to_learn_size": 1,
+   "passive": "res://resources/passives/vengeful_edge.tres",
+   "bonus_stats": [
+    {
+     "resource": "max_health",
+     "amount": 7.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "sockets": [
+    "helmet",
+    "chestplate",
+    "leggings",
+    "boots",
+    "necklace",
+    "weapon",
+    "ring",
+    "ring"
+   ]
+  },
+  {
+   "id": "res://resources/adventurers/elys.tres",
+   "name": "Elys",
+   "portrait": "res://assets/textures/portraits/elys.png",
+   "blink": "res://assets/textures/portraits/elys_blink.png",
+   "starting_inventory_items": [],
+   "challenge_market_items": [],
+   "starting_market_items": [],
+   "doubled_stat": "recovery",
+   "ability": "res://resources/abilities/bloodlust_aura.tres",
+   "abilities_to_learn_size": 1,
+   "passive": "res://resources/passives/crimson_pact.tres",
+   "bonus_stats": [
+    {
+     "resource": "max_health",
+     "amount": 7.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "sockets": [
+    "helmet",
+    "chestplate",
+    "leggings",
+    "boots",
+    "necklace",
+    "weapon",
+    "ring",
+    "ring"
+   ]
+  },
+  {
+   "id": "res://resources/adventurers/fael.tres",
+   "name": "Fael",
+   "portrait": "res://assets/textures/portraits/fael.png",
+   "blink": "res://assets/textures/portraits/fael_blink.png",
+   "starting_inventory_items": [],
+   "challenge_market_items": [],
+   "starting_market_items": [],
+   "doubled_stat": null,
+   "ability": "res://resources/abilities/multi_stun.tres",
+   "abilities_to_learn_size": 1,
+   "passive": "res://resources/passives/battleborn.tres",
+   "bonus_stats": [
+    {
+     "resource": "max_health",
+     "amount": 10.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "combat",
+     "amount": 25.0,
+     "is_modifier": true,
+     "boosting_sets": []
+    }
+   ],
+   "sockets": [
+    "helmet",
+    "chestplate",
+    "leggings",
+    "boots",
+    "necklace",
+    "weapon",
+    "weapon",
+    "ring"
+   ]
+  },
+  {
+   "id": "res://resources/adventurers/tyr.tres",
+   "name": "Tyr",
+   "portrait": "res://assets/textures/portraits/tyr.png",
+   "blink": "res://assets/textures/portraits/tyr_blink.png",
+   "starting_inventory_items": [],
+   "challenge_market_items": [],
+   "starting_market_items": [],
+   "doubled_stat": null,
+   "ability": "res://resources/abilities/heart_of_iron.tres",
+   "abilities_to_learn_size": 1,
+   "passive": "res://resources/passives/iron_pact.tres",
+   "bonus_stats": [
+    {
+     "resource": "max_health",
+     "amount": 20.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armored_attack",
+     "amount": 10.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "armor",
+     "amount": 45.0,
+     "is_modifier": true,
+     "boosting_sets": []
+    }
+   ],
+   "sockets": [
+    "helmet",
+    "chestplate",
+    "leggings",
+    "boots",
+    "necklace",
+    "ring",
+    "ring",
+    "ring"
+   ]
+  },
+  {
+   "id": "res://resources/adventurers/viran.tres",
+   "name": "Viran",
+   "portrait": "res://assets/textures/portraits/viran.png",
+   "blink": "res://assets/textures/portraits/viran_blink.png",
+   "starting_inventory_items": [],
+   "challenge_market_items": [],
+   "starting_market_items": [],
+   "doubled_stat": null,
+   "ability": "res://resources/abilities/drain_react.tres",
+   "abilities_to_learn_size": 1,
+   "passive": "res://resources/passives/toxshield.tres",
+   "bonus_stats": [
+    {
+     "resource": "max_health",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "toxicity",
+     "amount": 3.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "toxicity",
+     "amount": 45.0,
+     "is_modifier": true,
+     "boosting_sets": []
+    }
+   ],
+   "sockets": [
+    "helmet",
+    "chestplate",
+    "leggings",
+    "boots",
+    "necklace",
+    "weapon",
+    "ring",
+    "ring"
+   ]
+  },
+  {
+   "id": "res://resources/adventurers/kinno.tres",
+   "name": "Kinno",
+   "portrait": "res://assets/textures/portraits/kinno.png",
+   "blink": "res://assets/textures/portraits/kinno_blink.png",
+   "starting_inventory_items": [],
+   "challenge_market_items": [],
+   "starting_market_items": [],
+   "doubled_stat": null,
+   "ability": "res://resources/abilities/arcane_roulette.tres",
+   "abilities_to_learn_size": 2,
+   "passive": "res://resources/passives/arcane_control.tres",
+   "bonus_stats": [
+    {
+     "resource": "max_health",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "agility",
+     "amount": 15.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "magic_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "magic_attack",
+     "amount": 25.0,
+     "is_modifier": true,
+     "boosting_sets": []
+    }
+   ],
+   "sockets": [
+    "helmet",
+    "chestplate",
+    "leggings",
+    "boots",
+    "necklace",
+    "weapon",
+    "ring",
+    "ring"
+   ]
+  },
+  {
+   "id": "res://resources/adventurers/riel.tres",
+   "name": "Riel",
+   "portrait": "res://assets/textures/portraits/riel.png",
+   "blink": "res://assets/textures/portraits/riel_blink.png",
+   "starting_inventory_items": [],
+   "challenge_market_items": [],
+   "starting_market_items": [],
+   "doubled_stat": null,
+   "ability": "res://resources/abilities/replay.tres",
+   "abilities_to_learn_size": 2,
+   "passive": "res://resources/passives/emulator.tres",
+   "bonus_stats": [
+    {
+     "resource": "max_health",
+     "amount": 9.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "magic_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "adaptive_attack",
+     "amount": 25.0,
+     "is_modifier": true,
+     "boosting_sets": []
+    }
+   ],
+   "sockets": [
+    "helmet",
+    "chestplate",
+    "leggings",
+    "boots",
+    "necklace",
+    "weapon",
+    "ring",
+    "ring"
+   ]
+  },
+  {
+   "id": "res://resources/adventurers/amon.tres",
+   "name": "Amon",
+   "portrait": "res://assets/textures/portraits/amon.png",
+   "blink": "res://assets/textures/portraits/amon_blink.png",
+   "starting_inventory_items": [],
+   "challenge_market_items": [],
+   "starting_market_items": [],
+   "doubled_stat": null,
+   "ability": "res://resources/abilities/silhouette.tres",
+   "abilities_to_learn_size": 1,
+   "passive": null,
+   "bonus_stats": [
+    {
+     "resource": "total_attacks",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_health",
+     "amount": 10.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "sockets": [
+    "helmet",
+    "chestplate",
+    "leggings",
+    "boots",
+    "necklace",
+    "weapon",
+    "replicated_weapon",
+    "ring"
+   ]
+  },
+  {
+   "id": "res://resources/adventurers/jace.tres",
+   "name": "Jace",
+   "portrait": "res://assets/textures/portraits/jace.png",
+   "blink": "res://assets/textures/portraits/jace_blink.png",
+   "starting_inventory_items": [],
+   "challenge_market_items": [
+    "res://resources/items/excalibur.tres"
+   ],
+   "starting_market_items": [],
+   "doubled_stat": null,
+   "ability": "res://resources/abilities/my_justice.tres",
+   "abilities_to_learn_size": 1,
+   "passive": "res://resources/passives/freedom_drive.tres",
+   "bonus_stats": [
+    {
+     "resource": "max_health",
+     "amount": 10.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "total_attacks",
+     "amount": 1.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "max_mana",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "physical_attack",
+     "amount": 2.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    },
+    {
+     "resource": "toughness",
+     "amount": 5.0,
+     "is_modifier": false,
+     "boosting_sets": []
+    }
+   ],
+   "sockets": [
+    "helmet",
+    "chestplate",
+    "leggings",
+    "boots",
+    "necklace",
+    "weapon",
+    "ring",
+    "ring"
+   ]
+  }
+ ],
+ "starting": [
+  "res://resources/adventurers/fren.tres",
+  "res://resources/adventurers/pyry.tres",
+  "res://resources/adventurers/sid.tres"
+ ]
+}

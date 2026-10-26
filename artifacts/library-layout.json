@@ -1,0 +1,1140 @@
+{
+	"viewport": [
+		640,
+		360
+	],
+	"visuals": [
+		{
+			"kind": "VBoxContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer",
+			"rect": [
+				0.0,
+				0.0,
+				640.0,
+				360.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer",
+			"rect": [
+				0.0,
+				0.0,
+				640.0,
+				26.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/ItemsTabButton",
+			"rect": [
+				0.0,
+				0.0,
+				70.0,
+				26.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				3,
+				4,
+				3,
+				2
+			],
+			"palette": 1,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/ItemsTabButton/BackPanel",
+			"rect": [
+				2.0,
+				2.0,
+				68.0,
+				24.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				7.0,
+				5.0
+			],
+			"texture": "res://assets/textures/ui/normal_panel_background.png"
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 2,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/ItemsTabButton/NameLabel",
+			"rect": [
+				2.0,
+				7.0,
+				68.0,
+				13.0
+			],
+			"text": "items"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 2,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/ItemsTabButton/IconTextureRect",
+			"rect": [
+				36.0,
+				14.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/BestiaryButton",
+			"rect": [
+				70.0,
+				0.0,
+				70.0,
+				26.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				3,
+				4,
+				3,
+				2
+			],
+			"palette": 1,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/BestiaryButton/BackPanel",
+			"rect": [
+				72.0,
+				2.0,
+				68.0,
+				24.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				7.0,
+				5.0
+			],
+			"texture": "res://assets/textures/ui/normal_panel_background.png"
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 2,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/BestiaryButton/NameLabel",
+			"rect": [
+				72.0,
+				7.0,
+				68.0,
+				13.0
+			],
+			"text": "bestiary"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 2,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/BestiaryButton/IconTextureRect",
+			"rect": [
+				106.0,
+				14.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/SynergiesButton",
+			"rect": [
+				140.0,
+				0.0,
+				70.0,
+				26.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				3,
+				4,
+				3,
+				2
+			],
+			"palette": 1,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/SynergiesButton/BackPanel",
+			"rect": [
+				142.0,
+				2.0,
+				68.0,
+				24.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				7.0,
+				5.0
+			],
+			"texture": "res://assets/textures/ui/normal_panel_background.png"
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 2,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/SynergiesButton/NameLabel",
+			"rect": [
+				142.0,
+				7.0,
+				68.0,
+				13.0
+			],
+			"text": "synergies"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 2,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/SynergiesButton/IconTextureRect",
+			"rect": [
+				176.0,
+				14.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/PassivesButton",
+			"rect": [
+				210.0,
+				0.0,
+				70.0,
+				26.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				3,
+				4,
+				3,
+				2
+			],
+			"palette": 1,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/PassivesButton/BackPanel",
+			"rect": [
+				212.0,
+				2.0,
+				68.0,
+				24.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				7.0,
+				5.0
+			],
+			"texture": "res://assets/textures/ui/normal_panel_background.png"
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 2,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/PassivesButton/NameLabel",
+			"rect": [
+				212.0,
+				7.0,
+				68.0,
+				13.0
+			],
+			"text": "passives"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 2,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/PassivesButton/IconTextureRect",
+			"rect": [
+				246.0,
+				14.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/MarginContainer",
+			"rect": [
+				280.0,
+				0.0,
+				360.0,
+				26.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				3,
+				4,
+				3,
+				2
+			],
+			"palette": 1,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/HBoxContainer/MarginContainer/GenericPanel",
+			"rect": [
+				282.0,
+				2.0,
+				356.0,
+				24.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				7.0,
+				5.0
+			],
+			"texture": "res://assets/textures/ui/normal_panel_background.png"
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2",
+			"rect": [
+				0.0,
+				26.0,
+				640.0,
+				334.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				3,
+				2,
+				3,
+				4
+			],
+			"palette": 1,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/GenericPanel",
+			"rect": [
+				2.0,
+				26.0,
+				636.0,
+				332.0
+			],
+			"region": [
+				0.0,
+				2.0,
+				7.0,
+				5.0
+			],
+			"texture": "res://assets/textures/ui/normal_panel_background.png"
+		},
+		{
+			"kind": "VBoxContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer",
+			"rect": [
+				2.0,
+				26.0,
+				636.0,
+				332.0
+			]
+		},
+		{
+			"kind": "TabContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer",
+			"rect": [
+				2.0,
+				26.0,
+				636.0,
+				279.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer",
+			"rect": [
+				2.0,
+				26.0,
+				636.0,
+				279.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2",
+			"rect": [
+				24.0,
+				46.0,
+				592.0,
+				239.0
+			]
+		},
+		{
+			"kind": "VBoxContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2",
+			"rect": [
+				24.0,
+				46.0,
+				358.929992675781,
+				239.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/HBoxContainer",
+			"rect": [
+				24.0,
+				46.0,
+				358.0,
+				22.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/MarginContainer",
+			"rect": [
+				24.0,
+				46.0,
+				255.0,
+				22.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/MarginContainer/SearchLineEdit",
+			"rect": [
+				24.0,
+				46.0,
+				255.0,
+				22.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				3,
+				3,
+				3,
+				3
+			],
+			"palette": 2,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/MarginContainer/SearchLineEdit/GenericPanel",
+			"rect": [
+				24.0,
+				46.0,
+				255.0,
+				22.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				5.0,
+				5.0
+			],
+			"texture": "res://assets/textures/ui/small_panel_background.png"
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/MarginContainer/SearchLineEdit/MarginContainer",
+			"rect": [
+				24.0,
+				46.0,
+				255.0,
+				22.0
+			]
+		},
+		{
+			"kind": "LineEdit",
+			"palette": 1,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/MarginContainer/SearchLineEdit/MarginContainer/LineEdit",
+			"rect": [
+				29.0,
+				45.0,
+				250.0,
+				21.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/RaritySlider",
+			"rect": [
+				294.0,
+				55.0,
+				88.0,
+				4.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				2,
+				2,
+				2,
+				2
+			],
+			"palette": 4,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/RaritySlider/NinePatchRect",
+			"rect": [
+				294.0,
+				55.0,
+				88.0,
+				4.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				8.0,
+				5.0
+			],
+			"texture": "res://assets/textures/ui/h_slider.png"
+		},
+		{
+			"kind": "Control",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/RaritySlider/Control",
+			"rect": [
+				294.0,
+				55.0,
+				88.0,
+				4.0
+			]
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 4,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/RaritySlider/Control/GrabberTextureRect",
+			"rect": [
+				290.0,
+				52.0,
+				8.0,
+				10.0
+			],
+			"texture": "res://assets/textures/ui/slider_grabber.png"
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/ItemScrollContainer",
+			"rect": [
+				24.0,
+				80.0,
+				358.0,
+				205.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/ItemScrollContainer/MarginContainer",
+			"rect": [
+				24.0,
+				80.0,
+				343.0,
+				205.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				3,
+				3,
+				3,
+				3
+			],
+			"palette": 2,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/ItemScrollContainer/MarginContainer/GenericPanel",
+			"rect": [
+				24.0,
+				80.0,
+				343.0,
+				205.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				5.0,
+				5.0
+			],
+			"texture": "res://assets/textures/ui/small_panel_background.png"
+		},
+		{
+			"kind": "ScrollContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/ItemScrollContainer/MarginContainer/ScrollContainer",
+			"rect": [
+				24.0,
+				80.0,
+				343.0,
+				205.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/ItemScrollContainer/MarginContainer/ScrollContainer/MarginContainer",
+			"rect": [
+				24.0,
+				80.0,
+				10.0,
+				10.0
+			]
+		},
+		{
+			"kind": "GridContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/ItemScrollContainer/MarginContainer/ScrollContainer/MarginContainer/GridContainer",
+			"rect": [
+				29.0,
+				85.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/ItemScrollContainer/GenericVScrollBar",
+			"rect": [
+				372.0,
+				80.0,
+				10.0,
+				205.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/ItemScrollContainer/GenericVScrollBar/MarginContainer",
+			"rect": [
+				372.0,
+				80.0,
+				10.0,
+				205.0
+			]
+		},
+		{
+			"kind": "ColorRect",
+			"palette": 1,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/ItemScrollContainer/GenericVScrollBar/MarginContainer/ColorRect",
+			"rect": [
+				373.0,
+				81.0,
+				8.0,
+				203.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				3,
+				3,
+				3,
+				3
+			],
+			"palette": 2,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/ItemScrollContainer/GenericVScrollBar/BackRect",
+			"rect": [
+				372.0,
+				80.0,
+				10.0,
+				205.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				10.0,
+				16.0
+			],
+			"texture": "res://assets/textures/ui/v_scroll_border.png"
+		},
+		{
+			"kind": "Control",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/ItemScrollContainer/GenericVScrollBar/Control",
+			"rect": [
+				372.0,
+				80.0,
+				10.0,
+				205.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				3,
+				3,
+				3,
+				3
+			],
+			"palette": 2,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/VBoxContainer2/ItemScrollContainer/GenericVScrollBar/Control/ScrollRect",
+			"rect": [
+				374.0,
+				82.0,
+				6.0,
+				69.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				6.0,
+				12.0
+			],
+			"texture": "res://assets/textures/ui/v_scroll_drag.png"
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer",
+			"rect": [
+				400.0,
+				46.0,
+				216.0,
+				239.0
+			]
+		},
+		{
+			"kind": "VBoxContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer",
+			"rect": [
+				400.0,
+				46.0,
+				216.0,
+				280.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/HBoxContainer",
+			"rect": [
+				400.0,
+				46.0,
+				216.0,
+				22.0
+			]
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 4,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/HBoxContainer/GenericLabel",
+			"rect": [
+				469.0,
+				50.0,
+				78.0,
+				13.0
+			],
+			"text": "Build Planner"
+		},
+		{
+			"kind": "VBoxContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer",
+			"rect": [
+				400.0,
+				80.0,
+				216.0,
+				246.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/BuildScrollContainer",
+			"rect": [
+				400.0,
+				80.0,
+				216.0,
+				205.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/BuildScrollContainer/MarginContainer",
+			"rect": [
+				400.0,
+				80.0,
+				201.0,
+				205.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				3,
+				3,
+				3,
+				3
+			],
+			"palette": 2,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/BuildScrollContainer/MarginContainer/GenericPanel",
+			"rect": [
+				400.0,
+				80.0,
+				201.0,
+				205.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				5.0,
+				5.0
+			],
+			"texture": "res://assets/textures/ui/small_panel_background.png"
+		},
+		{
+			"kind": "ScrollContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/BuildScrollContainer/MarginContainer/ScrollContainer",
+			"rect": [
+				400.0,
+				80.0,
+				201.0,
+				205.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/BuildScrollContainer/MarginContainer/ScrollContainer/MarginContainer",
+			"rect": [
+				495.0,
+				80.0,
+				10.0,
+				10.0
+			]
+		},
+		{
+			"kind": "GridContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/BuildScrollContainer/MarginContainer/ScrollContainer/MarginContainer/DynamicSlotContainer",
+			"rect": [
+				500.0,
+				85.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/BuildScrollContainer/GenericVScrollBar",
+			"rect": [
+				606.0,
+				80.0,
+				10.0,
+				205.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/BuildScrollContainer/GenericVScrollBar/MarginContainer",
+			"rect": [
+				606.0,
+				80.0,
+				10.0,
+				205.0
+			]
+		},
+		{
+			"kind": "ColorRect",
+			"palette": 1,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/BuildScrollContainer/GenericVScrollBar/MarginContainer/ColorRect",
+			"rect": [
+				607.0,
+				81.0,
+				8.0,
+				203.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				3,
+				3,
+				3,
+				3
+			],
+			"palette": 2,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/BuildScrollContainer/GenericVScrollBar/BackRect",
+			"rect": [
+				606.0,
+				80.0,
+				10.0,
+				205.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				10.0,
+				16.0
+			],
+			"texture": "res://assets/textures/ui/v_scroll_border.png"
+		},
+		{
+			"kind": "Control",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/BuildScrollContainer/GenericVScrollBar/Control",
+			"rect": [
+				606.0,
+				80.0,
+				10.0,
+				205.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				3,
+				3,
+				3,
+				3
+			],
+			"palette": 2,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/BuildScrollContainer/GenericVScrollBar/Control/ScrollRect",
+			"rect": [
+				608.0,
+				82.0,
+				6.0,
+				69.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				6.0,
+				12.0
+			],
+			"texture": "res://assets/textures/ui/v_scroll_drag.png"
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/Margin Container",
+			"rect": [
+				400.0,
+				297.0,
+				216.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/Margin Container/MarginContainer",
+			"rect": [
+				400.0,
+				297.0,
+				216.0,
+				29.0
+			]
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 0,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/Margin Container/MarginContainer/DeleteBuildButton",
+			"rect": [
+				560.0,
+				297.0,
+				36.0,
+				13.0
+			],
+			"text": "DELETE"
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/Margin Container/MarginContainer/HBoxContainer",
+			"rect": [
+				456.0,
+				297.0,
+				84.0,
+				13.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/Margin Container/MarginContainer/HBoxContainer/LastPageButton",
+			"rect": [
+				456.0,
+				299.0,
+				6.0,
+				9.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/Margin Container/MarginContainer/HBoxContainer/LastPageButton/OutlineMarginContainer",
+			"rect": [
+				456.0,
+				299.0,
+				6.0,
+				9.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				6,
+				0,
+				0,
+				0
+			],
+			"palette": 4,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/Margin Container/MarginContainer/HBoxContainer/LastPageButton/NinePatchRect",
+			"rect": [
+				456.0,
+				299.0,
+				6.0,
+				9.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				6.0,
+				9.0
+			],
+			"texture": "res://assets/textures/ui/horizontal_directional_arrow.png"
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 4,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/Margin Container/MarginContainer/HBoxContainer/SelectedBuildLabel",
+			"rect": [
+				477.0,
+				297.0,
+				42.0,
+				13.0
+			],
+			"text": "BUILD 1"
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/Margin Container/MarginContainer/HBoxContainer/NextPageButton",
+			"rect": [
+				534.0,
+				299.0,
+				6.0,
+				9.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/Margin Container/MarginContainer/HBoxContainer/NextPageButton/OutlineMarginContainer",
+			"rect": [
+				534.0,
+				299.0,
+				6.0,
+				9.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				6,
+				0,
+				0,
+				0
+			],
+			"palette": 4,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/GenericTabContainer/ItemsContainer/HBoxContainer2/BuildPlannerContainer/VBoxContainer/VBoxContainer/Margin Container/MarginContainer/HBoxContainer/NextPageButton/NinePatchRect",
+			"rect": [
+				534.0,
+				299.0,
+				6.0,
+				9.0
+			],
+			"region": [
+				6.0,
+				0.0,
+				6.0,
+				9.0
+			],
+			"texture": "res://assets/textures/ui/horizontal_directional_arrow.png"
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/MarginContainer",
+			"rect": [
+				2.0,
+				309.0,
+				636.0,
+				49.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/MarginContainer/BackButton",
+			"rect": [
+				22.0,
+				309.0,
+				86.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/MarginContainer/BackButton/OutlineMarginContainer",
+			"rect": [
+				22.0,
+				309.0,
+				86.0,
+				29.0
+			]
+		},
+		{
+			"kind": "NinePatchRect",
+			"margins": [
+				23,
+				0,
+				22,
+				0
+			],
+			"palette": 4,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/MarginContainer/BackButton/NinePatchRect",
+			"rect": [
+				22.0,
+				309.0,
+				86.0,
+				29.0
+			],
+			"region": [
+				0.0,
+				0.0,
+				61.0,
+				29.0
+			],
+			"texture": "res://assets/textures/ui/normal_generic_button.png"
+		},
+		{
+			"kind": "TextureRect",
+			"palette": 1,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/MarginContainer/BackButton/NinePatchRect/IconTextureRect",
+			"rect": [
+				22.0,
+				309.0,
+				86.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/MarginContainer/BackButton/MarginContainer",
+			"rect": [
+				22.0,
+				309.0,
+				86.0,
+				29.0
+			]
+		},
+		{
+			"kind": "HBoxContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/MarginContainer/BackButton/MarginContainer/HBoxContainer",
+			"rect": [
+				47.0,
+				309.0,
+				36.0,
+				29.0
+			]
+		},
+		{
+			"kind": "MarginContainer",
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/MarginContainer/BackButton/MarginContainer/HBoxContainer/MarginContainer",
+			"rect": [
+				47.0,
+				309.0,
+				0.0,
+				29.0
+			]
+		},
+		{
+			"font_size": 16,
+			"kind": "Label",
+			"palette": 1,
+			"path": "/root/LibraryState/CanvasLayer/VBoxContainer/MarginContainer2/VBoxContainer/MarginContainer/BackButton/MarginContainer/HBoxContainer/NameLabel",
+			"rect": [
+				47.0,
+				316.0,
+				36.0,
+				15.0
+			],
+			"text": "BACK"
+		}
+	]
+}
