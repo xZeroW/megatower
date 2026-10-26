@@ -50,6 +50,14 @@ pub struct EventLog {
     pub containers: Vec<ContainerEvent>,
 }
 
+/// What the profile should remember: `Memory.enemy_encountered` and
+/// `GameplayState.item_encountered`.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum Encounter {
+    Enemy(String),
+    Item(String),
+}
+
 pub struct Game {
     pub world: World,
     pub rules: CharacterStatRules,
@@ -68,6 +76,7 @@ pub struct Game {
     pub battle_speed_option: BattleSpeedOption,
     pub screen_shake: bool,
     pub actions_blocked: bool,
+    pub encounters: Vec<Encounter>,
     /// `GameplayState.last_damage_result` is UI-only and not modeled.
     pub update_all_ui_requested: bool,
     /// Inventory container whose artifact removal awaits its `Removed` event.

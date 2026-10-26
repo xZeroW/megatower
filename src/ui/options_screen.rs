@@ -839,7 +839,10 @@ mod tests {
         assert_eq!(ui.bindings.get("primary_action"), Some(KeyCode::KeyR));
         assert_eq!(ui.bindings.get("refresh_market"), None);
 
-        let reloaded = OptionsUi::load();
+        // Round-trip the saved JSON in memory (the options tests share one
+        // user dir, so reading the file back here would race).
+        let json = serde_json::to_string(&ui.options).unwrap();
+        let reloaded = OptionsUi::from_options(serde_json::from_str(&json).unwrap());
         assert_eq!(reloaded.bindings.get("primary_action"), Some(KeyCode::KeyR));
         assert_eq!(reloaded.bindings.get("refresh_market"), None);
 

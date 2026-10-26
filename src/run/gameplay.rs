@@ -173,6 +173,7 @@ impl Game {
             battle_speed_option: BattleSpeedOption::X2,
             screen_shake: true,
             actions_blocked: false,
+            encounters: Vec::new(),
             update_all_ui_requested: false,
             pending_artifact_removal: None,
             confused: false,
@@ -282,6 +283,8 @@ impl Game {
 
     /// `ItemManager.create_item(resource, spawn_floor, rarity)`.
     pub fn new_item(&mut self, def: Arc<ItemDefinition>, spawn_floor: i32, rarity: i32) -> Entity {
+        self.encounters
+            .push(super::game::Encounter::Item(def.id.clone()));
         create_item(&mut self.world, def, spawn_floor, rarity)
     }
 
@@ -345,6 +348,12 @@ impl Game {
         match self.memory.room_type {
             Room::Battle => {
                 let (front, next) = self.enemies_to_spawn();
+                for enemy in front.iter().chain(next.iter().flatten()) {
+                    if let Some(e) = self.world.get::<Enemy>(*enemy) {
+                        self.encounters
+                            .push(super::game::Encounter::Enemy(e.definition.id.clone()));
+                    }
+                }
                 let battle = self.memory.battle.as_mut().unwrap();
                 battle.enemies_to_battle = front.into_iter().map(Some).collect();
                 battle.next_enemies = next;

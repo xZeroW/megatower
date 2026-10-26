@@ -278,6 +278,8 @@ pub struct UiState {
     pub library_scroll: usize,
     pub library_tab: usize,
     pub options_ui: super::options_screen::OptionsUi,
+    pub profile: crate::profile_store::ProfileStore,
+    pub library_ui: super::library_planner::LibraryUi,
     /// `BattleLogTabContainer` pages and scroll (in lines).
     pub log_pages: super::battle_log_pages::BattleLogPages,
     pub log_scroll: usize,
@@ -314,6 +316,8 @@ impl Default for UiState {
             library_scroll: 0,
             library_tab: 0,
             options_ui: super::options_screen::OptionsUi::load(),
+            profile: crate::profile_store::ProfileStore::load(floor_one_items),
+            library_ui: super::library_planner::LibraryUi::default(),
             log_pages: Default::default(),
             log_scroll: 0,
             last_turn: 0,
@@ -326,4 +330,20 @@ pub fn entity_slot(container: Entity, index: usize) -> Slot {
         container: Some(container),
         index: index as i32,
     }
+}
+
+/// `Profile._init`: ids of every floor-1 item in `Items.LIST` order.
+fn floor_one_items() -> Vec<String> {
+    let raw = crate::items::catalog::RawItemCatalog::recovered();
+    let order: Vec<String> = raw.0.iter().map(|d| d.id.clone()).collect();
+    let Ok(catalog) = raw.initialize(&order, false) else {
+        return vec![];
+    };
+    catalog
+        .list
+        .iter()
+        .filter_map(|id| catalog.get(id))
+        .filter(|d| d.spawn_floor == 1)
+        .map(|d| d.id.clone())
+        .collect()
 }
