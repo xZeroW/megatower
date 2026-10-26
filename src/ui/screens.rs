@@ -672,6 +672,7 @@ const PROFILE_SEPARATION: f32 = 12.0;
 /// One `AdventurerButton` in the profile grid.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ProfileEntry {
+    pub name: String,
     pub portrait: Option<String>,
     pub border: &'static str,
 }

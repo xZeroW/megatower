@@ -400,3 +400,28 @@ fn room_transition_gets_shorter_at_higher_battle_speed() {
         "x1 transition took {x1}s"
     );
 }
+
+/// `Memory.enemy_encountered` / `GameplayState.item_encountered` feed the
+/// profile through `Game::encounters`.
+#[test]
+fn run_records_item_and_enemy_encounters() {
+    use super::game::Encounter;
+    let mut game = fresh("Fren", 5);
+    assert!(
+        game.encounters
+            .iter()
+            .any(|e| matches!(e, Encounter::Item(_))),
+        "market and starting items are created with the run"
+    );
+    game.encounters.clear();
+    game.enter_tower();
+    let enemies: Vec<_> = game
+        .encounters
+        .iter()
+        .filter(|e| matches!(e, Encounter::Enemy(_)))
+        .collect();
+    assert!(
+        !enemies.is_empty(),
+        "the first battle's enemies are recorded"
+    );
+}

@@ -21,6 +21,7 @@ pub mod hover_rules;
 pub mod hud_rules;
 pub mod item_visual;
 pub mod library;
+pub mod library_planner;
 pub mod library_state;
 pub mod lobby;
 pub mod market_xp;
@@ -88,8 +89,121 @@ impl Plugin for UiPlugin {
             .add_systems(Startup, spawn_dynamic_root)
             .add_systems(
                 Update,
-                (frame, clean_transparent_pixels, apply_window_options),
+                (frame, clean_transparent_pixels, apply_window_options, music),
             );
+    }
+}
+
+/// One playing music track and its crossfade level.
+#[derive(Component)]
+struct MusicVoice {
+    path: String,
+    level: f32,
+    target: f32,
+    /// Crossfade seconds (`Music.fade_speed`).
+    fade: f32,
+}
+
+#[derive(Default)]
+struct MusicState {
+    path: Option<String>,
+    floor: Option<i32>,
+    /// Gameplay music plays the floor's start track, then its loop.
+    in_loop: bool,
+}
+
+/// The track for the current screen (`StateManager`) or floor
+/// (`GameplayState.update_music`), with its fade-in seconds.
+fn desired_music(ui: &UiState, slot: &GameSlot, state: &mut MusicState) -> Option<(String, f32)> {
+    use crate::music;
+    if ui.library_open || ui.profile_open {
+        return Some((music::LIBRARY.to_owned(), music::MENU_FADE_SECONDS));
+    }
+    if let (Some(game), Screen::Playing) = (&slot.0, ui.screen) {
+        let floor = game.memory.floor_number;
+        if state.floor != Some(floor) {
+            state.floor = Some(floor);
+            state.in_loop = false;
+        }
+        return Some(if state.in_loop {
+            (music::gameplay_loop(floor), 0.0)
+        } else {
+            (music::gameplay_start(floor), music::GAMEPLAY_FADE_SECONDS)
+        });
+    }
+    state.floor = None;
+    state.in_loop = false;
+    match ui.screen {
+        Screen::Intro => Some((music::INTRO.to_owned(), 0.0)),
+        Screen::MainMenu => Some((music::MAIN_MENU.to_owned(), music::MENU_FADE_SECONDS)),
+        Screen::Select => Some((music::NEW_JOURNEY.to_owned(), music::MENU_FADE_SECONDS)),
+        Screen::Playing => None,
+    }
+}
+
+/// `AudioManager.play_music`: crossfade to the screen's track and keep the
+/// music bus at the Options music volume.
+fn music(
+    mut commands: Commands,
+    time: Res<Time>,
+    assets: Res<AssetServer>,
+    ui: Res<UiRes>,
+    slot: Res<GameSlot>,
+    mut state: Local<MusicState>,
+    mut voices: Query<(Entity, &mut MusicVoice, Option<&mut AudioSink>)>,
+) {
+    use crate::music as m;
+    let ui = &ui.0;
+    // A finished start track hands over to the floor's loop.
+    if let Some(current) = &state.path {
+        let finished = voices.iter().any(|(_, v, sink)| {
+            v.path == *current && !m::loops(&v.path) && sink.is_some_and(|s| s.empty())
+        });
+        if finished {
+            state.in_loop = true;
+        }
+    }
+    if let Some((path, fade)) = desired_music(ui, &slot, &mut state) {
+        if state.path.as_deref() != Some(path.as_str()) {
+            let silent = fade > 0.0;
+            for (_, mut voice, _) in &mut voices {
+                voice.target = 0.0;
+                voice.fade = fade;
+            }
+            let mode = if m::loops(&path) {
+                bevy::audio::PlaybackMode::Loop
+            } else {
+                bevy::audio::PlaybackMode::Once
+            };
+            commands.spawn((
+                AudioPlayer::new(assets.load(path.clone())),
+                PlaybackSettings {
+                    mode,
+                    volume: bevy::audio::Volume::Linear(if silent { 0.0 } else { 1.0 }),
+                    ..default()
+                },
+                MusicVoice {
+                    path: path.clone(),
+                    level: if silent { 0.0 } else { 1.0 },
+                    target: 1.0,
+                    fade,
+                },
+            ));
+            if std::env::var_os("MEGALOOT_LOG_INPUT").is_some() {
+                info!("music: {path} (fade {fade}s)");
+            }
+            state.path = Some(path);
+        }
+    }
+    let gain = m::db_to_linear(ui.options_ui.options.music_volume_db);
+    for (entity, mut voice, sink) in &mut voices {
+        voice.level = m::fade_step(voice.level, voice.target, voice.fade, time.delta_secs());
+        if let Some(mut sink) = sink {
+            sink.set_volume(bevy::audio::Volume::Linear(voice.level * gain));
+        }
+        if voice.target == 0.0 && voice.level <= 0.0 {
+            commands.entity(entity).despawn();
+        }
     }
 }
 
@@ -315,6 +429,7 @@ fn frame(
     keys: Res<ButtonInput<KeyCode>>,
     mouse: Res<ButtonInput<MouseButton>>,
     mut wheel: MessageReader<bevy::input::mouse::MouseWheel>,
+    mut key_events: MessageReader<bevy::input::keyboard::KeyboardInput>,
     window: Single<&Window, With<PrimaryWindow>>,
     scale: Res<UiScale>,
     assets: Res<AssetServer>,
@@ -447,6 +562,10 @@ fn frame(
                 script.wait = 0.3;
             } else if step == "esc" {
                 ui.esc_open = !ui.esc_open;
+            } else if let Some(text) = step.strip_prefix("type:") {
+                script.pending_text.push_str(&text.replace('_', " "));
+            } else if step == "backspace" {
+                script.pending_backspace = true;
             }
             if std::env::var_os("MEGALOOT_LOG_INPUT").is_some() {
                 info!(
@@ -464,6 +583,21 @@ fn frame(
         }
     }
 
+    let mut typed = library_planner::Typed::default();
+    for event in key_events.read() {
+        if event.state != bevy::input::ButtonState::Pressed {
+            continue;
+        }
+        if event.key_code == KeyCode::Backspace {
+            typed.backspace = true;
+        } else if let Some(text) = &event.text {
+            typed.text.push_str(text);
+        }
+    }
+    typed
+        .text
+        .push_str(&std::mem::take(&mut script.pending_text));
+    typed.backspace |= std::mem::take(&mut script.pending_backspace);
     let mut wheel_rows = 0;
     for event in wheel.read() {
         wheel_rows += if event.y > 0.0 { -1 } else { 1 };
@@ -482,7 +616,18 @@ fn frame(
     let esc_draws = if ui.profile_open {
         profile_frame(ui, &keys, click, alt_click)
     } else if ui.library_open {
-        library_frame(ui, &keys, click, wheel_rows)
+        library_frame(
+            ui,
+            &keys,
+            &library_planner::Pointer {
+                cursor: ui.cursor,
+                click,
+                held: mouse.pressed(MouseButton::Left),
+                wheel_rows,
+            },
+            &typed,
+            rects,
+        )
     } else if ui.options_open {
         options_frame(
             ui,
@@ -618,6 +763,9 @@ fn frame(
         }
     };
 
+    if let Some(game) = slot.0.as_mut() {
+        sync_profile(game, ui);
+    }
     for (path, db) in ui.audio.drain(..) {
         if std::path::Path::new("Megaloot-GDRE-Recovered")
             .join(&path)
@@ -646,87 +794,124 @@ fn frame(
 /// Escape menu: toggled with Escape during play (`Main.toggle_esc_menu`), it
 /// replaces the gameplay canvas and pauses the run. Returns its draws while
 /// open.
-/// `Items.LIST` with textures for the encountered items (a new profile only
-/// knows the floor-1 items, per `Profile._init`).
-fn library_items() -> &'static [Option<String>] {
-    static ITEMS: std::sync::OnceLock<Vec<Option<String>>> = std::sync::OnceLock::new();
-    ITEMS.get_or_init(build_library_items)
+/// `UserData` hooks: the profile learns the items and enemies a run meets
+/// and its deepest floor. Practice runs never touch the profile.
+fn sync_profile(game: &mut Game, ui: &mut UiState) {
+    use crate::run::game::Encounter;
+    let practice = game.memory.game_mode == crate::game_mode::GameMode::Practice;
+    let mut changed = false;
+    for encounter in game.encounters.drain(..) {
+        if practice {
+            continue;
+        }
+        changed |= match encounter {
+            Encounter::Enemy(id) => ui.profile.encounter_enemy(&id),
+            Encounter::Item(id) => ui.profile.encounter_item(&id),
+        };
+    }
+    if !practice {
+        let name = game.player(game.local()).adventurer.name.clone();
+        changed |= ui.profile.set_floor_record(&name, game.memory.floor_number);
+    }
+    if changed {
+        ui.profile.save();
+    }
 }
 
-fn build_library_items() -> Vec<Option<String>> {
-    let raw = crate::items::catalog::RawItemCatalog::recovered();
-    let order: Vec<String> = raw.0.iter().map(|d| d.id.clone()).collect();
-    let catalog = raw.initialize(&order, false).expect("item catalog");
-    catalog
-        .list
+/// Catalog data the library and profile screens draw from.
+struct LibraryCatalogs {
+    /// `Items.LIST`: id and texture.
+    items: Vec<(String, Option<String>)>,
+    adventurer_sources: Vec<(String, Option<String>)>,
+    item_sources: Vec<(String, Option<String>)>,
+    /// Enemy id and its passives.
+    enemy_sources: Vec<(String, Vec<String>)>,
+    /// Name, portrait, in `ProfileState` (name-sorted) order.
+    adventurers: Vec<(String, Option<String>)>,
+    passive_names: Vec<(String, String)>,
+}
+
+fn catalogs() -> &'static LibraryCatalogs {
+    static CATALOGS: std::sync::OnceLock<LibraryCatalogs> = std::sync::OnceLock::new();
+    CATALOGS.get_or_init(|| {
+        let raw = crate::items::catalog::RawItemCatalog::recovered();
+        let order: Vec<String> = raw.0.iter().map(|d| d.id.clone()).collect();
+        let items = raw.initialize(&order, false).expect("item catalog");
+        let adventurers = crate::adventurers::AdventurerCatalog::recovered();
+        let enemies = crate::enemies::EnemyCatalog::recovered(false);
+        let content = crate::character::content::CharacterContent::recovered();
+        let names: Vec<String> = adventurers.list.iter().map(|a| a.name.clone()).collect();
+        LibraryCatalogs {
+            items: items
+                .list
+                .iter()
+                .filter_map(|id| items.get(id))
+                .map(|d| (d.id.clone(), d.texture.clone()))
+                .collect(),
+            adventurer_sources: adventurers
+                .list
+                .iter()
+                .map(|a| (a.name.clone(), a.passive.clone()))
+                .collect(),
+            item_sources: items
+                .list
+                .iter()
+                .filter_map(|id| items.get(id))
+                .map(|d| (d.id.clone(), d.passive.clone()))
+                .collect(),
+            enemy_sources: enemies
+                .list
+                .iter()
+                .map(|e| (e.id.clone(), e.passives.iter().flatten().cloned().collect()))
+                .collect(),
+            adventurers: library_state::sorted_adventurer_order(&names)
+                .into_iter()
+                .map(|i| {
+                    (
+                        adventurers.list[i].name.clone(),
+                        adventurers.list[i].portrait.clone(),
+                    )
+                })
+                .collect(),
+            passive_names: content
+                .passives
+                .iter()
+                .map(|p| (p.id.clone(), p.name.clone()))
+                .collect(),
+        }
+    })
+}
+
+/// `Items.LIST` with textures for the encountered items; the rest read as
+/// unknown.
+fn library_items(profile: &crate::profile_store::ProfileStore) -> Vec<Option<String>> {
+    let seen = profile.item_set();
+    catalogs()
+        .items
         .iter()
-        .map(|id| {
-            let def = catalog.get(id)?;
-            (def.spawn_floor == 1)
-                .then(|| def.texture.clone())
-                .flatten()
-        })
+        .map(|(id, texture)| seen.contains(id).then(|| texture.clone()).flatten())
         .collect()
 }
 
-/// `update_passives` for a fresh profile: grouped passives in insertion order,
-/// `Some(translated name)` once any source is known, else `None` ("???").
-fn library_passives() -> &'static [Option<String>] {
-    static PASSIVES: std::sync::OnceLock<Vec<Option<String>>> = std::sync::OnceLock::new();
-    PASSIVES.get_or_init(build_library_passives)
-}
-
-fn build_library_passives() -> Vec<Option<String>> {
-    use std::collections::HashSet;
-    let raw = crate::items::catalog::RawItemCatalog::recovered();
-    let order: Vec<String> = raw.0.iter().map(|d| d.id.clone()).collect();
-    let items = raw.initialize(&order, false).expect("item catalog");
-    let adventurers = crate::adventurers::AdventurerCatalog::recovered();
-    let enemies = crate::enemies::EnemyCatalog::recovered(false);
-    let content = crate::character::content::CharacterContent::recovered();
-    let adventurer_sources: Vec<_> = adventurers
-        .list
-        .iter()
-        .map(|a| (a.name.clone(), a.passive.clone()))
-        .collect();
-    let item_sources: Vec<_> = items
-        .list
-        .iter()
-        .filter_map(|id| items.get(id))
-        .map(|d| (d.id.clone(), d.passive.clone()))
-        .collect();
-    let enemy_sources: Vec<_> = enemies
-        .list
-        .iter()
-        .map(|e| {
-            (
-                e.name.clone(),
-                e.passives.iter().flatten().cloned().collect(),
-            )
-        })
-        .collect();
-    let encountered_items: HashSet<String> = items
-        .list
-        .iter()
-        .filter_map(|id| items.get(id))
-        .filter(|d| d.spawn_floor == 1)
-        .map(|d| d.id.clone())
-        .collect();
+/// `update_passives`: grouped passives in insertion order, `Some(translated
+/// name)` once any source is known, else `None` ("???").
+fn library_passives(profile: &crate::profile_store::ProfileStore) -> Vec<Option<String>> {
+    let c = catalogs();
     library_state::group_passives(
-        &adventurer_sources,
-        &item_sources,
-        &enemy_sources,
-        &encountered_items,
-        &HashSet::new(),
+        &c.adventurer_sources,
+        &c.item_sources,
+        &c.enemy_sources,
+        &profile.item_set(),
+        &profile.enemy_set(),
     )
     .into_iter()
     .map(|(passive, _, unknown)| {
         (!unknown).then(|| {
-            let name = content
-                .passives
+            let name = c
+                .passive_names
                 .iter()
-                .find(|p| p.id == passive)
-                .map_or(passive.as_str(), |p| p.name.as_str());
+                .find(|(id, _)| *id == passive)
+                .map_or(passive.as_str(), |(_, n)| n.as_str());
             crate::translation::t(name, "passive-name")
         })
     })
@@ -770,20 +955,18 @@ fn library_synergies() -> &'static [screens::SynergyEntry] {
 }
 
 /// `ProfileState.update_adventurers`: adventurers by name, each with the
-/// border its floor record earns (a fresh profile has none: wooden).
-fn profile_entries() -> &'static [screens::ProfileEntry] {
-    static ENTRIES: std::sync::OnceLock<Vec<screens::ProfileEntry>> = std::sync::OnceLock::new();
-    ENTRIES.get_or_init(|| {
-        let catalog = crate::adventurers::AdventurerCatalog::recovered();
-        let names: Vec<String> = catalog.list.iter().map(|a| a.name.clone()).collect();
-        library_state::sorted_adventurer_order(&names)
-            .into_iter()
-            .map(|i| screens::ProfileEntry {
-                portrait: catalog.list[i].portrait.clone(),
-                border: crate::definitions::BorderType::from_floor(true, 0).texture(),
-            })
-            .collect()
-    })
+/// border its floor record earns.
+fn profile_entries(profile: &crate::profile_store::ProfileStore) -> Vec<screens::ProfileEntry> {
+    catalogs()
+        .adventurers
+        .iter()
+        .map(|(name, portrait)| screens::ProfileEntry {
+            name: name.clone(),
+            portrait: portrait.clone(),
+            border: crate::definitions::BorderType::from_floor(true, profile.floor_record(name))
+                .texture(),
+        })
+        .collect()
 }
 
 /// The profile screen over the main menu, and its adventurer popup.
@@ -794,7 +977,8 @@ fn profile_frame(
     alt_click: bool,
 ) -> Option<Vec<Draw>> {
     let layout = crate::godot_layout::profile_layout();
-    let entries = profile_entries();
+    let entries = profile_entries(&ui.profile);
+    let entries = entries.as_slice();
     if let Some(index) = ui.profile_popup {
         let popup = crate::godot_layout::adventurer_overview_layout();
         let close = matches!((click, ui.cursor), (true, Some([x, y])) if screens::popup_close_hit(&popup, x, y));
@@ -818,7 +1002,7 @@ fn profile_frame(
             draws.extend(screens::profile_popup_draws(
                 &popup,
                 entries[index].portrait.as_deref(),
-                0,
+                ui.profile.floor_record(&entries[index].name),
                 ui.reward_scroll,
             ));
         }
@@ -842,41 +1026,87 @@ fn profile_frame(
 fn library_frame(
     ui: &mut UiState,
     keys: &ButtonInput<KeyCode>,
-    click: bool,
-    wheel_rows: i32,
+    pointer: &library_planner::Pointer,
+    typed: &library_planner::Typed,
+    rects: &Rects,
 ) -> Option<Vec<Draw>> {
+    let click = pointer.click;
     let layout = screens::library_layout_for(ui.library_tab);
-    let items = library_items();
+    let passives = library_passives(&ui.profile);
     if let (true, Some([x, y])) = (click, ui.cursor)
         && let Some(tab) = screens::library_tab_hit(&layout, x, y)
     {
         ui.library_tab = tab;
         ui.library_scroll = 0;
+        ui.library_ui.focused = false;
     }
     let back = matches!((click, ui.cursor), (true, Some([x, y])) if screens::library_back_hit(&layout, x, y));
-    if back || keys.just_pressed(KeyCode::Escape) {
+    // Escape leaves the search box first.
+    if ui.library_ui.focused && keys.just_pressed(KeyCode::Escape) {
+        ui.library_ui.focused = false;
+    } else if back || keys.just_pressed(KeyCode::Escape) {
         ui.library_open = false;
         ui.library_scroll = 0;
         ui.library_tab = 0;
+        ui.library_ui.focused = false;
+    }
+    let items_tab = ui.library_tab == 0;
+    // The wheel scrolls the build planner when the pointer is over it.
+    let over_build = ui.cursor.is_some_and(|[x, _]| x >= 395.0);
+    let grid_wheel = if items_tab && over_build {
+        0
+    } else {
+        pointer.wheel_rows
+    };
+    if items_tab {
+        let plan = library_planner::Pointer {
+            wheel_rows: if over_build { pointer.wheel_rows } else { 0 },
+            cursor: ui.cursor,
+            click,
+            held: pointer.held,
+        };
+        if library_planner::handle(
+            &mut ui.library_ui,
+            &mut ui.profile,
+            &layout,
+            &mut ui.library_scroll,
+            &plan,
+            typed,
+        ) {
+            ui.profile.save();
+        }
     }
     let max = if ui.library_tab == screens::LIBRARY_SYNERGIES {
         screens::synergy_max_scroll(library_synergies().len())
     } else if ui.library_tab == screens::LIBRARY_PASSIVES {
-        screens::passive_max_scroll(library_passives().len())
+        screens::passive_max_scroll(passives.len())
     } else {
-        screens::library_max_scroll(items.len())
+        library_planner::max_scroll(ui.library_ui.visible().len())
     } as i32;
-    ui.library_scroll = (ui.library_scroll as i32 + wheel_rows).clamp(0, max) as usize;
-    let mut draws = screens::library_draws(
-        &layout,
-        if ui.library_tab == screens::LIBRARY_PASSIVES {
-            library_passives()
-        } else {
-            items
-        },
-        ui.library_scroll,
-        ui.library_tab,
-    );
+    ui.library_scroll = (ui.library_scroll as i32 + grid_wheel).clamp(0, max) as usize;
+    let mut draws = if items_tab {
+        let blink = (ui.time * 2.0) as i64 % 2 == 0;
+        library_planner::draws(
+            &mut ui.library_ui,
+            &mut ui.profile,
+            &layout,
+            ui.library_scroll,
+            ui.cursor,
+            rects,
+            blink,
+        )
+    } else {
+        screens::library_draws(
+            &layout,
+            if ui.library_tab == screens::LIBRARY_PASSIVES {
+                &passives
+            } else {
+                &[]
+            },
+            ui.library_scroll,
+            ui.library_tab,
+        )
+    };
     if ui.library_tab == screens::LIBRARY_SYNERGIES {
         draws.extend(screens::synergy_grid_draws(
             &layout,
@@ -1155,6 +1385,8 @@ fn handle_input(
 #[derive(Default)]
 struct ScriptState {
     pending_click: Option<bool>,
+    pending_text: String,
+    pending_backspace: bool,
     last_log: f32,
     logged: bool,
     init: bool,
@@ -1516,6 +1748,41 @@ mod tests {
                 .collect();
             assert!(footer.contains(", "), "{:?}: {footer}", policy.id);
         }
+    }
+
+    #[test]
+    fn music_follows_the_screen_and_the_floor() {
+        use crate::music;
+        let slot = GameSlot::default();
+        let mut state = MusicState::default();
+        let mut ui = UiState::default();
+        let track = |ui: &UiState, state: &mut MusicState| desired_music(ui, &slot, state);
+        assert_eq!(track(&ui, &mut state), Some((music::INTRO.to_owned(), 0.0)));
+        ui.screen = Screen::MainMenu;
+        assert_eq!(
+            track(&ui, &mut state).map(|t| t.0),
+            Some(music::MAIN_MENU.to_owned())
+        );
+        ui.library_open = true;
+        assert_eq!(
+            track(&ui, &mut state).map(|t| t.0),
+            Some(music::LIBRARY.to_owned())
+        );
+        ui.library_open = false;
+        ui.screen = Screen::Select;
+        assert_eq!(
+            track(&ui, &mut state).map(|t| t.0),
+            Some(music::NEW_JOURNEY.to_owned())
+        );
+
+        let game_slot = GameSlot(Some(Game::new(NewRun::default_for("Fren", 1))));
+        ui.screen = Screen::Playing;
+        let first = desired_music(&ui, &game_slot, &mut state).unwrap();
+        assert!(first.0.ends_with("floor_1_start.ogg"));
+        assert_eq!(first.1, music::GAMEPLAY_FADE_SECONDS);
+        state.in_loop = true;
+        let looped = desired_music(&ui, &game_slot, &mut state).unwrap();
+        assert!(looped.0.ends_with("floor_1_loop.ogg") && looped.1 == 0.0);
     }
 
     #[test]

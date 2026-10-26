@@ -250,7 +250,7 @@ fn rarity_tint(rarity: ItemRarity) -> Rgba {
     [c.red, c.green, c.blue, 1.0]
 }
 
-fn item_draws(game: &Game, item: Entity, rect: R, locked: bool, out: &mut Vec<Draw>) {
+pub(crate) fn item_draws(game: &Game, item: Entity, rect: R, locked: bool, out: &mut Vec<Draw>) {
     let Some(value) = game.world.get::<Item>(item) else {
         return;
     };
@@ -440,6 +440,22 @@ fn rows_from_tip(game: &Game, tip: &crate::info_builders::Tip) -> Vec<TipRow> {
                         &mut rows,
                         &format!(" {}", translation::t(&policy.name, "Status Effect Name")),
                         dim(policy.color),
+                    );
+                }
+            }
+            // `BattleActions.get_bb_container_data`: colored icon, steel-blue name.
+            BbPiece::Action(id) => {
+                if let Some(aid) = action_from_key(id) {
+                    let action = crate::battle_actions::action(aid);
+                    if let Some(icon) = &action.icon {
+                        rows.last_mut()
+                            .expect("row")
+                            .push(Seg::Icon(trim(icon), dim(action.color)));
+                    }
+                    push_text(
+                        &mut rows,
+                        &format!(" {}", translation::t(&action.name, "Battle Action Name")),
+                        dim(STEEL),
                     );
                 }
             }
@@ -702,7 +718,7 @@ fn wrap_rows(rows: Vec<TipRow>, max: f32) -> Vec<TipRow> {
     out
 }
 
-fn draw_tip(out: &mut Vec<Draw>, rects: &Rects, cursor: [f32; 2], tip: TipView) {
+pub(crate) fn draw_tip(out: &mut Vec<Draw>, rects: &Rects, cursor: [f32; 2], tip: TipView) {
     let mut rows = wrap_rows(tip.rows, TIP_MAX_WIDTH);
     if let Some((p, c)) = tip.price {
         rows.push(vec![Seg::Text(p, c)]);
@@ -717,6 +733,12 @@ fn draw_tip(out: &mut Vec<Draw>, rects: &Rects, cursor: [f32; 2], tip: TipView) 
     let h = rows.len() as f32 * 13.0 + 8.0;
     let x = (cursor[0] + 10.0).min(640.0 - w - 2.0);
     let y = (cursor[1] + 10.0).min(360.0 - h - 2.0);
+    // The panel texture is translucent in its middle; keep what is behind the
+    // tooltip (stat rows, buttons) from showing through the text.
+    out.push(Draw::Fill {
+        rect: [x, y, w, h],
+        color: [0.0, 0.0, 0.0, 1.0],
+    });
     out.push(nine_patch(
         [x, y, w, h],
         &rects.big_panel,
@@ -741,6 +763,10 @@ fn draw_tip(out: &mut Vec<Draw>, rects: &Rects, cursor: [f32; 2], tip: TipView) 
             cx += width;
         }
     }
+}
+
+fn action_from_key(key: &str) -> Option<crate::battle_actions::BattleActionId> {
+    serde_json::from_value(serde_json::Value::String(key.to_lowercase())).ok()
 }
 
 fn status_from_key(key: &str) -> Option<crate::status_effects::StatusEffectId> {
@@ -777,6 +803,9 @@ fn lookup_piece(game: &Game, property: &str, is_value: bool) -> Option<crate::bb
     }
     if status_from_key(&lower).is_some() {
         return Some(BbPiece::Status(property.to_owned()));
+    }
+    if action_from_key(&lower).is_some() {
+        return Some(BbPiece::Action(lower));
     }
     if game
         .rules
@@ -1827,3 +1856,54 @@ pub fn enemy_count(game: &Game) -> usize {
 
 #[allow(dead_code)]
 fn _stat(_: StatId) {}
+
+#[cfg(test)]
+mod tooltip_tests {
+    use super::*;
+    use crate::run::{game::Game, gameplay::NewRun};
+
+    #[test]
+    fn translated_text_resolves_battle_actions_and_draws_them() {
+        let game = Game::new(NewRun::default_for("Fren", 1));
+        let piece = lookup_piece(&game, "DODGE", false);
+        assert_eq!(
+            piece,
+            Some(crate::bb_scripts::BbPiece::Action("dodge".into()))
+        );
+        let tip = crate::info_builders::Tip {
+            name: "x".into(),
+            name_color: crate::info_builders::NameColor::DarkGray,
+            pieces: vec![(piece.unwrap(), 0.0)],
+        };
+        let rows = rows_from_tip(&game, &tip);
+        let text: String = rows
+            .iter()
+            .flatten()
+            .filter_map(|s| match s {
+                Seg::Text(t, _) => Some(t.as_str()),
+                _ => None,
+            })
+            .collect();
+        assert!(text.to_lowercase().contains("dodge"), "{text:?}");
+    }
+
+    #[test]
+    fn tooltip_background_is_opaque() {
+        let mut out = vec![];
+        let rects = Rects::from_layout(&crate::godot_layout::recovered_layout());
+        draw_tip(
+            &mut out,
+            &rects,
+            [100.0, 100.0],
+            TipView {
+                rows: vec![vec![Seg::Text("hello".into(), [1.0; 4])]],
+                icons: vec![],
+                price: None,
+            },
+        );
+        assert!(matches!(
+            out.first(),
+            Some(Draw::Fill { color, .. }) if color[3] == 1.0
+        ));
+    }
+}
