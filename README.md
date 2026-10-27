@@ -41,3 +41,10 @@ below, and the env-driven QA tooling (`src/dev`). The libraries sit under
 | `megatower-core` | simulation (run, combat, items, enemies), settings and profile data, paths, translations |
 
 Lower crates own the resources they consume; the UI writes them.
+
+## Rooms
+
+Room scenes are baked by Godot: `python3 tools/export_room_gltf.py` (needs `godot`
+4.4.1 on `PATH`) writes one `.glb` per room to `crates/megatower-runtime/src/render/rooms/`
+and the per-mesh materials to `artifacts/room-materials.json`. Lights still come from
+`tools/export_room_scenes.py` (`artifacts/room-scenes.json`).

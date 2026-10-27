@@ -202,8 +202,8 @@ pub fn scene_for(room: megatower_core::game_mode::Room) -> &'static str {
         Room::EndlessMonolith => "monolith_room",
         Room::Dismantle | Room::ReforgeTransfer => "altar_room",
         Room::Final => "room_final",
-        // Forest's 470 KB scene is not exported yet.
-        Room::Entrance | Room::Battle | Room::EnemyUpgrade | Room::Forest => "room_normal",
+        Room::Forest => "room_forest",
+        Room::Entrance | Room::Battle | Room::EnemyUpgrade => "room_normal",
     }
 }
 

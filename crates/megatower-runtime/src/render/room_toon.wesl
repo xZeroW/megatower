@@ -12,7 +12,8 @@ struct RoomMaterial {
     dim: f32,
     uv_scale: f32,
     light_count: u32,
-    pad: f32,
+    // 1 for meshes sampling their own UVs (`flat_light.gdshader`).
+    flat: u32,
     // xyz position, w range.
     light0: vec4<f32>,
     light1: vec4<f32>,
@@ -36,12 +37,21 @@ fn omni_attenuation(dist: f32, range: f32, decay: f32) -> f32 {
 // One light's `light()` contribution.
 fn light_pass(world: vec3<f32>, light: vec4<f32>, decay: f32, albedo: vec3<f32>, base: vec3<f32>, border: vec3<f32>, darker: vec3<f32>) -> vec3<f32> {
     let att = omni_attenuation(distance(world, light.xyz), light.w, decay);
+    // `flat_light.gdshader` assigns `SPECULAR_LIGHT` without the attenuation factor.
+    let scale = select(att, 1.0, room.flat == 1u);
     let lig = pow(att, 2.0);
     let source = mix(vec3<f32>(0.0), albedo + vec3<f32>(lig * 0.03), lig * 0.9) * room.dim;
     var closest = base;
     if (distance(source, border) < distance(source, closest)) { closest = border; }
     if (distance(source, darker) < distance(source, closest)) { closest = darker; }
-    return closest * att;
+    return closest * scale;
+}
+
+fn mesh_uv(in: VertexOutput) -> vec2<f32> {
+    @if(VERTEX_UVS_A) {
+        return in.uv;
+    }
+    return vec2<f32>(0.0);
 }
 
 @fragment
@@ -49,11 +59,14 @@ fn fragment(in: VertexOutput) -> FragmentOutput {
     let weights = pow(abs(normalize(in.world_normal)), vec3<f32>(1.0));
     let total = weights.x + weights.y + weights.z;
     let p = in.world_position.xyz * vec3<f32>(room.uv_scale, -room.uv_scale, room.uv_scale);
-    let sampled = (
+    var sampled = (
         textureSample(wall_texture, wall_sampler, p.xy) * weights.z +
         textureSample(wall_texture, wall_sampler, p.xz) * weights.y +
         textureSample(wall_texture, wall_sampler, p.zy * vec2<f32>(-1.0, 1.0)) * weights.x
     ) / total;
+    if (room.flat == 1u) {
+        sampled = textureSample(wall_texture, wall_sampler, mesh_uv(in));
+    }
     // palette: background_color, border_color, darker_border_color.
     let base = srgb_to_linear(vec3<f32>(0.0431373, 0.0588235, 0.0901961));
     let border = srgb_to_linear(vec3<f32>(0.196078, 0.2, 0.239216));
@@ -67,10 +80,12 @@ fn fragment(in: VertexOutput) -> FragmentOutput {
     else if (distance(encoded, vec3<f32>(0.168)) < 0.001) { albedo = darker_border; }
     var color = vec3<f32>(0.0);
     if (room.light_count > 0u) {
-        color += light_pass(in.world_position.xyz, room.light0, room.decay.x, albedo, base, border, darker_border);
+        color = light_pass(in.world_position.xyz, room.light0, room.decay.x, albedo, base, border, darker_border);
     }
     if (room.light_count > 1u) {
-        color += light_pass(in.world_position.xyz, room.light1, room.decay.y, albedo, base, border, darker_border);
+        let second = light_pass(in.world_position.xyz, room.light1, room.decay.y, albedo, base, border, darker_border);
+        // `+=` for `pixel_toon`, last light wins for `flat_light`.
+        color = select(color + second, second, room.flat == 1u);
     }
     var out: FragmentOutput;
     out.color = vec4<f32>(color, sampled.a);

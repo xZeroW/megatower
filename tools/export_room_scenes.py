@@ -16,7 +16,7 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "Megaloot-GDRE-Recovered"
 ROOMS = ["room_normal", "room_final", "chest_room", "mystic_trader", "monolith_room",
-         "altar_room", "room_transition"]
+         "altar_room", "room_transition", "room_forest"]
 IDENT = [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]
 
 

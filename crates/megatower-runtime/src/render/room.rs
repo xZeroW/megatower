@@ -1,9 +1,12 @@
-//! The off-screen 3D room (`RoomScreen`'s SubViewport): CSG parts from
-//! `artifacts/room-scenes.json` drawn with the `room_toon.wesl` port of
-//! `pixel_toon.gdshader`, swapped when the run enters a room whose
-//! `RoomResource.scene` differs.
+//! The off-screen 3D room (`RoomScreen`'s SubViewport): the room's `.glb`
+//! (baked by Godot, `tools/export_room_gltf.py`) drawn with the `room_toon.wesl`
+//! port of `pixel_toon.gdshader`/`flat_light.gdshader`, swapped when the run
+//! enters a room whose `RoomResource.scene` differs. Lights come from
+//! `artifacts/room-scenes.json`, per-mesh materials from
+//! `artifacts/room-materials.json`.
 
 use crate::render::{CaptureReadiness, palette_color};
+use bevy::world_serialization::WorldInstanceReady;
 use bevy::{
     asset::embedded_asset,
     camera::{ClearColorConfig, RenderTarget, visibility::RenderLayers},
@@ -12,6 +15,7 @@ use bevy::{
     shader::ShaderRef,
 };
 use bevy_auto_plugin::prelude::*;
+use megatower_assets::room_materials::{MeshMaterial, room_materials};
 use megatower_assets::room_scene::{RoomLight, scene};
 use megatower_assets::room_screen::{ROOM_CAMERA_FOV_DEGREES, ROOM_VIEWPORT_SIZE};
 
@@ -32,6 +36,14 @@ impl Plugin for RoomRenderPlugin {
     #[auto_plugin]
     fn build(&self, app: &mut App) {
         embedded_asset!(app, "room_toon.wesl");
+        embedded_asset!(app, "rooms/room_normal.glb");
+        embedded_asset!(app, "rooms/room_final.glb");
+        embedded_asset!(app, "rooms/room_transition.glb");
+        embedded_asset!(app, "rooms/room_forest.glb");
+        embedded_asset!(app, "rooms/chest_room.glb");
+        embedded_asset!(app, "rooms/mystic_trader.glb");
+        embedded_asset!(app, "rooms/monolith_room.glb");
+        embedded_asset!(app, "rooms/altar_room.glb");
         app.add_plugins(MaterialPlugin::<RoomMaterial>::default());
     }
 }
@@ -45,10 +57,13 @@ pub struct RoomRenderTarget(pub Handle<Image>);
 #[auto_insert_resource(plugin = RoomRenderPlugin, insert(ShownRoom("room_normal")))]
 struct ShownRoom(&'static str);
 
+/// Root of the spawned room scene; its meshes are textured once the glTF
+/// instance is ready.
 #[derive(Component)]
-struct RoomPart;
+struct RoomPart(&'static str);
 
-/// Per-part uniforms of `room_toon.wesl`: the part's `dim` and UV scale plus
+/// Per-part uniforms of `room_toon.wesl`: the part's `dim`, UV scale (0 for
+/// meshes that sample their own UVs, `flat_light.gdshader`) plus
 /// the scene's `AnimatedLight`s (xyz position, w range; decay is each light's
 /// `omni_attenuation`).
 #[derive(ShaderType, Debug, Clone, Copy)]
@@ -56,7 +71,7 @@ struct RoomUniform {
     dim: f32,
     uv_scale: f32,
     light_count: u32,
-    _pad: f32,
+    flat: u32,
     light0: Vec4,
     light1: Vec4,
     decay: Vec2,
@@ -75,14 +90,14 @@ impl Material for RoomMaterial {
     fn fragment_shader() -> ShaderRef {
         "embedded://megatower_runtime/render/room_toon.wesl".into()
     }
+
+    fn alpha_mode(&self) -> AlphaMode {
+        // `flat_light.gdshader` props are cut-outs (`ALPHA = texture.a`).
+        AlphaMode::Mask(0.5)
+    }
 }
 
-fn room_material(
-    dim: f32,
-    uv_scale: f32,
-    lights: &[RoomLight],
-    wall: Handle<Image>,
-) -> RoomMaterial {
+fn room_material(mesh: &MeshMaterial, lights: &[RoomLight], wall: Handle<Image>) -> RoomMaterial {
     let light = |i: usize| {
         lights.get(i).map_or(Vec4::ZERO, |l| {
             Vec4::new(l.position[0], l.position[1], l.position[2], l.range)
@@ -91,10 +106,10 @@ fn room_material(
     let decay = |i: usize| lights.get(i).map_or(0.0, |l| l.attenuation);
     RoomMaterial {
         data: RoomUniform {
-            dim,
-            uv_scale,
+            dim: mesh.dim,
+            uv_scale: mesh.uv_scale.unwrap_or(1.0),
             light_count: lights.len().min(2) as u32,
-            _pad: 0.0,
+            flat: u32::from(mesh.uv_scale.is_none()),
             light0: light(0),
             light1: light(1),
             decay: Vec2::new(decay(0), decay(1)),
@@ -138,24 +153,21 @@ pub fn setup_room(
         RenderLayers::layer(ROOM_LAYER),
         Name::new("RoomScreen source Camera3D"),
     ));
+    let room = spawn_room_scene(&mut commands, &assets, "room_normal");
     if let Some(mut capture) = capture {
-        capture.wait_for(assets.load::<Image>(WALL_TEXTURE).untyped());
+        capture.wait_for(room.untyped());
     }
-    spawn_room_scene(
-        &mut commands,
-        &assets,
-        &mut meshes,
-        &mut materials,
-        "room_normal",
-    );
 
     // Opt-in probe that isolates the render target from the room geometry.
     if std::env::var_os("MEGALOOT_ROOM_DIAGNOSTIC").is_some() {
         commands.spawn((
             Mesh3d(meshes.add(Cuboid::from_size(Vec3::splat(1.0)))),
             MeshMaterial3d(materials.add(room_material(
-                1.0,
-                1.75,
+                &MeshMaterial {
+                    texture: WALL_TEXTURE.to_owned(),
+                    dim: 1.0,
+                    uv_scale: Some(1.75),
+                },
                 &scene("room_normal").lights,
                 assets.load(WALL_TEXTURE),
             ))),
@@ -166,42 +178,65 @@ pub fn setup_room(
     }
 }
 
-/// Every CSG part of a recovered room scene with its own material (texture,
-/// UV scale, `dim`) and the scene's lights baked into the shader.
+/// Spawns a room's baked `.glb`; the meshes get their materials in
+/// [`texture_room`] once the instance is ready.
 fn spawn_room_scene(
     commands: &mut Commands,
     assets: &AssetServer,
-    meshes: &mut Assets<Mesh>,
-    materials: &mut Assets<RoomMaterial>,
-    scene_name: &str,
+    scene_name: &'static str,
+) -> Handle<WorldAsset> {
+    let glb = format!("embedded://megatower_runtime/render/rooms/{scene_name}.glb");
+    let handle = assets.load(GltfAssetLabel::Scene(0).from_asset(glb));
+    commands
+        .spawn((
+            WorldAssetRoot(handle.clone()),
+            RoomPart(scene_name),
+            Name::new(format!("{scene_name}.tscn")),
+        ))
+        .observe(texture_room);
+    handle
+}
+
+/// Gives each mesh of a freshly spawned room its Godot material: triplanar
+/// `pixel_toon` walls or UV-mapped `flat_light` props, lit by the scene's lights.
+fn texture_room(
+    ready: On<WorldInstanceReady>,
+    mut commands: Commands,
+    assets: Res<AssetServer>,
+    mut materials: ResMut<Assets<RoomMaterial>>,
+    rooms: Query<&RoomPart>,
+    children: Query<&Children>,
+    names: Query<&Name>,
+    meshes: Query<(), With<Mesh3d>>,
+    parents: Query<&ChildOf>,
 ) {
-    let room = scene(scene_name);
-    for part in &room.parts {
-        let m = part.matrix;
-        let matrix = Mat4::from_cols(
-            Vec3::new(m[0], m[1], m[2]).extend(0.0),
-            Vec3::new(m[3], m[4], m[5]).extend(0.0),
-            Vec3::new(m[6], m[7], m[8]).extend(0.0),
-            Vec3::new(m[9], m[10], m[11]).extend(1.0),
-        );
-        let mesh = if part.shape == "cylinder" {
-            Mesh::from(Cylinder::new(part.size[0], part.size[1]))
-        } else {
-            Mesh::from(Cuboid::from_size(Vec3::from_array(part.size)))
+    let Ok(RoomPart(scene_name)) = rooms.get(ready.entity) else {
+        return;
+    };
+    let lights = scene(scene_name).lights;
+    let by_node = room_materials(scene_name);
+    for entity in children.iter_descendants(ready.entity) {
+        if !meshes.contains(entity) {
+            continue;
+        }
+        // The mesh sits on the node entity or on a child of it.
+        let material = std::iter::once(entity)
+            .chain(parents.iter_ancestors(entity))
+            .find_map(|e| by_node.get(names.get(e).ok()?.as_str()));
+        let Some(material) = material else {
+            continue;
         };
-        commands.spawn((
-            Mesh3d(meshes.add(mesh)),
-            MeshMaterial3d(materials.add(room_material(
-                part.dim,
-                part.uv_scale,
-                &room.lights,
-                assets.load(part.texture.clone()),
-            ))),
-            Transform::from_matrix(matrix),
-            RenderLayers::layer(ROOM_LAYER),
-            RoomPart,
-            Name::new(format!("{scene_name}.tscn {}", part.name)),
-        ));
+        commands
+            .entity(entity)
+            .remove::<MeshMaterial3d<StandardMaterial>>()
+            .insert((
+                MeshMaterial3d(materials.add(room_material(
+                    material,
+                    &lights,
+                    assets.load(material.texture.clone()),
+                ))),
+                RenderLayers::layer(ROOM_LAYER),
+            ));
     }
 }
 
@@ -213,8 +248,6 @@ fn sync_room_scene(
     request: Res<RoomSceneRequest>,
     mut shown: ResMut<ShownRoom>,
     old: Query<Entity, With<RoomPart>>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<RoomMaterial>>,
 ) {
     let Some(next) = request.0 else {
         return;
@@ -226,5 +259,5 @@ fn sync_room_scene(
     for entity in &old {
         commands.entity(entity).despawn();
     }
-    spawn_room_scene(&mut commands, &assets, &mut meshes, &mut materials, next);
+    spawn_room_scene(&mut commands, &assets, next);
 }
