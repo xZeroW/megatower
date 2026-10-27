@@ -40,6 +40,10 @@ fn is_dynamic(visual: &Visual) -> bool {
 fn image_node(assets: &AssetServer, visual: &Visual, texture: &str) -> ImageNode {
     let mut image = ImageNode::new(assets.load(texture.trim_start_matches("res://").to_owned()));
     image.color = palette_color(visual.palette);
+    // The scene's `ShaderMaterial` modulates this icon (`type = CUSTOM`).
+    if visual.path.ends_with("MarketButton/NinePatchRect") {
+        image.color = Color::srgb(0.341_176, 0.270_588, 0.192_157);
+    }
     image.image_mode = NodeImageMode::Stretch;
     if let Some([rx, ry, rw, rh]) = visual.region {
         if rw > 0.0 && rh > 0.0 {

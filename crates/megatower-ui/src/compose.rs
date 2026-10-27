@@ -142,22 +142,81 @@ fn label_panel(rects: &Rects, cx: f32, y: f32, text_: &str, color: Rgba, out: &m
     out.push(center_text(cx, y, w, text_, color));
 }
 
-fn bar(rect: R, frac: f32, fill: Rgba, out: &mut Vec<Draw>) {
-    out.push(Draw::Fill {
+/// `resource_bar.tscn`: the `minimal_bar` outline (`BackPanel`) around a
+/// `minimal_bar_fill` pill, both modulated by the bar colour.
+fn pill_bar(rect: R, frac: f32, color: Rgba, out: &mut Vec<Draw>) {
+    out.push(Draw::Image {
         rect: [rect[0] - 1.0, rect[1] - 1.0, rect[2] + 2.0, rect[3] + 2.0],
-        color: palette(3),
-    });
-    out.push(Draw::Fill {
-        rect,
-        color: [fill[0] * 0.25, fill[1] * 0.25, fill[2] * 0.25, 1.0],
+        path: trim("assets/textures/ui/minimal_bar.png"),
+        region: None,
+        tint: color,
+        slice: Some([4.0; 4]),
+        flip_x: false,
     });
     let w = (rect[2] * frac.clamp(0.0, 1.0)).round();
-    if w > 0.0 {
-        out.push(Draw::Fill {
+    if w >= 8.0 {
+        out.push(Draw::Image {
             rect: [rect[0], rect[1], w, rect[3]],
-            color: fill,
+            path: trim("assets/textures/ui/minimal_bar_fill.png"),
+            region: None,
+            tint: color,
+            slice: Some([4.0; 4]),
+            flip_x: false,
+        });
+    } else if w > 0.0 {
+        out.push(Draw::Fill {
+            rect: [rect[0], rect[1] + 1.0, w, rect[3] - 2.0],
+            color,
         });
     }
+}
+
+fn bar(rect: R, frac: f32, fill: Rgba, out: &mut Vec<Draw>) {
+    pill_bar(rect, frac, fill, out);
+}
+
+/// `small_resource_bar.tscn` for the enemy mana: the bar is 10px wide for one
+/// mana and 7px wider per extra one; the mana already spent is darkened from
+/// the right. Returns the bar's width.
+fn mana_pip(right: f32, y: f32, max_mana: i64, mana: i64, out: &mut Vec<Draw>) -> f32 {
+    let blue = [0.156_863, 0.360_784, 0.768_627, 1.0];
+    let w = match max_mana {
+        1 => 10.0,
+        2 => 17.0,
+        4 => 31.0,
+        _ => 24.0,
+    };
+    let x = right - w;
+    out.push(Draw::Image {
+        rect: [x, y, w, 11.0],
+        path: trim("assets/textures/ui/minimal_bar.png"),
+        region: None,
+        tint: blue,
+        slice: Some([4.0; 4]),
+        flip_x: false,
+    });
+    let inner = [x + 2.0, y + 2.0, w - 4.0, 7.0];
+    out.push(Draw::Image {
+        rect: [
+            inner[0] - 1.0,
+            inner[1] - 1.0,
+            inner[2] + 2.0,
+            inner[3] + 2.0,
+        ],
+        path: trim("assets/textures/ui/minimal_bar_fill.png"),
+        region: Some([0.0, 0.0, 7.0, 7.0]),
+        tint: blue,
+        slice: Some([4.0, 3.0, 4.0, 3.0]),
+        flip_x: false,
+    });
+    let spent = ((max_mana - mana) as f32 / max_mana as f32 * inner[2]).round();
+    if spent > 0.0 {
+        out.push(Draw::Fill {
+            rect: [inner[0] + inner[2] - spent, inner[1], spent, inner[3]],
+            color: palette(1),
+        });
+    }
+    w
 }
 
 fn number(value: f64) -> String {
@@ -1238,33 +1297,27 @@ fn enemy_stats(
         ],
         color: palette(1),
     });
-    // Without a mana bar the health bar takes its space.
+    // The mana bar's width depends on the mana pool; the health bar takes the
+    // rest (or all of it without mana).
+    let mana_back = l.rect("ManaBar/Panel");
+    let mana_width = match v.max_mana {
+        0 => 0.0,
+        1 => 10.0,
+        2 => 17.0,
+        4 => 31.0,
+        _ => 24.0,
+    };
     let health_dy = 0.0;
     let health_dw = if v.max_mana > 0 {
-        0.0
+        mana_back[2] - mana_width
     } else {
         l.rect("ArmorBar/HBoxContainer/MarginContainer/BackPanel")[2]
             - l.rect("HealthBar/HBoxContainer/MarginContainer/BackPanel")[2]
     };
     let bar_frame =
-        |out: &mut Vec<Draw>, back: &str, main: &str, frac: f32, fill: Rgba, dy: f32, dw: f32| {
-            let shift = |r: [f32; 4]| [r[0], r[1] + dy, r[2] + dw, r[3]];
-            out.push(Draw::Fill {
-                rect: shift(at(l.rect(back))),
-                color: palette(3),
-            });
-            let m = shift(at(l.rect(main)));
-            out.push(Draw::Fill {
-                rect: m,
-                color: [fill[0] * 0.25, fill[1] * 0.25, fill[2] * 0.25, 1.0],
-            });
-            let w = (m[2] * frac.clamp(0.0, 1.0)).round();
-            if w > 0.0 {
-                out.push(Draw::Fill {
-                    rect: [m[0], m[1], w, m[3]],
-                    color: fill,
-                });
-            }
+        |out: &mut Vec<Draw>, _back: &str, main: &str, frac: f32, fill: Rgba, dy: f32, dw: f32| {
+            let m = at(l.rect(main));
+            pill_bar([m[0], m[1] + dy, m[2] + dw, m[3]], frac, fill, out);
         };
     let center = ox + l.size[0] / 2.0;
     if has_armor {
@@ -1293,7 +1346,7 @@ fn enemy_stats(
         "HealthBar/HBoxContainer/MarginContainer/BackPanel",
         "HealthBar/HBoxContainer/MarginContainer/MainBarContainer/ProgressBarMain",
         (v.health / v.max_health.max(1.0)) as f32,
-        hex(0x9e1a3c),
+        hex(0x990f35),
         health_dy,
         health_dw,
     );
@@ -1306,21 +1359,8 @@ fn enemy_stats(
         out,
     );
     if v.max_mana > 0 {
-        let frame = at(l.rect("ManaBar/Panel"));
-        out.push(Draw::Fill {
-            rect: frame,
-            color: palette(3),
-        });
-        let m = at(l.rect("ManaBar/MarginContainer2/ProgressBar"));
-        out.push(Draw::Fill {
-            rect: m,
-            color: [0.04, 0.09, 0.17, 1.0],
-        });
-        let frac = v.mana as f32 / v.max_mana as f32;
-        out.push(Draw::Fill {
-            rect: [m[0], m[1], (m[2] * frac).round(), m[3]],
-            color: hex(0x3978a8),
-        });
+        let frame = at(mana_back);
+        mana_pip(frame[0] + frame[2], frame[1], v.max_mana, v.mana, out);
     }
 }
 
@@ -1503,7 +1543,7 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         let health_color = if overheal {
             hex(0xff4d85)
         } else {
-            hex(0x9e1a3c)
+            hex(0x990f35)
         };
         bar(
             health_rect,
