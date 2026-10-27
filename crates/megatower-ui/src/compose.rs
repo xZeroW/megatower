@@ -352,7 +352,8 @@ fn push_effect(
     icon: &str,
     color: Rgba,
     amount: Option<String>,
-) {
+) -> R {
+    let start = *x;
     out.push(tinted([*x, y, 16.0, 16.0], icon, color));
     *x += 16.0;
     if let Some(amount) = amount {
@@ -364,7 +365,18 @@ fn push_effect(
         ));
         *x += 3.0 + amount.chars().count() as f32 * CHAR_W;
     }
+    let rect = [start, y, *x - start, 16.0];
     *x += EFFECT_SEPARATION;
+    rect
+}
+
+/// What an icon of the effects row stands for, for its tooltip.
+#[derive(Clone, Debug, PartialEq)]
+pub(crate) enum EffectKind {
+    Set(String),
+    Spec(String),
+    Status(megatower_core::status_effects::StatusEffectId),
+    Stat(StatId),
 }
 
 const EFFECT_SEPARATION: f32 = 6.0;
@@ -378,6 +390,7 @@ fn effect_row(
     v: &megatower_core::run::events::VitalsView,
     rects: &Rects,
     out: &mut Vec<Draw>,
+    hits: &mut Vec<(R, EffectKind)>,
 ) {
     let content = &game.rules.content;
     let sets = game.active_item_sets(local);
@@ -397,7 +410,8 @@ fn effect_row(
         if let (false, Some(def)) = (covered, set_def(set))
             && let Some(icon) = &def.icon
         {
-            push_effect(out, &mut x, y, icon, def.color, None);
+            let rect = push_effect(out, &mut x, y, icon, def.color, None);
+            hits.push((rect, EffectKind::Set(set.clone())));
         }
     }
     for spec in &spec_defs {
@@ -407,7 +421,8 @@ fn effect_row(
             .and_then(set_def)
             .and_then(|set| set.icon.as_deref());
         if let (Some(icon), Ok(color)) = (icon, spec.color(&content.item_sets)) {
-            push_effect(out, &mut x, y, icon, color, None);
+            let rect = push_effect(out, &mut x, y, icon, color, None);
+            hits.push((rect, EffectKind::Spec(spec.id.clone())));
         }
     }
     if !sets.is_empty() {
@@ -417,7 +432,8 @@ fn effect_row(
         let policy = game.rules.status_policies.get(status.resource);
         if let Some(icon) = &policy.icon {
             let amount = (status.amount > 1.0).then(|| number(status.amount));
-            push_effect(out, &mut x, y, icon, policy.color, amount);
+            let rect = push_effect(out, &mut x, y, icon, policy.color, amount);
+            hits.push((rect, EffectKind::Status(status.resource)));
         }
         if x > end - 30.0 {
             return;
@@ -436,7 +452,7 @@ fn effect_row(
             def.color
         };
         let suffix = if def.is_percentage { "%" } else { "" };
-        push_effect(
+        let rect = push_effect(
             out,
             &mut x,
             y,
@@ -444,7 +460,74 @@ fn effect_row(
             color,
             Some(format!("{}{suffix}", number(amount))),
         );
+        hits.push((rect, EffectKind::Stat(id)));
     }
+}
+
+/// The effects-row icon under a logical position.
+pub(crate) fn effect_hit(
+    game: &Game,
+    rects: &Rects,
+    frame: &Frame,
+    x: f32,
+    y: f32,
+) -> Option<EffectKind> {
+    let mut scratch = Vec::new();
+    let mut hits = Vec::new();
+    effect_row(
+        game,
+        game.local(),
+        &frame.player,
+        rects,
+        &mut scratch,
+        &mut hits,
+    );
+    hits.into_iter()
+        .find(|(r, _)| x >= r[0] && x <= r[0] + r[2] && y >= r[1] && y <= r[1] + r[3])
+        .map(|(_, kind)| kind)
+}
+
+/// `Info.from_item_set` (with its specialization, when given): the set's
+/// coloured name with its icon, then the translated description.
+pub(crate) fn item_set_tip(game: &Game, set_id: &str, spec_id: Option<&str>) -> Option<TipView> {
+    let content = &game.rules.content;
+    let set = content.item_sets.iter().find(|s| s.id == set_id)?;
+    let spec = spec_id.and_then(|id| content.specializations.iter().find(|s| s.id == id));
+    let description = match spec {
+        Some(spec) => description_pieces(game, &spec.name, "specialization-description"),
+        None => description_pieces_for(
+            game,
+            &set.name,
+            "item-set-description",
+            set.bb_script.as_deref(),
+        ),
+    };
+    let tip = crate::info_builders::item_set(
+        &set.name,
+        &translation::text("set"),
+        set.id.ends_with("/essential.tres"),
+        spec.map(|s| s.name.as_str()),
+        description,
+        &|k, kind| translation::t(k, kind),
+    );
+    let colour = spec
+        .and_then(|s| s.color(&content.item_sets).ok())
+        .unwrap_or(set.color);
+    let mut rows = rows_from_tip(game, &tip);
+    // The name uses the set's colour.
+    if let Some(first) = rows.first_mut() {
+        for seg in first.iter_mut() {
+            if let Seg::Text(_, c) = seg {
+                *c = colour;
+            }
+        }
+    }
+    Some(TipView {
+        rows,
+        icons: set.icon.iter().map(|i| (trim(i), colour)).collect(),
+        price: None,
+        hint: None,
+    })
 }
 
 /// Where `market_container`'s slots are drawn: the merchant's five slots sit in
@@ -540,11 +623,20 @@ pub(crate) enum Seg {
 
 type TipRow = Vec<Seg>;
 
+pub(crate) struct TipPrice {
+    pub(crate) amount: String,
+    pub(crate) icon: Option<String>,
+    pub(crate) color: Rgba,
+}
+
 pub(crate) struct TipView {
     pub(crate) rows: Vec<TipRow>,
     /// Set icons shown before the name: (texture path, tint).
     pub(crate) icons: Vec<(String, Rgba)>,
-    pub(crate) price: Option<(String, Rgba)>,
+    /// Shown at the top right: the amount and its currency icon.
+    pub(crate) price: Option<TipPrice>,
+    /// The bottom hint: the click icon and its text (`bottom_hint`).
+    pub(crate) hint: Option<(String, String)>,
 }
 
 const STEEL: Rgba = [0.690_196_1, 0.768_627_5, 0.870_588_2, 1.0];
@@ -748,6 +840,51 @@ fn tip_title(name: &str, color: &crate::info_builders::NameColor) -> TipRow {
 
 /// `Info.from_item` content for an item, rendered from the translated
 /// structure instead of a hand-written summary.
+/// `HoverInfoManager`'s `bottom_hint` for an item slot: the click that acts on
+/// it (right-click buys, takes, removes or consumes; left-click locks).
+fn slot_hint(game: &Game, slot: Slot, item: Entity) -> Option<(String, String)> {
+    const LEFT: &str = "assets/textures/icons/left_click_icon.png";
+    const RIGHT: &str = "assets/textures/icons/right_click_icon.png";
+    let container = slot.container?;
+    let local = game.local();
+    let player = game.player(local);
+    let hint =
+        |icon: &str, key: &str| Some((icon.to_owned(), translation::text(key).to_lowercase()));
+    let value = game.world.get::<Item>(item)?;
+    let shops = [player.market, player.merchant, player.mystic_trader];
+    if shops.contains(&container) {
+        let locked = game
+            .world
+            .get::<ItemContainer>(container)
+            .is_some_and(|c| c.locked_indexes.contains(&i64::from(slot.index)));
+        if locked {
+            return hint(LEFT, "to-unlock");
+        }
+        if game.can_buy_item(container, slot.index) {
+            return hint(
+                RIGHT,
+                if value.is_banish {
+                    "to-banish"
+                } else {
+                    "to-buy"
+                },
+            );
+        }
+        return hint(LEFT, "to-lock");
+    }
+    if Some(container) == game.state(local).equipment {
+        return hint(RIGHT, "to-remove");
+    }
+    if container == player.loot_stash {
+        return hint(RIGHT, "to-take");
+    }
+    let resource = value.resource.as_ref()?;
+    if resource.is_consumable() || resource.is_stat_adapter() {
+        return hint(RIGHT, "to-consume");
+    }
+    None
+}
+
 pub(crate) fn item_tip(game: &Game, item: Entity) -> Option<TipView> {
     use crate::info::ItemNameInput;
     use crate::info_builders::{self as ib, BonusLine, ItemInput};
@@ -832,19 +969,17 @@ pub(crate) fn item_tip(game: &Game, item: Entity) -> Option<TipView> {
     let price = value.buy_price(true);
     let price = price.currency.map(|currency| {
         let c = stats.get(currency);
-        (
-            format!(
-                "{} {}",
-                number(price.amount),
-                translation::t(&c.name, "Stat Name")
-            ),
-            c.color,
-        )
+        TipPrice {
+            amount: number(price.amount),
+            icon: c.icon.clone(),
+            color: c.color,
+        }
     });
     Some(TipView {
         rows: rows_from_tip(game, &tip),
         icons,
         price,
+        hint: None,
     })
 }
 
@@ -885,6 +1020,7 @@ pub(crate) fn enemy_tip(game: &Game, entity: Entity, show_extra: bool) -> Option
         rows: rows_from_tip(game, &tip),
         icons: vec![],
         price: None,
+        hint: None,
     })
 }
 
@@ -938,50 +1074,133 @@ fn wrap_rows(rows: Vec<TipRow>, max: f32) -> Vec<TipRow> {
     out
 }
 
-pub(crate) fn draw_tip(out: &mut Vec<Draw>, rects: &Rects, cursor: [f32; 2], tip: TipView) {
-    let mut rows = wrap_rows(tip.rows, TIP_MAX_WIDTH);
-    if let Some((p, c)) = tip.price {
-        rows.push(vec![Seg::Text(p, c)]);
-    }
+/// `hover_info.tscn`: a flat dark panel with 10x5 margins and 5px between its
+/// parts: the top row (set icons, name, right-aligned cost), the description
+/// in its own bordered panel and the bottom hint in a darker strip.
+pub(crate) fn draw_tip(out: &mut Vec<Draw>, _rects: &Rects, cursor: [f32; 2], tip: TipView) {
+    const PAD_X: f32 = 10.0;
+    const PAD_Y: f32 = 5.0;
+    const SEP: f32 = 5.0;
+    let mut rows = tip.rows.into_iter();
+    let name_row = rows.next().unwrap_or_default();
+    let body = wrap_rows(rows.collect(), TIP_MAX_WIDTH);
     let icons_w = tip.icons.len() as f32 * 11.0;
-    let w = rows
+    let name_w = icons_w + name_row.iter().map(seg_width).sum::<f32>();
+    let cost_w = tip
+        .price
+        .as_ref()
+        .map_or(0.0, |p| p.amount.chars().count() as f32 * CHAR_W + 12.0);
+    let top_w = name_w + if cost_w > 0.0 { 7.0 + cost_w } else { 0.0 };
+    let body_w = body
         .iter()
-        .enumerate()
-        .map(|(i, r)| r.iter().map(seg_width).sum::<f32>() + if i == 0 { icons_w } else { 0.0 })
-        .fold(24.0, f32::max)
-        + 12.0;
-    let h = rows.len() as f32 * 13.0 + 8.0;
+        .map(|r| r.iter().map(seg_width).sum::<f32>())
+        .fold(0.0, f32::max)
+        + 8.0;
+    let hint_w = tip
+        .hint
+        .as_ref()
+        .map_or(0.0, |(_, t)| t.chars().count() as f32 * CHAR_W + 18.0);
+    let inner_w = top_w
+        .max(if body.is_empty() { 0.0 } else { body_w })
+        .max(hint_w)
+        .max(24.0);
+    let w = inner_w + PAD_X * 2.0;
+    let body_h = if body.is_empty() {
+        0.0
+    } else {
+        body.len() as f32 * 13.0 + 4.0
+    };
+    let hint_h = if tip.hint.is_some() { 15.0 } else { 0.0 };
+    let mut h = PAD_Y * 2.0 + 13.0;
+    if body_h > 0.0 {
+        h += SEP + body_h;
+    }
+    if hint_h > 0.0 {
+        h += SEP + hint_h;
+    }
     let x = (cursor[0] + 10.0).min(640.0 - w - 2.0);
     let y = (cursor[1] + 10.0).min(360.0 - h - 2.0);
-    // The panel texture is translucent in its middle; keep what is behind the
-    // tooltip (stat rows, buttons) from showing through the text.
     out.push(Draw::Fill {
         rect: [x, y, w, h],
-        color: [0.0, 0.0, 0.0, 1.0],
+        color: [0.082_352_9, 0.043_137_3, 0.043_137_3, 1.0],
     });
-    out.push(nine_patch(
-        [x, y, w, h],
-        &rects.big_panel,
-        [0.0, 0.0, 0.0, 0.95],
-    ));
+    // Top row.
+    let ty = y + PAD_Y;
     for (i, (icon, color)) in tip.icons.iter().enumerate() {
         out.push(tinted(
-            [x + 6.0 + i as f32 * 11.0, y + 5.0, 10.0, 10.0],
+            [x + PAD_X + i as f32 * 11.0, ty + 2.0, 10.0, 10.0],
             icon,
             *color,
         ));
     }
-    for (row_idx, row) in rows.into_iter().enumerate() {
-        let mut cx = x + 6.0 + if row_idx == 0 { icons_w } else { 0.0 };
-        let ry = y + 4.0 + row_idx as f32 * 13.0;
-        for seg in row {
-            let width = seg_width(&seg);
-            match seg {
-                Seg::Text(t, c) => out.push(text([cx, ry, width + 2.0, 13.0], t, c, Align::Left)),
-                Seg::Icon(path, c) => out.push(tinted([cx, ry + 2.0, 8.0, 8.0], &path, c)),
-            }
-            cx += width;
+    let mut cx = x + PAD_X + icons_w;
+    for seg in name_row {
+        let width = seg_width(&seg);
+        match seg {
+            Seg::Text(t, c) => out.push(text([cx, ty, width + 2.0, 13.0], t, c, Align::Left)),
+            Seg::Icon(path, c) => out.push(tinted([cx, ty + 2.0, 8.0, 8.0], &path, c)),
         }
+        cx += width;
+    }
+    if let Some(price) = &tip.price {
+        let px = x + w - PAD_X - cost_w;
+        out.push(text(
+            [px, ty, cost_w, 13.0],
+            price.amount.clone(),
+            price.color,
+            Align::Left,
+        ));
+        if let Some(icon) = &price.icon {
+            let ix = px + price.amount.chars().count() as f32 * CHAR_W + 2.0;
+            out.push(tinted([ix, ty + 2.0, 9.0, 9.0], icon, price.color));
+        }
+    }
+    // Description panel.
+    let mut by = ty + 13.0 + SEP;
+    if body_h > 0.0 {
+        let panel = [x + PAD_X, by, inner_w, body_h];
+        out.push(Draw::Fill {
+            rect: panel,
+            color: palette(2),
+        });
+        out.push(Draw::Fill {
+            rect: [
+                panel[0] + 1.0,
+                panel[1] + 1.0,
+                panel[2] - 2.0,
+                panel[3] - 2.0,
+            ],
+            color: palette(1),
+        });
+        for (row_idx, row) in body.into_iter().enumerate() {
+            let mut cx = panel[0] + 4.0;
+            let ry = panel[1] + 1.0 + row_idx as f32 * 13.0;
+            for seg in row {
+                let width = seg_width(&seg);
+                match seg {
+                    Seg::Text(t, c) => {
+                        out.push(text([cx, ry, width + 2.0, 13.0], t, c, Align::Left))
+                    }
+                    Seg::Icon(path, c) => out.push(tinted([cx, ry + 2.0, 8.0, 8.0], &path, c)),
+                }
+                cx += width;
+            }
+        }
+        by += body_h + SEP;
+    }
+    if let Some((icon, label)) = &tip.hint {
+        let panel = [x + PAD_X - 6.0, by - 1.0, inner_w + 12.0, hint_h + 2.0];
+        out.push(Draw::Fill {
+            rect: panel,
+            color: [0.035_294_1, 0.015_686_3, 0.015_686_3, 1.0],
+        });
+        out.push(image([x + PAD_X, by + 2.0, 11.0, 11.0], icon));
+        out.push(text(
+            [x + PAD_X + 14.0, by + 1.0, hint_w, 13.0],
+            label.clone(),
+            hex(0x696969),
+            Align::Left,
+        ));
     }
 }
 
@@ -1118,6 +1337,7 @@ pub(crate) fn status_tip(
         rows: rows_from_tip(game, &tip),
         icons: vec![],
         price: None,
+        hint: None,
     })
 }
 
@@ -1137,6 +1357,7 @@ pub(crate) fn stat_tip(game: &Game, id: StatId) -> Option<TipView> {
         rows: rows_from_tip(game, &tip),
         icons: vec![],
         price: None,
+        hint: None,
     };
     // The tooltip header uses the stat's icon and color.
     if let (Some(icon), Some(first)) = (&def.icon, view.rows.first_mut()) {
@@ -1178,6 +1399,7 @@ pub(crate) fn ability_tip(game: &Game, slot: usize) -> Option<TipView> {
         rows: rows_from_tip(game, &tip),
         icons: vec![],
         price: None,
+        hint: None,
     };
     if let Some(icon) = &def.icon
         && let Some(first) = view.rows.first_mut()
@@ -1188,10 +1410,11 @@ pub(crate) fn ability_tip(game: &Game, slot: usize) -> Option<TipView> {
         view.rows.insert(1, vec![Seg::Text(hint, hex(0xa9a9a9))]);
     }
     if let Some(cost) = result.mana_cost {
-        view.price = Some((
-            format!("{cost} {}", translation::t("Mana", "Stat Name")),
-            hex(0x285cc4),
-        ));
+        view.price = Some(TipPrice {
+            amount: format!("{cost}"),
+            icon: Some("assets/textures/icons/mana_icon.png".to_owned()),
+            color: hex(0x285cc4),
+        });
     }
     Some(view)
 }
@@ -1199,23 +1422,12 @@ pub(crate) fn ability_tip(game: &Game, slot: usize) -> Option<TipView> {
 /// Status badge rectangles of the player row and enemy rows with their ids.
 pub(crate) fn hit_status(
     game: &Game,
-    rects: &Rects,
+    _rects: &Rects,
     frame: &Frame,
     x: f32,
     y: f32,
 ) -> Option<megatower_core::status_effects::StatusEffectId> {
     let inside = |r: [f32; 4]| x >= r[0] && x <= r[0] + r[2] && y >= r[1] && y <= r[1] + r[3];
-    let mut px = rects.effects_row[0];
-    for status in &frame.player.statuses {
-        let w = 19.0 + number(status.amount).len() as f32 * CHAR_W + 8.0;
-        if inside([px, rects.effects_row[1], w - 8.0, 16.0]) {
-            return Some(status.resource);
-        }
-        px += w;
-        if px > rects.effects_row[0] + rects.effects_row[2] - 30.0 {
-            break;
-        }
-    }
     let visible: Vec<&EnemyView> = frame
         .enemies
         .iter()
@@ -1970,7 +2182,7 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
                 &mut out,
             );
         }
-        effect_row(game, local, v, rects, &mut out);
+        effect_row(game, local, v, rects, &mut out, &mut Vec::new());
     }
     // Floor / rooms header.
     let last = game.memory.game_mode.last_floor();
@@ -2258,8 +2470,9 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     } else if let Some([cx, cy]) = ui.cursor {
         if let Some(slot) = hit_slot(game, ui, rects, cx, cy) {
             if let Some(item) = slot.get_item(&game.world)
-                && let Some(tip) = item_tip(game, item)
+                && let Some(mut tip) = item_tip(game, item)
             {
+                tip.hint = slot_hint(game, slot, item);
                 draw_tip(&mut out, rects, [cx, cy], tip);
             }
         } else if let Some(id) = (ui.tab == Tab::Stats)
@@ -2271,6 +2484,26 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
             }
         } else if let Some(slot) = ability_button_at(game, rects, cx, cy) {
             if let Some(tip) = ability_tip(game, slot) {
+                draw_tip(&mut out, rects, [cx, cy], tip);
+            }
+        } else if let Some(kind) = effect_hit(game, rects, &frame, cx, cy) {
+            let tip = match kind {
+                EffectKind::Status(id) => status_tip(game, id),
+                EffectKind::Stat(id) => stat_tip(game, id),
+                EffectKind::Set(id) => item_set_tip(game, &id, None),
+                EffectKind::Spec(id) => game
+                    .rules
+                    .content
+                    .specializations
+                    .iter()
+                    .find(|s| s.id == id)
+                    .and_then(|spec| {
+                        spec.original_item_set
+                            .as_deref()
+                            .and_then(|set| item_set_tip(game, set, Some(&id)))
+                    }),
+            };
+            if let Some(tip) = tip {
                 draw_tip(&mut out, rects, [cx, cy], tip);
             }
         } else if let Some(id) = hit_status(game, rects, &frame, cx, cy) {
@@ -2453,23 +2686,32 @@ fn action_strip(
     let _ = frame;
     let local = game.local();
     if game.memory.room_type == Room::Battle {
-        let attack_type = game.with_attack(local, |view, _| view.attack_type());
         let damage =
             game.attack_data_for(local, megatower_core::combat::damage::DamageSource::Attack);
         let mut data = damage;
         game.with_attack(local, |view, _| view.apply_output_boosters(&mut data));
-        let _ = attack_type;
-        let stat = game
-            .rules
-            .stats
-            .get(data.damage_type.unwrap_or(StatId::PhysicalDamage));
+        // `UIManager.update_attack_info`: the *attack* stat's icon and colour
+        // (`StatUtils.get_attack_type`), blue while weakened.
+        let attack_stat = data
+            .damage_type
+            .and_then(StatId::attack_type)
+            .unwrap_or(StatId::PhysicalAttack);
+        let stat = game.rules.stats.get(attack_stat);
+        let colour = if game.has_status(
+            local,
+            megatower_core::status_effects::StatusEffectId::Weakness,
+        ) {
+            hex(0x5988ff)
+        } else {
+            stat.color
+        };
         if let Some(icon) = &stat.icon {
-            out.push(tinted([323.0, 320.0, 16.0, 16.0], icon, WHITE));
+            out.push(tinted([323.0, 320.0, 16.0, 16.0], icon, colour));
         }
         out.push(text(
             rects.attack_stat,
             number(data.damage),
-            stat.color,
+            colour,
             Align::Left,
         ));
     }
@@ -2597,6 +2839,7 @@ mod tooltip_tests {
                 rows: vec![vec![Seg::Text("hello".into(), [1.0; 4])]],
                 icons: vec![],
                 price: None,
+                hint: None,
             },
         );
         assert!(matches!(

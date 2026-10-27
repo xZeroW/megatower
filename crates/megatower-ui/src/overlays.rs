@@ -186,6 +186,18 @@ pub(super) fn esc_frame(
     {
         ui.esc_open = esc;
     }
+    // `RoomScreen.OptionsButton`: the gear at the room's top-right.
+    const GEAR: [f32; 4] = [609.0, 5.0, 26.0, 26.0];
+    if click
+        && !ui.esc_open
+        && ui.cursor.is_some_and(|[x, y]| {
+            x >= GEAR[0] && x < GEAR[0] + GEAR[2] && y >= GEAR[1] && y < GEAR[1] + GEAR[3]
+        })
+        && let Some((esc, _)) = crate::app_rules::toggle_esc_menu(true, false, false, false)
+    {
+        ui.esc_open = esc;
+        return None;
+    }
     if !ui.esc_open {
         return None;
     }
