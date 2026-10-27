@@ -49,6 +49,7 @@ pub mod turn_timer;
 pub mod widgets;
 pub mod widgets_text;
 
+mod audio_bridge;
 mod draw;
 mod frame;
 mod input;

@@ -4065,6 +4065,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "megatower-audio"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_auto_plugin",
+ "bevy_kira_audio",
+ "megatower-core",
+]
+
+[[package]]
 name = "megatower-client"
 version = "0.1.0"
 dependencies = [
@@ -4072,6 +4082,7 @@ dependencies = [
  "bevy_auto_plugin",
  "bevy_kira_audio",
  "leafwing-input-manager",
+ "megatower-audio",
  "megatower-core",
  "megatower-gameplay",
  "megatower-input",

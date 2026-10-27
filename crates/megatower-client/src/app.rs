@@ -11,6 +11,9 @@ pub struct GamePlugin;
 #[auto_add_plugin(plugin = GamePlugin)]
 use megatower_input::gameplay_input::GameInputPlugin;
 
+#[auto_add_plugin(plugin = GamePlugin)]
+use megatower_audio::GameAudioPlugin;
+
 /// `global_colors.gdshader get_color()` / `project.godot [shader_globals]` as
 /// a Bevy color; `None` and unknown indices are white.
 pub fn palette_color(index: Option<u8>) -> Color {
