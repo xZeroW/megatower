@@ -1,22 +1,16 @@
-[package]
-name = "tower_loot"
+[workspace]
+resolver = "2"
+members = ["apps/megaloot", "crates/megaloot-core"]
+
+[workspace.package]
 version = "0.1.0"
 edition = "2024"
 
-[dependencies]
+[workspace.dependencies]
 bevy = { version = "0.20", features = ["wav", "bevy_settings"] }
 bevy_auto_plugin = "0.12"
-bevy_brp_extras = { version = "0.23", optional = true }
+bevy_brp_extras = "0.23"
 bevy_kira_audio = { version = "0.27", features = ["ogg", "wav"] }
 leafwing-input-manager = "0.22"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-
-[lib]
-name = "megaloot_core"
-path = "src/lib.rs"
-
-[features]
-# Remote control for QA: BRP on port 15702 with bevy_brp_extras
-# (screenshots, key/mouse injection). `cargo run --features dev`.
-dev = ["dep:bevy_brp_extras", "bevy/bevy_remote", "bevy/png"]
