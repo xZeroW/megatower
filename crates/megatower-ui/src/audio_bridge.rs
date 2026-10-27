@@ -120,3 +120,35 @@ fn drive_room_dolly(
         dolly.0 = want;
     }
 }
+
+/// The diamond wipe: the room transition over the room column, or the death
+/// screen's over the whole screen.
+#[auto_add_system(plugin = UiPlugin, schedule = Update)]
+fn drive_wipe(
+    ui: Res<super::UiRes>,
+    slot: Res<GameSlot>,
+    mut wipe: ResMut<megatower_runtime::render::wipe::ScreenWipe>,
+) {
+    let ui = &ui.0;
+    let died = slot
+        .0
+        .as_ref()
+        .is_some_and(|game| game.char_state(game.local()).died);
+    let want = if died {
+        megatower_runtime::render::wipe::ScreenWipe {
+            region: [0.0, 0.0, 640.0, 360.0],
+            progress: super::compose::death_wipe_progress(ui),
+        }
+    } else if let Some(t) = ui.transition {
+        let age = ((ui.time - t.at) / t.seconds.max(1e-3)).clamp(0.0, 1.0) as f32;
+        megatower_runtime::render::wipe::ScreenWipe {
+            region: [308.0, 0.0, 332.0, 360.0],
+            progress: if t.start { age } else { 1.0 + age },
+        }
+    } else {
+        Default::default()
+    };
+    if *wipe != want {
+        *wipe = want;
+    }
+}

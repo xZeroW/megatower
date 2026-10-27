@@ -6,6 +6,7 @@
 
 pub mod hud_layout;
 pub mod room;
+pub mod wipe;
 
 use bevy::prelude::*;
 

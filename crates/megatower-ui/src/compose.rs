@@ -1440,103 +1440,11 @@ fn preview_sparkles(ox: f32, oy: f32, color: Rgba, time: f64, seed: usize, out: 
     }
 }
 
-/// `gameplay_screen_transition.gdshader`: a diamond wipe in the background
-/// colour over the room column, growing from the top-left corner (`start`,
-/// progress 0..1) and then clearing from it again (progress 1..2).
-fn transition_draws(ui: &UiState, out: &mut Vec<Draw>) {
-    const REGION: R = [308.0, 0.0, 332.0, 360.0];
-    let Some(t) = ui.transition else { return };
-    let age = ((ui.time - t.at) / t.seconds.max(1e-3)).clamp(0.0, 1.0) as f32;
-    let progress = if t.start { age } else { 1.0 + age };
-    diamond_wipe(REGION, progress, out);
-}
-
-/// The shader's wipe over `REGION` at `progress` (0..1 covers, 1..2 clears).
-fn diamond_wipe(region: R, progress: f32, out: &mut Vec<Draw>) {
-    #[allow(non_snake_case)]
-    let REGION = region;
-    if progress >= 2.0 || progress <= 0.0 {
-        return;
-    }
-    let colour = palette(1);
-    let right = REGION[0] + REGION[2];
-    let clip = |x0: f32, x1: f32| (x0.max(REGION[0]), x1.min(right));
-    let mut y0 = 0.0;
-    while y0 < REGION[3] {
-        let mut run: Option<f32> = None;
-        let mut x0 = (REGION[0] / 10.0).floor() * 10.0;
-        while x0 < right {
-            let u = ((x0 + 5.0 - REGION[0]) / REGION[2]).clamp(0.0, 1.0);
-            let v = (y0 + 5.0) / REGION[3];
-            // Radius of the covered diamond (cover) or of the clear one (out).
-            let radius = if progress <= 1.0 {
-                progress * 4.0 - u - v
-            } else {
-                (progress - 1.0) * 4.0 - u - v
-            };
-            let full = if progress <= 1.0 {
-                radius >= 1.0
-            } else {
-                radius <= 0.0
-            };
-            if full {
-                run.get_or_insert(x0);
-            } else {
-                if let Some(start) = run.take() {
-                    let (a, b) = clip(start, x0);
-                    if b > a {
-                        out.push(Draw::Fill {
-                            rect: [a, y0, b - a, 10.0],
-                            color: colour,
-                        });
-                    }
-                }
-                let empty = if progress <= 1.0 {
-                    radius <= 0.0
-                } else {
-                    radius >= 1.0
-                };
-                if !empty {
-                    for row in 0..5 {
-                        let dy = ((row as f32 * 2.0 + 1.0) / 10.0 - 0.5).abs();
-                        let half = ((radius - dy) * 10.0).clamp(0.0, 5.0);
-                        let y = y0 + row as f32 * 2.0;
-                        let mut spans = Vec::new();
-                        if progress <= 1.0 {
-                            if half > 0.0 {
-                                spans.push((x0 + 5.0 - half, x0 + 5.0 + half));
-                            }
-                        } else if half > 0.0 {
-                            spans.push((x0, x0 + 5.0 - half));
-                            spans.push((x0 + 5.0 + half, x0 + 10.0));
-                        } else {
-                            spans.push((x0, x0 + 10.0));
-                        }
-                        for (a, b) in spans {
-                            let (a, b) = clip(a, b);
-                            if b - a > 0.0 {
-                                out.push(Draw::Fill {
-                                    rect: [a, y, b - a, 2.0],
-                                    color: colour,
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-            x0 += 10.0;
-        }
-        if let Some(start) = run.take() {
-            let (a, b) = clip(start, x0);
-            if b > a {
-                out.push(Draw::Fill {
-                    rect: [a, y0, b - a, 10.0],
-                    color: colour,
-                });
-            }
-        }
-        y0 += 10.0;
-    }
+/// `death_screen.tscn` `show`: after a second the wipe grows to 0.8 over
+/// two seconds; the screen's content is revealed under it.
+pub fn death_wipe_progress(ui: &UiState) -> f32 {
+    let age = ui.death_at.map_or(f64::MAX, |at| ui.time - at);
+    (((age - 1.0) / 2.0 * 0.8).clamp(0.0, 0.8)) as f32
 }
 
 fn unit(seed: u32, salt: u32) -> f32 {
@@ -2287,7 +2195,6 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     ));
 
     vfx_draws(ui, &mut out);
-    transition_draws(ui, &mut out);
 
     // ---- popups ----
     // `EnemyPopupLabel`: rises 10px over 0.6s (cubic ease-out) and fades out
@@ -2412,13 +2319,8 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
             .replace("{floor-number}", &(floor + 1).to_string());
         let record_text = translation::t("highest-floor-result-screen", "Text")
             .replace("{floor-number}", &(floor + 1).to_string());
-        // `death_screen.tscn` `show`: after a second the diamond wipe grows
-        // to 0.8 over two seconds; the screen's content is revealed under it.
-        let age = ui.death_at.map_or(f64::MAX, |at| ui.time - at);
-        let progress = (((age - 1.0) / 2.0 * 0.8).clamp(0.0, 0.8)) as f32;
-        if progress < 0.76 {
-            diamond_wipe([0.0, 0.0, 640.0, 360.0], progress, &mut out);
-        } else {
+        // The wipe over the HUD is a shader node (`drive_wipe`).
+        if death_wipe_progress(ui) >= 0.76 {
             out.push(Draw::Fill {
                 rect: [0.0, 0.0, 640.0, 360.0],
                 color: palette(1),

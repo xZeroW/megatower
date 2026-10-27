@@ -46,6 +46,7 @@ impl Plugin for RoomRenderPlugin {
     #[auto_plugin]
     fn build(&self, app: &mut App) {
         embedded_asset!(app, "room_toon.wesl");
+        embedded_asset!(app, "wipe.wesl");
         embedded_asset!(app, "rooms/room_normal.glb");
         embedded_asset!(app, "rooms/room_final.glb");
         embedded_asset!(app, "rooms/room_transition.glb");
@@ -55,6 +56,7 @@ impl Plugin for RoomRenderPlugin {
         embedded_asset!(app, "rooms/monolith_room.glb");
         embedded_asset!(app, "rooms/altar_room.glb");
         app.add_plugins(MaterialPlugin::<RoomMaterial>::default());
+        app.add_plugins(UiMaterialPlugin::<super::wipe::WipeMaterial>::default());
     }
 }
 
