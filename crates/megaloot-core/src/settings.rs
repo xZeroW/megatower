@@ -41,7 +41,7 @@ impl Plugin for GameSettingsPlugin {
 /// from earlier builds first.
 #[auto_add_system(plugin = GameSettingsPlugin, schedule = Startup)]
 fn load_options(mut commands: Commands, mut options: ResMut<Options>, mut ui: ResMut<UiRes>) {
-    let legacy = crate::save_system::user_file_dir().join("options.json");
+    let legacy = megaloot_profile::save_system::user_file_dir().join("options.json");
     if let Ok(text) = std::fs::read_to_string(&legacy) {
         if let Ok(old) = serde_json::from_str::<Options>(&text) {
             *options = old;

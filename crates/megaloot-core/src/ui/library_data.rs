@@ -93,7 +93,7 @@ pub(super) fn catalogs() -> &'static LibraryCatalogs {
 /// `update_passives`: grouped passives in insertion order, `Some(translated
 /// name)` once any source is known, else `None` ("???").
 pub(super) fn library_passives(
-    profile: &crate::profile_store::ProfileStore,
+    profile: &megaloot_profile::profile_store::ProfileStore,
 ) -> Vec<Option<String>> {
     let c = catalogs();
     library_state::group_passives(
@@ -156,7 +156,7 @@ pub(super) fn library_synergies() -> &'static [screens::SynergyEntry] {
 /// `ProfileState.update_adventurers`: adventurers by name, each with the
 /// border its floor record earns.
 pub(super) fn profile_entries(
-    profile: &crate::profile_store::ProfileStore,
+    profile: &megaloot_profile::profile_store::ProfileStore,
 ) -> Vec<screens::ProfileEntry> {
     catalogs()
         .adventurers

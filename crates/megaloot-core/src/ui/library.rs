@@ -2,7 +2,7 @@
 //! `lore_container`, `library_passive_container`, `equipment_slot_*`,
 //! `bestiary_container`, `set_texture_rect`.
 
-use crate::records::Profile;
+use megaloot_profile::records::Profile;
 
 /// `BuildPlannerContainer` next-page button: fix builds, add a build when
 /// the selection is on the last one, then select the next build.
@@ -125,11 +125,11 @@ pub fn passive_source_bits(sources: &[Option<usize>]) -> Vec<SourceBit> {
 
 /// `EquipmentSlotContainer`/`EquipmentSlotPreviewContainer` highlight type:
 /// highlight color while shown, primary color otherwise.
-pub fn slot_highlight_color_type(highlighted: bool) -> crate::records::GlobalColorType {
+pub fn slot_highlight_color_type(highlighted: bool) -> megaloot_profile::records::GlobalColorType {
     if highlighted {
-        crate::records::GlobalColorType::Highlight
+        megaloot_profile::records::GlobalColorType::Highlight
     } else {
-        crate::records::GlobalColorType::Primary
+        megaloot_profile::records::GlobalColorType::Primary
     }
 }
 

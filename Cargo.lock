@@ -4084,6 +4084,7 @@ dependencies = [
  "megaloot-game",
  "megaloot-info",
  "megaloot-kernel",
+ "megaloot-profile",
  "serde",
  "serde_json",
 ]
@@ -4114,6 +4115,17 @@ name = "megaloot-kernel"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "megaloot-profile"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "megaloot-game",
+ "megaloot-kernel",
  "serde",
  "serde_json",
 ]

@@ -10,13 +10,11 @@ use super::{
     model::Rects,
     screens::{button_rect, layout_draws},
 };
-use crate::{
-    godot_layout::{Layout, Visual},
-    profile_store::{BUILD_SIZE, BuildItem, ProfileStore},
-};
+use crate::godot_layout::{Layout, Visual};
 use bevy::prelude::Entity;
 use megaloot_game::items::{instance::Item, rarity::ItemRarity};
 use megaloot_game::run::{game::Game, gameplay::NewRun};
+use megaloot_profile::profile_store::{BUILD_SIZE, BuildItem, ProfileStore};
 use std::collections::HashMap;
 
 const COLUMNS: usize = 9;

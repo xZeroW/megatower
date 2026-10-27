@@ -868,7 +868,7 @@ pub fn profile_popup_draws(
                 record + 1
             ));
         } else if v.path.ends_with("/SelectionLabel") {
-            v.text = Some(crate::records::GAME_VERSION.to_owned());
+            v.text = Some(megaloot_profile::records::GAME_VERSION.to_owned());
         }
         // Speedruns and submit-run depend on the online leaderboards.
         single(v, &["SpeedrunsTabButton", "SubmitRunButton"], &mut out);

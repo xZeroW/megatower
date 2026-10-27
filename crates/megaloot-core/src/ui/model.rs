@@ -276,7 +276,7 @@ pub struct UiState {
     pub library_scroll: usize,
     pub library_tab: usize,
     pub options_ui: super::options_screen::OptionsUi,
-    pub profile: crate::profile_store::ProfileStore,
+    pub profile: megaloot_profile::profile_store::ProfileStore,
     pub library_ui: super::library_planner::LibraryUi,
     /// `BattleLogTabContainer` pages and scroll (in lines).
     pub log_pages: super::battle_log_pages::BattleLogPages,
@@ -314,7 +314,7 @@ impl Default for UiState {
             library_scroll: 0,
             library_tab: 0,
             options_ui: super::options_screen::OptionsUi::default(),
-            profile: crate::profile_store::ProfileStore::load(floor_one_items),
+            profile: megaloot_profile::profile_store::ProfileStore::load(floor_one_items),
             library_ui: super::library_planner::LibraryUi::default(),
             log_pages: Default::default(),
             log_scroll: 0,

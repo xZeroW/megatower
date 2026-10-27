@@ -8,6 +8,7 @@ name = "megaloot_core"
 path = "src/lib.rs"
 
 [dependencies]
+megaloot-profile = { path = "../megaloot-profile" }
 megaloot-game = { path = "../megaloot-game" }
 megaloot-info = { path = "../megaloot-info" }
 megaloot-kernel = { path = "../megaloot-kernel" }
