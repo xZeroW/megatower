@@ -24,26 +24,20 @@ curl -s -X POST http://127.0.0.1:15702 -H 'content-type: application/json' \
   -d '{"jsonrpc":"2.0","id":1,"method":"brp_extras/send_keys","params":{"keys":["Space"]}}'
 ```
 
-The `MEGALOOT_*` variables in `crates/megatower-dev/src/script.rs` drive scripted runs and screenshots.
+The `MEGALOOT_*` variables in `apps/megatower-game/src/dev/script.rs` drive scripted runs and screenshots.
 
 ## Architecture
 
-A thin app crate composes capability crates; dependencies only point down
-(enforced by `crates/megatower-game/tests/architecture.rs`).
+`apps/megatower-game` is the thin binary: `DefaultPlugins`, every plugin
+below, and the env-driven QA tooling (`src/dev`). The libraries sit under
+`crates/`, and dependencies only point down (enforced by
+`apps/megatower-game/tests/architecture.rs`).
 
 | Crate | Role |
 | --- | --- |
-| `megatower-game` | the `megatower` binary: `DefaultPlugins` plus every plugin below |
-| `megatower-frontend` | Bevy front end over a run: screens, HUD composition, input handling, options persistence glue |
-| `megatower-dev` | QA tooling: env-driven script driver and screenshots |
-| `megatower-render` | off-screen 3D room, Godot-resolved HUD layout (`RoomSceneRequest` selects the scene) |
-| `megatower-audio` | kira music/SFX buses, driven by `MusicCue`, `SfxQueue`, `AudioVolumes` |
-| `megatower-input` | `GameAction`, key bindings, leafwing input plugin (`ActiveBindings`) |
-| `megatower-settings` | `Options` data and persistence group |
-| `megatower-profile` | adventurer profile and records |
-| `megatower-layout` | Godot-resolved layouts, room geometry, palette |
-| `megatower-gameplay` | the simulation (run, combat, items, enemies) |
-| `megatower-ui` | tooltip/info content builders and BBCode parsing |
-| `megatower-core` | paths, translations, shared utilities |
+| `megatower-ui` | screens, HUD composition, input handling, tooltip content and BBCode, options and profile systems |
+| `megatower-runtime` | Bevy capability plugins: `audio` (kira buses driven by `MusicCue`/`SfxQueue`/`AudioVolumes`), `input` (`GameAction`, bindings), `render` (off-screen room, HUD layout; `RoomSceneRequest` picks the scene) |
+| `megatower-assets` | Godot-resolved layouts, room geometry, palette |
+| `megatower-core` | simulation (run, combat, items, enemies), settings and profile data, paths, translations |
 
-Lower crates own the resources they consume; the front end writes them.
+Lower crates own the resources they consume; the UI writes them.

@@ -8,7 +8,7 @@ use super::{
 };
 use bevy::prelude::*;
 use bevy_auto_plugin::prelude::*;
-use megatower_audio::{AudioVolumes, MusicCue, SfxQueue, music};
+use megatower_runtime::audio::{AudioVolumes, MusicCue, SfxQueue, music};
 
 pub(super) fn cue_for(ui: &UiState, slot: &GameSlot) -> MusicCue {
     let menu = |path: &str| MusicCue::Track {
@@ -85,12 +85,12 @@ mod tests {
 #[auto_add_system(plugin = UiPlugin, schedule = Update)]
 fn publish_room_scene(
     slot: Res<GameSlot>,
-    mut request: ResMut<megatower_render::room::RoomSceneRequest>,
+    mut request: ResMut<megatower_runtime::render::room::RoomSceneRequest>,
 ) {
     let want = slot
         .0
         .as_ref()
-        .map(|game| megatower_layout::room_scene::scene_for(game.memory.room_type));
+        .map(|game| megatower_assets::room_scene::scene_for(game.memory.room_type));
     if request.0 != want {
         request.0 = want;
     }

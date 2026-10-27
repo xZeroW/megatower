@@ -2,14 +2,14 @@
 //! (`artifacts/godot-layout.json`), the room render target inside its frame,
 //! and the 640x360 logical viewport scaling.
 
-use crate::{
+use crate::render::{
     CaptureReadiness, palette_color,
     room::{RoomRenderTarget, setup_room},
 };
 use bevy::prelude::*;
 use bevy_auto_plugin::prelude::*;
-use megatower_layout::godot_layout::{Visual, recovered_layout};
-use megatower_layout::room_screen::{ROOM_FRAME_RECT, ROOM_VIEWPORT_OFFSET, ROOM_VIEWPORT_SIZE};
+use megatower_assets::godot_layout::{Visual, recovered_layout};
+use megatower_assets::room_screen::{ROOM_FRAME_RECT, ROOM_VIEWPORT_OFFSET, ROOM_VIEWPORT_SIZE};
 
 const FONT: &str = "assets/fonts/monogram-extended.ttf";
 

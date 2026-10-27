@@ -44,7 +44,7 @@ pub enum Draw {
     },
 }
 
-pub use megatower_layout::palette::palette;
+pub use megatower_assets::palette::palette;
 
 pub fn hex(rgb: u32) -> Rgba {
     [
@@ -120,7 +120,7 @@ fn center_text(x: f32, y: f32, w: f32, text_: &str, color: Rgba) -> Draw {
     text([x - w / 2.0, y, w, 13.0], text_, color, Align::Center)
 }
 
-fn nine_patch(rect: R, template: &megatower_layout::godot_layout::Visual, tint: Rgba) -> Draw {
+fn nine_patch(rect: R, template: &megatower_assets::godot_layout::Visual, tint: Rgba) -> Draw {
     Draw::Image {
         rect,
         path: trim(template.texture.as_deref().unwrap_or_default()),
@@ -1060,7 +1060,7 @@ fn enemy_widget(
 ) {
     // Geometry comes from the Godot-resolved `enemy_container.tscn`; node
     // rects are relative to the container's top-left corner.
-    let l = megatower_layout::godot_layout::enemy_container_layout();
+    let l = megatower_assets::godot_layout::enemy_container_layout();
     let ox = cx - l.size[0] / 2.0;
     let oy = ENEMY_TOP;
     let at = |r: [f32; 4]| [ox + r[0], oy + r[1], r[2], r[3]];
@@ -1424,7 +1424,7 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     match ui.tab {
         Tab::Stats => super::panels::draw_stats_tab(game, &mut out),
         Tab::Log => {
-            let layout = megatower_layout::godot_layout::battle_log_layout();
+            let layout = megatower_assets::godot_layout::battle_log_layout();
             out.extend(super::screens::battle_log_draws(
                 &layout,
                 &ui.log_pages,
@@ -1634,7 +1634,7 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     }
     if state_died {
         // `DeathScreen`: the resolved scene with the source's result texts.
-        let layout = megatower_layout::godot_layout::death_screen_layout();
+        let layout = megatower_assets::godot_layout::death_screen_layout();
         let floor = game.memory.floor_number;
         let death_text = translation::t("died-on-floor", "Text")
             .replace("{floor-number}", &(floor + 1).to_string());
@@ -1655,7 +1655,7 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
 
 /// The death screen's confirm button (`ConfirmButton` in `death_screen.tscn`).
 pub fn new_run_rect() -> R {
-    super::screens::death_confirm_rect(&megatower_layout::godot_layout::death_screen_layout())
+    super::screens::death_confirm_rect(&megatower_assets::godot_layout::death_screen_layout())
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -1878,7 +1878,7 @@ mod tooltip_tests {
     #[test]
     fn tooltip_background_is_opaque() {
         let mut out = vec![];
-        let rects = Rects::from_layout(&megatower_layout::godot_layout::recovered_layout());
+        let rects = Rects::from_layout(&megatower_assets::godot_layout::recovered_layout());
         draw_tip(
             &mut out,
             &rects,

@@ -7,7 +7,7 @@ use bevy::{
     render::view::screenshot::{Screenshot, save_to_disk},
 };
 use bevy_auto_plugin::prelude::*;
-use megatower_render::{CaptureReadiness, room::RoomRenderTarget};
+use megatower_runtime::render::{CaptureReadiness, room::RoomRenderTarget};
 
 #[derive(AutoPlugin)]
 pub struct CapturePlugin;

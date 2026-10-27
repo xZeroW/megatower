@@ -2,7 +2,7 @@
 //! (`esc_menu_screen.tscn`), plus their button hit-testing.
 
 use super::compose::{Align, Draw, palette, text};
-use megatower_layout::godot_layout::{Layout, Visual};
+use megatower_assets::godot_layout::{Layout, Visual};
 
 fn trim(path: &str) -> String {
     path.trim_start_matches("res://").to_owned()
@@ -240,7 +240,7 @@ pub const ESC_UNAVAILABLE: [&str; 2] = ["LibraryButton", "OptionsButton"];
 #[cfg(test)]
 mod tests {
     use super::*;
-    use megatower_layout::godot_layout::esc_menu_layout;
+    use megatower_assets::godot_layout::esc_menu_layout;
 
     #[test]
     fn esc_menu_matches_the_resolved_scene() {
@@ -423,10 +423,10 @@ pub const LIBRARY_PASSIVES: usize = 3;
 
 pub fn library_layout_for(tab: usize) -> Layout {
     match tab {
-        LIBRARY_BESTIARY => megatower_layout::godot_layout::library_bestiary_layout(),
-        LIBRARY_SYNERGIES => megatower_layout::godot_layout::library_synergies_layout(),
-        LIBRARY_PASSIVES => megatower_layout::godot_layout::library_passives_layout(),
-        _ => megatower_layout::godot_layout::library_layout(),
+        LIBRARY_BESTIARY => megatower_assets::godot_layout::library_bestiary_layout(),
+        LIBRARY_SYNERGIES => megatower_assets::godot_layout::library_synergies_layout(),
+        LIBRARY_PASSIVES => megatower_assets::godot_layout::library_passives_layout(),
+        _ => megatower_assets::godot_layout::library_layout(),
     }
 }
 
@@ -965,7 +965,7 @@ pub fn main_menu_draws(layout: &Layout) -> Vec<Draw> {
 #[cfg(test)]
 mod menu_tests {
     use super::*;
-    use megatower_layout::godot_layout::{intro_layout, main_menu_layout};
+    use megatower_assets::godot_layout::{intro_layout, main_menu_layout};
 
     #[test]
     fn main_menu_buttons_are_hit_at_their_centers() {
@@ -1011,7 +1011,7 @@ mod library_tests {
 
     #[test]
     fn library_back_button_is_hit() {
-        let layout = megatower_layout::godot_layout::library_layout();
+        let layout = megatower_assets::godot_layout::library_layout();
         let r = button_rect(&layout, "BackButton").unwrap();
         assert!(library_back_hit(&layout, r[0] + 2.0, r[1] + 2.0));
         assert!(!library_back_hit(&layout, 300.0, 300.0));
@@ -1019,7 +1019,7 @@ mod library_tests {
 
     #[test]
     fn library_tabs_switch_and_bestiary_has_no_enemy_icons() {
-        let layout = megatower_layout::godot_layout::library_layout();
+        let layout = megatower_assets::godot_layout::library_layout();
         let r = button_rect(&layout, "BestiaryButton").unwrap();
         assert_eq!(library_tab_hit(&layout, r[0] + 3.0, r[1] + 3.0), Some(1));
         for (name, tab) in [
@@ -1093,7 +1093,7 @@ mod library_tests {
 
     #[test]
     fn profile_grid_wraps_at_nine_columns_and_hits_cells() {
-        let layout = megatower_layout::godot_layout::profile_layout();
+        let layout = megatower_assets::godot_layout::profile_layout();
         let first = profile_cell(&layout, 0).unwrap();
         let tenth = profile_cell(&layout, 9).unwrap();
         assert_eq!(first[0], tenth[0]);
@@ -1123,7 +1123,7 @@ mod library_tests {
 
     #[test]
     fn popup_shows_one_unlocked_card_for_a_fresh_record() {
-        let layout = megatower_layout::godot_layout::adventurer_overview_layout();
+        let layout = megatower_assets::godot_layout::adventurer_overview_layout();
         let draws =
             profile_popup_draws(&layout, Some("assets/textures/portraits/fren.png"), 0, 0.0);
         let text_of = |needle: &str| {
@@ -1154,7 +1154,7 @@ mod library_tests {
 
     #[test]
     fn popup_tabs_hit_and_offline_records_show_only_the_header() {
-        let layout = megatower_layout::godot_layout::adventurer_overview_layout();
+        let layout = megatower_assets::godot_layout::adventurer_overview_layout();
         let r = button_rect(&layout, "SpeedrunsTabButton").unwrap();
         assert_eq!(
             popup_tab_hit(&layout, r[0] + 3.0, r[1] + POPUP_DY + 3.0),
@@ -1167,7 +1167,7 @@ mod library_tests {
         );
         assert_eq!(popup_tab_hit(&layout, 300.0, 300.0), None);
         let draws = profile_popup_records_draws(
-            &megatower_layout::godot_layout::adventurer_records_layout(),
+            &megatower_assets::godot_layout::adventurer_records_layout(),
         );
         let labels: Vec<&str> = draws
             .iter()

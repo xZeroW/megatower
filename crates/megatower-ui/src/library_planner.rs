@@ -11,10 +11,10 @@ use super::{
     screens::{button_rect, layout_draws},
 };
 use bevy::prelude::Entity;
+use megatower_assets::godot_layout::{Layout, Visual};
 use megatower_core::items::{instance::Item, rarity::ItemRarity};
 use megatower_core::profile_store::{BUILD_SIZE, BuildItem, ProfileStore};
 use megatower_core::run::{game::Game, gameplay::NewRun};
-use megatower_layout::godot_layout::{Layout, Visual};
 use std::collections::HashMap;
 
 const COLUMNS: usize = 9;
@@ -460,7 +460,7 @@ mod tests {
 
     #[test]
     fn rarity_slider_and_build_planner_round_trip_through_clicks() {
-        let layout = megatower_layout::godot_layout::library_layout();
+        let layout = megatower_assets::godot_layout::library_layout();
         let mut profile = profile_knowing(&[""]);
         let mut ui = LibraryUi::default();
         let mut scroll = 0;
@@ -522,7 +522,7 @@ mod tests {
 
     #[test]
     fn typing_only_edits_the_search_box_while_it_has_focus() {
-        let layout = megatower_layout::godot_layout::library_layout();
+        let layout = megatower_assets::godot_layout::library_layout();
         let mut profile = profile_knowing(&["steak"]);
         let mut ui = LibraryUi::default();
         let mut scroll = 3;

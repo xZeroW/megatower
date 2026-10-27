@@ -3,7 +3,7 @@
 //! `pixel_toon.gdshader`, swapped when the run enters a room whose
 //! `RoomResource.scene` differs.
 
-use crate::{CaptureReadiness, palette_color};
+use crate::render::{CaptureReadiness, palette_color};
 use bevy::{
     asset::embedded_asset,
     camera::{ClearColorConfig, RenderTarget, visibility::RenderLayers},
@@ -12,8 +12,8 @@ use bevy::{
     shader::ShaderRef,
 };
 use bevy_auto_plugin::prelude::*;
-use megatower_layout::room_scene::{RoomLight, scene};
-use megatower_layout::room_screen::{ROOM_CAMERA_FOV_DEGREES, ROOM_VIEWPORT_SIZE};
+use megatower_assets::room_scene::{RoomLight, scene};
+use megatower_assets::room_screen::{ROOM_CAMERA_FOV_DEGREES, ROOM_VIEWPORT_SIZE};
 
 /// The scene (`room_scene::scene_for`) the room view should show; `None`
 /// while there is no run.
@@ -73,7 +73,7 @@ pub struct RoomMaterial {
 
 impl Material for RoomMaterial {
     fn fragment_shader() -> ShaderRef {
-        "embedded://megatower_render/room_toon.wesl".into()
+        "embedded://megatower_runtime/render/room_toon.wesl".into()
     }
 }
 

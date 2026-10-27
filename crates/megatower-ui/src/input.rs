@@ -110,10 +110,10 @@ fn collect_input(
 }
 
 /// Publishes the bindings edited on the Options screen to the input crate.
-#[auto_add_system(plugin = UiPlugin, schedule = Update, config(before = megatower_input::gameplay_input::InputSystems))]
+#[auto_add_system(plugin = UiPlugin, schedule = Update, config(before = megatower_runtime::input::gameplay_input::InputSystems))]
 fn publish_bindings(
     ui: Res<UiRes>,
-    mut active: ResMut<megatower_input::gameplay_input::ActiveBindings>,
+    mut active: ResMut<megatower_runtime::input::gameplay_input::ActiveBindings>,
 ) {
     if active.0 != ui.0.options_ui.bindings {
         active.0 = ui.0.options_ui.bindings.clone();

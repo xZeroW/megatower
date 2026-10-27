@@ -1,9 +1,12 @@
+mod dev;
+
 use bevy::prelude::*;
-use megatower_audio::GameAudioPlugin;
-use megatower_dev::DevPlugin;
-use megatower_input::gameplay_input::GameInputPlugin;
-use megatower_render::palette_color;
-use megatower_render::{hud_layout::HudLayoutPlugin, room::RoomRenderPlugin};
+use dev::DevPlugin;
+use megatower_runtime::audio::GameAudioPlugin;
+use megatower_runtime::input::gameplay_input::GameInputPlugin;
+use megatower_runtime::render::{
+    hud_layout::HudLayoutPlugin, palette_color, room::RoomRenderPlugin,
+};
 use megatower_ui::{UiPlugin, settings::GameSettingsPlugin};
 
 fn main() {

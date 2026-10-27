@@ -74,6 +74,7 @@ use compose::{
 use frame::{adventurer_cells, select_draws};
 pub use frame::{refresh, run_action};
 pub use input::{FrameInput, ScriptedInput};
+use megatower_assets::godot_layout::recovered_layout;
 use megatower_core::combat::turn::TurnType;
 use megatower_core::run::{
     events::{FlashKind, Fx, Popup},
@@ -81,10 +82,9 @@ use megatower_core::run::{
     gameplay::NewRun,
     state::Player,
 };
-use megatower_input::gameplay_input::{
+use megatower_runtime::input::gameplay_input::{
     GameAction, GameplayCommand, InputContext, commands_for_actions,
 };
-use megatower_layout::godot_layout::recovered_layout;
 use model::*;
 use panels::{DropAction, drop_targets, format_log};
 
@@ -120,8 +120,8 @@ pub enum UiSystems {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use megatower_assets::godot_layout::recovered_layout;
     use megatower_core::run::gameplay::NewRun;
-    use megatower_layout::godot_layout::recovered_layout;
 
     /// Compose the HUD at every step of bot-driven runs, in every tab, with the
     /// stash open and an item dragged: no panics, and drawing is deterministic.

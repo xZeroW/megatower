@@ -10,11 +10,10 @@ path = "src/main.rs"
 [dependencies]
 bevy.workspace = true
 bevy_brp_extras = { workspace = true, optional = true }
-megatower-audio = { path = "../megatower-audio" }
-megatower-dev = { path = "../megatower-dev" }
-megatower-input = { path = "../megatower-input" }
-megatower-ui = { path = "../megatower-ui" }
-megatower-render = { path = "../megatower-render" }
+bevy_auto_plugin.workspace = true
+megatower-core = { path = "../../crates/megatower-core" }
+megatower-runtime = { path = "../../crates/megatower-runtime" }
+megatower-ui = { path = "../../crates/megatower-ui" }
 
 [features]
 # Remote control for QA: BRP on port 15702 with bevy_brp_extras

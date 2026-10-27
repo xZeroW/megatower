@@ -67,10 +67,10 @@ fn update_screens(
                 {
                     ui.screen = Screen::MainMenu;
                 }
-                screens::intro_draws(&megatower_layout::godot_layout::intro_layout(), ui.time)
+                screens::intro_draws(&megatower_assets::godot_layout::intro_layout(), ui.time)
             }
             (None, Screen::MainMenu) => {
-                let layout = megatower_layout::godot_layout::main_menu_layout();
+                let layout = megatower_assets::godot_layout::main_menu_layout();
                 if let (true, Some([x, y])) = (click, ui.cursor) {
                     match screens::main_menu_hit(&layout, x, y) {
                         Some(screens::MenuButton::EnterTheTower) => ui.screen = Screen::Select,
@@ -384,7 +384,7 @@ pub(super) fn handle_input(
         }
         if ui.tab == Tab::Log {
             match screens::battle_log_arrows(
-                &megatower_layout::godot_layout::battle_log_layout(),
+                &megatower_assets::godot_layout::battle_log_layout(),
                 x,
                 y,
             ) {

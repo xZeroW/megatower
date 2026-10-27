@@ -6,9 +6,9 @@ use super::compose::{Align, Draw, palette, text};
 use super::screens::{button_rect, layout_visuals};
 use crate::library_state::db_to_linear;
 use bevy::prelude::KeyCode;
+use megatower_assets::godot_layout::{Layout, Visual};
 use megatower_core::options::{Binding, Options, WindowMode, supported_resolutions};
-use megatower_input::gameplay_input::{DEFAULT_KEYS, KeyBindings};
-use megatower_layout::godot_layout::{Layout, Visual};
+use megatower_runtime::input::gameplay_input::{DEFAULT_KEYS, KeyBindings};
 
 pub const CONTROLS: usize = 0;
 pub const VIDEO: usize = 1;
@@ -23,10 +23,10 @@ const TAB_BUTTONS: [&str; 4] = [
 
 pub fn layout_for(tab: usize) -> Layout {
     match tab {
-        VIDEO => megatower_layout::godot_layout::options_video_layout(),
-        AUDIO => megatower_layout::godot_layout::options_audio_layout(),
-        MISC => megatower_layout::godot_layout::options_misc_layout(),
-        _ => megatower_layout::godot_layout::options_layout(),
+        VIDEO => megatower_assets::godot_layout::options_video_layout(),
+        AUDIO => megatower_assets::godot_layout::options_audio_layout(),
+        MISC => megatower_assets::godot_layout::options_misc_layout(),
+        _ => megatower_assets::godot_layout::options_layout(),
     }
 }
 

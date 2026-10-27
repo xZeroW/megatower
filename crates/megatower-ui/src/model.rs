@@ -5,9 +5,9 @@
 //! (`custom_minimum_size = 76x146`) and the reference footage.
 
 use bevy::prelude::Entity;
+use megatower_assets::godot_layout::Layout;
 use megatower_core::inventory::Slot;
 use megatower_core::run::events::{Frame, Fx, Popup, Timed};
-use megatower_layout::godot_layout::Layout;
 
 pub type R = [f32; 4];
 
@@ -42,21 +42,21 @@ pub struct Rects {
     pub action_strip: R,
     pub room_frame: R,
     pub tabs: [R; 3],
-    pub flat_button: megatower_layout::godot_layout::Visual,
-    pub small_panel: megatower_layout::godot_layout::Visual,
-    pub big_panel: megatower_layout::godot_layout::Visual,
+    pub flat_button: megatower_assets::godot_layout::Visual,
+    pub small_panel: megatower_assets::godot_layout::Visual,
+    pub big_panel: megatower_assets::godot_layout::Visual,
 }
 
 impl Rects {
     pub fn from_layout(layout: &Layout) -> Self {
-        let find = |pred: &dyn Fn(&megatower_layout::godot_layout::Visual) -> bool| {
+        let find = |pred: &dyn Fn(&megatower_assets::godot_layout::Visual) -> bool| {
             layout
                 .visuals
                 .iter()
                 .find(|v| pred(v))
                 .expect("layout role")
         };
-        let ends = |v: &megatower_layout::godot_layout::Visual, s: &str| v.path.ends_with(s);
+        let ends = |v: &megatower_assets::godot_layout::Visual, s: &str| v.path.ends_with(s);
         let mut slots: Vec<R> = layout
             .visuals
             .iter()
@@ -140,7 +140,7 @@ impl Rects {
             speed: label("BattleSpeedLabel"),
             effects_row: [15.0, 98.0, 277.0, 16.0],
             action_strip: [310.0, 295.0, 328.0, 63.0],
-            room_frame: megatower_layout::room_screen::ROOM_FRAME_RECT,
+            room_frame: megatower_assets::room_screen::ROOM_FRAME_RECT,
             tabs: [
                 find(&|v| v.kind == "NinePatchRect" && v.path.contains("MainTabButton/BackPanel"))
                     .rect,

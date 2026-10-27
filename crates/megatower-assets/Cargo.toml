@@ -1,14 +1,16 @@
 [package]
-name = "megatower-render"
+name = "megatower-assets"
 version.workspace = true
 edition.workspace = true
 
 [lib]
-name = "megatower_render"
+name = "megatower_assets"
 path = "src/lib.rs"
 
 [dependencies]
 megatower-core = { path = "../megatower-core" }
-megatower-layout = { path = "../megatower-layout" }
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
 bevy.workspace = true
-bevy_auto_plugin.workspace = true

@@ -12,7 +12,7 @@ use bevy::prelude::*;
 /// `global_colors.gdshader get_color()` as a Bevy color; `None` and unknown
 /// indices are white.
 pub fn palette_color(index: Option<u8>) -> Color {
-    let [r, g, b, a] = megatower_layout::palette::palette(index.unwrap_or(0));
+    let [r, g, b, a] = megatower_assets::palette::palette(index.unwrap_or(0));
     Color::srgba(r, g, b, a)
 }
 
