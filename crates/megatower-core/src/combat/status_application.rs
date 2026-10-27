@@ -7,6 +7,7 @@ use super::{
     damage::{DamageData, DamageSource},
     profile::{BattleProfile, StatusKind},
 };
+use crate::rng::GodotRng;
 use crate::{
     character::{
         item_sources::CharacterItems,
@@ -18,7 +19,6 @@ use crate::{
     status_effects::StatusEffectId as Effect,
 };
 use bevy::prelude::{Entity, World};
-use crate::rng::GodotRng;
 
 #[derive(Clone, Debug)]
 pub enum StatusAction {

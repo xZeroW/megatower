@@ -2,9 +2,9 @@
 //! components, not GDScript objects. Creation/market/UI managers are not wired.
 
 use super::{Price, definition::ItemDefinition, rarity::ItemRarity};
+use crate::rng::GlobalRng;
 use crate::stats::{BonusStat, Stat, StatCatalog, StatCollection, StatId};
 use bevy::prelude::Component;
-use crate::rng::GlobalRng;
 use std::sync::Arc;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

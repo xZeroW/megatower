@@ -2,9 +2,9 @@
 //! in `godot_sort` to preserve tied-item ordering.
 
 use super::{InventoryError, ItemContainer, array_index};
+use crate::godot_sort::source_sort;
 use crate::items::{definition::SocketType, instance::Item};
 use bevy::prelude::*;
-use crate::godot_sort::source_sort;
 use std::collections::BTreeMap;
 
 pub(super) fn sorted_items(

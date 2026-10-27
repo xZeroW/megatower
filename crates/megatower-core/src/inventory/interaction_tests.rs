@@ -3,6 +3,7 @@ use super::{
     interactions::*,
     *,
 };
+use crate::rng::GlobalRng;
 use crate::{
     items::{
         definition::{ActivationEffect, ConsumptionEffect, ItemDefinition, SocketType},
@@ -12,7 +13,6 @@ use crate::{
     stats::{Stat, StatId},
 };
 use bevy::prelude::*;
-use crate::rng::GlobalRng;
 use serde_json::{Value, json};
 use std::sync::Arc;
 

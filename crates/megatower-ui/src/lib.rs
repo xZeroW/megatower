@@ -1,7 +1,3 @@
-pub mod bb_scripts;
-pub mod info;
-pub mod info_builders;
-pub mod utils;
 //! Bevy front end over `run::Game`. Gameplay runs to completion inside
 //! `Game`; this layer plays back its event timeline, translates input into
 //! game actions and draws the HUD from `compose`.
@@ -63,6 +59,10 @@ mod overlays;
 pub mod settings;
 pub mod vfx_rules;
 
+pub mod bb_scripts;
+pub mod info;
+pub mod info_builders;
+pub mod utils;
 mod window_options;
 
 use bevy::{prelude::*, window::PrimaryWindow};

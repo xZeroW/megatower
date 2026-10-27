@@ -5,7 +5,6 @@ use super::{
     compose::{Align, Draw, WHITE, hex, image, palette, text, tinted},
     model::*,
 };
-use megatower_core::translation;
 use megatower_core::battle_actions::BattleActionId;
 use megatower_core::inventory::{ItemContainer, Slot};
 use megatower_core::items::instance::Item;
@@ -14,6 +13,7 @@ use megatower_core::run::{
     game::Game,
 };
 use megatower_core::stats::StatId;
+use megatower_core::translation;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum DropAction {

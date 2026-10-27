@@ -276,8 +276,7 @@ impl Team {
             .iter_mut()
             .find(|u| u.enemy_resource == new.enemy_resource)
         {
-            let mut stats =
-                crate::stats::StatCollection(std::mem::take(&mut existing.stats));
+            let mut stats = crate::stats::StatCollection(std::mem::take(&mut existing.stats));
             for stat in &new.stats {
                 let mut copy = crate::stats::Stat::new(stat.resource, 0.0);
                 copy.set_stat(stat);
@@ -290,10 +289,7 @@ impl Team {
     }
 
     /// `get_enemy_upgrade_stats`: copies of every matching upgrade's stats.
-    pub fn enemy_upgrade_stats(
-        &self,
-        enemy_resource: &str,
-    ) -> Vec<crate::stats::Stat> {
+    pub fn enemy_upgrade_stats(&self, enemy_resource: &str) -> Vec<crate::stats::Stat> {
         self.enemy_upgrades
             .iter()
             .filter(|u| u.enemy_resource == enemy_resource)

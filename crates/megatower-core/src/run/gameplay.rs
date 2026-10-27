@@ -8,6 +8,7 @@ use super::{
     hooks::Hooks,
     state::{CharacterState, Memory, Player},
 };
+use crate::rng::{GlobalRng, RngStreams};
 use crate::{
     adventurers::AdventurerCatalog,
     character::{
@@ -28,7 +29,6 @@ use crate::{
     trials::Trial,
 };
 use bevy::prelude::*;
-use crate::rng::{GlobalRng, RngStreams};
 use std::sync::Arc;
 
 pub struct NewRun {

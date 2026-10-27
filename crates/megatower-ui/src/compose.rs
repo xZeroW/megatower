@@ -4,7 +4,6 @@
 use super::model::*;
 
 use bevy::prelude::Entity;
-use megatower_core::translation;
 use megatower_core::enemies::Enemy;
 use megatower_core::inventory::{ItemContainer, Slot};
 use megatower_core::items::{instance::Item, rarity::ItemRarity};
@@ -13,6 +12,7 @@ use megatower_core::run::{
     game::Game,
 };
 use megatower_core::stats::StatId;
+use megatower_core::translation;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Align {
@@ -766,11 +766,7 @@ fn set_property(id: &str) -> String {
 /// Resolve a translated-BB reference property against the loaded catalogs,
 /// in the source's search order (stats, statuses, abilities, ..., item sets,
 /// passives).
-fn lookup_piece(
-    game: &Game,
-    property: &str,
-    is_value: bool,
-) -> Option<crate::bb_scripts::BbPiece> {
+fn lookup_piece(game: &Game, property: &str, is_value: bool) -> Option<crate::bb_scripts::BbPiece> {
     use crate::bb_scripts::BbPiece;
     let lower = property.to_lowercase();
     if let Some(id) = stat_from_key(&lower) {
@@ -837,11 +833,7 @@ fn lookup_piece(
 }
 
 /// Translated description of `name` as display pieces.
-fn description_pieces(
-    game: &Game,
-    name: &str,
-    kind: &str,
-) -> Vec<crate::bb_scripts::BbPiece> {
+fn description_pieces(game: &Game, name: &str, kind: &str) -> Vec<crate::bb_scripts::BbPiece> {
     description_pieces_for(game, name, kind, None)
 }
 
@@ -858,11 +850,10 @@ fn description_pieces_for(
     };
     let mut tokens = crate::info::parse_translated(&raw);
     if let Some(script) = script {
-        let replacements: Vec<(String, String)> =
-            crate::bb_scripts::constant_replacements(script)
-                .into_iter()
-                .map(|(a, b)| (a.to_owned(), b.to_owned()))
-                .collect();
+        let replacements: Vec<(String, String)> = crate::bb_scripts::constant_replacements(script)
+            .into_iter()
+            .map(|(a, b)| (a.to_owned(), b.to_owned()))
+            .collect();
         crate::info::apply_replacements(&mut tokens, &replacements, &[]);
     }
     crate::info::resolve_tokens(&tokens, &|p, v| lookup_piece(game, p, v))
@@ -1776,10 +1767,8 @@ fn action_strip(
     let local = game.local();
     if game.memory.room_type == Room::Battle {
         let attack_type = game.with_attack(local, |view, _| view.attack_type());
-        let damage = game.attack_data_for(
-            local,
-            megatower_core::combat::damage::DamageSource::Attack,
-        );
+        let damage =
+            game.attack_data_for(local, megatower_core::combat::damage::DamageSource::Attack);
         let mut data = damage;
         game.with_attack(local, |view, _| view.apply_output_boosters(&mut data));
         let _ = attack_type;

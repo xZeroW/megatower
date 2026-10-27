@@ -1,5 +1,7 @@
 //! `BattleProcesor` status-effect methods on `Game`.
 
+use crate::rng::GodotRng;
+use crate::translation;
 use crate::{
     battle_actions::{BattleActionId, action},
     character::runtime::{CharacterStatError, CharacterStatRules, CharacterStats},
@@ -21,8 +23,6 @@ use crate::{
     status_effects::{StatusEffect, StatusEffectId as Eff},
 };
 use bevy::prelude::*;
-use crate::rng::GodotRng;
-use crate::translation;
 
 impl StatusHost for Game {
     fn parts(&mut self) -> (&mut World, &CharacterStatRules, &mut GodotRng) {

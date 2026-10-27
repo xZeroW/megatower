@@ -7,6 +7,7 @@ use super::{
     hooks::Hooks,
     state::Memory,
 };
+use crate::rng::{GlobalRng, RngStreams};
 use crate::{
     adventurers::AdventurerCatalog,
     character::{
@@ -20,7 +21,6 @@ use crate::{
     stats::StatId,
 };
 use bevy::prelude::*;
-use crate::rng::{GlobalRng, RngStreams};
 
 /// Source `Options.BattleSpeed`; default is X2.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

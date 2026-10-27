@@ -2,12 +2,12 @@
 //! intentionally leave cache refresh/notifications exactly where source does.
 
 use super::{item_sources::CharacterItems, runtime::*};
+use crate::game_math;
 use crate::{
     combat::profile::BattleProfile,
     stats::{Stat, StatId},
 };
 use bevy::prelude::*;
-use crate::game_math;
 
 impl CharacterStats {
     pub fn health(&self) -> f64 {

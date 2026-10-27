@@ -12,9 +12,9 @@ use super::{
 };
 use bevy::prelude::Entity;
 use megatower_core::items::{instance::Item, rarity::ItemRarity};
+use megatower_core::profile_store::{BUILD_SIZE, BuildItem, ProfileStore};
 use megatower_core::run::{game::Game, gameplay::NewRun};
 use megatower_layout::godot_layout::{Layout, Visual};
-use megatower_core::profile_store::{BUILD_SIZE, BuildItem, ProfileStore};
 use std::collections::HashMap;
 
 const COLUMNS: usize = 9;

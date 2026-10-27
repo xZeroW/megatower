@@ -2,11 +2,11 @@
 //! (key rebinding, resolution clamp, supported resolutions). Window, audio
 //! bus and `WorldEnvironment` application belong to the Bevy shell.
 
+use crate::definitions::InputModeType;
 use bevy::{
     prelude::*,
     settings::{ReflectSettingsGroup, SettingsGroup},
 };
-use crate::definitions::InputModeType;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 

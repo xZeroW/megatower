@@ -4,13 +4,13 @@
 //! false, exactly like a freed Object.
 
 use super::BattleTurnDirection;
+use crate::rng::GodotRng;
 use crate::{
     character::runtime::CharacterStats,
     combat::profile::{BattleProfile, cleanup_profile},
     enemies::{Enemy, can_battle},
 };
 use bevy::prelude::*;
-use crate::rng::GodotRng;
 
 #[derive(Component, Clone, Debug)]
 pub struct Battle {

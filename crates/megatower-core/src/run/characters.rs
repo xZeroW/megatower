@@ -9,6 +9,8 @@ use super::{
     hooks::{Args, Signal},
     state::{CharacterState, Player},
 };
+use crate::game_math;
+use crate::translation;
 use crate::{
     abilities::{UseAbilityResult, can_use_ability},
     character::{
@@ -21,8 +23,6 @@ use crate::{
     status_effects::StatusEffectId as Eff,
 };
 use bevy::prelude::*;
-use crate::game_math;
-use crate::translation;
 
 fn ok<T>(result: Result<T, CharacterStatError>) -> T {
     result.expect("character operation")

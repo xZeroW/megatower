@@ -1,4 +1,5 @@
 use super::battle::*;
+use crate::rng::GodotRng;
 use crate::{
     character::runtime::{CharacterStatRules, CharacterStats, spawn_character},
     combat::profile::BattleProfile,
@@ -8,7 +9,6 @@ use crate::{
     status_effects::{StatusEffect, StatusEffectId},
 };
 use bevy::prelude::*;
-use crate::rng::GodotRng;
 use serde_json::{Value, json};
 
 fn rules() -> CharacterStatRules {

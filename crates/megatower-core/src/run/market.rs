@@ -7,6 +7,7 @@ use super::{
     game::{Game, item_id},
     state::Player,
 };
+use crate::rng::GodotRng;
 use crate::{
     character::runtime::CharacterStats,
     game_mode::{GameMode, Room},
@@ -20,7 +21,6 @@ use crate::{
     stats::{BonusStat, StatId},
 };
 use bevy::prelude::*;
-use crate::rng::GodotRng;
 use std::sync::Arc;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

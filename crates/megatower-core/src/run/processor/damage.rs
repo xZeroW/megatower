@@ -1,6 +1,7 @@
 //! `BattleProcesor` damage pipeline: attack_character, try_to_damage_character,
 //! calculate_damage_result, process_on_hit, directly_damage, kill and removal.
 
+use crate::rng::GodotRng;
 use crate::{
     battle_actions::{BattleActionId, action},
     character::{
@@ -26,7 +27,6 @@ use crate::{
     status_effects::{StatusEffect, StatusEffectId as Eff},
 };
 use bevy::prelude::*;
-use crate::rng::GodotRng;
 
 impl Game {
     /// Runs `f` with a `CharacterAttack` view of `e` and the gameplay stream.

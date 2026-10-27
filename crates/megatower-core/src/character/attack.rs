@@ -6,6 +6,7 @@ use super::{
     runtime::{CharacterStatError, CharacterStats},
     stat_cache::CachedStats,
 };
+use crate::rng::GodotRng;
 use crate::{
     combat::{
         damage::{DamageData, DamageSource},
@@ -16,7 +17,6 @@ use crate::{
     status_effects::{StatusEffect, StatusEffectId as Effect},
 };
 use bevy::prelude::{Entity, World};
-use crate::rng::GodotRng;
 
 pub struct CharacterAttack<'a> {
     pub cache: &'a CachedStats,

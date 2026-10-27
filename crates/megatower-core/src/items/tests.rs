@@ -1,6 +1,6 @@
 use super::{Price, definition::*, instance::*, rarity::ItemRarity};
-use crate::stats::{BonusStat, Stat, StatCatalog, StatId};
 use crate::rng::GlobalRng;
+use crate::stats::{BonusStat, Stat, StatCatalog, StatId};
 use serde_json::{Value, json};
 use std::sync::Arc;
 

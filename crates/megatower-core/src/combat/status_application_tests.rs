@@ -1,4 +1,5 @@
 use super::{profile::BattleProfile, status_application::*};
+use crate::rng::GodotRng;
 use crate::{
     character::{content::CharacterContent, runtime::*},
     inventory::ItemContainer,
@@ -6,7 +7,6 @@ use crate::{
     status_effects::{StatusEffect, StatusEffectId as Effect},
 };
 use bevy::prelude::*;
-use crate::rng::GodotRng;
 use serde::Deserialize;
 use serde_json::{Value, json};
 

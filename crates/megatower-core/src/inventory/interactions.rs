@@ -5,13 +5,13 @@
 use super::{
     InventoryError, ItemPressResultType, Slot, array_index, catalog::ContainerId, container,
 };
+use crate::game_math;
+use crate::rng::GlobalRng;
 use crate::{
     items::{definition::ItemDefinition, instance::Item, rarity::ItemRarity},
     stats::StatId,
 };
 use bevy::prelude::*;
-use crate::game_math;
-use crate::rng::GlobalRng;
 use std::sync::Arc;
 
 fn item<'a>(world: &'a World, slot: &Slot) -> Option<&'a Item> {

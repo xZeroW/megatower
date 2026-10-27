@@ -7,6 +7,7 @@ pub mod scaling;
 #[cfg(test)]
 mod tests;
 
+use crate::godot_sort::source_sort;
 use crate::{
     character::runtime::{
         CharacterStatError, CharacterStatRules, CharacterStats, rebuild_cache, set_stat_amount,
@@ -17,7 +18,6 @@ use crate::{
     trials::Trial,
 };
 use bevy::prelude::*;
-use crate::godot_sort::source_sort;
 use scaling::Scaling;
 use serde::Deserialize;
 use std::sync::Arc;
