@@ -8,6 +8,7 @@ use crate::{
     gameplay_input::{DEFAULT_KEYS, KeyBindings},
     godot_layout::{Layout, Visual},
     options::{Binding, Options, WindowMode, supported_resolutions},
+    ui::library_state::db_to_linear,
 };
 use bevy::prelude::KeyCode;
 
@@ -86,10 +87,6 @@ impl Slider {
             _ => format!("{}%", value.round() as i32),
         }
     }
-}
-
-fn db_to_linear(db: f32) -> f32 {
-    10f32.powf(db / 20.0)
 }
 
 fn linear_to_db(linear: f32) -> f32 {

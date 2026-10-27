@@ -1,8 +1,11 @@
-//! Game audio: the menu and floor music (`AudioManager.play_music`) and the
-//! sound effects a run emits.
+//! Game audio on `bevy_kira_audio`: the menu and floor music
+//! (`AudioManager.play_music`) on [`MusicChannel`] and the run's sound effects
+//! on [`SfxChannel`]. Each channel is a bus whose volume follows the Options
+//! music/SFX sliders, like the source's `Music` and `SFX` buses.
 
 use crate::{
     app::GamePlugin,
+    music,
     ui::{
         GameSlot, UiRes, UiSystems,
         model::{Screen, UiState},
@@ -10,43 +13,66 @@ use crate::{
 };
 use bevy::prelude::*;
 use bevy_auto_plugin::prelude::*;
+use bevy_kira_audio::{AudioPlugin as KiraAudioPlugin, prelude::*};
+use std::time::Duration;
 
 #[derive(AutoPlugin)]
-#[auto_plugin(impl_plugin_trait)]
 #[auto_add_plugin(plugin = GamePlugin)]
-pub struct AudioPlugin;
+pub struct GameAudioPlugin;
 
-/// Plays the sound effects the run queued this frame on the SFX bus volume.
-#[auto_add_system(plugin = AudioPlugin, schedule = Update, config(in_set = UiSystems::Effects))]
-fn play_sfx(mut commands: Commands, assets: Res<AssetServer>, mut ui: ResMut<UiRes>) {
-    let ui = &mut ui.0;
-    let sfx_db = ui.options_ui.options.sfx_volume_db;
-    for (path, db) in ui.audio.drain(..) {
+impl Plugin for GameAudioPlugin {
+    #[auto_plugin]
+    fn build(&self, app: &mut App) {
+        app.add_plugins(KiraAudioPlugin)
+            .add_audio_channel::<MusicChannel>()
+            .add_audio_channel::<SfxChannel>();
+    }
+}
+
+/// The `Music` bus.
+#[derive(Resource)]
+pub struct MusicChannel;
+
+/// The `SFX` bus.
+#[derive(Resource)]
+pub struct SfxChannel;
+
+/// Keeps both buses at the Options volumes, live while a slider is dragged.
+#[auto_add_system(plugin = GameAudioPlugin, schedule = Update, config(in_set = UiSystems::Effects))]
+fn apply_bus_volumes(
+    ui: Res<UiRes>,
+    music: Res<AudioChannel<MusicChannel>>,
+    sfx: Res<AudioChannel<SfxChannel>>,
+    mut applied: Local<Option<(f32, f32)>>,
+) {
+    let options = &ui.0.options_ui.options;
+    let want = (options.music_volume_db, options.sfx_volume_db);
+    if *applied != Some(want) {
+        *applied = Some(want);
+        music.set_volume(want.0);
+        sfx.set_volume(want.1);
+    }
+}
+
+/// Plays the sound effects the run queued this frame.
+#[auto_add_system(plugin = GameAudioPlugin, schedule = Update, config(in_set = UiSystems::Effects))]
+fn play_sfx(assets: Res<AssetServer>, sfx: Res<AudioChannel<SfxChannel>>, mut ui: ResMut<UiRes>) {
+    for (path, db) in ui.0.audio.drain(..) {
         if std::path::Path::new("Megaloot-GDRE-Recovered")
             .join(&path)
             .exists()
         {
-            commands.spawn((
-                AudioPlayer::new(assets.load(path)),
-                PlaybackSettings::DESPAWN.with_volume(bevy::audio::Volume::Decibels(db + sfx_db)),
-            ));
+            sfx.play(assets.load(path)).with_volume(db);
         }
     }
-}
-
-/// One playing music track and its crossfade level.
-#[derive(Component)]
-struct MusicVoice {
-    path: String,
-    level: f32,
-    target: f32,
-    /// Crossfade seconds (`Music.fade_speed`).
-    fade: f32,
 }
 
 #[derive(Default)]
 struct MusicState {
     path: Option<String>,
+    instance: Option<Handle<AudioInstance>>,
+    /// The current one-shot start track has been heard playing.
+    started: bool,
     floor: Option<i32>,
     /// Gameplay music plays the floor's start track, then its loop.
     in_loop: bool,
@@ -81,71 +107,49 @@ fn desired_music(ui: &UiState, slot: &GameSlot, state: &mut MusicState) -> Optio
     }
 }
 
-/// `AudioManager.play_music`: crossfade to the screen's track and keep the
-/// music bus at the Options music volume.
-#[auto_add_system(plugin = AudioPlugin, schedule = Update, config(after = UiSystems::Effects))]
+/// `AudioManager.play_music`: crossfade to the screen's track.
+#[auto_add_system(plugin = GameAudioPlugin, schedule = Update, config(after = UiSystems::Effects))]
 fn music(
-    mut commands: Commands,
-    time: Res<Time>,
     assets: Res<AssetServer>,
     ui: Res<UiRes>,
     slot: Res<GameSlot>,
+    channel: Res<AudioChannel<MusicChannel>>,
+    mut instances: ResMut<Assets<AudioInstance>>,
     mut state: Local<MusicState>,
-    mut voices: Query<(Entity, &mut MusicVoice, Option<&mut AudioSink>)>,
 ) {
-    use crate::music as m;
-    let ui = &ui.0;
     // A finished start track hands over to the floor's loop.
-    if let Some(current) = &state.path {
-        let finished = voices.iter().any(|(_, v, sink)| {
-            v.path == *current && !m::loops(&v.path) && sink.is_some_and(|s| s.empty())
-        });
-        if finished {
-            state.in_loop = true;
+    if let Some(handle) = &state.instance {
+        match channel.state(handle) {
+            PlaybackState::Playing { .. } => state.started = true,
+            PlaybackState::Stopped if state.started => state.in_loop = true,
+            _ => {}
         }
     }
-    if let Some((path, fade)) = desired_music(ui, &slot, &mut state) {
-        if state.path.as_deref() != Some(path.as_str()) {
-            let silent = fade > 0.0;
-            for (_, mut voice, _) in &mut voices {
-                voice.target = 0.0;
-                voice.fade = fade;
-            }
-            let mode = if m::loops(&path) {
-                bevy::audio::PlaybackMode::Loop
-            } else {
-                bevy::audio::PlaybackMode::Once
-            };
-            commands.spawn((
-                AudioPlayer::new(assets.load(path.clone())),
-                PlaybackSettings {
-                    mode,
-                    volume: bevy::audio::Volume::Linear(if silent { 0.0 } else { 1.0 }),
-                    ..default()
-                },
-                MusicVoice {
-                    path: path.clone(),
-                    level: if silent { 0.0 } else { 1.0 },
-                    target: 1.0,
-                    fade,
-                },
-            ));
-            if std::env::var_os("MEGALOOT_LOG_INPUT").is_some() {
-                info!("music: {path} (fade {fade}s)");
-            }
-            state.path = Some(path);
-        }
+    let Some((path, fade)) = desired_music(&ui.0, &slot, &mut state) else {
+        return;
+    };
+    if state.path.as_deref() == Some(path.as_str()) {
+        return;
     }
-    let gain = m::db_to_linear(ui.options_ui.options.music_volume_db);
-    for (entity, mut voice, sink) in &mut voices {
-        voice.level = m::fade_step(voice.level, voice.target, voice.fade, time.delta_secs());
-        if let Some(mut sink) = sink {
-            sink.set_volume(bevy::audio::Volume::Linear(voice.level * gain));
-        }
-        if voice.target == 0.0 && voice.level <= 0.0 {
-            commands.entity(entity).despawn();
-        }
+    let tween = AudioTween::linear(Duration::from_secs_f32(fade));
+    if let Some(old) = state.instance.take()
+        && let Some(mut instance) = instances.get_mut(&old)
+    {
+        instance.stop(tween);
     }
+    let mut play = channel.play(assets.load(path.clone()));
+    if music::loops(&path) {
+        play.looped();
+    }
+    if fade > 0.0 {
+        play.fade_in(tween);
+    }
+    state.instance = Some(play.handle());
+    state.started = false;
+    if std::env::var_os("MEGALOOT_LOG_INPUT").is_some() {
+        info!("music: {path} (fade {fade}s)");
+    }
+    state.path = Some(path);
 }
 
 #[cfg(test)]

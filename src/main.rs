@@ -11,6 +11,8 @@ fn main() {
                     ..default()
                 })
                 .set(ImagePlugin::default_nearest())
+                // Audio goes through bevy_kira_audio (`GameAudioPlugin`).
+                .disable::<bevy::audio::AudioPlugin>()
                 .set(WindowPlugin {
                     primary_window: Some(Window {
                         title: "Megaloot".into(),
