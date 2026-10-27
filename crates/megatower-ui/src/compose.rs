@@ -760,7 +760,7 @@ fn rows_from_tip(game: &Game, tip: &crate::info_builders::Tip) -> Vec<TipRow> {
                     .iter()
                     .find(|a| &a.id == id)
                     .map_or(id.clone(), |a| translation::t(&a.name, "Ability Name"));
-                push_text(&mut rows, &name, dim(hex(0xa9a9a9)));
+                push_text(&mut rows, &name, dim(STEEL));
             }
             BbPiece::Status(id) => {
                 if let Some(sid) = status_from_key(id) {
@@ -841,8 +841,17 @@ fn rows_from_tip(game: &Game, tip: &crate::info_builders::Tip) -> Vec<TipRow> {
             _ => {}
         }
     }
+    // Blank rows inside the text are kept (the gap before "ABILITIES:"), the
+    // empty ones at either end are not.
+    while rows.last().is_some_and(|r| r.is_empty()) {
+        rows.pop();
+    }
+    let first = rows
+        .iter()
+        .position(|r| !r.is_empty())
+        .unwrap_or(rows.len());
     let mut out = vec![tip_title(&tip.name, &tip.name_color)];
-    out.extend(rows.into_iter().filter(|r| !r.is_empty()));
+    out.extend(rows.into_iter().skip(first));
     out
 }
 
@@ -1057,7 +1066,7 @@ pub(crate) fn hit_enemy(frame: &Frame, x: f32, y: f32) -> Option<usize> {
     let n = visible.len() as f32;
     visible.iter().enumerate().find_map(|(order, idx)| {
         let cx = 474.0 + (order as f32 - (n - 1.0) / 2.0) * 96.0;
-        (x >= cx - 38.0 && x <= cx + 38.0 && (120.0..270.0).contains(&y)).then_some(*idx)
+        (x >= cx - 38.0 && x <= cx + 38.0 && (110.0..260.0).contains(&y)).then_some(*idx)
     })
 }
 
@@ -1098,9 +1107,21 @@ fn wrap_rows(rows: Vec<TipRow>, max: f32) -> Vec<TipRow> {
 /// parts: the top row (set icons, name, right-aligned cost), the description
 /// in its own bordered panel and the bottom hint in a darker strip.
 pub(crate) fn draw_tip(out: &mut Vec<Draw>, _rects: &Rects, cursor: [f32; 2], tip: TipView) {
+    draw_tip_at(out, TipAnchor::Cursor(cursor), tip);
+}
+
+/// Where a tooltip goes: by the cursor, or centred above an enemy
+/// (`HoverInfoManager` puts monster tooltips over their container).
+pub(crate) enum TipAnchor {
+    Cursor([f32; 2]),
+    Above { cx: f32, bottom: f32 },
+}
+
+pub(crate) fn draw_tip_at(out: &mut Vec<Draw>, anchor: TipAnchor, tip: TipView) {
     const PAD_X: f32 = 10.0;
     const PAD_Y: f32 = 5.0;
-    const SEP: f32 = 5.0;
+    /// The rich text's line pitch.
+    const ROW: f32 = 16.0;
     let mut rows = tip.rows.into_iter();
     let name_row = rows.next().unwrap_or_default();
     let body = wrap_rows(rows.collect(), TIP_MAX_WIDTH);
@@ -1125,21 +1146,33 @@ pub(crate) fn draw_tip(out: &mut Vec<Draw>, _rects: &Rects, cursor: [f32; 2], ti
         .max(hint_w)
         .max(24.0);
     let w = inner_w + PAD_X * 2.0;
-    // The description sits on the panel itself with 5px around it; the hint
-    // is a darker strip flush with the panel's bottom.
-    let body_h = if body.is_empty() {
-        0.0
-    } else {
-        body.len() as f32 * 13.0 + 6.0
-    };
+    // The description sits on the panel itself; the hint is a darker strip
+    // flush with the panel's bottom.
+    let body_top = 26.0;
+    let body_end = body_top + body.len() as f32 * ROW;
     let hint_h = if tip.hint.is_some() { 23.0 } else { 0.0 };
-    let mut h = PAD_Y + 13.0;
-    if body_h > 0.0 {
-        h += SEP + body_h;
-    }
-    h += if hint_h > 0.0 { SEP + hint_h } else { PAD_Y };
-    let x = (cursor[0] + 10.0).min(640.0 - w - 2.0);
-    let y = (cursor[1] + 10.0).min(360.0 - h - 2.0);
+    let h = if hint_h > 0.0 {
+        (if body.is_empty() {
+            PAD_Y + ROW
+        } else {
+            body_end
+        }) + 8.0
+            + hint_h
+    } else if body.is_empty() {
+        PAD_Y * 2.0 + ROW
+    } else {
+        body_end + 10.0
+    };
+    let (x, y) = match anchor {
+        TipAnchor::Cursor([cx, cy]) => (
+            (cx + 10.0).min(640.0 - w - 2.0),
+            (cy + 10.0).min(360.0 - h - 2.0),
+        ),
+        TipAnchor::Above { cx, bottom } => (
+            (cx - w / 2.0).clamp(312.0, 638.0 - w),
+            (bottom - h).max(2.0),
+        ),
+    };
     // A 1px grey outline around the flat panel.
     out.push(Draw::Fill {
         rect: [x - 1.0, y - 1.0, w + 2.0, h + 2.0],
@@ -1150,7 +1183,7 @@ pub(crate) fn draw_tip(out: &mut Vec<Draw>, _rects: &Rects, cursor: [f32; 2], ti
         color: [0.082_352_9, 0.043_137_3, 0.043_137_3, 1.0],
     });
     // Top row: the set icons start 3px inside the margin, 6px before the name.
-    let ty = y + PAD_Y;
+    let ty = y + PAD_Y + 1.0;
     for (i, (icon, color)) in tip.icons.iter().enumerate() {
         out.push(tinted(
             [x + PAD_X - 3.0 + i as f32 * 12.0, ty + 1.0, 12.0, 12.0],
@@ -1181,11 +1214,10 @@ pub(crate) fn draw_tip(out: &mut Vec<Draw>, _rects: &Rects, cursor: [f32; 2], ti
         }
     }
     // Description, straight on the panel.
-    let mut by = ty + 13.0 + SEP;
-    if body_h > 0.0 {
+    if !body.is_empty() {
         for (row_idx, row) in body.into_iter().enumerate() {
             let mut cx = x + PAD_X;
-            let ry = by + 3.0 + row_idx as f32 * 13.0;
+            let ry = y + body_top + 1.0 + row_idx as f32 * ROW;
             for seg in row {
                 let width = seg_width(&seg);
                 match seg {
@@ -1199,8 +1231,8 @@ pub(crate) fn draw_tip(out: &mut Vec<Draw>, _rects: &Rects, cursor: [f32; 2], ti
                 cx += width;
             }
         }
-        by += body_h + SEP;
     }
+    let by = y + h - hint_h;
     if let Some((icon, label)) = &tip.hint {
         out.push(Draw::Fill {
             rect: [x, by, w, hint_h],
@@ -1455,7 +1487,7 @@ pub(crate) fn hit_status(
         let cx = 474.0 + (order as f32 - (n - 1.0) / 2.0) * 96.0;
         let mut bx = cx - 36.0;
         for status in view.vitals.statuses.iter().take(5) {
-            if inside([bx, 236.0, 14.0, 14.0]) {
+            if inside([bx, 226.0, 14.0, 14.0]) {
                 return Some(status.resource);
             }
             bx += 15.0;
@@ -1514,7 +1546,7 @@ fn button(
 
 /// Top of the enemy containers (`EnemyContainerHolder` y in the room's
 /// SubViewport, which starts at the screen's top).
-const ENEMY_TOP: f32 = 148.0;
+const ENEMY_TOP: f32 = 138.0;
 
 fn enemy_widget(
     rects: &Rects,
@@ -2539,7 +2571,14 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
                 .as_ref()
                 .and_then(|b| b.enemies_to_battle.get(idx).copied().flatten());
             if let Some(tip) = entity.and_then(|e| enemy_tip(game, e, false)) {
-                draw_tip(&mut out, rects, [cx, cy], tip);
+                draw_tip_at(
+                    &mut out,
+                    TipAnchor::Above {
+                        cx: super::frame::enemy_cx(&frame, idx),
+                        bottom: ENEMY_TOP + 5.5,
+                    },
+                    tip,
+                );
             }
         }
     }

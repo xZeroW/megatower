@@ -272,7 +272,7 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
             ui.popups.push(LivePopup {
                 popup,
                 at: now,
-                origin: [enemy_cx(&frame, enemy_idx) + jitter, 190.0 + jitter / 2.0],
+                origin: [enemy_cx(&frame, enemy_idx) + jitter, 186.5 + jitter / 2.0],
             });
         }
         Fx::PlayerAttack { enemy_idx } => ui.enemy_hit[enemy_idx.min(2)] = now,
