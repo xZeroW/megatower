@@ -10,6 +10,7 @@ use bevy::world_serialization::WorldInstanceReady;
 use bevy::{
     asset::embedded_asset,
     camera::{ClearColorConfig, RenderTarget, visibility::RenderLayers},
+    image::{ImageAddressMode, ImageLoaderSettings, ImageSampler, ImageSamplerDescriptor},
     prelude::*,
     render::render_resource::{AsBindGroup, ShaderType, TextureFormat},
     shader::ShaderRef,
@@ -197,6 +198,21 @@ fn spawn_room_scene(
     handle
 }
 
+/// The shaders declare `repeat_enable`: Bevy's default sampler clamps instead.
+fn repeating_texture(assets: &AssetServer, path: &str) -> Handle<Image> {
+    assets
+        .load_builder()
+        .with_settings(|settings: &mut ImageLoaderSettings| {
+            settings.sampler = ImageSampler::Descriptor(ImageSamplerDescriptor {
+                address_mode_u: ImageAddressMode::Repeat,
+                address_mode_v: ImageAddressMode::Repeat,
+                address_mode_w: ImageAddressMode::Repeat,
+                ..ImageSamplerDescriptor::nearest()
+            });
+        })
+        .load(path.to_owned())
+}
+
 /// Gives each mesh of a freshly spawned room its Godot material: triplanar
 /// `pixel_toon` walls or UV-mapped `flat_light` props, lit by the scene's lights.
 fn texture_room(
@@ -233,7 +249,7 @@ fn texture_room(
                 MeshMaterial3d(materials.add(room_material(
                     material,
                     &lights,
-                    assets.load(material.texture.clone()),
+                    repeating_texture(&assets, &material.texture),
                 ))),
                 RenderLayers::layer(ROOM_LAYER),
             ));
