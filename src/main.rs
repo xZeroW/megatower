@@ -2,13 +2,12 @@ use bevy::{
     asset::embedded_asset,
     camera::{ClearColorConfig, RenderTarget, visibility::RenderLayers},
     prelude::*,
-    render::render_resource::AsBindGroup,
+    render::render_resource::{AsBindGroup, ShaderType},
     render::view::screenshot::{Screenshot, save_to_disk},
     shader::ShaderRef,
 };
 use megaloot_core::gameplay_input::InputContext;
 use megaloot_core::godot_layout::recovered_layout;
-use megaloot_core::room_scene::ROOM_NORMAL_BOXES;
 use megaloot_core::room_screen::{
     ROOM_CAMERA_FOV_DEGREES, ROOM_FRAME_RECT, ROOM_VIEWPORT_OFFSET, ROOM_VIEWPORT_SIZE,
 };
@@ -25,18 +24,29 @@ struct CaptureReadiness {
 struct RoomPartMarker;
 
 #[derive(Resource)]
-struct RoomWall(Handle<Image>);
-
-#[derive(Resource)]
 struct ShownRoom(&'static str);
 
 #[derive(Resource)]
 struct RoomRenderTarget(Handle<Image>);
 
+/// Per-part uniforms of `room_toon.wesl`: the part's `dim` and UV scale plus
+/// the scene's `AnimatedLight`s (xyz position, w range; decay is each light's
+/// `omni_attenuation`).
+#[derive(ShaderType, Debug, Clone, Copy)]
+struct RoomUniform {
+    dim: f32,
+    uv_scale: f32,
+    light_count: u32,
+    _pad: f32,
+    light0: Vec4,
+    light1: Vec4,
+    decay: Vec2,
+}
+
 #[derive(Asset, AsBindGroup, TypePath, Debug, Clone)]
 struct RoomMaterial {
     #[uniform(0)]
-    dim: f32,
+    data: RoomUniform,
     #[texture(1)]
     #[sampler(2)]
     wall: Handle<Image>,
@@ -256,9 +266,6 @@ fn setup(
     }
 }
 
-/// Transcription of `scenes/rooms/room_normal.tscn`, the RoomResource used by
-/// the source game's initial Entrance state. Each tuple is a Godot CSGBox3D
-/// center and size; rotations are retained for the ceiling and doorway pieces.
 fn spawn_initial_room(
     commands: &mut Commands,
     assets: &AssetServer,
@@ -267,87 +274,80 @@ fn spawn_initial_room(
     capture_readiness: &mut CaptureReadiness,
     room_layer: RenderLayers,
 ) {
-    let wall = assets.load("assets/textures/3d/dungeon_wall.png");
     if std::env::var_os("MEGALOOT_CAPTURE_SCREENSHOT").is_some() {
-        capture_readiness.assets.push(wall.clone().untyped());
+        capture_readiness
+            .assets
+            .push(assets.load::<Image>(WALL_TEXTURE).untyped());
     }
-    commands.insert_resource(RoomWall(wall.clone()));
-    for room_box in ROOM_NORMAL_BOXES {
-        let rotation = Quat::from_axis_angle(
-            Vec3::from_array(room_box.rotation_axis),
-            room_box.rotation_radians,
-        );
-        commands.spawn((
-            Mesh3d(meshes.add(Cuboid::from_size(Vec3::from_array(room_box.size)))),
-            // The source's `dim` applies after triplanar sampling. Standard
-            // material cannot reproduce that shader's palette quantization,
-            // but retaining this source multiplier avoids flattening every
-            // recovered surface to one brightness in the interim renderer.
-            MeshMaterial3d(materials.add(RoomMaterial {
-                dim: room_box.dim,
-                wall: wall.clone(),
-            })),
-            Transform::from_translation(Vec3::from_array(room_box.position))
-                .with_rotation(rotation),
-            room_layer.clone(),
-            RoomPartMarker,
-            Name::new(format!("room_normal.tscn {}", room_box.name)),
-        ));
-    }
+    spawn_room_scene(
+        commands,
+        assets,
+        meshes,
+        materials,
+        "room_normal",
+        &room_layer,
+    );
 
     // A deliberately opt-in probe for the off-screen target. Keeping it out of
     // normal runs lets the capture script isolate camera/target visibility from
     // recovered room geometry and material parity.
     if std::env::var_os("MEGALOOT_ROOM_DIAGNOSTIC").is_some() {
+        let scene = megaloot_core::room_scene::scene("room_normal");
         commands.spawn((
             Mesh3d(meshes.add(Cuboid::from_size(Vec3::splat(1.0)))),
-            MeshMaterial3d(materials.add(RoomMaterial {
-                dim: 1.0,
-                wall: wall.clone(),
-            })),
+            MeshMaterial3d(materials.add(room_material(
+                1.0,
+                1.75,
+                &scene.lights,
+                assets.load(WALL_TEXTURE),
+            ))),
             Transform::from_xyz(0.0, 0.0, -2.0),
-            room_layer.clone(),
+            room_layer,
             Name::new("RoomScreen diagnostic cube"),
         ));
     }
-
-    commands.spawn((
-        PointLight {
-            range: 14.763,
-            radius: 0.0,
-            shadow_maps_enabled: false,
-            intensity: 500_000.0,
-            ..default()
-        },
-        Transform::from_xyz(0.0, -1.04679, -0.340801),
-        room_layer,
-        Name::new("room_normal.tscn AnimatedLight"),
-    ));
 }
 
-/// Swaps the off-screen 3D room when the run enters a room with another
-/// `RoomResource.scene` (`room_screen.update_room`).
-fn sync_room_scene(
-    mut commands: Commands,
-    game: Res<megaloot_core::ui::GameSlot>,
-    mut shown: ResMut<ShownRoom>,
-    wall: Option<Res<RoomWall>>,
-    old: Query<Entity, With<RoomPartMarker>>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<RoomMaterial>>,
-) {
-    let (Some(wall), Some(game)) = (wall, game.0.as_ref()) else {
-        return;
+const WALL_TEXTURE: &str = "assets/textures/3d/dungeon_wall.png";
+
+fn room_material(
+    dim: f32,
+    uv_scale: f32,
+    lights: &[megaloot_core::room_scene::RoomLight],
+    wall: Handle<Image>,
+) -> RoomMaterial {
+    let light = |i: usize| {
+        lights.get(i).map_or(Vec4::ZERO, |l| {
+            Vec4::new(l.position[0], l.position[1], l.position[2], l.range)
+        })
     };
-    let scene = megaloot_core::room_scene::scene_for(game.memory.room_type);
-    if scene == shown.0 {
-        return;
+    let decay = |i: usize| lights.get(i).map_or(0.0, |l| l.attenuation);
+    RoomMaterial {
+        data: RoomUniform {
+            dim,
+            uv_scale,
+            light_count: lights.len().min(2) as u32,
+            _pad: 0.0,
+            light0: light(0),
+            light1: light(1),
+            decay: Vec2::new(decay(0), decay(1)),
+        },
+        wall,
     }
-    shown.0 = scene;
-    for entity in &old {
-        commands.entity(entity).despawn();
-    }
-    for part in megaloot_core::room_scene::parts(scene) {
+}
+
+/// Spawns every CSG part of a recovered room scene with its own material
+/// (texture, UV scale, `dim`) and the scene's lights baked into the shader.
+fn spawn_room_scene(
+    commands: &mut Commands,
+    assets: &AssetServer,
+    meshes: &mut Assets<Mesh>,
+    materials: &mut Assets<RoomMaterial>,
+    scene_name: &str,
+    layer: &RenderLayers,
+) {
+    let scene = megaloot_core::room_scene::scene(scene_name);
+    for part in &scene.parts {
         let m = part.matrix;
         let matrix = Mat4::from_cols(
             Vec3::new(m[0], m[1], m[2]).extend(0.0),
@@ -362,16 +362,50 @@ fn sync_room_scene(
         };
         commands.spawn((
             Mesh3d(meshes.add(mesh)),
-            MeshMaterial3d(materials.add(RoomMaterial {
-                dim: part.dim,
-                wall: wall.0.clone(),
-            })),
+            MeshMaterial3d(materials.add(room_material(
+                part.dim,
+                part.uv_scale,
+                &scene.lights,
+                assets.load(part.texture.clone()),
+            ))),
             Transform::from_matrix(matrix),
-            RenderLayers::layer(1),
+            layer.clone(),
             RoomPartMarker,
-            Name::new(format!("{scene}.tscn {}", part.name)),
+            Name::new(format!("{scene_name}.tscn {}", part.name)),
         ));
     }
+}
+
+/// Swaps the off-screen 3D room when the run enters a room with another
+/// `RoomResource.scene` (`room_screen.update_room`).
+fn sync_room_scene(
+    mut commands: Commands,
+    assets: Res<AssetServer>,
+    game: Res<megaloot_core::ui::GameSlot>,
+    mut shown: ResMut<ShownRoom>,
+    old: Query<Entity, With<RoomPartMarker>>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<RoomMaterial>>,
+) {
+    let Some(game) = game.0.as_ref() else {
+        return;
+    };
+    let scene = megaloot_core::room_scene::scene_for(game.memory.room_type);
+    if scene == shown.0 {
+        return;
+    }
+    shown.0 = scene;
+    for entity in &old {
+        commands.entity(entity).despawn();
+    }
+    spawn_room_scene(
+        &mut commands,
+        &assets,
+        &mut meshes,
+        &mut materials,
+        scene,
+        &RenderLayers::layer(1),
+    );
 }
 
 /// Controls whose content is live game state; the dynamic HUD draws them.

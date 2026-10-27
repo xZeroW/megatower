@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""Export CSG room geometry from the recovered room .tscn files (text only).
+"""Export CSG room geometry, materials and lights from the recovered room
+.tscn files (text only).
 
-Parent Node3D transforms are folded into each part's world matrix. MeshInstance3D
-nodes (the monolith's custom ArrayMesh) and AnimatedLight/AnimationPlayer are not
-exported.
+Parent Node3D transforms are folded into each part's world matrix. Each part
+carries its material's wall texture, UV scale and `dim`; `AnimatedLight`
+instances become `lights` (world position, range, attenuation). MeshInstance3D
+nodes (the monolith's custom meshes) and AnimationPlayer are not exported; the
+lights' tiny range flicker (0.015) is not modelled.
 """
 import argparse
 import json
@@ -34,12 +37,36 @@ def floats(text):
     return [float(x) for x in text.split(",")]
 
 
+def find_texture(name):
+    """`dungeon_wall.png-<hash>.ctex` -> its source PNG under assets/."""
+    for found in (SOURCE / "assets").rglob(name):
+        return found.relative_to(SOURCE).as_posix()
+    raise SystemExit(f"texture {name} not found")
+
+
+# `animated_light.tscn` defaults.
+LIGHT_RANGE, LIGHT_ATTENUATION = 14.763, 0.05
+
+
 def export_room(name):
     text = (SOURCE / "scenes/rooms" / f"{name}.tscn").read_text()
-    dims = {}
+    ext_paths = dict((i, p) for p, i in re.findall(r'\[ext_resource [^\n]*path="res://([^"]+)" id="([^"]+)"\]', text))
+    ctex = {}
+    for m in re.finditer(r'\[sub_resource type="CompressedTexture2D" id="([^"]+)"\]\nload_path = "[^"]*/([^"/]+?\.png)-[0-9a-f]+\.ctex"', text):
+        ctex[m[1]] = find_texture(m[2])
+    materials = {}
     for m in re.finditer(r'\[sub_resource type="ShaderMaterial" id="([^"]+)"\]\n(.*?)(?=\n\[|\Z)', text, re.S):
-        d = re.search(r"shader_parameter/dim = ([0-9.]+)", m[2])
-        dims[m[1]] = float(d[1]) if d else 1.0
+        body = m[2]
+        d = re.search(r"shader_parameter/dim = ([0-9.]+)", body)
+        t = re.search(r'shader_parameter/texture_albedo = (Sub|Ext)Resource\("([^"]+)"\)', body)
+        u = re.search(r"shader_parameter/uv1_scale = Vector3\(([0-9.]+),", body)
+        texture = None
+        if t:
+            texture = ctex.get(t[2]) if t[1] == "Sub" else ext_paths.get(t[2])
+        materials[m[1]] = {"dim": float(d[1]) if d else 1.0, "texture": texture,
+                           "uv_scale": float(u[1]) if u else 1.0}
+    dims = {k: v["dim"] for k, v in materials.items()}
+    lights = []
     worlds, parts = {}, []
     for header, body in re.findall(r'^(\[node [^\n]*\])\n(.*?)(?=^\[|\Z)', text, re.M | re.S):
         node = re.match(r'\[node name="([^"]+)"(?: type="(\w+)")?(?: parent="([^"]*)")?', header)
@@ -54,17 +81,28 @@ def export_room(name):
         worlds[path] = world
         mat = re.search(r'^material = SubResource\("([^"]+)"\)', body, re.M)
         dim = dims.get(mat[1], 1.0) if mat else 1.0
+        material = materials.get(mat[1], {}) if mat else {}
+        texture = material.get("texture") or "assets/textures/3d/dungeon_wall.png"
+        uv_scale = material.get("uv_scale", 1.75)
+        if node_name.startswith("AnimatedLight"):
+            rng = re.search(r"^omni_range = ([0-9.]+)", body, re.M)
+            att = re.search(r"^omni_attenuation = ([0-9.]+)", body, re.M)
+            lights.append({"name": path, "position": world[9:12],
+                           "range": float(rng[1]) if rng else LIGHT_RANGE,
+                           "attenuation": float(att[1]) if att else LIGHT_ATTENUATION})
+            continue
         if kind == "CSGBox3D":
             size = re.search(r"^size = Vector3\(([^)]*)\)", body, re.M)
             parts.append({"name": path, "shape": "box", "matrix": world,
-                          "size": floats(size[1]) if size else [1, 1, 1], "dim": dim})
+                          "size": floats(size[1]) if size else [1, 1, 1], "dim": dim,
+                          "texture": texture, "uv_scale": uv_scale})
         elif kind == "CSGCylinder3D":
             r = re.search(r"^radius = ([0-9.e-]+)", body, re.M)
             h = re.search(r"^height = ([0-9.e-]+)", body, re.M)
             parts.append({"name": path, "shape": "cylinder", "matrix": world,
                           "size": [float(r[1]) if r else 0.5, float(h[1]) if h else 2.0, 0.0],
-                          "dim": dim})
-    return parts
+                          "dim": dim, "texture": texture, "uv_scale": uv_scale})
+    return {"parts": parts, "lights": lights}
 
 
 def export():
@@ -81,4 +119,4 @@ if __name__ == "__main__":
         assert out.read_text() == data, "artifacts/room-scenes.json is stale"
     else:
         out.write_text(data)
-        print({k: len(v) for k, v in json.loads(data).items()})
+        print({k: (len(v["parts"]), len(v["lights"])) for k, v in json.loads(data).items()})
