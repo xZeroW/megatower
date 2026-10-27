@@ -1373,6 +1373,36 @@ fn enemy_stats(
     }
 }
 
+/// `AbilityPreviewParticles`: four 9px stars per layer drifting up at 15px/s
+/// over 1.75s, faded in over the first 27% of their life and out after.
+fn preview_sparkles(ox: f32, oy: f32, color: Rgba, time: f64, seed: usize, out: &mut Vec<Draw>) {
+    const LIFE: f64 = 1.75;
+    for i in 0..4usize {
+        let t = time / LIFE + (i / 2) as f64 * 0.5;
+        let cycle = t.floor() as i64;
+        let age = (t - t.floor()) as f32;
+        let hash = |salt: usize| -> f32 {
+            let mut h = (seed as u64 * 31 + i as u64 * 17 + salt as u64 * 7919)
+                .wrapping_add(cycle as u64 * 104_729)
+                .wrapping_mul(0x9E37_79B9_7F4A_7C15);
+            h ^= h >> 29;
+            ((h % 1000) as f32) / 1000.0
+        };
+        let alpha = if age < 0.265_896 {
+            age / 0.265_896
+        } else {
+            1.0 - (age - 0.265_896) / (1.0 - 0.265_896)
+        };
+        let x = ox + 38.0 + (hash(1) * 40.0 - 20.0);
+        let y = oy + 60.0 + (hash(2) * 40.0 - 20.0) - age * LIFE as f32 * 15.0;
+        out.push(tinted(
+            [x.round() - 4.0, y.round() - 4.0, 9.0, 9.0],
+            "assets/textures/particles/star.png",
+            [color[0], color[1], color[2], alpha],
+        ));
+    }
+}
+
 #[allow(clippy::too_many_arguments)]
 fn enemy_visuals(
     l: &megatower_assets::godot_layout::EnemyLayout,
@@ -1403,10 +1433,24 @@ fn enemy_visuals(
     } else {
         WHITE
     };
-    out.push(Draw::Fill {
-        rect: [ox + 14.0, oy + 80.0, 48.0, 5.0],
-        color: [0.0, 0.0, 0.0, 0.35],
-    });
+    // `Shadow`: `shadow.gdshader` cuts a 0.7 x 0.3 ellipse out of the 64x64
+    // rect at (6, 51), filled with the background colour.
+    if !view.out_of_combat {
+        let (cx, cy) = (ox + 38.0, oy + 83.0);
+        let (a, b) = (22.4_f32, 9.6_f32);
+        let mut shadow = palette(1);
+        shadow[3] = 0.98;
+        for row in -9..9 {
+            let dy = row as f32 + 0.5;
+            let half = (a * (1.0 - (dy / b).powi(2)).max(0.0).sqrt()).round();
+            if half > 0.0 {
+                out.push(Draw::Fill {
+                    rect: [cx - half, cy + row as f32, half * 2.0, 1.0],
+                    color: shadow,
+                });
+            }
+        }
+    }
     // The next enemy waits behind as a silhouette (`NextEnemyLayer`, drawn in
     // the background colour, 15px above the front sprite).
     if let Some(next) = view.next_texture.as_deref().filter(|_| !view.out_of_combat) {
@@ -1421,6 +1465,10 @@ fn enemy_visuals(
             slice: None,
             flip_x: false,
         });
+    }
+    let sparkle = view.ability_preview.filter(|_| !view.out_of_combat);
+    if let Some(color) = sparkle {
+        preview_sparkles(ox, oy, color, ui.time, idx, out);
     }
     if !texture.is_empty() {
         let visuals = at(l.rect("EnemyVisuals"));
@@ -1438,6 +1486,9 @@ fn enemy_visuals(
             slice: None,
             flip_x: false,
         });
+    }
+    if let Some(color) = sparkle {
+        preview_sparkles(ox, oy, color, ui.time, idx + 7, out);
     }
 
     // Status effects flow above the stats panel (`EffectContainerHolder`).

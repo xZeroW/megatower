@@ -36,6 +36,27 @@ impl Game {
         let enemy = self.world.get::<Enemy>(e).unwrap().clone();
         let attack_type = self.with_attack(e, |view, _| view.attack_type());
         let attack = self.stat(e, attack_type)[0];
+        // `update_enemy_ability_preview_particles`.
+        let ability_preview = enemy
+            .ability()
+            .filter(|_| {
+                !enemy.out_of_combat
+                    && self.memory.room_type != crate::game_mode::Room::EnemyUpgrade
+            })
+            .filter(|id| {
+                self.can_use_ability_for(e, id) == crate::abilities::UseAbilityResult::Success
+            })
+            .and_then(|id| {
+                self.rules
+                    .content
+                    .abilities
+                    .iter()
+                    .find(|a| a.id == id)
+                    .map(|a| {
+                        let c = a.preview_color().to_srgba();
+                        [c.red, c.green, c.blue, c.alpha]
+                    })
+            });
         EnemyView {
             name: crate::translation::t(&enemy.definition.name, "enemy-name"),
             texture: enemy.definition.texture.clone(),
@@ -51,6 +72,7 @@ impl Game {
             total_attacks: self.stat(e, StatId::TotalAttacks)[0],
             ability: enemy.ability().map(str::to_owned),
             hide_stats: enemy.definition.hide_stats,
+            ability_preview,
         }
     }
 

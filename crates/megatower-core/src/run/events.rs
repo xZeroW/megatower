@@ -59,6 +59,8 @@ pub struct EnemyView {
     pub ability: Option<String>,
     /// `EnemyResource.hide_stats`: no stats panel (merchants, chests, ...).
     pub hide_stats: bool,
+    /// Preview colour of the ability the enemy can use this turn (the sparkles).
+    pub ability_preview: Option<Rgba>,
 }
 
 /// Compact UI view model captured at each timeline wait.
