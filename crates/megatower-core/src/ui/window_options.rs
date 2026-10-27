@@ -7,7 +7,7 @@ use super::*;
 fn apply_window_options(
     ui: Res<UiRes>,
     mut window: Single<&mut Window, With<PrimaryWindow>>,
-    mut applied: Local<Option<(crate::options::WindowMode, [i32; 2], bool)>>,
+    mut applied: Local<Option<(megatower_settings::options::WindowMode, [i32; 2], bool)>>,
 ) {
     use bevy::window::{MonitorSelection, PresentMode, VideoModeSelection, WindowMode};
     let o = &ui.0.options_ui.options;
@@ -17,11 +17,11 @@ fn apply_window_options(
     }
     *applied = Some(want);
     window.mode = match o.window_mode {
-        crate::options::WindowMode::Windowed => WindowMode::Windowed,
-        crate::options::WindowMode::Borderless => {
+        megatower_settings::options::WindowMode::Windowed => WindowMode::Windowed,
+        megatower_settings::options::WindowMode::Borderless => {
             WindowMode::BorderlessFullscreen(MonitorSelection::Current)
         }
-        crate::options::WindowMode::Fullscreen => {
+        megatower_settings::options::WindowMode::Fullscreen => {
             WindowMode::Fullscreen(MonitorSelection::Current, VideoModeSelection::Current)
         }
     };

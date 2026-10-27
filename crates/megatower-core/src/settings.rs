@@ -7,7 +7,6 @@
 
 use crate::{
     app::GamePlugin,
-    options::{BattleSpeed, Binding, Options, WindowMode},
     ui::{UiRes, UiSystems, options_screen::OptionsUi},
 };
 use bevy::{
@@ -15,6 +14,7 @@ use bevy::{
     settings::{SaveSettingsDeferred, SaveSettingsSync, SettingsPlugin},
 };
 use bevy_auto_plugin::prelude::*;
+use megatower_settings::options::{BattleSpeed, Binding, Options, WindowMode};
 use std::time::Duration;
 
 pub const APP_ID: &str = "io.github.xzerow.megatower";

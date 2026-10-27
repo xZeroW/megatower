@@ -63,7 +63,7 @@ impl Binding {
 }
 
 /// Persisted by `bevy::settings` as the `[options]` section of
-/// `settings.toml` (see `crate::settings`).
+/// `settings.toml` (see `settings.rs` in the app layer).
 #[derive(Clone, Debug, Serialize, Deserialize, Resource, SettingsGroup, Reflect)]
 #[reflect(Resource, SettingsGroup, Default)]
 #[settings_group(group = "options")]

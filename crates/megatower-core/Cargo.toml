@@ -8,6 +8,7 @@ name = "megatower_core"
 path = "src/lib.rs"
 
 [dependencies]
+megatower-settings = { path = "../megatower-settings" }
 megatower-layout = { path = "../megatower-layout" }
 megatower-profile = { path = "../megatower-profile" }
 megatower-game = { path = "../megatower-game" }

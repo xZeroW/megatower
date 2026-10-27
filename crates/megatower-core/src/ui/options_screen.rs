@@ -6,11 +6,11 @@ use super::compose::{Align, Draw, palette, text};
 use super::screens::{button_rect, layout_visuals};
 use crate::{
     gameplay_input::{DEFAULT_KEYS, KeyBindings},
-    options::{Binding, Options, WindowMode, supported_resolutions},
     ui::library_state::db_to_linear,
 };
 use bevy::prelude::KeyCode;
 use megatower_layout::godot_layout::{Layout, Visual};
+use megatower_settings::options::{Binding, Options, WindowMode, supported_resolutions};
 
 pub const CONTROLS: usize = 0;
 pub const VIDEO: usize = 1;

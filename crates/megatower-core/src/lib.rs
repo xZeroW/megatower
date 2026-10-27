@@ -4,7 +4,6 @@ pub mod audio;
 pub mod dev;
 pub mod gameplay_input;
 pub mod music;
-pub mod options;
 pub mod render;
 pub mod settings;
 pub mod ui;

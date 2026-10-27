@@ -4086,6 +4086,7 @@ dependencies = [
  "megatower-kernel",
  "megatower-layout",
  "megatower-profile",
+ "megatower-settings",
  "serde",
  "serde_json",
 ]
@@ -4138,6 +4139,16 @@ dependencies = [
  "bevy",
  "megatower-game",
  "megatower-kernel",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "megatower-settings"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "megatower-game",
  "serde",
  "serde_json",
 ]
