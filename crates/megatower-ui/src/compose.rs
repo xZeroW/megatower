@@ -1572,7 +1572,16 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
             }
             if let (Some(None) | None, Some(Some(socket))) = (items.get(index), sockets.get(index))
             {
-                out.push(socket_icon(*rect, *socket));
+                // `EquipmentSlotPreview.update_texture`: locked slots show the lock.
+                if locked.contains(&(index as i64)) || challenge.contains(&(index as i64)) {
+                    out.push(tinted(
+                        [rect[0] + 1.0, rect[1] + 1.0, 32.0, 32.0],
+                        super::library::preview_texture("", true),
+                        palette(1),
+                    ));
+                } else {
+                    out.push(socket_icon(*rect, *socket));
+                }
             }
             if let Some(Some(item)) = items.get(index) {
                 let is_locked =
