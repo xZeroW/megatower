@@ -31,27 +31,25 @@ impl UiMaterial for WipeMaterial {
     }
 }
 
-#[derive(Component)]
+#[derive(Component, Default, Clone)]
 struct WipeNode;
 
 #[auto_add_system(plugin = RoomRenderPlugin, schedule = Startup)]
 fn spawn_wipe(mut commands: Commands, mut materials: ResMut<Assets<WipeMaterial>>) {
     let color = palette_color(Some(1)).to_linear();
-    commands.spawn((
-        Node {
-            position_type: PositionType::Absolute,
-            ..default()
-        },
-        MaterialNode(materials.add(WipeMaterial {
-            params: Vec4::ZERO,
-            region: Vec4::ZERO,
-            color: Vec4::new(color.red, color.green, color.blue, color.alpha),
-        })),
-        Visibility::Hidden,
-        GlobalZIndex(15),
-        WipeNode,
-        Name::new("Screen wipe"),
-    ));
+    let material = materials.add(WipeMaterial {
+        params: Vec4::ZERO,
+        region: Vec4::ZERO,
+        color: Vec4::new(color.red, color.green, color.blue, color.alpha),
+    });
+    commands.queue_spawn_scene(bsn! {
+        Node { position_type: PositionType::Absolute }
+        MaterialNode::<WipeMaterial>({material})
+        Visibility::Hidden
+        GlobalZIndex(15)
+        WipeNode
+        Name("Screen wipe")
+    });
 }
 
 #[auto_add_system(plugin = RoomRenderPlugin, schedule = Update)]

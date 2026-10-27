@@ -76,6 +76,51 @@ fn absolute([x, y, w, h]: [f32; 4]) -> Node {
     }
 }
 
+/// One control of the resolved layout as a scene: an image, a palette colour
+/// block or a label; `None` for controls that draw nothing.
+fn layout_visual(
+    assets: &AssetServer,
+    capture: &mut Option<ResMut<CaptureReadiness>>,
+    visual: &Visual,
+) -> Option<Box<dyn Scene>> {
+    let [_, _, w, h] = visual.rect;
+    if w <= 0.0 || h <= 0.0 || is_dynamic(visual) {
+        return None;
+    }
+    let node = absolute(visual.rect);
+    let name = visual.path.clone();
+    if let Some(texture) = &visual.texture {
+        let path = texture.trim_start_matches("res://").to_owned();
+        let look = image_node(assets, visual, texture);
+        let (color, rect, image_mode) = (look.color, look.rect, look.image_mode.clone());
+        if let Some(capture) = capture.as_mut() {
+            capture.wait_for(look.image.clone().untyped());
+        }
+        Some(Box::new(bsn! {
+            node
+            ImageNode { image: {path}, color: color, rect: rect, image_mode: image_mode }
+            Name({name})
+        }))
+    } else if visual.kind == "ColorRect" && visual.palette.is_some() {
+        let fill = BackgroundColor(palette_color(visual.palette));
+        Some(Box::new(bsn! { node fill Name({name}) }))
+    } else {
+        let text = visual.text.clone().filter(|t| !t.is_empty())?;
+        let size = visual.font_size.unwrap_or(16.0);
+        let color = palette_color(visual.palette);
+        Some(Box::new(bsn! {
+            node
+            Text({text})
+            template(move |ctx| {
+                let font = ctx.resource::<AssetServer>().load(FONT);
+                Ok(TextFont { font: font.into(), font_size: FontSize::Px(size), ..default() })
+            })
+            TextColor(color)
+            Name({name})
+        }))
+    }
+}
+
 #[auto_add_system(plugin = HudLayoutPlugin, schedule = Startup, config(after = setup_room))]
 fn spawn_hud_layout(
     mut commands: Commands,
@@ -88,62 +133,42 @@ fn spawn_hud_layout(
     if let Some(capture) = capture.as_mut() {
         capture.wait_for(assets.load::<Font>(FONT).untyped());
     }
-    commands
-        .spawn(absolute([0.0, 0.0, layout.viewport[0], layout.viewport[1]]))
-        .with_children(|canvas| {
-            // The panels are inset by 2 px: the gaps show the border color.
-            canvas.spawn((
-                absolute([0.0, 0.0, layout.viewport[0], layout.viewport[1]]),
-                BackgroundColor(palette_color(Some(2))),
-                Name::new("Screen border background"),
-            ));
-            let mut frame = absolute(ROOM_FRAME_RECT);
-            frame.overflow = Overflow::clip();
-            canvas.spawn(frame).with_children(|frame| {
-                frame.spawn((
-                    absolute([
-                        ROOM_VIEWPORT_OFFSET[0],
-                        ROOM_VIEWPORT_OFFSET[1],
-                        ROOM_VIEWPORT_SIZE[0] as f32,
-                        ROOM_VIEWPORT_SIZE[1] as f32,
-                    ]),
-                    ImageNode::new(target.0.clone()),
-                    ZIndex(-1),
-                    Name::new("RoomScreen render target"),
-                ));
-            });
-            for visual in &layout.visuals {
-                let [_, _, w, h] = visual.rect;
-                if w <= 0.0 || h <= 0.0 || is_dynamic(visual) {
-                    continue;
-                }
-                if let Some(texture) = &visual.texture {
-                    let image = image_node(&assets, visual, texture);
-                    if let Some(capture) = capture.as_mut() {
-                        capture.wait_for(image.image.clone().untyped());
-                    }
-                    canvas.spawn((absolute(visual.rect), image, Name::new(visual.path.clone())));
-                } else if visual.kind == "ColorRect" && visual.palette.is_some() {
-                    canvas.spawn((
-                        absolute(visual.rect),
-                        BackgroundColor(palette_color(visual.palette)),
-                        Name::new(visual.path.clone()),
-                    ));
-                } else if let Some(text) = visual.text.clone().filter(|t| !t.is_empty()) {
-                    canvas.spawn((
-                        absolute(visual.rect),
-                        Text::new(text),
-                        TextFont {
-                            font: assets.load(FONT).into(),
-                            font_size: FontSize::Px(visual.font_size.unwrap_or(16.0)),
-                            ..default()
-                        },
-                        TextColor(palette_color(visual.palette)),
-                        Name::new(visual.path.clone()),
-                    ));
-                }
-            }
-        });
+    let canvas = absolute([0.0, 0.0, layout.viewport[0], layout.viewport[1]]);
+    // The panels are inset by 2 px: the gaps show the border color.
+    let border = absolute([0.0, 0.0, layout.viewport[0], layout.viewport[1]]);
+    let border_fill = BackgroundColor(palette_color(Some(2)));
+    let mut frame_node = absolute(ROOM_FRAME_RECT);
+    frame_node.overflow = Overflow::clip();
+    let room = absolute([
+        ROOM_VIEWPORT_OFFSET[0],
+        ROOM_VIEWPORT_OFFSET[1],
+        ROOM_VIEWPORT_SIZE[0] as f32,
+        ROOM_VIEWPORT_SIZE[1] as f32,
+    ]);
+    let room_target = target.0.clone();
+    let visuals: Vec<Box<dyn Scene>> = layout
+        .visuals
+        .iter()
+        .filter_map(|visual| layout_visual(&assets, &mut capture, visual))
+        .collect();
+    commands.queue_spawn_scene(bsn! {
+        canvas
+        Children [
+            border
+            border_fill
+            Name("Screen border background")
+            --
+            frame_node
+            Children [
+                room
+                ImageNode { image: {room_target} }
+                ZIndex(-1)
+                Name("RoomScreen render target")
+            ]
+            --
+            {visuals}
+        ]
+    });
 }
 
 /// The game is laid out on a 640x360 canvas scaled to fit the window.
