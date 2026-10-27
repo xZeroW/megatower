@@ -1,7 +1,7 @@
 //! `hover_info.gd`, `bb_container.gd`, `hover_info_module.gd` and
 //! `popup_container.gd` layout/state rules.
 
-use crate::format::{self, Rules};
+use megaloot_kernel::format::{self, Rules};
 
 pub type V2 = [f32; 2];
 

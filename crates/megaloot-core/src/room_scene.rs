@@ -236,7 +236,7 @@ mod tests {
     #[test]
     fn every_native_box_position_and_size_matches_recovered_scene() {
         let source = std::fs::read_to_string(
-            crate::paths::recovered_root().join("scenes/rooms/room_normal.tscn"),
+            megaloot_kernel::paths::recovered_root().join("scenes/rooms/room_normal.tscn"),
         )
         .expect("recovered room scene is required");
         let mut source_boxes = Vec::new();

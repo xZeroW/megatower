@@ -111,7 +111,7 @@ impl RawItemCatalog {
         }
         for floor in floors {
             let mut items: Vec<_> = floor.iter().map(|id| id.as_str()).collect();
-            crate::godot_sort::source_sort(&mut items, |a, b| {
+            megaloot_kernel::godot_sort::source_sort(&mut items, |a, b| {
                 result.definitions[*a].price() < result.definitions[*b].price()
             });
             result.list.extend(items.into_iter().map(str::to_owned));

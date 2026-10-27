@@ -471,9 +471,9 @@ pub fn constant_replacements(script: &str) -> Vec<(&'static str, &'static str)> 
 /// `arcanum.gd` `get_text_replacements`: Wisdom shown with a suffix, or "?".
 pub fn arcanum_wisdom_text(wisdom: Option<f64>) -> String {
     match wisdom {
-        Some(w) => crate::format::number(
+        Some(w) => megaloot_kernel::format::number(
             w,
-            crate::format::Rules {
+            megaloot_kernel::format::Rules {
                 suffix: true,
                 ..Default::default()
             },
@@ -595,7 +595,7 @@ pub fn bastolic_damage_text(health: Option<f64>) -> String {
     match health {
         Some(h) => format!(
             "({})",
-            crate::format::number((h * 0.05).ceil(), Default::default())
+            megaloot_kernel::format::number((h * 0.05).ceil(), Default::default())
         ),
         None => "(?)".into(),
     }

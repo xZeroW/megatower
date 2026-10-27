@@ -2,7 +2,7 @@
 //! `generic_scroll_container`, `generic_line_edit`, `generic_drop_down`
 //! rules without node plumbing.
 
-use crate::format::Rules;
+use megaloot_kernel::format::Rules;
 
 /// `GenericLabel.get_rules`.
 pub fn label_rules(
@@ -235,7 +235,7 @@ pub fn dropdown_scroll_height(selection_heights: &[f32]) -> f32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::format;
+    use megaloot_kernel::format;
 
     #[test]
     fn label_updates_and_rules() {

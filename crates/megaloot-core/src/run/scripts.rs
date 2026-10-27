@@ -664,7 +664,7 @@ impl Game {
             (Category::Passive, "crimson_pact", _) => {
                 let Some(result) = args.result else { return };
                 let direct = result.direct_damage;
-                let old = crate::game_math::percentage(
+                let old = megaloot_kernel::game_math::percentage(
                     self.max_health(owner),
                     self.health(owner) + direct,
                 );

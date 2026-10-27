@@ -220,7 +220,7 @@ pub fn rebuild_cache(
             let max_health = cache.amount(Some(StatId::MaxHealth))[0].round().max(1.0);
             let health = cache.amount(Some(StatId::Health))[0].floor();
             cache.apply_script_bonuses(&berserker_bonuses(
-                crate::game_math::percentage(max_health, health),
+                megaloot_kernel::game_math::percentage(max_health, health),
                 count,
             ));
         }

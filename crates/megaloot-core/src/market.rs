@@ -1,7 +1,7 @@
 //! Market refresh quote rules from `Memory.get_market_refresh_price`,
 //! `Math.big_round`, and `MarketManager.can_refresh_market`.
 
-pub use crate::game_math::big_round;
+pub use megaloot_kernel::game_math::big_round;
 
 /// Price returned by `MarketManager.get_refresh_price()` for an ordinary
 /// market refresh. `base_gold_on_kill` is the result of the selected mode's

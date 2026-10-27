@@ -4,11 +4,11 @@ use crate::{
     combat::profile::BattleProfile,
     enemies::{Enemy, EnemyCatalog},
     inventory::catalog::ContainerCatalog,
-    rng::GodotRng,
     stats::StatCatalog,
     status_effects::{StatusEffect, StatusEffectId},
 };
 use bevy::prelude::*;
+use megaloot_kernel::rng::GodotRng;
 use serde_json::{Value, json};
 
 fn rules() -> CharacterStatRules {

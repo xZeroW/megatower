@@ -3,7 +3,7 @@
 //! state and main-menu button gating. Lobby browsing is multiplayer and not
 //! ported.
 
-use crate::godot_sort::source_sort;
+use megaloot_kernel::godot_sort::source_sort;
 
 /// Slot used by the sort: `Some(last_save_time)` for valid slots.
 #[derive(Clone, Copy)]

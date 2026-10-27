@@ -257,7 +257,10 @@ pub fn slot_labels(
     ascension_template: &str,
 ) -> SlotLabels {
     let mut l = SlotLabels {
-        floor_number: crate::format::number(f64::from(floor_number + 1), Default::default()),
+        floor_number: megaloot_kernel::format::number(
+            f64::from(floor_number + 1),
+            Default::default(),
+        ),
         floor_label_visible: true,
         ascension: None,
     };

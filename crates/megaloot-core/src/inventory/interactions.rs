@@ -6,12 +6,12 @@ use super::{
     InventoryError, ItemPressResultType, Slot, array_index, catalog::ContainerId, container,
 };
 use crate::{
-    game_math,
     items::{definition::ItemDefinition, instance::Item, rarity::ItemRarity},
-    rng::GlobalRng,
     stats::StatId,
 };
 use bevy::prelude::*;
+use megaloot_kernel::game_math;
+use megaloot_kernel::rng::GlobalRng;
 use std::sync::Arc;
 
 fn item<'a>(world: &'a World, slot: &Slot) -> Option<&'a Item> {

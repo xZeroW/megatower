@@ -77,7 +77,8 @@ mod tests {
     #[test]
     fn nested_viewport_and_camera_constants_match_source_scene() {
         let source = std::fs::read_to_string(
-            crate::paths::recovered_root().join("scenes/states/room_screen/room_screen.tscn"),
+            megaloot_kernel::paths::recovered_root()
+                .join("scenes/states/room_screen/room_screen.tscn"),
         )
         .expect("recovered RoomScreen scene is required");
         assert_eq!(source.matches("size = Vector2i(352, 304)").count(), 2);

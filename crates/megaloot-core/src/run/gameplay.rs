@@ -23,12 +23,12 @@ use crate::{
         interactions::create_item,
     },
     items::{catalog::RawItemCatalog, definition::ItemDefinition, instance::Item},
-    rng::{GlobalRng, RngStreams},
     stats::{BonusStat, Stat, StatCatalog, StatId},
     status_effects::StatusEffectId as Eff,
     trials::Trial,
 };
 use bevy::prelude::*;
+use megaloot_kernel::rng::{GlobalRng, RngStreams};
 use std::sync::Arc;
 
 pub struct NewRun {

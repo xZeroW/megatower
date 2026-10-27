@@ -11,11 +11,11 @@ use crate::{
         turn::{BattleTurn, TurnAttackType},
     },
     inventory::ItemContainer,
-    rng::GodotRng,
     stats::{Stat, StatCatalog, StatCollection, StatId},
     status_effects::{StatusEffect, StatusEffectId},
 };
 use bevy::prelude::World;
+use megaloot_kernel::rng::GodotRng;
 use serde::Deserialize;
 use serde_json::{Value, json};
 use std::collections::BTreeMap;

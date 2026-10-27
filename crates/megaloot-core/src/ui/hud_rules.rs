@@ -2,7 +2,7 @@
 //! plain facts about the selected player/enemy. Node updates and state
 //! lookups are the shell's job.
 
-use crate::format;
+use megaloot_kernel::format;
 
 /// One entry of the effect container list built by `update_effect_containers`.
 #[derive(Clone, Debug, PartialEq)]

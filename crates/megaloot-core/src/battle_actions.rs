@@ -1,7 +1,8 @@
 //! `BattleActions` singleton: popup text/color and screen-shake data for the 16
 //! recovered actions. Hover/BB rendering is not implemented.
 
-use crate::{run::events::Popup, translation};
+use crate::run::events::Popup;
+use megaloot_kernel::translation;
 use serde::Deserialize;
 use std::sync::OnceLock;
 

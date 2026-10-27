@@ -208,7 +208,7 @@ mod tests {
             if let Some(path) = visual.texture {
                 assert!(path.starts_with("res://assets/"), "{}: {path}", visual.path);
                 assert!(
-                    crate::paths::recovered_root()
+                    megaloot_kernel::paths::recovered_root()
                         .join(path.trim_start_matches("res://"))
                         .exists(),
                     "{path}"

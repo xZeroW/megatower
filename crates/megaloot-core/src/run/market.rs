@@ -17,10 +17,10 @@ use crate::{
         merge_items,
     },
     items::{definition::ItemDefinition, instance::Item, rarity::ItemRarity},
-    rng::GodotRng,
     stats::{BonusStat, StatId},
 };
 use bevy::prelude::*;
+use megaloot_kernel::rng::GodotRng;
 use std::sync::Arc;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -868,7 +868,7 @@ impl Game {
 
     pub fn market_refresh_price(&self) -> f64 {
         let local = self.local();
-        let mut amount = crate::game_math::big_round(
+        let mut amount = megaloot_kernel::game_math::big_round(
             self.market_refresh_quote(self.player(local).refresh_count),
         );
         if self.memory.floor_number == 0 && self.memory.room_idx == -1 {

@@ -1,7 +1,7 @@
 //! Every `get_amount_to_upgrade` in `resources/stat_scripts/`.
 //! Faith's cleanse and Luck's attack observers are NOT implemented here.
 
-use crate::game_math::diminished_stat;
+use megaloot_kernel::game_math::diminished_stat;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Copy, Debug, Deserialize, Serialize, Eq, PartialEq)]

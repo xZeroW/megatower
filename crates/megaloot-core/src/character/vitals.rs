@@ -4,10 +4,10 @@
 use super::{item_sources::CharacterItems, runtime::*};
 use crate::{
     combat::profile::BattleProfile,
-    game_math,
     stats::{Stat, StatId},
 };
 use bevy::prelude::*;
+use megaloot_kernel::game_math;
 
 impl CharacterStats {
     pub fn health(&self) -> f64 {

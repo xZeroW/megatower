@@ -15,14 +15,14 @@ use crate::{
         runtime::{self, CharacterStatError, StatLayer},
         status, vitals,
     },
-    game_math,
     inventory::{ContainerChange, ContainerEvent},
     items::instance::Item,
     stats::{BonusStat, Stat, StatId},
     status_effects::StatusEffectId as Eff,
-    translation,
 };
 use bevy::prelude::*;
+use megaloot_kernel::game_math;
+use megaloot_kernel::translation;
 
 fn ok<T>(result: Result<T, CharacterStatError>) -> T {
     result.expect("character operation")

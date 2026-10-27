@@ -111,7 +111,7 @@ pub(super) fn library_passives(
                 .iter()
                 .find(|(id, _)| *id == passive)
                 .map_or(passive.as_str(), |(_, n)| n.as_str());
-            crate::translation::t(name, "passive-name")
+            megaloot_kernel::translation::t(name, "passive-name")
         })
     })
     .collect()

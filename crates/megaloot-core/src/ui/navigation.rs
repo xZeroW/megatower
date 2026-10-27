@@ -2,8 +2,8 @@
 //! `cursor_manager.gd`. Candidate lists are built by the shell from live
 //! nodes; the search rules below are the source's.
 
-use crate::game_math::rect_distance;
 use bevy::math::Rect;
+use megaloot_kernel::game_math::rect_distance;
 
 /// D-pad buttons mapped to the source's direction vectors (note the
 /// inverted x: left is +1, right is -1; up is +1, down is -1).

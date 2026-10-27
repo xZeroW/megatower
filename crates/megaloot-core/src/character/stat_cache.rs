@@ -146,7 +146,10 @@ impl CachedStats {
             // pre-captured health inputs. Earlier IDs may already be recomputed.
             let health_percent = if *id == CritChance && set("poverty") {
                 let max = self.values[&MaxHealth].final_amount.round().max(1.0);
-                crate::game_math::percentage(max, self.values[&Health].final_amount.floor())
+                megaloot_kernel::game_math::percentage(
+                    max,
+                    self.values[&Health].final_amount.floor(),
+                )
             } else {
                 100.0
             };

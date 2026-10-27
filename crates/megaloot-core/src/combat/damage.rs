@@ -1,8 +1,9 @@
 //! Damage packets translated from `classes/objects/damage_data.gd` and friends.
 //! This does not yet resolve damage against character defenses or run a turn.
 
-use crate::{game_math, stats::StatId, status_effects::StatusEffect};
+use crate::{stats::StatId, status_effects::StatusEffect};
 use bevy::prelude::Entity;
+use megaloot_kernel::game_math;
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
 pub enum DamageSource {

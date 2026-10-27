@@ -290,7 +290,7 @@ pub enum BbColor2 {
 
 /// Godot `String.capitalize()` for ASCII identifiers.
 pub fn capitalize(s: &str) -> String {
-    crate::translation::snake_case(s)
+    megaloot_kernel::translation::snake_case(s)
         .replace('_', " ")
         .split_whitespace()
         .map(|w| {

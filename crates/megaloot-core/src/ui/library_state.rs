@@ -2,7 +2,7 @@
 //! `toggle_option`, `esc_menu_screen`, `loading_info` and friends: data
 //! rules of the library/profile/options screens.
 
-use crate::godot_sort::source_sort;
+use megaloot_kernel::godot_sort::source_sort;
 use std::collections::HashSet;
 
 /// `LibraryState._ready`: an item is shown only when it is available and has

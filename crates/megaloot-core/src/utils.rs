@@ -2,8 +2,8 @@
 //! (without Steam), `PauseManager`, and `Info.from_stat`.
 
 use crate::bb_scripts::BbColor;
-use crate::format::{self, Rules};
 use bevy::prelude::*;
+use megaloot_kernel::format::{self, Rules};
 
 /// `ImageUtils.Bounds`. As in the source, `right_pos` is the minimum x and
 /// `left_pos` the maximum x.

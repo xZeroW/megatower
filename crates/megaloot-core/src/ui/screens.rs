@@ -164,12 +164,15 @@ pub fn battle_log_draws(
         ));
     }
     let (battle_key, dead) = pages.page_labels();
-    let battle = crate::translation::t(battle_key, "Text").to_uppercase();
-    let turn = crate::translation::t("Current Turn", "Text")
+    let battle = megaloot_kernel::translation::t(battle_key, "Text").to_uppercase();
+    let turn = megaloot_kernel::translation::t("Current Turn", "Text")
         .replace("{turn-number}", &pages.turn_page.to_string())
         .to_uppercase()
         + &if dead {
-            format!(" {}", crate::translation::t("Dead", "Text").to_uppercase())
+            format!(
+                " {}",
+                megaloot_kernel::translation::t("Dead", "Text").to_uppercase()
+            )
         } else {
             String::new()
         };
@@ -861,7 +864,7 @@ pub fn profile_popup_draws(
         if v.path.ends_with("/FloorRecordLabel") {
             v.text = Some(format!(
                 "{}: {}",
-                crate::translation::text("Highest Floor"),
+                megaloot_kernel::translation::text("Highest Floor"),
                 record + 1
             ));
         } else if v.path.ends_with("/SelectionLabel") {
@@ -883,7 +886,7 @@ pub fn profile_popup_draws(
         .find(|v| v.path.ends_with("/RewardContainerHolder"))
         .map_or(70.0, |v| v.rect[0]);
     let unlocked = BorderType::from_floor(true, record);
-    let goal = crate::translation::text("Floor Number").to_uppercase();
+    let goal = megaloot_kernel::translation::text("Floor Number").to_uppercase();
     for (i, border) in BORDERS.iter().enumerate() {
         let dx = i as f32 * REWARD_PITCH - scroll;
         let card_left = template_x + dx;

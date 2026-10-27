@@ -37,7 +37,7 @@ impl Game {
         let attack_type = self.with_attack(e, |view, _| view.attack_type());
         let attack = self.stat(e, attack_type)[0];
         EnemyView {
-            name: crate::translation::t(&enemy.definition.name, "enemy-name"),
+            name: megaloot_kernel::translation::t(&enemy.definition.name, "enemy-name"),
             texture: enemy.definition.texture.clone(),
             next_texture: next
                 .and_then(|n| self.world.get::<Enemy>(n))

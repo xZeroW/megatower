@@ -14,11 +14,11 @@ use crate::{
         stat_sources::StatSourceError,
         status::try_to_add_status_effect,
     },
-    rng::GodotRng,
     stats::{BonusStat, StatId},
     status_effects::StatusEffectId as Effect,
 };
 use bevy::prelude::{Entity, World};
+use megaloot_kernel::rng::GodotRng;
 
 #[derive(Clone, Debug)]
 pub enum StatusAction {

@@ -95,7 +95,7 @@ mod tests {
 
     #[test]
     fn every_referenced_track_exists_and_only_start_tracks_play_once() {
-        let root = crate::paths::recovered_root();
+        let root = megaloot_kernel::paths::recovered_root();
         let mut paths: Vec<String> = (0..70)
             .flat_map(|f| [gameplay_start(f), gameplay_loop(f)])
             .collect();

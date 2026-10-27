@@ -1,7 +1,7 @@
 //! Godot 4.4.1 unstable introsort. Shared by item-catalog and inventory ordering.
 //! Adapted from core/templates/sort_array.h; see third_party/RNG-NOTICE.md.
 
-pub(crate) fn source_sort<T: Copy>(items: &mut [T], less: impl Fn(&T, &T) -> bool) {
+pub fn source_sort<T: Copy>(items: &mut [T], less: impl Fn(&T, &T) -> bool) {
     fn heap_adjust<T: Copy, F: Fn(&T, &T) -> bool>(
         a: &mut [T],
         first: usize,

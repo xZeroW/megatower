@@ -12,9 +12,9 @@ use crate::{
         game::Game,
     },
     stats::StatId,
-    translation,
 };
 use bevy::prelude::Entity;
+use megaloot_kernel::translation;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Align {
@@ -88,7 +88,7 @@ pub fn texture_size(path: &str) -> (f32, f32) {
     if let Some(size) = cache.lock().unwrap().get(&key) {
         return *size;
     }
-    let size = std::fs::read(crate::paths::recovered_root().join(&key))
+    let size = std::fs::read(megaloot_kernel::paths::recovered_root().join(&key))
         .ok()
         .filter(|bytes| bytes.len() > 24 && &bytes[12..16] == b"IHDR")
         .map_or((64.0, 64.0), |b| {
@@ -178,9 +178,9 @@ fn bar(rect: R, frac: f32, fill: Rgba, out: &mut Vec<Draw>) {
 }
 
 fn number(value: f64) -> String {
-    crate::format::number(
+    megaloot_kernel::format::number(
         value,
-        crate::format::Rules {
+        megaloot_kernel::format::Rules {
             suffix: true,
             ..Default::default()
         },

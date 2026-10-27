@@ -9,10 +9,10 @@ use crate::{
         instance::Item,
         rarity::ItemRarity,
     },
-    rng::GlobalRng,
     stats::{Stat, StatId},
 };
 use bevy::prelude::*;
+use megaloot_kernel::rng::GlobalRng;
 use serde_json::{Value, json};
 use std::sync::Arc;
 

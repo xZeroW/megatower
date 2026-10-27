@@ -11,7 +11,6 @@ use crate::{
             apply_status_effect_host,
         },
     },
-    rng::GodotRng,
     run::{
         colors,
         events::{Fx, LogEntry, Popup},
@@ -20,9 +19,10 @@ use crate::{
     },
     stats::{BonusStat, Stat, StatId},
     status_effects::{StatusEffect, StatusEffectId as Eff},
-    translation,
 };
 use bevy::prelude::*;
+use megaloot_kernel::rng::GodotRng;
+use megaloot_kernel::translation;
 
 impl StatusHost for Game {
     fn parts(&mut self) -> (&mut World, &CharacterStatRules, &mut GodotRng) {

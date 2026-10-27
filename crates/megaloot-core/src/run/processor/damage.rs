@@ -16,7 +16,6 @@ use crate::{
         turn::TurnType,
     },
     enemies::Enemy,
-    rng::GodotRng,
     run::{
         colors,
         events::{FlashKind, Fx, LogEntry, Popup},
@@ -27,6 +26,7 @@ use crate::{
     status_effects::{StatusEffect, StatusEffectId as Eff},
 };
 use bevy::prelude::*;
+use megaloot_kernel::rng::GodotRng;
 
 impl Game {
     /// Runs `f` with a `CharacterAttack` view of `e` and the gameplay stream.
@@ -791,7 +791,7 @@ impl Game {
             }
         }
         if DamageSource::HIT_SOURCES.contains(&result.source) {
-            let active_armor_percentage = crate::game_math::percentage(
+            let active_armor_percentage = megaloot_kernel::game_math::percentage(
                 self.stat(target, StatId::Armor)[0],
                 self.stat(target, StatId::ActiveArmor)[0],
             );
@@ -1117,7 +1117,7 @@ impl Game {
         let stolen = (gold * percent).ceil();
         self.wait_battle(0.45);
         self.fx(Fx::Popup(Popup::new(
-            crate::translation::text("STEAL").to_uppercase(),
+            megaloot_kernel::translation::text("STEAL").to_uppercase(),
             colors::GOLD,
         )));
         let entry = LogEntry::Steal {
@@ -1140,7 +1140,7 @@ impl Game {
             == Some("res://resources/passives/escape.tres")
         {
             self.fx(Fx::Popup(Popup::new(
-                crate::translation::text("ESCAPED").to_uppercase(),
+                megaloot_kernel::translation::text("ESCAPED").to_uppercase(),
                 colors::DARK_GOLDENROD,
             )));
             let idx = self.enemy_idx(stealer);

@@ -12,11 +12,11 @@ use crate::{
         profile::BattleProfile,
         turn::TurnAttackType,
     },
-    rng::GodotRng,
     stats::{self, StatId},
     status_effects::{StatusEffect, StatusEffectId as Effect},
 };
 use bevy::prelude::{Entity, World};
+use megaloot_kernel::rng::GodotRng;
 
 pub struct CharacterAttack<'a> {
     pub cache: &'a CachedStats,

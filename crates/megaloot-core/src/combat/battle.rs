@@ -8,9 +8,9 @@ use crate::{
     character::runtime::CharacterStats,
     combat::profile::{BattleProfile, cleanup_profile},
     enemies::{Enemy, can_battle},
-    rng::GodotRng,
 };
 use bevy::prelude::*;
+use megaloot_kernel::rng::GodotRng;
 
 #[derive(Component, Clone, Debug)]
 pub struct Battle {

@@ -17,10 +17,10 @@ use crate::{
     enemies::EnemyCatalog,
     inventory::{ContainerEvent, catalog::ContainerCatalog},
     items::catalog::ItemCatalog,
-    rng::{GlobalRng, RngStreams},
     stats::StatId,
 };
 use bevy::prelude::*;
+use megaloot_kernel::rng::{GlobalRng, RngStreams};
 
 /// Source `Options.BattleSpeed`; default is X2.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -121,9 +121,9 @@ impl Game {
     /// `Character.get_translated_log_name().to_lower()` seen in log lines.
     pub fn log_name(&self, e: Entity) -> String {
         if let Some(enemy) = self.world.get::<crate::enemies::Enemy>(e) {
-            crate::translation::t(&enemy.definition.name, "enemy-name")
+            megaloot_kernel::translation::t(&enemy.definition.name, "enemy-name")
         } else {
-            crate::translation::text("Local Player Name")
+            megaloot_kernel::translation::text("Local Player Name")
         }
     }
 

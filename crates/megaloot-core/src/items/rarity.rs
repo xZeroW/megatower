@@ -113,7 +113,7 @@ mod tests {
 
     #[test]
     fn every_rarity_lookup_including_fallbacks_matches_source() {
-        let root = crate::paths::recovered_root();
+        let root = megaloot_kernel::paths::recovered_root();
         assert_eq!(ItemRarity::highest() as u8, 8);
         for rarity in ItemRarity::ALL {
             let index = i32::from(rarity as u8);

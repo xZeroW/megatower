@@ -14,8 +14,8 @@ use crate::{
         game::Game,
     },
     stats::StatId,
-    translation,
 };
+use megaloot_kernel::translation;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum DropAction {

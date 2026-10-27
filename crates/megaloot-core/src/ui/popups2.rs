@@ -2,7 +2,7 @@
 //! `item_found_popup`, `credits_popup`, `adventurer_profile_popup`,
 //! `adventurer_selection_popup_container`, `no_tutorial_popup`.
 
-use crate::format::{self, Rules};
+use megaloot_kernel::format::{self, Rules};
 
 /// `credits_popup.gd` `credits_dict` in source order: (group, [(sub group, people)]).
 pub const CREDITS: &[(&str, &[(&str, &[&str])])] = &[

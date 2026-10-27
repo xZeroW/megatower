@@ -1,8 +1,6 @@
 use super::{Price, definition::*, instance::*, rarity::ItemRarity};
-use crate::{
-    rng::GlobalRng,
-    stats::{BonusStat, Stat, StatCatalog, StatId},
-};
+use crate::stats::{BonusStat, Stat, StatCatalog, StatId};
+use megaloot_kernel::rng::GlobalRng;
 use serde_json::{Value, json};
 use std::sync::Arc;
 

@@ -43,7 +43,7 @@ fn parse_csv(text: &str) -> HashMap<String, String> {
 }
 
 /// Godot 4.4 `String.to_snake_case` (camelCase boundaries, then lowercase).
-pub(crate) fn snake_case(text: &str) -> String {
+pub fn snake_case(text: &str) -> String {
     let chars: Vec<char> = text.chars().collect();
     let mut out = String::new();
     let mut start = 0;

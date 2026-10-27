@@ -12,12 +12,12 @@ use crate::{
         CharacterStatError, CharacterStatRules, CharacterStats, rebuild_cache, set_stat_amount,
     },
     combat::profile::BattleProfile,
-    godot_sort::source_sort,
     stats::{BonusStat, Stat, StatId},
     status_effects::StatusEffectId,
     trials::Trial,
 };
 use bevy::prelude::*;
+use megaloot_kernel::godot_sort::source_sort;
 use scaling::Scaling;
 use serde::Deserialize;
 use std::sync::Arc;

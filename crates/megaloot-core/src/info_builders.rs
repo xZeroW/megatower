@@ -4,10 +4,10 @@
 //! skip rules are the source's while no content is invented.
 
 use crate::bb_scripts::{BbColor, BbPiece};
-use crate::format::{self, Rules};
 pub use crate::info::ItemNameInput as ItemNameInputRe;
 use crate::info::{ItemNameInput, capitalize, item_name as item_name_impl};
 use crate::utils::{FromStatArgs, InfoPiece, from_stat};
+use megaloot_kernel::format::{self, Rules};
 
 pub fn item_name_for(i: &ItemNameInput) -> String {
     item_name_impl(i)

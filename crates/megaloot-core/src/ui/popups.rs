@@ -3,7 +3,7 @@
 //! `record(s)_container`. Tweens and node creation are the shell's job; the
 //! rules below say what they target and when.
 
-use crate::format::{self, Rules};
+use megaloot_kernel::format::{self, Rules};
 
 /// `market_slot.process_lock_texture`: the convert icon shows for exactly one
 /// frame after the flag is set. Returns (visible, next_flag).
