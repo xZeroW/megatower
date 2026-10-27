@@ -62,10 +62,7 @@ impl Tip {
 pub fn info_to_bb(p: InfoPiece) -> BbPiece {
     match p {
         InfoPiece::Text { text, color } => BbPiece::Text { text, color },
-        InfoPiece::Stat { stat, .. } => BbPiece::Stat {
-            name: stat,
-            unknown_mode: false,
-        },
+        InfoPiece::Stat { stat, .. } => BbPiece::ItemStat { name: stat },
         InfoPiece::SetMultiplier { set, .. } => BbPiece::ItemSet(set),
     }
 }

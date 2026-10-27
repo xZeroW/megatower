@@ -644,7 +644,7 @@ const STEEL: Rgba = [0.690_196_1, 0.768_627_5, 0.870_588_2, 1.0];
 fn seg_width(seg: &Seg) -> f32 {
     match seg {
         Seg::Text(t, _) => t.chars().count() as f32 * CHAR_W,
-        Seg::Icon(..) => 9.0,
+        Seg::Icon(..) => 12.0,
     }
 }
 
@@ -700,6 +700,26 @@ fn rows_from_tip(game: &Game, tip: &crate::info_builders::Tip) -> Vec<TipRow> {
                             .push(Seg::Icon(trim(icon), dim(c)));
                     }
                     push_text(&mut rows, text, dim(c));
+                }
+            }
+            BbPiece::ItemStat { name } => {
+                if let Some(id) = stat_from_key(name) {
+                    let def = stats.get(id);
+                    if let Some(icon) = &def.icon {
+                        rows.last_mut()
+                            .expect("row")
+                            .push(Seg::Icon(trim(icon), def.color));
+                    }
+                    let c = if def.bb_script.is_some() {
+                        STEEL
+                    } else {
+                        def.color
+                    };
+                    push_text(
+                        &mut rows,
+                        &format!(" {}", translation::t(&def.name, "Stat Name").to_lowercase()),
+                        dim(c),
+                    );
                 }
             }
             BbPiece::Stat { name, .. } => {
@@ -1084,7 +1104,7 @@ pub(crate) fn draw_tip(out: &mut Vec<Draw>, _rects: &Rects, cursor: [f32; 2], ti
     let mut rows = tip.rows.into_iter();
     let name_row = rows.next().unwrap_or_default();
     let body = wrap_rows(rows.collect(), TIP_MAX_WIDTH);
-    let icons_w = tip.icons.len() as f32 * 11.0;
+    let icons_w = tip.icons.len() as f32 * 12.0 + if tip.icons.is_empty() { 0.0 } else { 6.0 };
     let name_w = icons_w + name_row.iter().map(seg_width).sum::<f32>();
     let cost_w = tip
         .price
@@ -1105,40 +1125,45 @@ pub(crate) fn draw_tip(out: &mut Vec<Draw>, _rects: &Rects, cursor: [f32; 2], ti
         .max(hint_w)
         .max(24.0);
     let w = inner_w + PAD_X * 2.0;
+    // The description sits on the panel itself with 5px around it; the hint
+    // is a darker strip flush with the panel's bottom.
     let body_h = if body.is_empty() {
         0.0
     } else {
-        body.len() as f32 * 13.0 + 4.0
+        body.len() as f32 * 13.0 + 6.0
     };
-    let hint_h = if tip.hint.is_some() { 15.0 } else { 0.0 };
-    let mut h = PAD_Y * 2.0 + 13.0;
+    let hint_h = if tip.hint.is_some() { 23.0 } else { 0.0 };
+    let mut h = PAD_Y + 13.0;
     if body_h > 0.0 {
         h += SEP + body_h;
     }
-    if hint_h > 0.0 {
-        h += SEP + hint_h;
-    }
+    h += if hint_h > 0.0 { SEP + hint_h } else { PAD_Y };
     let x = (cursor[0] + 10.0).min(640.0 - w - 2.0);
     let y = (cursor[1] + 10.0).min(360.0 - h - 2.0);
+    // A 1px grey outline around the flat panel.
+    out.push(Draw::Fill {
+        rect: [x - 1.0, y - 1.0, w + 2.0, h + 2.0],
+        color: [0.46, 0.46, 0.44, 1.0],
+    });
     out.push(Draw::Fill {
         rect: [x, y, w, h],
         color: [0.082_352_9, 0.043_137_3, 0.043_137_3, 1.0],
     });
-    // Top row.
+    // Top row: the set icons start 3px inside the margin, 6px before the name.
     let ty = y + PAD_Y;
     for (i, (icon, color)) in tip.icons.iter().enumerate() {
         out.push(tinted(
-            [x + PAD_X + i as f32 * 11.0, ty + 2.0, 10.0, 10.0],
+            [x + PAD_X - 3.0 + i as f32 * 12.0, ty + 1.0, 12.0, 12.0],
             icon,
             *color,
         ));
     }
-    let mut cx = x + PAD_X + icons_w;
+    let mut cx = x + PAD_X - 3.0 + icons_w;
     for seg in name_row {
         let width = seg_width(&seg);
         match seg {
             Seg::Text(t, c) => out.push(text([cx, ty, width + 2.0, 13.0], t, c, Align::Left)),
-            Seg::Icon(path, c) => out.push(tinted([cx, ty + 2.0, 8.0, 8.0], &path, c)),
+            Seg::Icon(path, c) => out.push(tinted([cx - 2.0, ty - 1.5, 16.0, 16.0], &path, c)),
         }
         cx += width;
     }
@@ -1155,33 +1180,21 @@ pub(crate) fn draw_tip(out: &mut Vec<Draw>, _rects: &Rects, cursor: [f32; 2], ti
             out.push(tinted([ix, ty + 2.0, 9.0, 9.0], icon, price.color));
         }
     }
-    // Description panel.
+    // Description, straight on the panel.
     let mut by = ty + 13.0 + SEP;
     if body_h > 0.0 {
-        let panel = [x + PAD_X, by, inner_w, body_h];
-        out.push(Draw::Fill {
-            rect: panel,
-            color: palette(2),
-        });
-        out.push(Draw::Fill {
-            rect: [
-                panel[0] + 1.0,
-                panel[1] + 1.0,
-                panel[2] - 2.0,
-                panel[3] - 2.0,
-            ],
-            color: palette(1),
-        });
         for (row_idx, row) in body.into_iter().enumerate() {
-            let mut cx = panel[0] + 4.0;
-            let ry = panel[1] + 1.0 + row_idx as f32 * 13.0;
+            let mut cx = x + PAD_X;
+            let ry = by + 3.0 + row_idx as f32 * 13.0;
             for seg in row {
                 let width = seg_width(&seg);
                 match seg {
                     Seg::Text(t, c) => {
                         out.push(text([cx, ry, width + 2.0, 13.0], t, c, Align::Left))
                     }
-                    Seg::Icon(path, c) => out.push(tinted([cx, ry + 2.0, 8.0, 8.0], &path, c)),
+                    Seg::Icon(path, c) => {
+                        out.push(tinted([cx - 2.0, ry - 1.5, 16.0, 16.0], &path, c))
+                    }
                 }
                 cx += width;
             }
@@ -1189,14 +1202,17 @@ pub(crate) fn draw_tip(out: &mut Vec<Draw>, _rects: &Rects, cursor: [f32; 2], ti
         by += body_h + SEP;
     }
     if let Some((icon, label)) = &tip.hint {
-        let panel = [x + PAD_X - 6.0, by - 1.0, inner_w + 12.0, hint_h + 2.0];
         out.push(Draw::Fill {
-            rect: panel,
+            rect: [x, by, w, hint_h],
             color: [0.035_294_1, 0.015_686_3, 0.015_686_3, 1.0],
         });
-        out.push(image([x + PAD_X, by + 2.0, 11.0, 11.0], icon));
+        out.push(tinted(
+            [x + PAD_X - 3.0, by + 6.0, 11.0, 11.0],
+            icon,
+            hex(0x8a8a8a),
+        ));
         out.push(text(
-            [x + PAD_X + 14.0, by + 1.0, hint_w, 13.0],
+            [x + PAD_X + 14.0, by + 5.0, hint_w, 13.0],
             label.clone(),
             hex(0x696969),
             Align::Left,
@@ -2473,6 +2489,12 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
                 && let Some(mut tip) = item_tip(game, item)
             {
                 tip.hint = slot_hint(game, slot, item);
+                // Only shop items show their buy price.
+                let player = game.player(game.local());
+                let shops = [player.market, player.merchant, player.mystic_trader];
+                if !slot.container.is_some_and(|c| shops.contains(&c)) {
+                    tip.price = None;
+                }
                 draw_tip(&mut out, rects, [cx, cy], tip);
             }
         } else if let Some(id) = (ui.tab == Tab::Stats)

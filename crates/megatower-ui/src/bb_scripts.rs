@@ -30,6 +30,10 @@ pub enum BbPiece {
         name: String,
         unknown_mode: bool,
     },
+    /// An item's stat line (`Info.from_stat`): the stat name in lowercase.
+    ItemStat {
+        name: String,
+    },
     Status(String),
     Action(String),
     Keyword(String),
