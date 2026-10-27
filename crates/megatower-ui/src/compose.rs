@@ -216,6 +216,15 @@ fn mana_pip(right: f32, y: f32, max_mana: i64, mana: i64, out: &mut Vec<Draw>) -
             color: palette(1),
         });
     }
+    // `mana_bar_separators.png` tiles every 7px between 5px margins.
+    let mut line = x + 8.0;
+    while line < x + w - 5.0 {
+        out.push(Draw::Fill {
+            rect: [line, y + 2.0, 1.0, 7.0],
+            color: palette(1),
+        });
+        line += 7.0;
+    }
     w
 }
 
@@ -1398,6 +1407,21 @@ fn enemy_visuals(
         rect: [ox + 14.0, oy + 80.0, 48.0, 5.0],
         color: [0.0, 0.0, 0.0, 0.35],
     });
+    // The next enemy waits behind as a silhouette (`NextEnemyLayer`, drawn in
+    // the background colour, 15px above the front sprite).
+    if let Some(next) = view.next_texture.as_deref().filter(|_| !view.out_of_combat) {
+        let visuals = at(l.rect("EnemyVisuals"));
+        let (nw, _) = texture_size(next);
+        let w = nw.max(64.0);
+        out.push(Draw::Image {
+            rect: [visuals[0] + (visuals[2] - w) / 2.0, oy + 5.0, w, 64.0],
+            path: trim(next),
+            region: Some([0.0, 0.0, w, 64.0]),
+            tint: palette(1),
+            slice: None,
+            flip_x: false,
+        });
+    }
     if !texture.is_empty() {
         let visuals = at(l.rect("EnemyVisuals"));
         let w = tw.max(64.0);
