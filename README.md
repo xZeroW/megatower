@@ -3,7 +3,7 @@
 ## Run
 
 ```bash
-cargo run
+cargo run -p megaloot
 ```
 
 Settings are saved to `~/.config/io.github.xzerow.megatower/settings.toml`
@@ -13,7 +13,7 @@ Settings are saved to `~/.config/io.github.xzerow.megatower/settings.toml`
 ## QA
 
 ```bash
-cargo run --features dev
+cargo run -p megaloot --features dev
 ```
 
 enables the Bevy Remote Protocol with `bevy_brp_extras` on port 15702 (screenshots,

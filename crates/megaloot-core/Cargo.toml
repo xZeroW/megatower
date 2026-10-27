@@ -1,0 +1,19 @@
+[package]
+name = "megaloot-core"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "megaloot_core"
+path = "src/lib.rs"
+
+[dependencies]
+megaloot-game = { path = "../megaloot-game" }
+megaloot-info = { path = "../megaloot-info" }
+megaloot-kernel = { path = "../megaloot-kernel" }
+bevy.workspace = true
+bevy_auto_plugin.workspace = true
+bevy_kira_audio.workspace = true
+leafwing-input-manager.workspace = true
+serde.workspace = true
+serde_json.workspace = true
