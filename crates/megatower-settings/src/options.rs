@@ -6,7 +6,7 @@ use bevy::{
     prelude::*,
     settings::{ReflectSettingsGroup, SettingsGroup},
 };
-use megatower_game::definitions::InputModeType;
+use megatower_gameplay::definitions::InputModeType;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 

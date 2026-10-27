@@ -8,8 +8,8 @@ name = "megatower_layout"
 path = "src/lib.rs"
 
 [dependencies]
-megatower-kernel = { path = "../megatower-kernel" }
-megatower-game = { path = "../megatower-game" }
+megatower-core = { path = "../megatower-core" }
+megatower-gameplay = { path = "../megatower-gameplay" }
 serde.workspace = true
 serde_json.workspace = true
 

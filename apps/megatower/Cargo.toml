@@ -10,7 +10,7 @@ path = "src/main.rs"
 [dependencies]
 bevy.workspace = true
 bevy_brp_extras = { workspace = true, optional = true }
-megatower-core = { path = "../../crates/megatower-core" }
+megatower-client = { path = "../../crates/megatower-client" }
 
 [features]
 # Remote control for QA: BRP on port 15702 with bevy_brp_extras

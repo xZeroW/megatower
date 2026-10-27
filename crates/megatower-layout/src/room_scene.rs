@@ -194,8 +194,8 @@ pub struct RoomScene {
 }
 
 /// `RoomResource.scene` for each room type (`resources/rooms/*.tres`).
-pub fn scene_for(room: megatower_game::game_mode::Room) -> &'static str {
-    use megatower_game::game_mode::Room;
+pub fn scene_for(room: megatower_gameplay::game_mode::Room) -> &'static str {
+    use megatower_gameplay::game_mode::Room;
     match room {
         Room::Chest | Room::Merchant => "chest_room",
         Room::MysticTrader => "mystic_trader",
@@ -236,7 +236,7 @@ mod tests {
     #[test]
     fn every_native_box_position_and_size_matches_recovered_scene() {
         let source = std::fs::read_to_string(
-            megatower_kernel::paths::recovered_root().join("scenes/rooms/room_normal.tscn"),
+            megatower_core::paths::recovered_root().join("scenes/rooms/room_normal.tscn"),
         )
         .expect("recovered room scene is required");
         let mut source_boxes = Vec::new();
@@ -315,7 +315,7 @@ mod tests {
 
     #[test]
     fn exported_scenes_cover_every_room_type() {
-        use megatower_game::game_mode::Room;
+        use megatower_gameplay::game_mode::Room;
         for room in [
             Room::Entrance,
             Room::Final,

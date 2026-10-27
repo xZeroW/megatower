@@ -8,8 +8,8 @@ name = "megatower_profile"
 path = "src/lib.rs"
 
 [dependencies]
-megatower-kernel = { path = "../megatower-kernel" }
-megatower-game = { path = "../megatower-game" }
+megatower-core = { path = "../megatower-core" }
+megatower-gameplay = { path = "../megatower-gameplay" }
 bevy.workspace = true
 serde.workspace = true
 serde_json.workspace = true

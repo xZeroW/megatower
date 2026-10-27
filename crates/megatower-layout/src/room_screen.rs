@@ -77,7 +77,7 @@ mod tests {
     #[test]
     fn nested_viewport_and_camera_constants_match_source_scene() {
         let source = std::fs::read_to_string(
-            megatower_kernel::paths::recovered_root()
+            megatower_core::paths::recovered_root()
                 .join("scenes/states/room_screen/room_screen.tscn"),
         )
         .expect("recovered RoomScreen scene is required");

@@ -264,22 +264,22 @@ pub fn team_border_region(team: TeamType) -> (f32, f32, f32) {
 /// `Team.enemy_upgrades`: enemy resource id plus accumulated stats.
 #[derive(Clone, Debug, Default)]
 pub struct Team {
-    pub enemy_upgrades: Vec<megatower_game::definitions::EnemyUpgrade>,
+    pub enemy_upgrades: Vec<megatower_gameplay::definitions::EnemyUpgrade>,
 }
 
 impl Team {
     /// `add_enemy_upgrade`: merge into the matching enemy's stats (copying
     /// each incoming stat and changing the amount), else append.
-    pub fn add_enemy_upgrade(&mut self, new: megatower_game::definitions::EnemyUpgrade) {
+    pub fn add_enemy_upgrade(&mut self, new: megatower_gameplay::definitions::EnemyUpgrade) {
         if let Some(existing) = self
             .enemy_upgrades
             .iter_mut()
             .find(|u| u.enemy_resource == new.enemy_resource)
         {
             let mut stats =
-                megatower_game::stats::StatCollection(std::mem::take(&mut existing.stats));
+                megatower_gameplay::stats::StatCollection(std::mem::take(&mut existing.stats));
             for stat in &new.stats {
-                let mut copy = megatower_game::stats::Stat::new(stat.resource, 0.0);
+                let mut copy = megatower_gameplay::stats::Stat::new(stat.resource, 0.0);
                 copy.set_stat(stat);
                 stats.change_amount(copy);
             }
@@ -290,7 +290,7 @@ impl Team {
     }
 
     /// `get_enemy_upgrade_stats`: copies of every matching upgrade's stats.
-    pub fn enemy_upgrade_stats(&self, enemy_resource: &str) -> Vec<megatower_game::stats::Stat> {
+    pub fn enemy_upgrade_stats(&self, enemy_resource: &str) -> Vec<megatower_gameplay::stats::Stat> {
         self.enemy_upgrades
             .iter()
             .filter(|u| u.enemy_resource == enemy_resource)
@@ -494,8 +494,8 @@ mod tests {
 
     #[test]
     fn misc_records() {
-        use megatower_game::definitions::EnemyUpgrade;
-        use megatower_game::stats::{Stat, StatId};
+        use megatower_gameplay::definitions::EnemyUpgrade;
+        use megatower_gameplay::stats::{Stat, StatId};
         assert_eq!(team_border_region(TeamType::Red).0, 114.0);
         assert!(adventurer_by_name("A", "B") && !adventurer_by_name("B", "B"));
         let mut n = 0u8;

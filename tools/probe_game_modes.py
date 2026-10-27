@@ -13,7 +13,7 @@ from pathlib import Path
 from probe_character_stats import methods
 from probe_items import ROOT, SOURCE
 
-STAGING = Path('/tmp/opencode/megatower-game-mode-probe')
+STAGING = Path('/tmp/opencode/megatower-gameplay-mode-probe')
 ROOMS = ['ENTRANCE', 'FINAL', 'MERCHANT', 'BATTLE', 'CHEST', 'ENDLESS_MONOLITH', 'MYSTIC_TRADER', 'REFORGE_TRANSFER_ROOM', 'ENEMY_UPGRADE', 'DISMANTLE', 'FOREST_ROOM']
 
 

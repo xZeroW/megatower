@@ -8,7 +8,7 @@ name = "megatower_settings"
 path = "src/lib.rs"
 
 [dependencies]
-megatower-game = { path = "../megatower-game" }
+megatower-gameplay = { path = "../megatower-gameplay" }
 bevy.workspace = true
 serde.workspace = true
 serde_json.workspace = true
