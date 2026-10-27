@@ -1264,16 +1264,32 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
             rects.portrait,
             &player.adventurer.portrait.clone().unwrap_or_default(),
         ));
+        out.push(image(
+            rects.portrait_border,
+            megatower_core::definitions::BorderType::Wooden.texture(),
+        ));
+        let gold = game.rules.stats.get(StatId::Gold);
+        out.push(tinted(
+            rects.gold_icon,
+            "assets/textures/icons/gold_coins_icon.png",
+            gold.color,
+        ));
         out.push(text(
             rects.gold,
             number(frame.gold),
-            hex(0xf5c182),
+            gold.color,
             Align::Left,
+        ));
+        let diamond = game.rules.stats.get(StatId::Diamond);
+        out.push(tinted(
+            rects.diamond_icon,
+            "assets/textures/icons/diamonds_icon.png",
+            diamond.color,
         ));
         out.push(text(
             rects.diamonds,
             number(frame.diamonds),
-            hex(0x5ab1ff),
+            diamond.color,
             Align::Left,
         ));
         let v = &frame.player;
@@ -1298,13 +1314,28 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
             );
             health_rect = rects.bar_second;
         } else {
+            // The armor bar is hidden: the VBox centers the health bar.
+            let vbox_center = (rects.bar_top[1] + rects.bar_second[1] + rects.bar_second[3]) / 2.0;
             health_rect = [
                 rects.bar_top[0],
-                rects.bar_top[1],
+                (vbox_center - rects.bar_second[3] / 2.0).round(),
                 rects.bar_second[2],
-                rects.bar_top[3],
+                rects.bar_second[3],
             ];
         }
+        // Without a mana bar the health bar takes its space; the label keeps
+        // the position computed for the narrower bar.
+        let label_cx = health_rect[0] + health_rect[2] / 2.0;
+        let health_rect = if v.max_mana > 0 {
+            health_rect
+        } else {
+            [
+                health_rect[0],
+                health_rect[1],
+                rects.bar_top[2],
+                health_rect[3],
+            ]
+        };
         let overheal = v.health > v.max_health;
         let health_color = if overheal {
             hex(0xff4d85)
@@ -1319,7 +1350,7 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         );
         label_panel(
             rects,
-            health_rect[0] + health_rect[2] / 2.0,
+            label_cx,
             health_rect[1] - 9.0,
             &format!("{} / {}", number(v.health), number(v.max_health)),
             health_color,
@@ -1475,7 +1506,7 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         out.push(text(
             [rects.refresh[0], rects.refresh[1] + 35.0, 34.0, 13.0],
             "1",
-            hex(0x5ab1ff),
+            game.rules.stats.get(StatId::Diamond).color,
             Align::Center,
         ));
     } else {
@@ -1484,7 +1515,11 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         out.push(text(
             [rects.refresh[0], rects.refresh[1] + 35.0, 34.0, 13.0],
             number(price),
-            if can { hex(0xf5c182) } else { palette(4) },
+            if can {
+                game.rules.stats.get(StatId::Gold).color
+            } else {
+                palette(4)
+            },
             Align::Center,
         ));
     }

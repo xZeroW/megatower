@@ -31,6 +31,9 @@ pub struct Rects {
     pub bar_second: R,
     pub mana: R,
     pub gold: R,
+    pub portrait_border: R,
+    pub gold_icon: R,
+    pub diamond_icon: R,
     pub diamonds: R,
     pub portrait: R,
     pub floor_label: R,
@@ -124,13 +127,29 @@ impl Rects {
             bar_second: bars[1],
             mana,
             gold: label("GoldContainer/GenericLabel"),
+            gold_icon: find(&|v| v.kind == "TextureRect" && ends(v, "GoldContainer/GoldCoinsIcon"))
+                .rect,
+            diamond_icon: find(&|v| {
+                v.kind == "TextureRect" && ends(v, "DiamondsContainer/TextureRect")
+            })
+            .rect,
             diamonds: label("DiamondsContainer/StatLabel"),
-            portrait: find(&|v| {
+            // The portrait sits in a CanvasGroup offset by (-16, -16) from the
+            // centered Control the layout export reports.
+            portrait: {
+                let [x, y, w, h] = find(&|v| {
+                    v.kind == "TextureRect"
+                        && v.texture
+                            .as_deref()
+                            .is_some_and(|t| t.ends_with("/fren.png"))
+                        && v.rect[2] == 32.0
+                })
+                .rect;
+                [x - 16.0, y - 16.0, w, h]
+            },
+            portrait_border: find(&|v| {
                 v.kind == "TextureRect"
-                    && v.texture
-                        .as_deref()
-                        .is_some_and(|t| t.ends_with("/fren.png"))
-                    && v.rect[2] == 32.0
+                    && ends(v, "AdventurerPortrait/CenterContainer/BorderTextureRect")
             })
             .rect,
             floor_label: label("FloorNumberLabel"),

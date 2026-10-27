@@ -28,6 +28,8 @@ fn is_dynamic(visual: &Visual) -> bool {
         || visual.path.contains("SubViewportContainer")
         || visual.path.contains("GameplayScreenTransition")
         || visual.path.contains("PingTextureRect")
+        || visual.path.contains("GoldContainer/GoldCoinsIcon")
+        || visual.path.contains("DiamondsContainer/TextureRect")
         || visual.path.contains("EquipmentSlotPreview") && visual.path.ends_with("/SlotTextureRect")
         || visual
             .texture
