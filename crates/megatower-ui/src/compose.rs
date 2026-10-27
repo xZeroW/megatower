@@ -364,12 +364,6 @@ pub fn market_container(game: &Game) -> Option<Entity> {
     })
 }
 
-fn rarity_tint(rarity: ItemRarity) -> Rgba {
-    let c = ItemRarity::font_color(rarity as i32);
-    let c = c.to_srgba();
-    [c.red, c.green, c.blue, 1.0]
-}
-
 pub(crate) fn item_draws(game: &Game, item: Entity, rect: R, locked: bool, out: &mut Vec<Draw>) {
     let Some(value) = game.world.get::<Item>(item) else {
         return;
@@ -394,7 +388,8 @@ pub(crate) fn item_draws(game: &Game, item: Entity, rect: R, locked: bool, out: 
     if value.is_banish {
         out.push(image(rect, "assets/textures/ui/banish_slot.png"));
     } else {
-        out.push(tinted(inner, &border, rarity_tint(value.rarity())));
+        // `default_rarity_color` is white: the border texture carries its own fill.
+        out.push(image([rect[0], rect[1], 34.0, 34.0], &border));
         out.push(image(inner, &icon));
     }
     if value.reforge_level > 0 && !value.is_banish {
