@@ -22,11 +22,7 @@ use crate::{
         catalog::{ContainerCatalog, ContainerId},
         interactions::create_item,
     },
-    items::{
-        catalog::{ItemCatalog, RawItemCatalog},
-        definition::ItemDefinition,
-        instance::Item,
-    },
+    items::{catalog::RawItemCatalog, definition::ItemDefinition, instance::Item},
     rng::{GlobalRng, RngStreams},
     stats::{BonusStat, Stat, StatCatalog, StatId},
     status_effects::StatusEffectId as Eff,

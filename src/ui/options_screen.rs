@@ -8,6 +8,7 @@ use crate::{
     gameplay_input::{DEFAULT_KEYS, KeyBindings},
     godot_layout::{Layout, Visual},
     options::{Binding, Options, WindowMode, supported_resolutions},
+    ui::library_state::db_to_linear,
 };
 use bevy::prelude::KeyCode;
 
@@ -88,10 +89,6 @@ impl Slider {
     }
 }
 
-fn db_to_linear(db: f32) -> f32 {
-    10f32.powf(db / 20.0)
-}
-
 fn linear_to_db(linear: f32) -> f32 {
     if linear <= 0.0 {
         -80.0
@@ -163,6 +160,7 @@ pub struct OptionsUi {
     pub scroll: usize,
     /// Monitor size used to list `supported_resolutions`.
     pub screen: (i32, i32),
+    /// Set when the options changed and should be persisted.
     pub changed: bool,
 }
 
@@ -170,10 +168,6 @@ impl Default for OptionsUi {
     fn default() -> Self {
         Self::from_options(Options::default())
     }
-}
-
-fn options_path() -> std::path::PathBuf {
-    crate::save_system::user_file_dir().join("options.json")
 }
 
 impl OptionsUi {
@@ -200,22 +194,10 @@ impl OptionsUi {
         }
     }
 
-    pub fn load() -> Self {
-        let options = std::fs::read_to_string(options_path())
-            .ok()
-            .and_then(|text| serde_json::from_str(&text).ok())
-            .unwrap_or_default();
-        Self::from_options(options)
-    }
-
-    pub fn save(&self) {
-        let path = options_path();
-        if let Some(dir) = path.parent() {
-            let _ = std::fs::create_dir_all(dir);
-        }
-        if let Ok(json) = serde_json::to_string_pretty(&self.options) {
-            let _ = std::fs::write(path, json);
-        }
+    /// Asks `crate::settings` to persist the options (it writes them to the
+    /// settings resource and queues a deferred save).
+    pub fn save(&mut self) {
+        self.changed = true;
     }
 
     fn rebind(&mut self, action: &'static str, key: KeyCode) {

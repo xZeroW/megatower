@@ -174,6 +174,23 @@ pub struct RoomPart {
     /// Box size, or `[radius, height, 0]` for a cylinder.
     pub size: [f32; 3],
     pub dim: f32,
+    /// The part material's wall texture (`texture_albedo`) and `uv1_scale`.
+    pub texture: String,
+    pub uv_scale: f32,
+}
+
+/// An `AnimatedLight` OmniLight3D in world space.
+#[derive(Clone, Debug, serde::Deserialize)]
+pub struct RoomLight {
+    pub position: [f32; 3],
+    pub range: f32,
+    pub attenuation: f32,
+}
+
+#[derive(Clone, Debug, serde::Deserialize)]
+pub struct RoomScene {
+    pub parts: Vec<RoomPart>,
+    pub lights: Vec<RoomLight>,
 }
 
 /// `RoomResource.scene` for each room type (`resources/rooms/*.tres`).
@@ -190,10 +207,17 @@ pub fn scene_for(room: crate::game_mode::Room) -> &'static str {
     }
 }
 
-pub fn parts(scene: &str) -> Vec<RoomPart> {
-    let mut all: std::collections::HashMap<String, Vec<RoomPart>> =
+pub fn scene(name: &str) -> RoomScene {
+    let mut all: std::collections::HashMap<String, RoomScene> =
         serde_json::from_str(include_str!("../artifacts/room-scenes.json")).unwrap();
-    all.remove(scene).unwrap_or_default()
+    all.remove(name).unwrap_or(RoomScene {
+        parts: vec![],
+        lights: vec![],
+    })
+}
+
+pub fn parts(name: &str) -> Vec<RoomPart> {
+    scene(name).parts
 }
 
 #[cfg(test)]

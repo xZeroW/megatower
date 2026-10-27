@@ -1,12 +1,19 @@
 //! Keyboard bindings and intent ordering translated from `project.godot`
 //! `[input]` and `GameplayState.process_inputs()`.
 //!
-//! Commands are intents. Market, inventory, and battle systems must validate
-//! and execute them; this module does not pretend those managers are ported.
+//! Keys map to [`GameAction`]s through a `leafwing-input-manager` input map
+//! rebuilt from the player's saved [`KeyBindings`]; the frame's action state is
+//! then turned into [`GameplayCommand`] intents in the source's order.
 
-use bevy::prelude::{ButtonInput, KeyCode, Message, MessageWriter, Res, Resource};
+use crate::{
+    app::GamePlugin,
+    ui::{UiRes, UiSystems},
+};
+use bevy::prelude::*;
+use bevy_auto_plugin::prelude::*;
+use leafwing_input_manager::prelude::*;
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Message)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum GameplayCommand {
     RefreshMarket,
     SortInventory,
@@ -81,42 +88,109 @@ impl KeyBindings {
     }
 }
 
-/// Bridges Bevy keyboard state to the typed gameplay-intent message stream.
-/// The gameplay managers are not ported yet, so this deliberately has no
-/// consumer that could mutate run state with incomplete rules.
-pub fn emit_gameplay_commands(
-    input: Res<ButtonInput<KeyCode>>,
-    context: Res<InputContext>,
-    mut commands: MessageWriter<GameplayCommand>,
-) {
-    for command in commands_for_input(&input, *context) {
-        commands.write(command);
+/// The rebindable actions (`Options.BINDINGS`).
+#[derive(Actionlike, PartialEq, Eq, Clone, Copy, Hash, Debug, Reflect)]
+pub enum GameAction {
+    QuickBuy1,
+    QuickBuy2,
+    QuickBuy3,
+    QuickBuy4,
+    SortInventory,
+    RefreshMarket,
+    SellItem,
+    PrimaryAction,
+    BaseAbility,
+    LearnedAbility1,
+    LearnedAbility2,
+    Stance,
+    SelectLeftEnemy,
+    SelectRightEnemy,
+}
+
+impl GameAction {
+    /// Each action with its `project.godot` action name.
+    pub const ALL: [(Self, &'static str); 14] = [
+        (Self::QuickBuy1, "quick_buy_item_1"),
+        (Self::QuickBuy2, "quick_buy_item_2"),
+        (Self::QuickBuy3, "quick_buy_item_3"),
+        (Self::QuickBuy4, "quick_buy_item_4"),
+        (Self::SortInventory, "sort_inventory"),
+        (Self::RefreshMarket, "refresh_market"),
+        (Self::SellItem, "sell_item"),
+        (Self::PrimaryAction, "primary_action"),
+        (Self::BaseAbility, "base_ability"),
+        (Self::LearnedAbility1, "learned_ability_1"),
+        (Self::LearnedAbility2, "learned_ability_2"),
+        (Self::Stance, "stance"),
+        (Self::SelectLeftEnemy, "select_left_enemy"),
+        (Self::SelectRightEnemy, "select_right_enemy"),
+    ];
+}
+
+/// The input map for the current bindings; unbound actions get no key.
+pub fn input_map(bindings: &KeyBindings) -> InputMap<GameAction> {
+    let mut map = InputMap::default();
+    for (action, name) in GameAction::ALL {
+        if let Some(key) = bindings.get(name) {
+            map.insert(action, key);
+        }
+    }
+    map
+}
+
+#[derive(AutoPlugin)]
+#[auto_add_plugin(plugin = GamePlugin)]
+pub struct GameInputPlugin;
+
+impl Plugin for GameInputPlugin {
+    #[auto_plugin]
+    fn build(&self, app: &mut App) {
+        app.add_plugins(InputManagerPlugin::<GameAction>::default());
     }
 }
 
-pub fn commands_for_input(
-    input: &ButtonInput<KeyCode>,
-    context: InputContext,
-) -> Vec<GameplayCommand> {
-    commands_for_bindings(input, context, &KeyBindings::default())
+/// Keeps the player's input map in step with the bindings in Options, so a
+/// rebind takes effect immediately.
+#[auto_add_system(plugin = GameInputPlugin, schedule = Update, config(before = UiSystems::Screens))]
+fn sync_input_map(
+    mut commands: Commands,
+    ui: Res<UiRes>,
+    player: Query<Entity, With<InputMap<GameAction>>>,
+    mut applied: Local<Option<KeyBindings>>,
+) {
+    let bindings = &ui.0.options_ui.bindings;
+    if applied.as_ref() == Some(bindings) {
+        return;
+    }
+    *applied = Some(bindings.clone());
+    match player.single() {
+        Ok(entity) => {
+            commands.entity(entity).insert(input_map(bindings));
+        }
+        Err(_) => {
+            commands.spawn((input_map(bindings), Name::new("Player input")));
+        }
+    }
 }
 
-pub fn commands_for_bindings(
-    input: &ButtonInput<KeyCode>,
+/// `GameplayState.process_inputs()`: the frame's actions as commands.
+/// `keys` is only read for the debug-build Shift+E shortcut.
+pub fn commands_for_actions(
+    actions: &ActionState<GameAction>,
+    keys: &ButtonInput<KeyCode>,
     context: InputContext,
-    bindings: &KeyBindings,
 ) -> Vec<GameplayCommand> {
     if context.text_input_focused || context.player_died {
         return Vec::new();
     }
 
-    let just = |key| input.just_pressed(key);
-    let held = |key| input.pressed(key);
-    let just_action = |action: &str| bindings.get(action).is_some_and(|k| input.just_pressed(k));
-    let held_action = |action: &str| bindings.get(action).is_some_and(|k| input.pressed(k));
+    let just = |key| keys.just_pressed(key);
+    let held = |key| keys.pressed(key);
+    let just_action = |action: GameAction| actions.just_pressed(&action);
+    let held_action = |action: GameAction| actions.pressed(&action);
     let mut commands = Vec::new();
 
-    if just_action("refresh_market") {
+    if just_action(GameAction::RefreshMarket) {
         commands.push(GameplayCommand::RefreshMarket);
     }
 
@@ -124,17 +198,17 @@ pub fn commands_for_bindings(
     // in one frame, the highest numbered one wins.
     let mut quick_buy = None;
     for (action, slot) in [
-        ("quick_buy_item_1", 0),
-        ("quick_buy_item_2", 1),
-        ("quick_buy_item_3", 2),
-        ("quick_buy_item_4", 3),
+        (GameAction::QuickBuy1, 0),
+        (GameAction::QuickBuy2, 1),
+        (GameAction::QuickBuy3, 2),
+        (GameAction::QuickBuy4, 3),
     ] {
         if just_action(action) {
             quick_buy = Some(slot);
         }
     }
 
-    if just_action("sort_inventory") {
+    if just_action(GameAction::SortInventory) {
         commands.push(GameplayCommand::SortInventory);
     }
     if let Some(slot) = quick_buy {
@@ -142,18 +216,24 @@ pub fn commands_for_bindings(
     }
 
     for (action, command) in [
-        ("primary_action", GameplayCommand::PrimaryAction),
-        ("base_ability", GameplayCommand::BaseAbility),
-        ("learned_ability_1", GameplayCommand::LearnedAbility1),
-        ("learned_ability_2", GameplayCommand::LearnedAbility2),
-        ("stance", GameplayCommand::Stance),
+        (GameAction::PrimaryAction, GameplayCommand::PrimaryAction),
+        (GameAction::BaseAbility, GameplayCommand::BaseAbility),
+        (
+            GameAction::LearnedAbility1,
+            GameplayCommand::LearnedAbility1,
+        ),
+        (
+            GameAction::LearnedAbility2,
+            GameplayCommand::LearnedAbility2,
+        ),
+        (GameAction::Stance, GameplayCommand::Stance),
     ] {
         if held_action(action) {
             commands.push(command);
         }
     }
 
-    if held_action("sell_item")
+    if held_action(GameAction::SellItem)
         && context.hovered_slot.is_some()
         && !context.hovered_slot_is_market
         && let Some(slot) = context.dragged_slot.or(context.hovered_slot)
@@ -176,6 +256,52 @@ pub fn commands_for_bindings(
 mod tests {
     use super::*;
 
+    /// What the input manager would report for these keys: an action bound
+    /// to a just-pressed key is just pressed, one bound to a held key pressed.
+    fn commands_for_bindings(
+        keys: &ButtonInput<KeyCode>,
+        context: InputContext,
+        bindings: &KeyBindings,
+    ) -> Vec<GameplayCommand> {
+        let mut actions = ActionState::<GameAction>::default();
+        let now = bevy::platform::time::Instant::now();
+        for (action, name) in GameAction::ALL {
+            if bindings.get(name).is_some_and(|k| keys.pressed(k)) {
+                actions.press(&action);
+            }
+        }
+        actions.tick(now, now);
+        for (action, name) in GameAction::ALL {
+            if bindings
+                .get(name)
+                .is_some_and(|k| keys.pressed(k) && keys.just_pressed(k))
+            {
+                actions.release(&action);
+                actions.press(&action);
+            }
+        }
+        commands_for_actions(&actions, keys, context)
+    }
+
+    fn commands_for_input(
+        keys: &ButtonInput<KeyCode>,
+        context: InputContext,
+    ) -> Vec<GameplayCommand> {
+        commands_for_bindings(keys, context, &KeyBindings::default())
+    }
+
+    #[test]
+    fn input_map_follows_rebinding_and_unbinds_stolen_keys() {
+        let mut bindings = KeyBindings::default();
+        bindings.rebind("primary_action", KeyCode::KeyR);
+        let map = input_map(&bindings);
+        assert!(map.get(&GameAction::RefreshMarket).is_none());
+        assert_eq!(
+            map.get(&GameAction::PrimaryAction).map(|keys| keys.len()),
+            Some(1)
+        );
+    }
+
     #[test]
     fn bindings_distinguish_edge_actions_from_held_actions() {
         let mut input = ButtonInput::default();
@@ -189,7 +315,8 @@ mod tests {
         input.release(KeyCode::Space);
         input.press(KeyCode::KeyR);
         input.clear_just_pressed(KeyCode::KeyR);
-        assert!(commands_for_input(&input, context).is_empty());
+        let got = commands_for_input(&input, context);
+        assert!(got.is_empty(), "{got:?}");
     }
 
     #[test]

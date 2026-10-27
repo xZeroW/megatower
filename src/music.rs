@@ -1,9 +1,7 @@
 //! Which music plays where, from `Memory.get_music_start_track` /
-//! `get_music_loop_track` and `StateManager`'s per-state tracks, plus the
-//! crossfade arithmetic of `AudioManager.play_music`.
+//! `get_music_loop_track` and `StateManager`'s per-state tracks.
 
 const GAMEPLAY: &str = "assets/music/gameplay/";
-const MENU: &str = "assets/music/main_menu/";
 
 pub const INTRO: &str = "assets/music/main_menu/intro.ogg";
 pub const MAIN_MENU: &str = "assets/music/main_menu/main_menu.ogg";
@@ -66,25 +64,6 @@ pub fn loops(path: &str) -> bool {
     !path.ends_with("_start.ogg")
 }
 
-/// Linear gain for a `volume_db` setting (`db_to_linear`).
-pub fn db_to_linear(db: f32) -> f32 {
-    10f32.powf(db / 20.0)
-}
-
-/// One crossfade step: `level` moves toward `target` over `seconds` total
-/// (an instant jump when the duration is zero).
-pub fn fade_step(level: f32, target: f32, seconds: f32, delta: f32) -> f32 {
-    if seconds <= 0.0 {
-        return target;
-    }
-    let step = delta / seconds;
-    if level < target {
-        (level + step).min(target)
-    } else {
-        (level - step).max(target)
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -125,14 +104,5 @@ mod tests {
             assert!(root.join(p).exists(), "{p}");
             assert_eq!(loops(p), !p.ends_with("_start.ogg"), "{p}");
         }
-    }
-
-    #[test]
-    fn fade_moves_linearly_and_zero_duration_jumps() {
-        assert_eq!(fade_step(0.0, 1.0, 2.0, 0.5), 0.25);
-        assert_eq!(fade_step(0.9, 1.0, 1.0, 0.5), 1.0);
-        assert_eq!(fade_step(1.0, 0.0, 1.75, 0.0), 1.0);
-        assert_eq!(fade_step(0.3, 1.0, 0.0, 0.016), 1.0);
-        assert!((db_to_linear(-2.5) - 0.7499).abs() < 1e-3);
     }
 }

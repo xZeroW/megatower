@@ -14,7 +14,6 @@ use crate::{
     enemies::Enemy,
     game_mode::Room,
     run::{
-        colors,
         events::{Fx, Popup},
         game::Game,
         hooks::{Args, Category, ScriptInstance, Signal},
