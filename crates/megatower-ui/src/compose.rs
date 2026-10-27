@@ -1968,9 +1968,19 @@ fn action_strip(
     let ability_icons = ability_icons(game);
     for (rect, action, label, enabled) in action_buttons(game, rects) {
         let enabled = enabled && !blocked;
+        // `BattleRoomActionContainer`: the attack and stance buttons show
+        // `attack_icon` and `guard_icon` instead of text.
+        let battle = game.memory.room_type == Room::Battle;
+        let label = if battle && action == Action::Primary {
+            String::new()
+        } else {
+            label
+        };
         let (icon, tint) = match action {
-            Action::Stance => (Some("assets/textures/icons/timeout_icon.png".to_owned()), 4),
-            Action::Primary if label.is_empty() => (None, 5),
+            Action::Stance => (Some("assets/textures/icons/guard_icon.png".to_owned()), 4),
+            Action::Primary if battle => {
+                (Some("assets/textures/icons/attack_icon.png".to_owned()), 5)
+            }
             Action::Primary => (None, 5),
             Action::Ability(i) => (ability_icons.get(i).cloned().flatten(), 4),
             Action::EnemyExtra => (None, 5),
