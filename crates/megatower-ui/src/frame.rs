@@ -227,6 +227,11 @@ pub fn run_action(game: &mut Game, ui: &mut UiState, f: impl FnOnce(&mut Game)) 
     f(game);
     let (events, total) = game.finish_action();
     ui.timeline.push(events, total);
+    // The game already holds the action's final state; play what is due now so
+    // this frame shows the timeline's first frame instead of that state.
+    for fx in ui.timeline.advance(0.0) {
+        apply_event(ui, game, fx);
+    }
 }
 
 pub(super) fn enemy_cx(frame: &megatower_core::run::events::Frame, idx: usize) -> f32 {
