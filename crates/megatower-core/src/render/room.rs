@@ -6,8 +6,6 @@
 use crate::{
     app::{GamePlugin, palette_color},
     dev::capture::CaptureReadiness,
-    room_scene::{RoomLight, scene, scene_for},
-    room_screen::{ROOM_CAMERA_FOV_DEGREES, ROOM_VIEWPORT_SIZE},
     ui::GameSlot,
 };
 use bevy::{
@@ -18,6 +16,8 @@ use bevy::{
     shader::ShaderRef,
 };
 use bevy_auto_plugin::prelude::*;
+use megatower_layout::room_scene::{RoomLight, scene, scene_for};
+use megatower_layout::room_screen::{ROOM_CAMERA_FOV_DEGREES, ROOM_VIEWPORT_SIZE};
 
 /// Render layer of the room scene, kept out of the UI camera.
 pub const ROOM_LAYER: usize = 1;

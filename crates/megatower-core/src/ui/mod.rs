@@ -56,10 +56,7 @@ mod library_data;
 mod overlays;
 mod window_options;
 
-use crate::{
-    gameplay_input::{GameAction, GameplayCommand, InputContext, commands_for_actions},
-    godot_layout::recovered_layout,
-};
+use crate::gameplay_input::{GameAction, GameplayCommand, InputContext, commands_for_actions};
 use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_auto_plugin::prelude::*;
 use compose::{
@@ -76,6 +73,7 @@ use megatower_game::run::{
     gameplay::NewRun,
     state::Player,
 };
+use megatower_layout::godot_layout::recovered_layout;
 use model::*;
 use panels::{DropAction, drop_targets, format_log};
 
@@ -112,8 +110,8 @@ pub enum UiSystems {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::godot_layout::recovered_layout;
     use megatower_game::run::gameplay::NewRun;
+    use megatower_layout::godot_layout::recovered_layout;
 
     /// Compose the HUD at every step of bot-driven runs, in every tab, with the
     /// stash open and an item dragged: no panics, and drawing is deterministic.

@@ -5,12 +5,12 @@
 use crate::{
     app::{GamePlugin, palette_color},
     dev::capture::CaptureReadiness,
-    godot_layout::{Visual, recovered_layout},
     render::room::{RoomRenderTarget, setup_room},
-    room_screen::{ROOM_FRAME_RECT, ROOM_VIEWPORT_OFFSET, ROOM_VIEWPORT_SIZE},
 };
 use bevy::prelude::*;
 use bevy_auto_plugin::prelude::*;
+use megatower_layout::godot_layout::{Visual, recovered_layout};
+use megatower_layout::room_screen::{ROOM_FRAME_RECT, ROOM_VIEWPORT_OFFSET, ROOM_VIEWPORT_SIZE};
 
 const FONT: &str = "assets/fonts/monogram-extended.ttf";
 

@@ -11,11 +11,11 @@ pub(super) fn profile_frame(
     click: bool,
     alt_click: bool,
 ) -> Option<Vec<Draw>> {
-    let layout = crate::godot_layout::profile_layout();
+    let layout = megatower_layout::godot_layout::profile_layout();
     let entries = profile_entries(&ui.profile);
     let entries = entries.as_slice();
     if let Some(index) = ui.profile_popup {
-        let popup = crate::godot_layout::adventurer_overview_layout();
+        let popup = megatower_layout::godot_layout::adventurer_overview_layout();
         let close = matches!((click, ui.cursor), (true, Some([x, y])) if screens::popup_close_hit(&popup, x, y));
         if close || alt_click || keys.just_pressed(KeyCode::Escape) {
             ui.profile_popup = None;
@@ -30,7 +30,7 @@ pub(super) fn profile_frame(
         let mut draws = screens::profile_draws(&layout, entries);
         if ui.popup_tab == screens::POPUP_SPEEDRUNS {
             draws.extend(screens::profile_popup_records_draws(
-                &crate::godot_layout::adventurer_records_layout(),
+                &megatower_layout::godot_layout::adventurer_records_layout(),
             ));
         } else {
             ui.reward_scroll = screens::reward_scroll_step(ui.reward_scroll, ui.cursor);
@@ -189,7 +189,7 @@ pub(super) fn esc_frame(
     if !ui.esc_open {
         return None;
     }
-    let layout = crate::godot_layout::esc_menu_layout();
+    let layout = megatower_layout::godot_layout::esc_menu_layout();
     if let (true, Some([x, y])) = (click, ui.cursor) {
         match screens::esc_hit(&layout, x, y) {
             Some(EscButton::Resume) => ui.esc_open = false,
