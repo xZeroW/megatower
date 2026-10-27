@@ -1193,72 +1193,98 @@ fn enemy_widget(
     let at = |r: [f32; 4]| [ox + r[0], oy + r[1], r[2], r[3]];
     let v = &view.vitals;
 
-    // Stats backdrop and panel.
-    out.push(nine_patch(
-        at(l.rect("MarginContainer2/Panel")),
-        &rects.big_panel,
-        palette(1),
-    ));
-    let bar_frame = |out: &mut Vec<Draw>, back: &str, main: &str, frac: f32, fill: Rgba| {
-        let back = at(l.rect(back));
-        out.push(Draw::Fill {
-            rect: back,
-            color: palette(3),
-        });
-        let m = at(l.rect(main));
-        out.push(Draw::Fill {
-            rect: m,
-            color: [fill[0] * 0.25, fill[1] * 0.25, fill[2] * 0.25, 1.0],
-        });
-        let w = (m[2] * frac.clamp(0.0, 1.0)).round();
-        if w > 0.0 {
-            out.push(Draw::Fill {
-                rect: [m[0], m[1], w, m[3]],
-                color: fill,
-            });
-        }
+    // Stats backdrop: the dark ColorRect inside a border-colored outline. The
+    // box is bottom-aligned and shrinks by the armor row when there is no armor.
+    let has_armor = v.max_armor > 0.0;
+    let armor_row = {
+        let armor = l.rect("ArmorBar/HBoxContainer/MarginContainer/BackPanel");
+        let health = l.rect("HealthBar/HBoxContainer/MarginContainer/BackPanel");
+        health[1] - armor[1]
     };
-    let label =
-        |out: &mut Vec<Draw>, amount: String, max: String, anchor: [f32; 4], color: Rgba| {
-            let text_ = format!("{amount} / {max}");
-            let w = text_.chars().count() as f32 * CHAR_W;
-            let r = at(anchor);
-            out.push(nine_patch(
-                [r[0] - 3.0, r[1] + 2.0, w + 6.0, 12.0],
-                &rects.small_panel,
-                palette(1),
-            ));
-            out.push(text([r[0], r[1], w + 2.0, 13.0], text_, color, Align::Left));
+    let mut backdrop = at(l.rect("MarginContainer2/Panel/ColorRect"));
+    if !has_armor {
+        backdrop[1] += armor_row;
+        backdrop[3] -= armor_row;
+    }
+    out.push(Draw::Fill {
+        rect: backdrop,
+        color: palette(2),
+    });
+    out.push(Draw::Fill {
+        rect: [
+            backdrop[0] + 1.0,
+            backdrop[1] + 1.0,
+            backdrop[2] - 2.0,
+            backdrop[3] - 2.0,
+        ],
+        color: palette(1),
+    });
+    // Without a mana bar the health bar takes its space.
+    let health_dy = 0.0;
+    let health_dw = if v.max_mana > 0 {
+        0.0
+    } else {
+        l.rect("ArmorBar/HBoxContainer/MarginContainer/BackPanel")[2]
+            - l.rect("HealthBar/HBoxContainer/MarginContainer/BackPanel")[2]
+    };
+    let bar_frame =
+        |out: &mut Vec<Draw>, back: &str, main: &str, frac: f32, fill: Rgba, dy: f32, dw: f32| {
+            let shift = |r: [f32; 4]| [r[0], r[1] + dy, r[2] + dw, r[3]];
+            out.push(Draw::Fill {
+                rect: shift(at(l.rect(back))),
+                color: palette(3),
+            });
+            let m = shift(at(l.rect(main)));
+            out.push(Draw::Fill {
+                rect: m,
+                color: [fill[0] * 0.25, fill[1] * 0.25, fill[2] * 0.25, 1.0],
+            });
+            let w = (m[2] * frac.clamp(0.0, 1.0)).round();
+            if w > 0.0 {
+                out.push(Draw::Fill {
+                    rect: [m[0], m[1], w, m[3]],
+                    color: fill,
+                });
+            }
         };
-    if v.max_armor > 0.0 {
+    let center = ox + l.size[0] / 2.0;
+    if has_armor {
+        let back = at(l.rect("ArmorBar/HBoxContainer/MarginContainer/BackPanel"));
         bar_frame(
             out,
             "ArmorBar/HBoxContainer/MarginContainer/BackPanel",
             "ArmorBar/HBoxContainer/MarginContainer/MainBarContainer/ProgressBarMain",
             (v.armor / v.max_armor) as f32,
             hex(0x4a5462),
+            0.0,
+            0.0,
         );
-        label(
-            out,
-            number(v.armor),
-            number(v.max_armor),
-            l.rect("ArmorBar/HBoxContainer/MarginContainer/Container/LabelMarginContainer/LabelContainer/MarginContainer/HBoxContainer/AmountLabel"),
+        label_panel(
+            rects,
+            center,
+            back[1] - 9.0,
+            &format!("{} / {}", number(v.armor), number(v.max_armor)),
             palette(4),
+            out,
         );
     }
+    let health_back = at(l.rect("HealthBar/HBoxContainer/MarginContainer/BackPanel"));
     bar_frame(
         out,
         "HealthBar/HBoxContainer/MarginContainer/BackPanel",
         "HealthBar/HBoxContainer/MarginContainer/MainBarContainer/ProgressBarMain",
         (v.health / v.max_health.max(1.0)) as f32,
         hex(0x9e1a3c),
+        health_dy,
+        health_dw,
     );
-    label(
-        out,
-        number(v.health),
-        number(v.max_health),
-        l.rect("HealthBar/HBoxContainer/MarginContainer/Container/LabelMarginContainer/LabelContainer/MarginContainer/HBoxContainer/AmountLabel"),
+    label_panel(
+        rects,
+        health_back[0] + (health_back[2] + health_dw) / 2.0,
+        health_back[1] + health_dy - 9.0,
+        &format!("{} / {}", number(v.health), number(v.max_health)),
         hex(0xff4d85),
+        out,
     );
     if v.max_mana > 0 {
         let frame = at(l.rect("ManaBar/Panel"));
