@@ -23,5 +23,13 @@ fn main() {
                 }),
             GamePlugin,
         ))
+        .add_plugins(dev_plugins)
         .run();
+}
+
+/// `--features dev`: Bevy Remote Protocol with the brp_extras methods
+/// (screenshots, key and mouse injection) on the default port 15702.
+fn dev_plugins(_app: &mut App) {
+    #[cfg(feature = "dev")]
+    _app.add_plugins(bevy_brp_extras::BrpExtrasPlugin::new());
 }
