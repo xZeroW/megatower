@@ -1822,21 +1822,43 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     ));
 
     // ---- popups ----
+    // `EnemyPopupLabel`: rises 10px over 0.6s (cubic ease-out) and fades out
+    // over 0.5s after 0.3s; the icons follow the amount, 3px apart.
     for popup in &ui.popups {
         let age = (ui.time - popup.at) as f32;
-        let alpha = (1.0 - (age - 0.6).max(0.0) / 0.5).clamp(0.0, 1.0);
+        let ease_out = |t: f32| 1.0 - (1.0 - t.clamp(0.0, 1.0)).powi(3);
+        let alpha = 1.0 - ease_out((age - 0.3) / 0.5);
         let [x, y] = popup.origin;
         let mut color = popup.popup.color;
         color[3] = alpha;
-        let width = popup.popup.text.chars().count() as f32 * CHAR_W + 22.0;
-        let top = y - age * 18.0;
+        let size = 16.0 * popup.popup.size;
+        let text_w = popup.popup.text.chars().count() as f32 * CHAR_W * popup.popup.size;
+        let icon_w = 9.0 * popup.popup.size.min(1.0);
+        let icons = [&popup.popup.left_icon, &popup.popup.right_icon];
+        let icon_count = icons.iter().filter(|i| i.is_some()).count() as f32;
+        let width = text_w + icon_count * (icon_w + 3.0);
+        let top = y - ease_out(age / 0.6) * 10.0;
+        let mut cx = x - width / 2.0;
+        let icon = |out: &mut Vec<Draw>, cx: &mut f32, path: &Option<String>| {
+            if let Some(path) = path {
+                out.push(tinted(
+                    [*cx, top + 2.0, icon_w, icon_w],
+                    path.trim_start_matches("res://"),
+                    color,
+                ));
+                *cx += icon_w + 3.0;
+            }
+        };
+        icon(&mut out, &mut cx, icons[0]);
         out.push(Draw::Text {
-            rect: [x - width / 2.0, top, width, 14.0],
+            rect: [cx, top, text_w + 2.0, 14.0 * popup.popup.size],
             text: popup.popup.text.clone(),
-            size: 16.0 * popup.popup.size,
+            size,
             color,
-            align: Align::Center,
+            align: Align::Left,
         });
+        cx += text_w + 3.0;
+        icon(&mut out, &mut cx, icons[1]);
     }
 
     // ---- dragged item / tooltip ----

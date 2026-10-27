@@ -1,6 +1,8 @@
 //! `MEGALOOT_CAPTURE_SCREENSHOT=1`: once every waited-on asset has loaded and
 //! the frame has settled, save the window to `artifacts/latest.png`
 //! (`MEGALOOT_CAPTURE_ROOM_SCREENSHOT=1` also saves the room render target).
+//! `MEGALOOT_CAPTURE_FRAMES=<n>` then saves the next `n` frames, one per
+//! frame, to `artifacts/frames/NNN.png` to inspect animations.
 
 use bevy::{
     prelude::*,
@@ -28,11 +30,23 @@ fn capture(
     assets: Res<AssetServer>,
     readiness: Option<ResMut<CaptureReadiness>>,
     room_target: Option<Res<RoomRenderTarget>>,
+    mut frame: Local<u32>,
 ) {
     let Some(mut readiness) = readiness else {
         return;
     };
     if readiness.requested {
+        let total: u32 = std::env::var("MEGALOOT_CAPTURE_FRAMES")
+            .ok()
+            .and_then(|v| v.parse().ok())
+            .unwrap_or(0);
+        if *frame < total {
+            let _ = std::fs::create_dir_all("artifacts/frames");
+            commands
+                .spawn(Screenshot::primary_window())
+                .observe(save_to_disk(format!("artifacts/frames/{:03}.png", *frame)));
+            *frame += 1;
+        }
         return;
     }
     if readiness
