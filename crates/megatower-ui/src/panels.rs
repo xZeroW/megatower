@@ -22,7 +22,8 @@ pub enum DropAction {
     Tinker,
 }
 
-pub const STASH_BUTTON: R = [16.0, 347.0, 44.0, 11.0];
+/// `LootStashButton`: the 27x20 chest at the room's top-left.
+pub const STASH_BUTTON: R = [323.0, 16.0, 27.0, 20.0];
 pub const STASH_PANEL: R = [8.0, 118.0, 292.0, 168.0];
 pub const STASH_SELL_ALL: R = [118.0, 262.0, 80.0, 20.0];
 pub const STASH_CLOSE: R = [204.0, 262.0, 80.0, 20.0];

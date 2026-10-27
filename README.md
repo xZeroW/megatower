@@ -25,6 +25,7 @@ curl -s -X POST http://127.0.0.1:15702 -H 'content-type: application/json' \
 ```
 
 The `MEGALOOT_*` variables in `apps/megatower-game/src/dev/script.rs` drive scripted runs and screenshots.
+`tools/qa-shot.sh OUT.png [VAR=value ...]` builds, runs the game once with them, saves the screenshot and exits (`MEGALOOT_CAPTURE_FRAMES=n` also writes `artifacts/frames/`).
 
 ## Architecture
 

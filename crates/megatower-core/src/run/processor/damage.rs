@@ -472,7 +472,8 @@ impl Game {
                                 result.damage_type.and_then(|t| self.stat_icon(t)),
                             )
                         };
-                        let mut p = Popup::new(crate::run::characters::format_number(amount), color);
+                        let mut p =
+                            Popup::new(crate::run::characters::format_number(amount), color);
                         p.right_icon = icon;
                         p.lucky = result.is_lucky;
                         p

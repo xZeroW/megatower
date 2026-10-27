@@ -244,4 +244,32 @@ mod tests {
         assert_eq!(names, 1);
         assert_eq!(adventurer_cells(11).len(), 11);
     }
+
+    /// The merchant room sells from its own container, refreshes for a
+    /// diamond and the player's market keeps working.
+    #[test]
+    fn merchant_room_buying_and_refreshing() {
+        use megatower_core::game_mode::Room;
+        let mut game = Game::new(NewRun::default_for("Fren", 7));
+        game.setup_room_of_type(Room::Merchant);
+        let local = game.local();
+        game.char_state_mut(local).gold_coins = 10_000.0;
+        game.char_state_mut(local).diamonds = 3.0;
+        let shop = market_container(&game).expect("merchant stock");
+        assert_eq!(shop, game.player(local).merchant);
+        let stock = |g: &Game| compose::container_items(g, shop).iter().flatten().count();
+        assert!(stock(&game) > 0, "merchant has stock");
+        let before = stock(&game);
+        let gold = game.char_state(local).gold_coins;
+        let bought = (0..5).any(|i| game.try_to_buy_item(shop, i));
+        assert!(bought, "an affordable item can be bought");
+        assert_eq!(stock(&game), before - 1);
+        assert!(game.char_state(local).gold_coins < gold);
+        game.try_to_refresh_merchant();
+        assert_eq!(game.char_state(local).diamonds, 2.0);
+        assert!(stock(&game) > 0, "refresh restocks");
+        // The player's own market is unaffected.
+        let market = game.player(local).market;
+        assert_ne!(market, shop);
+    }
 }

@@ -2,7 +2,8 @@
 //! the frame has settled, save the window to `artifacts/latest.png`
 //! (`MEGALOOT_CAPTURE_ROOM_SCREENSHOT=1` also saves the room render target).
 //! `MEGALOOT_CAPTURE_FRAMES=<n>` then saves the next `n` frames, one per
-//! frame, to `artifacts/frames/NNN.png` to inspect animations.
+//! frame, to `artifacts/frames/NNN.png` to inspect animations. The game exits
+//! a few frames after the last capture is requested.
 
 use bevy::{
     prelude::*,
@@ -31,6 +32,7 @@ fn capture(
     readiness: Option<ResMut<CaptureReadiness>>,
     room_target: Option<Res<RoomRenderTarget>>,
     mut frame: Local<u32>,
+    mut exit: MessageWriter<AppExit>,
 ) {
     let Some(mut readiness) = readiness else {
         return;
@@ -46,6 +48,12 @@ fn capture(
                 .spawn(Screenshot::primary_window())
                 .observe(save_to_disk(format!("artifacts/frames/{:03}.png", *frame)));
             *frame += 1;
+        } else {
+            // Let the screenshot reach the disk, then quit.
+            *frame += 1;
+            if *frame > total + 30 {
+                exit.write(AppExit::Success);
+            }
         }
         return;
     }

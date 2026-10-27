@@ -175,17 +175,22 @@ fn bar(rect: R, frac: f32, fill: Rgba, out: &mut Vec<Draw>) {
     pill_bar(rect, frac, fill, out);
 }
 
+/// `SmallResourceBar._process`: 10px for one mana, 7px more for each extra.
+fn mana_width(max_mana: i64) -> f32 {
+    match max_mana {
+        1 => 10.0,
+        2 => 17.0,
+        4 => 31.0,
+        _ => 24.0,
+    }
+}
+
 /// `small_resource_bar.tscn` for the enemy mana: the bar is 10px wide for one
 /// mana and 7px wider per extra one; the mana already spent is darkened from
 /// the right. Returns the bar's width.
 fn mana_pip(right: f32, y: f32, max_mana: i64, mana: i64, out: &mut Vec<Draw>) -> f32 {
     let blue = [0.156_863, 0.360_784, 0.768_627, 1.0];
-    let w = match max_mana {
-        1 => 10.0,
-        2 => 17.0,
-        4 => 31.0,
-        _ => 24.0,
-    };
+    let w = mana_width(max_mana);
     let x = right - w;
     out.push(Draw::Image {
         rect: [x, y, w, 11.0],
@@ -414,7 +419,10 @@ fn effect_row(
 /// Where `market_container`'s slots are drawn: the merchant's five slots sit in
 /// the action strip, every other shop in the bottom-left row.
 pub fn shop_rects<'a>(game: &Game, rects: &'a Rects) -> &'a Vec<R> {
-    if game.memory.room_type == megatower_core::game_mode::Room::Merchant {
+    if matches!(
+        game.memory.room_type,
+        megatower_core::game_mode::Room::Merchant | megatower_core::game_mode::Room::MysticTrader
+    ) {
         &rects.merchant
     } else {
         &rects.market
@@ -1309,12 +1317,10 @@ fn enemy_stats(
     // The mana bar's width depends on the mana pool; the health bar takes the
     // rest (or all of it without mana).
     let mana_back = l.rect("ManaBar/Panel");
-    let mana_width = match v.max_mana {
-        0 => 0.0,
-        1 => 10.0,
-        2 => 17.0,
-        4 => 31.0,
-        _ => 24.0,
+    let mana_width = if v.max_mana > 0 {
+        mana_width(v.max_mana)
+    } else {
+        0.0
     };
     let health_dy = 0.0;
     let health_dw = if v.max_mana > 0 {
@@ -1707,9 +1713,17 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         }
         // Without a mana bar the health bar takes its space; the label keeps
         // the position computed for the narrower bar.
-        let label_cx = health_rect[0] + health_rect[2] / 2.0;
+        let mut label_cx = health_rect[0] + health_rect[2] / 2.0;
         let health_rect = if v.max_mana > 0 {
-            health_rect
+            // The layout was resolved with a 24px mana bar.
+            let dw = 24.0 - mana_width(v.max_mana);
+            label_cx += dw / 2.0;
+            [
+                health_rect[0],
+                health_rect[1],
+                health_rect[2] + dw,
+                health_rect[3],
+            ]
         } else {
             [
                 health_rect[0],
@@ -1749,29 +1763,13 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
                     mana_rect[3],
                 ]
             };
-            out.push(Draw::Fill {
-                rect: [mr[0] - 2.0, mr[1] - 2.0, mr[2] + 4.0, mr[3] + 4.0],
-                color: palette(3),
-            });
-            out.push(Draw::Fill {
-                rect: mr,
-                color: hex(0x10141c),
-            });
-            out.push(Draw::Fill {
-                rect: [
-                    mr[0],
-                    mr[1],
-                    (mr[2] * v.mana as f32 / v.max_mana as f32).round(),
-                    mr[3],
-                ],
-                color: hex(0x3978a8),
-            });
-            out.push(text(
-                [mr[0], mr[1] + 8.0, mr[2], 13.0],
-                format!("{}/{}", v.mana, v.max_mana),
-                hex(0x8ab1ff),
-                Align::Center,
-            ));
+            mana_pip(
+                mr[0] + mr[2] + 2.0,
+                mr[1] - 2.0,
+                v.max_mana,
+                v.mana,
+                &mut out,
+            );
         }
         effect_row(game, local, v, rects, &mut out);
     }
@@ -1811,7 +1809,7 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     };
     let shop = market_container(game).unwrap();
     let mut shops = vec![(shop, shop_rects(game, rects))];
-    if game.memory.room_type == Room::Merchant {
+    if matches!(game.memory.room_type, Room::Merchant | Room::MysticTrader) {
         // The market row stays; the merchant's stock is in the action strip.
         shops.push((player.market, &rects.market));
     }
@@ -1884,14 +1882,7 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     }
     super::panels::draw_tab_bar(ui, rects, &mut out);
     // Market refresh price.
-    if game.memory.room_type == Room::MysticTrader {
-        out.push(text(
-            [rects.refresh[0], rects.refresh[1] + 35.0, 34.0, 13.0],
-            "1",
-            game.rules.stats.get(StatId::Diamond).color,
-            Align::Center,
-        ));
-    } else {
+    {
         let price = game.market_refresh_price();
         let can = game.can_refresh_market();
         out.push(text(
@@ -1911,17 +1902,22 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         .get::<ItemContainer>(player.loot_stash)
         .map(|c| c.get_items(&game.world).map(|i| i.len()).unwrap_or(0))
         .unwrap_or(0);
+    let button = super::panels::STASH_BUTTON;
+    let hovered = ui.cursor.is_some_and(|[x, y]| contains(button, x, y));
+    out.push(Draw::Image {
+        rect: button,
+        path: trim("assets/textures/icons/loot_stash.png"),
+        region: Some([if hovered { 27.0 } else { 0.0 }, 0.0, 27.0, 20.0]),
+        tint: WHITE,
+        slice: None,
+        flip_x: false,
+    });
     if stash > 0 {
         out.push(text(
-            [
-                rects.market_button[0],
-                rects.market_button[1] + 36.0,
-                40.0,
-                13.0,
-            ],
-            format!("stash {stash}"),
+            [button[0] + 12.0, button[1] + 8.0, 16.0, 13.0],
+            format!("{stash}"),
             palette(8),
-            Align::Center,
+            Align::Right,
         ));
     }
 
@@ -2173,7 +2169,7 @@ pub fn action_buttons(game: &mut Game, rects: &Rects) -> Vec<(R, Action, String,
             buttons.push((rects.learned[0], Action::Ability(1), String::new(), a1));
             buttons.push((rects.learned[1], Action::Ability(2), String::new(), a2));
         }
-        Room::Merchant => {
+        Room::Merchant | Room::MysticTrader => {
             buttons.push((rects.merchant_leave, Action::Primary, String::new(), true));
             let can = game.char_state(game.local()).diamonds > 0.0;
             buttons.push((
@@ -2292,14 +2288,20 @@ fn action_strip(
             Action::Primary if battle => {
                 (Some("assets/textures/icons/attack_icon.png".to_owned()), 5)
             }
-            Action::Primary if game.memory.room_type == Room::Merchant => {
+            Action::Primary
+                if matches!(game.memory.room_type, Room::Merchant | Room::MysticTrader) =>
+            {
                 (Some("assets/textures/ui/leave_icon.png".to_owned()), 4)
             }
             Action::Primary => (None, 5),
-            Action::EnemyExtra if game.memory.room_type == Room::Merchant => (
-                Some("assets/textures/icons/refresh_icon_small.png".to_owned()),
-                4,
-            ),
+            Action::EnemyExtra
+                if matches!(game.memory.room_type, Room::Merchant | Room::MysticTrader) =>
+            {
+                (
+                    Some("assets/textures/icons/refresh_icon_small.png".to_owned()),
+                    4,
+                )
+            }
             Action::Ability(i) => (ability_icons.get(i).cloned().flatten(), 4),
             Action::EnemyExtra => (None, 5),
         };
