@@ -341,8 +341,8 @@ fn stat_colour(game: &Game, id: StatId) -> Rgba {
 /// Display pieces -> rows. Stat references use their icon (left) and a
 /// steel-blue name when the stat has a description script, else the stat
 /// color, as `Stats.get_bb_container_data` does.
-fn rows_from_tip(game: &Game, tip: &crate::info_builders::Tip) -> Vec<TipRow> {
-    use crate::bb_scripts::{BbColor, BbPiece};
+fn rows_from_tip(game: &Game, tip: &megaloot_info::info_builders::Tip) -> Vec<TipRow> {
+    use megaloot_info::bb_scripts::{BbColor, BbPiece};
     let stats = &game.rules.stats;
     let color = |c: &BbColor| match c {
         BbColor::DarkGray => hex(0xa9a9a9),
@@ -512,8 +512,8 @@ fn rows_from_tip(game: &Game, tip: &crate::info_builders::Tip) -> Vec<TipRow> {
     out
 }
 
-fn tip_title(name: &str, color: &crate::info_builders::NameColor) -> TipRow {
-    use crate::info_builders::NameColor;
+fn tip_title(name: &str, color: &megaloot_info::info_builders::NameColor) -> TipRow {
+    use megaloot_info::info_builders::NameColor;
     let c = match color {
         NameColor::Rarity(r) => {
             let c = ItemRarity::font_color(*r).to_srgba();
@@ -527,10 +527,8 @@ fn tip_title(name: &str, color: &crate::info_builders::NameColor) -> TipRow {
 /// `Info.from_item` content for an item, rendered from the translated
 /// structure instead of a hand-written summary.
 pub(crate) fn item_tip(game: &Game, item: Entity) -> Option<TipView> {
-    use crate::{
-        info::ItemNameInput,
-        info_builders::{self as ib, BonusLine, ItemInput},
-    };
+    use megaloot_info::info::ItemNameInput;
+    use megaloot_info::info_builders::{self as ib, BonusLine, ItemInput};
     let value = game.world.get::<Item>(item)?;
     let def = value.resource.as_ref()?;
     let tr = |k: &str, kind: &str| translation::t(k, kind);
@@ -630,7 +628,7 @@ pub(crate) fn item_tip(game: &Game, item: Entity) -> Option<TipView> {
 
 /// `Info.from_enemy` content for the enemy in battle slot `entity`.
 pub(crate) fn enemy_tip(game: &Game, entity: Entity, show_extra: bool) -> Option<TipView> {
-    use crate::info_builders::{self as ib, EnemyInput, EnemyStat};
+    use megaloot_info::info_builders::{self as ib, EnemyInput, EnemyStat};
     let enemy = game.world.get::<Enemy>(entity)?;
     let def = enemy.definition.clone();
     let level = enemy.level;
@@ -785,8 +783,12 @@ fn set_property(id: &str) -> String {
 /// Resolve a translated-BB reference property against the loaded catalogs,
 /// in the source's search order (stats, statuses, abilities, ..., item sets,
 /// passives).
-fn lookup_piece(game: &Game, property: &str, is_value: bool) -> Option<crate::bb_scripts::BbPiece> {
-    use crate::bb_scripts::BbPiece;
+fn lookup_piece(
+    game: &Game,
+    property: &str,
+    is_value: bool,
+) -> Option<megaloot_info::bb_scripts::BbPiece> {
+    use megaloot_info::bb_scripts::BbPiece;
     let lower = property.to_lowercase();
     if let Some(id) = stat_from_key(&lower) {
         return Some(if is_value {
@@ -852,7 +854,11 @@ fn lookup_piece(game: &Game, property: &str, is_value: bool) -> Option<crate::bb
 }
 
 /// Translated description of `name` as display pieces.
-fn description_pieces(game: &Game, name: &str, kind: &str) -> Vec<crate::bb_scripts::BbPiece> {
+fn description_pieces(
+    game: &Game,
+    name: &str,
+    kind: &str,
+) -> Vec<megaloot_info::bb_scripts::BbPiece> {
     description_pieces_for(game, name, kind, None)
 }
 
@@ -863,19 +869,20 @@ fn description_pieces_for(
     name: &str,
     kind: &str,
     script: Option<&str>,
-) -> Vec<crate::bb_scripts::BbPiece> {
+) -> Vec<megaloot_info::bb_scripts::BbPiece> {
     let Some(raw) = translation::raw(name, kind) else {
         return vec![];
     };
-    let mut tokens = crate::info::parse_translated(&raw);
+    let mut tokens = megaloot_info::info::parse_translated(&raw);
     if let Some(script) = script {
-        let replacements: Vec<(String, String)> = crate::bb_scripts::constant_replacements(script)
-            .into_iter()
-            .map(|(a, b)| (a.to_owned(), b.to_owned()))
-            .collect();
-        crate::info::apply_replacements(&mut tokens, &replacements, &[]);
+        let replacements: Vec<(String, String)> =
+            megaloot_info::bb_scripts::constant_replacements(script)
+                .into_iter()
+                .map(|(a, b)| (a.to_owned(), b.to_owned()))
+                .collect();
+        megaloot_info::info::apply_replacements(&mut tokens, &replacements, &[]);
     }
-    crate::info::resolve_tokens(&tokens, &|p, v| lookup_piece(game, p, v))
+    megaloot_info::info::resolve_tokens(&tokens, &|p, v| lookup_piece(game, p, v))
 }
 
 /// `Info.from_status_effect_resource` for a status id.
@@ -886,7 +893,7 @@ pub(crate) fn status_tip(
     let policy = game.rules.status_policies.get(id);
     let description = description_pieces(game, &policy.name, "Status Effect Description");
     let kind = format!("{:?}", policy.kind);
-    let tip = crate::info_builders::status_effect(
+    let tip = megaloot_info::info_builders::status_effect(
         &policy.name,
         description,
         policy.limit,
@@ -906,7 +913,7 @@ pub(crate) fn status_tip(
 pub(crate) fn stat_tip(game: &Game, id: StatId) -> Option<TipView> {
     let def = game.rules.stats.get(id);
     let description = description_pieces(game, &def.name, "Stat Description");
-    let tip = crate::info_builders::stat_resource(
+    let tip = megaloot_info::info_builders::stat_resource(
         &def.name,
         description,
         def.max_amount,
@@ -942,8 +949,8 @@ pub(crate) fn ability_tip(game: &Game, slot: usize) -> Option<TipView> {
     let description =
         description_pieces_for(game, &def.name, "Ability Description", script.as_deref());
     let used = game.profile(local).used_ability_count(&def.id) as i32;
-    let result = crate::info_builders::ability(
-        &crate::info_builders::AbilityInput {
+    let result = megaloot_info::info_builders::ability(
+        &megaloot_info::info_builders::AbilityInput {
             name: &def.name,
             mana_cost: def.mana_cost,
             use_limit: def.use_limit,
@@ -1869,11 +1876,11 @@ mod tooltip_tests {
         let piece = lookup_piece(&game, "DODGE", false);
         assert_eq!(
             piece,
-            Some(crate::bb_scripts::BbPiece::Action("dodge".into()))
+            Some(megaloot_info::bb_scripts::BbPiece::Action("dodge".into()))
         );
-        let tip = crate::info_builders::Tip {
+        let tip = megaloot_info::info_builders::Tip {
             name: "x".into(),
-            name_color: crate::info_builders::NameColor::DarkGray,
+            name_color: megaloot_info::info_builders::NameColor::DarkGray,
             pieces: vec![(piece.unwrap(), 0.0)],
         };
         let rows = rows_from_tip(&game, &tip);

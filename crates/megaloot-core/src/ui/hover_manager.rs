@@ -1,7 +1,7 @@
 //! `hover_info_manager.gd` lifecycle: when tooltips are created, replaced,
 //! updated in place or removed. Mapping hovered nodes to tooltip content
 //! (`get_hovered_node`/`get_hover_info_data`, ~800 lines of per-widget
-//! dispatch) is not ported; the content builders live in `crate::info`.
+//! dispatch) is not ported; the content builders live in `megaloot_info::info`.
 
 pub type NodeId = u64;
 
