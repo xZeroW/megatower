@@ -240,6 +240,109 @@ fn socket_icon(rect: R, socket: megatower_core::items::definition::SocketType) -
     }
 }
 
+/// One `EffectContainer`: a 16x16 icon and, when it has one, its amount.
+fn push_effect(
+    out: &mut Vec<Draw>,
+    x: &mut f32,
+    y: f32,
+    icon: &str,
+    color: Rgba,
+    amount: Option<String>,
+) {
+    out.push(tinted([*x, y, 16.0, 16.0], icon, color));
+    *x += 16.0;
+    if let Some(amount) = amount {
+        out.push(text(
+            [*x + 3.0, y + 1.0, 36.0, 13.0],
+            amount.clone(),
+            color,
+            Align::Left,
+        ));
+        *x += 3.0 + amount.chars().count() as f32 * CHAR_W;
+    }
+    *x += EFFECT_SEPARATION;
+}
+
+const EFFECT_SEPARATION: f32 = 6.0;
+
+/// `UIManager.update_effect_containers`: item sets without a specialization,
+/// the active specializations, a spacer, the status effects that do not
+/// impact health, then the non-zero `Stats.MAIN_DISPLAY` stats.
+fn effect_row(
+    game: &Game,
+    local: Entity,
+    v: &megatower_core::run::events::VitalsView,
+    rects: &Rects,
+    out: &mut Vec<Draw>,
+) {
+    let content = &game.rules.content;
+    let sets = game.active_item_sets(local);
+    let specs = game.specializations(local);
+    let spec_defs: Vec<_> = specs
+        .iter()
+        .filter_map(|id| content.specializations.iter().find(|spec| &spec.id == id))
+        .collect();
+    let set_def = |id: &str| content.item_sets.iter().find(|set| set.id == id);
+    let (mut x, y) = (rects.effects_row[0], rects.effects_row[1]);
+    let end = rects.effects_row[0] + rects.effects_row[2];
+
+    for set in &sets {
+        let covered = spec_defs
+            .iter()
+            .any(|spec| spec.original_item_set.as_ref() == Some(set));
+        if let (false, Some(def)) = (covered, set_def(set)) {
+            if let Some(icon) = &def.icon {
+                push_effect(out, &mut x, y, icon, def.color, None);
+            }
+        }
+    }
+    for spec in &spec_defs {
+        let icon = spec
+            .original_item_set
+            .as_deref()
+            .and_then(set_def)
+            .and_then(|set| set.icon.as_deref());
+        if let (Some(icon), Ok(color)) = (icon, spec.color(&content.item_sets)) {
+            push_effect(out, &mut x, y, icon, color, None);
+        }
+    }
+    if !sets.is_empty() {
+        x += EFFECT_SEPARATION;
+    }
+    for status in &v.statuses {
+        let policy = game.rules.status_policies.get(status.resource);
+        if let Some(icon) = &policy.icon {
+            let amount = (status.amount > 1.0).then(|| number(status.amount));
+            push_effect(out, &mut x, y, icon, policy.color, amount);
+        }
+        if x > end - 30.0 {
+            return;
+        }
+    }
+    for id in [StatId::Agility, StatId::Faith] {
+        let amount = game.stat(local, id)[0];
+        let def = game.rules.stats.get(id);
+        if amount.abs() < 1e-9 {
+            continue;
+        }
+        let Some(icon) = &def.icon else { continue };
+        let color = if amount < 0.0 {
+            hex(0xff0049)
+        } else {
+            def.color
+        };
+        let suffix = if def.is_percentage { "%" } else { "" };
+        push_effect(
+            out,
+            &mut x,
+            y,
+            icon,
+            color,
+            Some(format!("{}{suffix}", number(amount))),
+        );
+    }
+}
+
 /// Which shop container the bottom-left row shows in the current room.
 pub fn market_container(game: &Game) -> Option<Entity> {
     use megatower_core::game_mode::Room;
@@ -1391,28 +1494,7 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
                 Align::Center,
             ));
         }
-        // Status effects row.
-        let mut x = rects.effects_row[0];
-        for status in &v.statuses {
-            let policy = game.rules.status_policies.get(status.resource);
-            if let Some(icon) = &policy.icon {
-                out.push(tinted(
-                    [x, rects.effects_row[1], 16.0, 16.0],
-                    icon,
-                    policy.color,
-                ));
-            }
-            out.push(text(
-                [x + 19.0, rects.effects_row[1] + 1.0, 24.0, 13.0],
-                number(status.amount),
-                policy.color,
-                Align::Left,
-            ));
-            x += 19.0 + number(status.amount).len() as f32 * CHAR_W + 8.0;
-            if x > rects.effects_row[0] + rects.effects_row[2] - 30.0 {
-                break;
-            }
-        }
+        effect_row(game, local, v, rects, &mut out);
     }
     // Floor / rooms header.
     let last = game.memory.game_mode.last_floor();
