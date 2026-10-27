@@ -42,7 +42,7 @@ fn publish_audio(
     if *cue != want {
         *cue = want;
     }
-    sfx.0.extend(ui.0.audio.drain(..));
+    sfx.0.append(&mut ui.0.audio);
     let options = &ui.0.options_ui.options;
     let want = AudioVolumes {
         music_db: options.music_volume_db,

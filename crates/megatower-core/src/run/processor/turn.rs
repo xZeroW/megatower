@@ -442,32 +442,27 @@ impl Game {
             self.complete_turn(player, turn_type);
             return;
         }
-        if player_passives.contains(&crate::run::game::passive_id("all_is_mine")) {
-            if let Some(target) = target {
-                let buffs: Vec<StatusEffect> = self.with_profile(target, |profile, policies| {
-                    profile
-                        .active_statuses(Some(StatusKind::Buff), policies)
-                        .into_iter()
-                        .cloned()
-                        .collect()
-                });
-                for buff in buffs {
-                    if let Some(resource) = buff.resource {
-                        self.try_to_apply_status_effect(
-                            player,
-                            Some(player),
-                            resource,
-                            buff.amount,
-                        );
-                    }
+        if player_passives.contains(&crate::run::game::passive_id("all_is_mine"))
+            && let Some(target) = target
+        {
+            let buffs: Vec<StatusEffect> = self.with_profile(target, |profile, policies| {
+                profile
+                    .active_statuses(Some(StatusKind::Buff), policies)
+                    .into_iter()
+                    .cloned()
+                    .collect()
+            });
+            for buff in buffs {
+                if let Some(resource) = buff.resource {
+                    self.try_to_apply_status_effect(player, Some(player), resource, buff.amount);
                 }
-                self.with_profile(target, |profile, policies| profile.remove_buffs(policies));
             }
+            self.with_profile(target, |profile, policies| profile.remove_buffs(policies));
         }
-        if player_passives.contains(&crate::run::game::passive_id("evil_mark")) {
-            if let Some(target) = target {
-                self.try_to_apply_status_effect(target, Some(player), Eff::Curse, 1.0);
-            }
+        if player_passives.contains(&crate::run::game::passive_id("evil_mark"))
+            && let Some(target) = target
+        {
+            self.try_to_apply_status_effect(target, Some(player), Eff::Curse, 1.0);
         }
         for character in characters {
             if !self.is_character(character) {
@@ -566,14 +561,13 @@ impl Game {
         let multi = self.has_status(player, Eff::MultiAttackCharge);
         let selected = self.selected_enemy();
         let mut targets = Vec::new();
-        if let Some(selected) = selected {
-            if self
+        if let Some(selected) = selected
+            && self
                 .world
                 .get::<Enemy>(selected)
                 .is_some_and(|e| !e.out_of_combat)
-            {
-                targets.push(selected);
-            }
+        {
+            targets.push(selected);
         }
         if multi {
             targets = self.enemies_in_combat_vec();

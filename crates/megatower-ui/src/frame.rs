@@ -273,69 +273,9 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
                 origin: [enemy_cx(&frame, enemy_idx) + jitter, 190.0 + jitter / 2.0],
             });
         }
-        Fx::PlayerAttack { enemy_idx } | Fx::EnemyDodge { enemy_idx } => {
-            ui.enemy_hit[enemy_idx.min(2)] = now
-        }
-        Fx::Impact {
-            enemy_idx,
-            damage_type,
-        } => {
-            use megatower_core::stats::StatId;
-            let kind = match damage_type {
-                Some(StatId::PhysicalDamage) => VfxKind::PhysicalImpact,
-                Some(StatId::MagicDamage) => VfxKind::MagicImpact,
-                _ => return,
-            };
-            let frame = ui.timeline.frame.clone().unwrap_or_else(|| game.frame());
-            let seed = ui.vfx.len() as u32 + (now * 1000.0) as u32;
-            ui.vfx.push(LiveVfx {
-                kind,
-                at: now,
-                cx: enemy_cx(&frame, enemy_idx),
-                seed,
-                color: [1.0; 4],
-            });
-        }
-        Fx::DeathParticles { enemy_idx } => {
-            let frame = ui.timeline.frame.clone().unwrap_or_else(|| game.frame());
-            ui.vfx.push(LiveVfx {
-                kind: VfxKind::DeathDust,
-                at: now,
-                cx: enemy_cx(&frame, enemy_idx),
-                seed: enemy_idx as u32 + (now * 1000.0) as u32,
-                color: [1.0; 4],
-            });
-        }
-        Fx::AbilityCast { enemy_idx, color } => {
-            let frame = ui.timeline.frame.clone().unwrap_or_else(|| game.frame());
-            ui.vfx.push(LiveVfx {
-                kind: VfxKind::AbilityCast,
-                at: now,
-                cx: enemy_cx(&frame, enemy_idx),
-                seed: enemy_idx as u32 + (now * 1000.0) as u32,
-                color,
-            });
-        }
-        Fx::CinderParticles { enemy_idx } => {
-            let frame = ui.timeline.frame.clone().unwrap_or_else(|| game.frame());
-            ui.vfx.push(LiveVfx {
-                kind: VfxKind::Cinder,
-                at: now,
-                cx: enemy_cx(&frame, enemy_idx),
-                seed: enemy_idx as u32 + (now * 1000.0) as u32,
-                color: [1.0; 4],
-            });
-        }
-        Fx::HeartParticles => {
-            let frame = ui.timeline.frame.clone().unwrap_or_else(|| game.frame());
-            ui.vfx.push(LiveVfx {
-                kind: VfxKind::Hearts,
-                at: now,
-                cx: enemy_cx(&frame, 0),
-                seed: (now * 1000.0) as u32,
-                color: [1.0; 4],
-            });
-        }
+        Fx::PlayerAttack { enemy_idx } => ui.enemy_hit[enemy_idx.min(2)] = now,
+        Fx::EnemyDodge { enemy_idx } => ui.enemy_dodge[enemy_idx.min(2)] = now,
+        Fx::EnemyAttack { enemy_idx } => ui.enemy_lunge[enemy_idx.min(2)] = now,
         Fx::ScreenFlash(kind) => ui.flash = Some((kind, now)),
         Fx::CameraShake => {
             if ui.options_ui.options.screen_shake {

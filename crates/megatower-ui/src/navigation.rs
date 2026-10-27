@@ -110,10 +110,10 @@ pub fn select_next(
                 -1 if initial.min.y >= cand.rect.min.y => continue,
                 _ => {}
             }
-            if let Some(clip) = cand.scroll_clip {
-                if !intersects(clip, cand.rect) {
-                    continue;
-                }
+            if let Some(clip) = cand.scroll_clip
+                && !intersects(clip, cand.rect)
+            {
+                continue;
             }
             let new_distance = d.length();
             let mut override_closest = false;

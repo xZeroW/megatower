@@ -134,7 +134,7 @@ pub fn slot_highlight_color_type(highlighted: bool) -> megatower_core::records::
 }
 
 /// `EquipmentSlotPreview.update_texture`.
-pub fn preview_texture<'a>(socket_texture: &'a str, locked: bool) -> &'a str {
+pub fn preview_texture(socket_texture: &str, locked: bool) -> &str {
     if locked {
         "assets/textures/ui/equipment_lock.png"
     } else {

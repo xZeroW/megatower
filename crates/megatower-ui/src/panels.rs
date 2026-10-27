@@ -83,24 +83,24 @@ pub fn drop_targets(game: &Game, ui: &UiState) -> Vec<(R, DropAction, String, bo
             true,
         ));
     }
-    if game.memory.room_type == Room::Merchant && player.merchant_level > 0 {
-        if let Some(value) = game.world.get::<Item>(item) {
-            if value.can_upgrade(&game.rules.stats) || value.can_convert_into_tinker_kit() {
-                let price = value.tinker_price();
-                let can = game.can_pay(price.currency.unwrap_or(StatId::Diamond), price.amount);
-                let verb = if value.can_upgrade(&game.rules.stats) {
-                    "UPGRADE"
-                } else {
-                    "CONVERT"
-                };
-                targets.push((
-                    [181.0, 310.0, 53.0, 34.0],
-                    DropAction::Tinker,
-                    format!("{verb} {}", price.amount as i64),
-                    can,
-                ));
-            }
-        }
+    if game.memory.room_type == Room::Merchant
+        && player.merchant_level > 0
+        && let Some(value) = game.world.get::<Item>(item)
+        && (value.can_upgrade(&game.rules.stats) || value.can_convert_into_tinker_kit())
+    {
+        let price = value.tinker_price();
+        let can = game.can_pay(price.currency.unwrap_or(StatId::Diamond), price.amount);
+        let verb = if value.can_upgrade(&game.rules.stats) {
+            "UPGRADE"
+        } else {
+            "CONVERT"
+        };
+        targets.push((
+            [181.0, 310.0, 53.0, 34.0],
+            DropAction::Tinker,
+            format!("{verb} {}", price.amount as i64),
+            can,
+        ));
     }
     targets
 }

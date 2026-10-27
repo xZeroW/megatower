@@ -202,16 +202,16 @@ fn processor_status_order_snapshots_and_rng_match_recovered_methods() {
                 mutate_profile(&mut world, actors[0], |p| {
                     p.active_item_sets = vec![set("unchained"), set("unchained")]
                 });
-                if case.mode == 8 {
-                    if let Some(resource) = case.resource {
-                        let limit = rules.status_policies.get(resource).limit;
-                        mutate_profile(&mut world, actors[2], |p| {
-                            p.active_status_effects.push(effect(
-                                resource,
-                                if limit == -1 { 1.0 } else { f64::from(limit) },
-                            ))
-                        });
-                    }
+                if case.mode == 8
+                    && let Some(resource) = case.resource
+                {
+                    let limit = rules.status_policies.get(resource).limit;
+                    mutate_profile(&mut world, actors[2], |p| {
+                        p.active_status_effects.push(effect(
+                            resource,
+                            if limit == -1 { 1.0 } else { f64::from(limit) },
+                        ))
+                    });
                 }
             }
             10 => mutate_profile(&mut world, target, |p| {

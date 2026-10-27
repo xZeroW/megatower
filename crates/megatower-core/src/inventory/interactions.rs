@@ -36,10 +36,10 @@ pub fn matches_socket(world: &World, a: &Slot, b: &Slot) -> bool {
         if let Some(incoming) = incoming {
             let socket =
                 array_index(slot.index, value.sockets.len()).and_then(|index| value.sockets[index]);
-            if let Some(socket) = socket {
-                if incoming.resource.as_ref().and_then(|def| def.socket_type) != Some(socket) {
-                    return false;
-                }
+            if let Some(socket) = socket
+                && incoming.resource.as_ref().and_then(|def| def.socket_type) != Some(socket)
+            {
+                return false;
             }
         }
     }

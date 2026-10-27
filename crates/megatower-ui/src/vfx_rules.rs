@@ -192,7 +192,9 @@ pub fn shard_points(
 /// (`i+2, i+1, i`).
 pub fn shard_triangles(points: &[V2], indices: &[usize]) -> Vec<[V2; 3]> {
     indices
-        .chunks_exact(3)
+        .as_chunks::<3>()
+        .0
+        .iter()
         .map(|c| [points[c[2]], points[c[1]], points[c[0]]])
         .collect()
 }

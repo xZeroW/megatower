@@ -228,24 +228,32 @@ impl Game {
         self.has_status(e, Eff::Invulnerability)
     }
     pub fn missing_health(&self, e: Entity) -> f64 {
-        self.is_character(e)
-            .then(|| self.state(e).missing_health())
-            .unwrap_or(0.0)
+        if self.is_character(e) {
+            self.state(e).missing_health()
+        } else {
+            0.0
+        }
     }
     pub fn missing_mana(&self, e: Entity) -> i64 {
-        self.is_character(e)
-            .then(|| self.state(e).missing_mana())
-            .unwrap_or(0)
+        if self.is_character(e) {
+            self.state(e).missing_mana()
+        } else {
+            0
+        }
     }
     pub fn missing_armor(&self, e: Entity) -> f64 {
-        self.is_character(e)
-            .then(|| self.state(e).missing_armor())
-            .unwrap_or(0.0)
+        if self.is_character(e) {
+            self.state(e).missing_armor()
+        } else {
+            0.0
+        }
     }
     pub fn mana(&self, e: Entity) -> i64 {
-        self.is_character(e)
-            .then(|| self.state(e).mana())
-            .unwrap_or(0)
+        if self.is_character(e) {
+            self.state(e).mana()
+        } else {
+            0
+        }
     }
 
     // ---- CharacterManager ----

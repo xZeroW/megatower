@@ -74,17 +74,14 @@ impl Game {
                         1.0
                     }
                 }
-                (Category::Passive, "faded_discipline") => {
+                (Category::Passive, "faded_discipline")
                     if source == DamageSource::Attack
                         && self
                             .profile_mut(script.owner)
                             .with_current_turn(|t| t.attacks)
-                            <= 5
-                    {
-                        0.01
-                    } else {
-                        1.0
-                    }
+                            <= 5 =>
+                {
+                    0.01
                 }
                 _ => 1.0,
             };
@@ -121,17 +118,16 @@ impl Game {
             if script.name != "mimicry" || !self.is_player(script.owner) {
                 continue;
             }
-            if let Some(selected) = self.selected_enemy() {
-                if let Some(resource) = self
+            if let Some(selected) = self.selected_enemy()
+                && let Some(resource) = self
                     .world
                     .get::<Enemy>(selected)
                     .and_then(|e| e.ability().map(str::to_owned))
-                {
-                    abilities.push(Ability {
-                        resource,
-                        mimicked: true,
-                    });
-                }
+            {
+                abilities.push(Ability {
+                    resource,
+                    mimicked: true,
+                });
             }
         }
         abilities
@@ -311,7 +307,7 @@ impl Game {
                 {
                     self.try_to_apply_status_effect(owner, Some(owner), status, 1.0);
                 }
-                if self.turn_size(owner) % 2 == 0 {
+                if self.turn_size(owner).is_multiple_of(2) {
                     let mut strongest: Option<Entity> = None;
                     let mut damage = 0.0;
                     for enemy in self.enemies_in_combat_vec() {
@@ -368,19 +364,17 @@ impl Game {
                     target = Some(enemy);
                     break;
                 }
-                if let Some(target) = target {
-                    if self.try_to_apply_status_effect(target, Some(owner), Eff::Silence, 1.0) {
-                        self.wait_battle(0.45);
-                    }
+                if let Some(target) = target
+                    && self.try_to_apply_status_effect(target, Some(owner), Eff::Silence, 1.0)
+                {
+                    self.wait_battle(0.45);
                 }
             }
             (Category::Passive, "vengeful_edge") => {
                 self.connect(Signal::CounterAttacked, Some(owner), script, 0)
             }
-            (Category::Passive, "warriors_resolute") => {
-                if self.turn_size(owner) <= 3 {
-                    self.try_to_apply_status_effect(owner, Some(owner), Eff::Clarity, 1.0);
-                }
+            (Category::Passive, "warriors_resolute") if self.turn_size(owner) <= 3 => {
+                self.try_to_apply_status_effect(owner, Some(owner), Eff::Clarity, 1.0);
             }
             _ => {}
         }
@@ -676,25 +670,24 @@ impl Game {
                 }
             }
             (Category::Passive, "critical_focus", _) => {
-                if let Some(data) = args.damage_data.as_deref_mut() {
-                    if data.is_crit {
-                        data.accuracy += 25.0;
-                    }
+                if let Some(data) = args.damage_data.as_deref_mut()
+                    && data.is_crit
+                {
+                    data.accuracy += 25.0;
                 }
             }
             (Category::Passive, "edge_of_the_ruined", _) => {
                 let cursed =
                     self.has_status(owner, Eff::BlackCurse) || self.has_status(owner, Eff::Curse);
-                if cursed {
-                    if let (Some(target), Some(data)) =
+                if cursed
+                    && let (Some(target), Some(data)) =
                         (args.entity, args.damage_data.as_deref_mut())
-                    {
-                        data.damage += self
-                            .world
-                            .get::<crate::character::runtime::CharacterStats>(target)
-                            .map_or(0.0, |s| s.health())
-                            * 0.11;
-                    }
+                {
+                    data.damage += self
+                        .world
+                        .get::<crate::character::runtime::CharacterStats>(target)
+                        .map_or(0.0, |s| s.health())
+                        * 0.11;
                 }
             }
             (Category::Passive, "growing_anger", _) => {
@@ -750,12 +743,10 @@ impl Game {
                 );
             }
             (Category::Passive, "strike_of_destiny", _) => {
-                if self.has_status(owner, Eff::Invulnerability) {
-                    if let Some(target) = args.entity {
-                        self.with_profile(target, |profile, policies| {
-                            profile.remove_buffs(policies)
-                        });
-                    }
+                if self.has_status(owner, Eff::Invulnerability)
+                    && let Some(target) = args.entity
+                {
+                    self.with_profile(target, |profile, policies| profile.remove_buffs(policies));
                 }
             }
             (Category::Passive, "vengeful_edge", _) => {
@@ -974,10 +965,10 @@ impl Game {
                 self.wait_battle(0.25);
             }
             "spell_bind" => {
-                if let Some(target) = self.spell_bind_target(character) {
-                    if self.try_to_apply_status_effect(target, Some(character), Eff::Silence, 1.0) {
-                        self.wait_battle(0.45);
-                    }
+                if let Some(target) = self.spell_bind_target(character)
+                    && self.try_to_apply_status_effect(target, Some(character), Eff::Silence, 1.0)
+                {
+                    self.wait_battle(0.45);
                 }
             }
             "steady_grip" => {
@@ -1085,11 +1076,10 @@ impl Game {
                 }
             }
             "galefire" => {
-                if let Some(target) = target_of(self) {
-                    if self.try_to_apply_status_effect(target, Some(character), Eff::Slowness, 1.0)
-                    {
-                        self.wait_battle(0.75);
-                    }
+                if let Some(target) = target_of(self)
+                    && self.try_to_apply_status_effect(target, Some(character), Eff::Slowness, 1.0)
+                {
+                    self.wait_battle(0.75);
                 }
             }
             "safeguard" => self.apply_safeguard(character, group),

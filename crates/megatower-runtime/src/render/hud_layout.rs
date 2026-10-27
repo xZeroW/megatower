@@ -45,10 +45,11 @@ fn image_node(assets: &AssetServer, visual: &Visual, texture: &str) -> ImageNode
         image.color = Color::srgb(0.341_176, 0.270_588, 0.192_157);
     }
     image.image_mode = NodeImageMode::Stretch;
-    if let Some([rx, ry, rw, rh]) = visual.region {
-        if rw > 0.0 && rh > 0.0 {
-            image.rect = Some(Rect::new(rx, ry, rx + rw, ry + rh));
-        }
+    if let Some([rx, ry, rw, rh]) = visual.region
+        && rw > 0.0
+        && rh > 0.0
+    {
+        image.rect = Some(Rect::new(rx, ry, rx + rw, ry + rh));
     }
     if let Some([left, top, right, bottom]) = visual.margins {
         image.image_mode = NodeImageMode::Sliced(TextureSlicer {

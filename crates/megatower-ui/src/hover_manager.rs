@@ -118,12 +118,12 @@ pub fn creation_blocked(
 
 /// `process_hovered_node` decision order.
 pub fn decide(tips: &[Tip], hovered: Option<NodeId>, update_requested: bool) -> Action {
-    if update_requested && is_dynamic(tips, hovered) {
-        if let Some(first) = tips.first() {
-            if first.data_valid {
-                return Action::UpdateInPlace;
-            }
-        }
+    if update_requested
+        && is_dynamic(tips, hovered)
+        && let Some(first) = tips.first()
+        && first.data_valid
+    {
+        return Action::UpdateInPlace;
     }
     if !working(tips) {
         return Action::Create;
@@ -162,9 +162,15 @@ mod tests {
         assert_eq!(decide(&[], Some(1), false), Action::Create);
         // tooltip locking on its own owner stays
         let t = tip(1, 0.5);
-        assert_eq!(decide(&[t.clone()], Some(1), false), Action::Nothing);
+        assert_eq!(
+            decide(std::slice::from_ref(&t), Some(1), false),
+            Action::Nothing
+        );
         // hovering something else while the first is still locked replaces it
-        assert_eq!(decide(&[t.clone()], Some(2), false), Action::ClearAll);
+        assert_eq!(
+            decide(std::slice::from_ref(&t), Some(2), false),
+            Action::ClearAll
+        );
         // no hovered node clears everything
         assert_eq!(decide(&[t], None, false), Action::ClearAll);
         // unlocked tooltip whose owner is still hovered keeps it

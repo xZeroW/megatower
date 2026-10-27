@@ -251,19 +251,25 @@ impl Game {
     }
 
     pub fn health(&self, e: Entity) -> f64 {
-        self.is_character(e)
-            .then(|| self.state(e).health())
-            .unwrap_or(0.0)
+        if self.is_character(e) {
+            self.state(e).health()
+        } else {
+            0.0
+        }
     }
     pub fn max_health(&self, e: Entity) -> f64 {
-        self.is_character(e)
-            .then(|| self.state(e).max_health())
-            .unwrap_or(1.0)
+        if self.is_character(e) {
+            self.state(e).max_health()
+        } else {
+            1.0
+        }
     }
     pub fn health_percent(&self, e: Entity) -> f64 {
-        self.is_character(e)
-            .then(|| self.state(e).health_percent())
-            .unwrap_or(0.0)
+        if self.is_character(e) {
+            self.state(e).health_percent()
+        } else {
+            0.0
+        }
     }
     pub fn turn_size(&self, e: Entity) -> usize {
         if !self.is_character(e) {

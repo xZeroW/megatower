@@ -206,15 +206,15 @@ impl Game {
             return;
         };
         let attacker = self.valid(attacker);
-        if data.source == DamageSource::Attack {
-            if let Some(attacker) = attacker {
-                let mut args = Args {
-                    entity: Some(target),
-                    damage_data: Some(&mut data),
-                    ..Default::default()
-                };
-                self.emit(Signal::AboutToAttack, Some(attacker), &mut args);
-            }
+        if data.source == DamageSource::Attack
+            && let Some(attacker) = attacker
+        {
+            let mut args = Args {
+                entity: Some(target),
+                damage_data: Some(&mut data),
+                ..Default::default()
+            };
+            self.emit(Signal::AboutToAttack, Some(attacker), &mut args);
         }
         {
             let mut args = Args {
@@ -370,16 +370,16 @@ impl Game {
                     }
                     if data.damage_type == Some(StatId::PoisonDamage) {
                         let battling = self.memory.battle.as_ref().and_then(|b| b.battling_player);
-                        if let Some(player) = battling.filter(|p| *p != target) {
-                            if has(&battling_passives, "passives", "toxshield") {
-                                let toxicity = self.stat(player, StatId::Toxicity)[0];
-                                self.try_to_apply_status_effect(
-                                    player,
-                                    Some(player),
-                                    Eff::EphemeralArmor,
-                                    toxicity,
-                                );
-                            }
+                        if let Some(player) = battling.filter(|p| *p != target)
+                            && has(&battling_passives, "passives", "toxshield")
+                        {
+                            let toxicity = self.stat(player, StatId::Toxicity)[0];
+                            self.try_to_apply_status_effect(
+                                player,
+                                Some(player),
+                                Eff::EphemeralArmor,
+                                toxicity,
+                            );
                         }
                     }
                     if has(&attacker_passives, "passives", "shatterwave")
@@ -971,14 +971,14 @@ impl Game {
                     return;
                 }
             }
-            if has(&target_specs, "specializations", "nighthrust") {
-                if let Some(attack_type) = result.damage_type.and_then(StatId::attack_type) {
-                    self.add_temp_stat(
-                        target,
-                        &BonusStat::new(attack_type, result.initial_damage, false),
-                        false,
-                    );
-                }
+            if has(&target_specs, "specializations", "nighthrust")
+                && let Some(attack_type) = result.damage_type.and_then(StatId::attack_type)
+            {
+                self.add_temp_stat(
+                    target,
+                    &BonusStat::new(attack_type, result.initial_damage, false),
+                    false,
+                );
             }
         }
         let mut can_parry = result.result_type == Some(BattleActionId::Parry);
@@ -1015,15 +1015,15 @@ impl Game {
             }
             let mut applied = false;
             for effect in std::mem::take(&mut on_hit) {
-                if let Some(resource) = effect.resource {
-                    if self.try_to_apply_status_effect(
+                if let Some(resource) = effect.resource
+                    && self.try_to_apply_status_effect(
                         attacker,
                         Some(target),
                         resource,
                         effect.amount,
-                    ) {
-                        applied = true;
-                    }
+                    )
+                {
+                    applied = true;
                 }
             }
             if applied {
@@ -1209,28 +1209,28 @@ impl Game {
             attacker_sets = self.active_item_sets(attacker);
             attacker_passives = self.passives(attacker);
         }
-        if self.has_status(target, Eff::Freeze) {
-            if let Some(attacker) = attacker {
-                if attacker_sets.contains(&crate::run::game::set_id("ancient_ice"))
-                    && result.damage_type == Some(StatId::FreezeDamage)
-                {
-                    self.try_to_apply_status_effect(
-                        attacker,
-                        Some(attacker),
-                        Eff::EphemeralArmor,
-                        result.uncapped_total_damage,
-                    );
-                }
-                if attacker_passives.contains(&crate::run::game::passive_id("magical_frostflare"))
-                    && result.damage_type == Some(StatId::MagicDamage)
-                {
-                    self.try_to_apply_status_effect(
-                        attacker,
-                        Some(attacker),
-                        Eff::EphemeralArmor,
-                        result.uncapped_total_damage,
-                    );
-                }
+        if self.has_status(target, Eff::Freeze)
+            && let Some(attacker) = attacker
+        {
+            if attacker_sets.contains(&crate::run::game::set_id("ancient_ice"))
+                && result.damage_type == Some(StatId::FreezeDamage)
+            {
+                self.try_to_apply_status_effect(
+                    attacker,
+                    Some(attacker),
+                    Eff::EphemeralArmor,
+                    result.uncapped_total_damage,
+                );
+            }
+            if attacker_passives.contains(&crate::run::game::passive_id("magical_frostflare"))
+                && result.damage_type == Some(StatId::MagicDamage)
+            {
+                self.try_to_apply_status_effect(
+                    attacker,
+                    Some(attacker),
+                    Eff::EphemeralArmor,
+                    result.uncapped_total_damage,
+                );
             }
         }
         if result.armor_removed != 0.0 {
@@ -1402,10 +1402,10 @@ impl Game {
         if self.char_state(source).died {
             return;
         }
-        if let Some(enemy) = self.world.get::<Enemy>(source) {
-            if enemy.out_of_combat {
-                return;
-            }
+        if let Some(enemy) = self.world.get::<Enemy>(source)
+            && enemy.out_of_combat
+        {
+            return;
         }
         let cinder = self.stat(source, StatId::CinderDamage);
         let mut damage = stats::multiply(self.max_health(source), 25.0) + cinder[1];

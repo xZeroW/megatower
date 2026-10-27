@@ -62,10 +62,10 @@ pub fn leaderboard_url(
 /// `get_adventurer_name_from_id`.
 pub fn adventurer_name_from_id(game_variables: &[Value], id: &str) -> String {
     for v in game_variables {
-        if v["name"] == "Adventurer" {
-            if let Some(name) = v["values"]["choices"].get(id) {
-                return name.as_str().unwrap_or("").to_string();
-            }
+        if v["name"] == "Adventurer"
+            && let Some(name) = v["values"]["choices"].get(id)
+        {
+            return name.as_str().unwrap_or("").to_string();
         }
     }
     String::new()

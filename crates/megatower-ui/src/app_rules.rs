@@ -220,7 +220,7 @@ mod tests {
             toggle_options(true, true, false, false, false),
             (false, true, None)
         );
-        assert_eq!(toggle_options(false, true, true, true, false).1, false);
+        assert!(!toggle_options(false, true, true, true, false).1);
         assert_eq!(
             toggle_options(false, false, false, false, true).2,
             Some(true)
@@ -228,7 +228,7 @@ mod tests {
         assert!(restart_disabled(false, 1));
         let g = game_end(Some(0), 0, false, 20, 20);
         assert_eq!((g.show_win_result, g.show_final_floor), (Some(true), true));
-        assert_eq!(game_end(None, 0, true, 99, 20).show_final_floor, false);
+        assert!(!game_end(None, 0, true, 99, 20).show_final_floor);
         assert_eq!(resolution_key((640, 360)), "(640, 360)");
         assert!(screen_changed(0, 1));
     }

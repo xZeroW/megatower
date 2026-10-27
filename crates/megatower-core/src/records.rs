@@ -26,23 +26,21 @@ pub enum GlobalColorType {
 impl GlobalColorType {
     pub fn from_index(idx: i32) -> Option<Self> {
         use GlobalColorType::*;
-        Some(
-            [
-                Custom,
-                Background,
-                Border,
-                DarkerBorder,
-                Primary,
-                Secondary,
-                Accent,
-                DarkerAccent,
-                Highlight,
-                Positive,
-                Error,
-            ]
-            .get(usize::try_from(idx).ok()?)
-            .copied()?,
-        )
+        [
+            Custom,
+            Background,
+            Border,
+            DarkerBorder,
+            Primary,
+            Secondary,
+            Accent,
+            DarkerAccent,
+            Highlight,
+            Positive,
+            Error,
+        ]
+        .get(usize::try_from(idx).ok()?)
+        .copied()
     }
 }
 

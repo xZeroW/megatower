@@ -1,6 +1,6 @@
 //! `stat_label_container.gd` state independent of Godot controls.
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Default)]
 pub struct StatLabelView {
     pub name: String,
     pub is_percent: bool,
@@ -15,16 +15,6 @@ impl StatLabelView {
     }
     pub fn process(&mut self, multiplier_value: f64) {
         self.multiplier_visible = multiplier_value != 0.0
-    }
-}
-impl Default for StatLabelView {
-    fn default() -> Self {
-        Self {
-            name: String::new(),
-            is_percent: false,
-            icon_path: None,
-            multiplier_visible: false,
-        }
     }
 }
 #[cfg(test)]

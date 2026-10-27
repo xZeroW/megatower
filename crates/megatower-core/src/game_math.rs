@@ -83,7 +83,7 @@ pub fn rect_distance(a: Rect, b: Rect) -> DVec2 {
 }
 
 pub fn log_10(value: f64) -> f64 {
-    value.ln() * 0.4342944819032518
+    value.ln() * std::f64::consts::LOG10_E
 }
 
 /// `sample` is the next source-compatible RNG `randf()` result in [0, 1].

@@ -324,7 +324,7 @@ pub fn apply_status_effect_host<H: StatusHost>(
             {
                 let world = host.parts().0;
                 let turns = if count(world, applier, "thunder")? >= 3 {
-                    (2 - 1) * 2
+                    2
                 } else {
                     2
                 };

@@ -22,10 +22,10 @@ pub(super) fn profile_frame(
             ui.reward_scroll = 0.0;
             ui.popup_tab = screens::POPUP_OVERVIEW;
         }
-        if let (true, Some([x, y])) = (click, ui.cursor) {
-            if let Some(tab) = screens::popup_tab_hit(&popup, x, y) {
-                ui.popup_tab = tab;
-            }
+        if let (true, Some([x, y])) = (click, ui.cursor)
+            && let Some(tab) = screens::popup_tab_hit(&popup, x, y)
+        {
+            ui.popup_tab = tab;
         }
         let mut draws = screens::profile_draws(&layout, entries);
         if ui.popup_tab == screens::POPUP_SPEEDRUNS {
@@ -43,12 +43,12 @@ pub(super) fn profile_frame(
         }
         return Some(draws);
     }
-    if let (true, Some([x, y])) = (click, ui.cursor) {
-        if let Some(i) = screens::profile_hit(&layout, entries.len(), x, y) {
-            ui.profile_popup = Some(i);
-            ui.reward_scroll = 0.0;
-            return Some(screens::profile_draws(&layout, entries));
-        }
+    if let (true, Some([x, y])) = (click, ui.cursor)
+        && let Some(i) = screens::profile_hit(&layout, entries.len(), x, y)
+    {
+        ui.profile_popup = Some(i);
+        ui.reward_scroll = 0.0;
+        return Some(screens::profile_draws(&layout, entries));
     }
     let back = matches!((click, ui.cursor), (true, Some([x, y])) if screens::profile_back_hit(&layout, x, y));
     if back || keys.just_pressed(KeyCode::Escape) {
@@ -181,10 +181,10 @@ pub(super) fn esc_frame(
         ui.esc_open = false;
         return None;
     }
-    if keys.just_pressed(KeyCode::Escape) {
-        if let Some((esc, _)) = crate::app_rules::toggle_esc_menu(true, false, false, ui.esc_open) {
-            ui.esc_open = esc;
-        }
+    if keys.just_pressed(KeyCode::Escape)
+        && let Some((esc, _)) = crate::app_rules::toggle_esc_menu(true, false, false, ui.esc_open)
+    {
+        ui.esc_open = esc;
     }
     if !ui.esc_open {
         return None;

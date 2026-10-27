@@ -450,8 +450,8 @@ mod tests {
             toggle_step(false, false, true, true),
             (true, true, 1.0, true)
         );
-        assert_eq!(toggle_step(false, false, true, false).1, false);
-        assert_eq!(toggle_step(true, true, true, true).0, true);
+        assert!(!toggle_step(false, false, true, false).1);
+        assert!(toggle_step(true, true, true, true).0);
         let s = Slider {
             min_value: 0.0,
             max_value: 100.0,

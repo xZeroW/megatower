@@ -280,14 +280,13 @@ mod tests {
             rect_height: 40.0,
         };
         assert_eq!(b.update_size(), (Some(48.0), true));
-        assert_eq!(
-            VScrollBar {
+        assert!(
+            !VScrollBar {
                 max_size: 100.0,
                 ..b
             }
             .update_size()
-            .1,
-            false
+            .1
         );
         assert_eq!(b.max_pos(), 56);
         assert_eq!(b.scroll(2.0), 0.0);

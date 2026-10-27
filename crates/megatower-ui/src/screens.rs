@@ -383,10 +383,11 @@ pub fn options_draws(layout: &Layout) -> Vec<Draw> {
         .iter()
         .cloned()
         .map(|mut v| {
-            if v.kind == "Label" && v.path.ends_with("/KeyLabel") {
-                if let Some((_, key)) = OPTION_KEYS.iter().find(|(n, _)| v.path.contains(n)) {
-                    v.text = Some((*key).to_owned());
-                }
+            if v.kind == "Label"
+                && v.path.ends_with("/KeyLabel")
+                && let Some((_, key)) = OPTION_KEYS.iter().find(|(n, _)| v.path.contains(n))
+            {
+                v.text = Some((*key).to_owned());
             }
             v
         })
@@ -769,10 +770,8 @@ pub fn popup_close_hit(layout: &Layout, x: f32, y: f32) -> bool {
 pub fn reward_scroll_step(scroll: f32, cursor: Option<[f32; 2]>) -> f32 {
     let max = (REWARD_COUNT as f32 * REWARD_PITCH - 4.0 - REWARD_CLIP[2]).max(0.0);
     let Some([x, y]) = cursor else { return scroll };
-    let inside = x >= REWARD_CLIP[0]
-        && x < REWARD_CLIP[0] + REWARD_CLIP[2]
-        && y >= REWARD_CLIP[1]
-        && y < REWARD_CLIP[1] + REWARD_CLIP[3];
+    let inside = (REWARD_CLIP[0]..REWARD_CLIP[0] + REWARD_CLIP[2]).contains(&x)
+        && (REWARD_CLIP[1]..REWARD_CLIP[1] + REWARD_CLIP[3]).contains(&y);
     if !inside {
         return scroll;
     }
@@ -911,10 +910,10 @@ pub fn profile_popup_draws(
             if locked {
                 // `show_as_locked`: the borders take the BORDER_COLOR tint.
                 for d in &mut out[start..] {
-                    if let Draw::Image { tint, path, .. } = d {
-                        if path.contains("portrait") || path.contains("border") {
-                            *tint = palette(2);
-                        }
+                    if let Draw::Image { tint, path, .. } = d
+                        && (path.contains("portrait") || path.contains("border"))
+                    {
+                        *tint = palette(2);
                     }
                 }
             }

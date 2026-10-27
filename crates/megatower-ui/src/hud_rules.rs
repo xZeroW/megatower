@@ -321,7 +321,7 @@ mod tests {
     #[test]
     fn hud_values() {
         assert_eq!(mana_bar(5, 3, 1.0), (true, 50, 20, "health_bar_holder"));
-        assert_eq!(mana_bar(0, 0, 0.0).0, false);
+        assert!(!mana_bar(0, 0, 0.0).0);
         assert_eq!(currency_target(true, 99.0), -1.0);
         assert_eq!(turn_label(false, 1, "Turn {turn-number}", None), None);
         assert_eq!(
@@ -339,7 +339,7 @@ mod tests {
         assert_eq!(enemy_shield(true, true), (true, Some(SHIELD_INVULNERABLE)));
         assert_eq!(enemy_shield(false, false), (false, None));
         assert_eq!(enemy_armor(3.0, 4.0, true), (true, SHIELD_MAGIC, 4.0, 5.0));
-        assert_eq!(enemy_armor(0.0, 0.0, false).0, false);
+        assert!(!enemy_armor(0.0, 0.0, false).0);
         assert_eq!(enemy_mana(2, 1), (true, 20, 10));
         let (lvl, glow) = elite_glow(3);
         assert_eq!(lvl, 3);

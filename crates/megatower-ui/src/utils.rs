@@ -197,7 +197,7 @@ mod tests {
     #[test]
     fn bounds_keep_source_axis_naming() {
         let mut alpha = vec![0u8; 5 * 4];
-        alpha[1 * 5 + 1] = 9;
+        alpha[5 + 1] = 9;
         alpha[3 * 5 + 3] = 1;
         let b = png_bounds(&alpha, 5, 4);
         assert_eq!(

@@ -224,17 +224,17 @@ impl Item {
 
     pub fn bonus_stats(&self) -> Vec<BonusStat> {
         let mut result = Vec::new();
-        if !self.is_reforge {
-            if let Some(def) = &self.resource {
-                for bonus in &def.bonus_stats {
-                    let amount = bonus.amount_from_rarity(self.rarity as i32);
-                    if amount.abs() < 0.00001 {
-                        continue;
-                    }
-                    let mut bonus = bonus.clone();
-                    bonus.amount = amount;
-                    BonusStat::add_to_array(&mut result, bonus);
+        if !self.is_reforge
+            && let Some(def) = &self.resource
+        {
+            for bonus in &def.bonus_stats {
+                let amount = bonus.amount_from_rarity(self.rarity as i32);
+                if amount.abs() < 0.00001 {
+                    continue;
                 }
+                let mut bonus = bonus.clone();
+                bonus.amount = amount;
+                BonusStat::add_to_array(&mut result, bonus);
             }
         }
         for stat in &self.reforged_stats.0 {

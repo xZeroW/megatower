@@ -17,7 +17,14 @@ fn definition(index: usize) -> Arc<ItemDefinition> {
     let mut def = ItemDefinition {
         id: format!("fixture_{index}"),
         name: index.to_string(),
-        set_resources: vec![if index % 2 == 0 { SET_A } else { SET_B }.into()],
+        set_resources: vec![
+            if index.is_multiple_of(2) {
+                SET_A
+            } else {
+                SET_B
+            }
+            .into(),
+        ],
         socket_type: [
             Some(SocketType::Helmet),
             Some(SocketType::Helmet),

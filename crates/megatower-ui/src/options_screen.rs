@@ -525,12 +525,11 @@ pub fn handle(
         }
         _ => {
             for (slider, name, tab) in Slider::ALL {
-                if tab == ui.tab {
-                    if let Some(t) = slider_track(&layout, name) {
-                        if contains([t[0] - 6.0, t[1] - 6.0, t[2] + 12.0, t[3] + 12.0], x, y) {
-                            ui.dragging = Some(slider);
-                        }
-                    }
+                if tab == ui.tab
+                    && let Some(t) = slider_track(&layout, name)
+                    && contains([t[0] - 6.0, t[1] - 6.0, t[2] + 12.0, t[3] + 12.0], x, y)
+                {
+                    ui.dragging = Some(slider);
                 }
             }
             for (toggle, name) in Toggle::ALL {
@@ -617,37 +616,37 @@ pub fn draws(ui: &OptionsUi) -> Vec<Draw> {
             }
         }
     }
-    if ui.tab == CONTROLS {
-        if let Some(template) = controls_template {
-            for (i, (action, default)) in DEFAULT_KEYS.iter().enumerate() {
-                if !row_visible(i, ui.scroll) {
-                    continue;
-                }
-                let row = control_row(i, ui.scroll);
-                let mut panel = template.clone();
-                panel.rect = row;
-                single(panel, &mut out);
-                let key = if ui.listening == Some(*action) {
-                    "press a key".to_owned()
-                } else {
-                    ui.bindings
-                        .get(action)
-                        .map_or_else(|| "?".to_owned(), key_name)
-                };
-                let _ = default;
-                out.push(text(
-                    [row[0] + 15.0, row[1] + 7.0, 258.0, 15.0],
-                    action.replace('_', " "),
-                    palette(1),
-                    Align::Center,
-                ));
-                out.push(text(
-                    [row[0] + 273.0, row[1] + 8.0, 258.0, 13.0],
-                    key,
-                    palette(1),
-                    Align::Center,
-                ));
+    if ui.tab == CONTROLS
+        && let Some(template) = controls_template
+    {
+        for (i, (action, default)) in DEFAULT_KEYS.iter().enumerate() {
+            if !row_visible(i, ui.scroll) {
+                continue;
             }
+            let row = control_row(i, ui.scroll);
+            let mut panel = template.clone();
+            panel.rect = row;
+            single(panel, &mut out);
+            let key = if ui.listening == Some(*action) {
+                "press a key".to_owned()
+            } else {
+                ui.bindings
+                    .get(action)
+                    .map_or_else(|| "?".to_owned(), key_name)
+            };
+            let _ = default;
+            out.push(text(
+                [row[0] + 15.0, row[1] + 7.0, 258.0, 15.0],
+                action.replace('_', " "),
+                palette(1),
+                Align::Center,
+            ));
+            out.push(text(
+                [row[0] + 273.0, row[1] + 8.0, 258.0, 13.0],
+                key,
+                palette(1),
+                Align::Center,
+            ));
         }
     }
     out

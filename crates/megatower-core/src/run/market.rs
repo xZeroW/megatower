@@ -104,14 +104,12 @@ impl Game {
         dragged: Option<Slot>,
     ) -> Option<(Slot, Slot)> {
         let player = self.local();
-        if matches!(source, MergeSource::Press | MergeSource::Global) {
-            if let Some(dragged) = dragged {
-                if can_merge(&self.world, &check, &dragged)
-                    || can_merge(&self.world, &dragged, &check)
-                {
-                    return Some((check, dragged));
-                }
-            }
+        if matches!(source, MergeSource::Press | MergeSource::Global)
+            && let Some(dragged) = dragged
+            && (can_merge(&self.world, &check, &dragged)
+                || can_merge(&self.world, &dragged, &check))
+        {
+            return Some((check, dragged));
         }
         if matches!(source, MergeSource::AltPress | MergeSource::Global) {
             let kind = check.container.and_then(|c| self.container_kind(c));
@@ -254,14 +252,15 @@ impl Game {
         }
         let mut to = to;
         let to_kind = to.container.and_then(|c| self.container_kind(c));
-        if to_kind == Some(ContainerId::Equipment) && !matches_socket(&self.world, &from, &to) {
-            if let Ok(slot) = crate::inventory::interactions::get_equip_slot(
+        if to_kind == Some(ContainerId::Equipment)
+            && !matches_socket(&self.world, &from, &to)
+            && let Ok(slot) = crate::inventory::interactions::get_equip_slot(
                 &self.world,
                 to.container.unwrap(),
                 &from,
-            ) {
-                to = slot;
-            }
+            )
+        {
+            to = slot;
         }
         self.try_to_swap_items(to, from)
     }
@@ -288,14 +287,12 @@ impl Game {
         {
             return PressOutcome::Nothing;
         }
-        if kind == Some(ContainerId::Inventory) {
-            if def.is_essential() {
-                let item = self.world.get_mut::<Item>(item);
-                if let Some(mut item) = item {
-                    item.toggled = !item.toggled;
-                }
-                return PressOutcome::Nothing;
+        if kind == Some(ContainerId::Inventory) && def.is_essential() {
+            let item = self.world.get_mut::<Item>(item);
+            if let Some(mut item) = item {
+                item.toggled = !item.toggled;
             }
+            return PressOutcome::Nothing;
         }
         if self.world.get::<Item>(item).unwrap().is_reforge {
             return PressOutcome::Nothing;
@@ -1054,10 +1051,10 @@ impl Game {
     }
 
     fn set_market_slot_empty(&mut self, market: Entity, idx: i32) {
-        if let Some(mut c) = self.world.get_mut::<ItemContainer>(market) {
-            if let Some(slot) = c.items.get_mut(idx as usize) {
-                *slot = None;
-            }
+        if let Some(mut c) = self.world.get_mut::<ItemContainer>(market)
+            && let Some(slot) = c.items.get_mut(idx as usize)
+        {
+            *slot = None;
         }
     }
 
@@ -1431,7 +1428,7 @@ impl Game {
             && !self
                 .world
                 .get::<Item>(item)
-                .map_or(true, |i| i.stats_to_dismantle(&[]).is_empty());
+                .is_none_or(|i| i.stats_to_dismantle(&[]).is_empty());
         if !can {
             return;
         }

@@ -4113,6 +4113,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy_auto_plugin",
+ "image",
  "leafwing-input-manager",
  "megatower-assets",
  "megatower-core",

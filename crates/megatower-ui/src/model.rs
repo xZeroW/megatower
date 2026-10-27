@@ -318,6 +318,9 @@ pub struct UiState {
     pub flash: Option<(megatower_core::run::events::FlashKind, f64)>,
     pub enemy_x: [f32; 3],
     pub enemy_hit: [f64; 3],
+    /// When each enemy last lunged (`enemy_attack`) or dodged (`enemy_dodge`).
+    pub enemy_lunge: [f64; 3],
+    pub enemy_dodge: [f64; 3],
     pub selected_adventurer: usize,
     pub message: Option<(String, f64)>,
     /// `EscMenuScreen` visible (the gameplay canvas is hidden and paused).
@@ -359,6 +362,8 @@ impl Default for UiState {
             flash: None,
             enemy_x: [0.0; 3],
             enemy_hit: [-10.0; 3],
+            enemy_lunge: [-10.0; 3],
+            enemy_dodge: [-10.0; 3],
             selected_adventurer: 0,
             message: None,
             esc_open: false,

@@ -319,14 +319,13 @@ pub fn cleanup_profile(
     let equipment = world
         .get::<BattleProfile>(entity)
         .and_then(|profile| profile.equipment);
-    if let Some(equipment) = equipment {
-        if world
+    if let Some(equipment) = equipment
+        && world
             .get::<crate::inventory::ItemContainer>(equipment)
             .is_some()
-        {
-            crate::inventory::cleanup(world, equipment)?;
-            world.despawn(equipment);
-        }
+    {
+        crate::inventory::cleanup(world, equipment)?;
+        world.despawn(equipment);
     }
     if let Some(mut profile) = world.get_mut::<BattleProfile>(entity) {
         for turn in profile.turns.iter_mut().flatten() {

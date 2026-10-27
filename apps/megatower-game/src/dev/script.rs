@@ -392,13 +392,12 @@ fn run_script_step(game: &mut Game, step: &str) {
                 .and_then(|n| n.parse::<i64>().ok())
             {
                 // Locks equipment slot n (`ItemContainer.locked_indexes`).
-                if let Some(equipment) = game.state(local).equipment {
-                    if let Some(mut c) = game
+                if let Some(equipment) = game.state(local).equipment
+                    && let Some(mut c) = game
                         .world
                         .get_mut::<megatower_core::inventory::ItemContainer>(equipment)
-                    {
-                        c.locked_indexes.push(n);
-                    }
+                {
+                    c.locked_indexes.push(n);
                 }
             } else if let Some(rest) = other.strip_prefix("giveset:") {
                 // `giveset:<set>:<n>` equips n pieces of the item set.

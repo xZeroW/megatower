@@ -249,40 +249,41 @@ pub fn handle(
         }
     }
     let panel = build_panel(layout);
-    if let (Some(panel), Some([x, y])) = (panel, p.cursor) {
-        if p.wheel_rows != 0 && contains(panel, x, y) {
-            let rows = build_rows(profile.selected());
-            ui.build_scroll = (ui.build_scroll as i32 + p.wheel_rows)
-                .clamp(0, build_max_scroll(rows) as i32) as usize;
-        }
+    if let (Some(panel), Some([x, y])) = (panel, p.cursor)
+        && p.wheel_rows != 0
+        && contains(panel, x, y)
+    {
+        let rows = build_rows(profile.selected());
+        ui.build_scroll = (ui.build_scroll as i32 + p.wheel_rows)
+            .clamp(0, build_max_scroll(rows) as i32) as usize;
     }
     let (true, Some([x, y])) = (p.click, p.cursor) else {
         return changed;
     };
     ui.focused = search_box(layout).is_some_and(|r| contains(r, x, y));
-    if let Some(t) = slider_track(layout) {
-        if contains([t[0] - 6.0, t[1] - 6.0, t[2] + 12.0, t[3] + 12.0], x, y) {
-            ui.dragging = true;
-            let frac = ((x - t[0]) / t[2]).clamp(0.0, 1.0);
-            ui.set_rarity((frac * MAX_RARITY as f32).round() as i32);
-        }
+    if let Some(t) = slider_track(layout)
+        && contains([t[0] - 6.0, t[1] - 6.0, t[2] + 12.0, t[3] + 12.0], x, y)
+    {
+        ui.dragging = true;
+        let frac = ((x - t[0]) / t[2]).clamp(0.0, 1.0);
+        ui.set_rarity((frac * MAX_RARITY as f32).round() as i32);
     }
     // Library item -> first free slot of the selected build.
     let visible = ui.visible();
     for (view_idx, list_idx) in visible.iter().enumerate() {
-        if item_cell(view_idx, *grid_scroll).is_some_and(|r| contains(r, x, y)) {
-            if let Some(entity) = ui.entities[*list_idx] {
-                let game = ui.game();
-                let id = game
-                    .world
-                    .get::<Item>(entity)
-                    .and_then(|i| i.resource.as_ref().map(|d| d.id.clone()));
-                if let Some(id) = id {
-                    changed |= profile.add_to_build(BuildItem {
-                        id,
-                        rarity: ui.rarity,
-                    });
-                }
+        if item_cell(view_idx, *grid_scroll).is_some_and(|r| contains(r, x, y))
+            && let Some(entity) = ui.entities[*list_idx]
+        {
+            let game = ui.game();
+            let id = game
+                .world
+                .get::<Item>(entity)
+                .and_then(|i| i.resource.as_ref().map(|d| d.id.clone()));
+            if let Some(id) = id {
+                changed |= profile.add_to_build(BuildItem {
+                    id,
+                    rarity: ui.rarity,
+                });
             }
         }
     }
@@ -403,12 +404,12 @@ pub fn draws(
             continue;
         };
         out.push(tinted(cell, "assets/textures/ui/item_slot.png", palette(4)));
-        if let Some(Some(item)) = items.get(slot) {
-            if let Some(entity) = ui.build_entity(item) {
-                item_draws(ui.game(), entity, cell, false, &mut out);
-                if cursor.is_some_and(|[x, y]| contains(cell, x, y)) {
-                    tooltip = item_tip(ui.game(), entity);
-                }
+        if let Some(Some(item)) = items.get(slot)
+            && let Some(entity) = ui.build_entity(item)
+        {
+            item_draws(ui.game(), entity, cell, false, &mut out);
+            if cursor.is_some_and(|[x, y]| contains(cell, x, y)) {
+                tooltip = item_tip(ui.game(), entity);
             }
         }
     }

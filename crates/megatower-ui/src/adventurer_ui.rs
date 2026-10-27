@@ -350,7 +350,7 @@ mod tests {
             reward_locks(BorderType::Golden),
             [false, false, false, true, true, true, true, true]
         );
-        assert_eq!(reward_locks(BorderType::Wooden)[0], false);
+        assert!(!reward_locks(BorderType::Wooden)[0]);
         assert_eq!(
             active_versions(
                 "1.23.1",

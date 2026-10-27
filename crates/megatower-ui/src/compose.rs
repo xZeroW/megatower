@@ -84,6 +84,37 @@ pub fn texture_size(path: &str) -> (f32, f32) {
     size
 }
 
+/// `ImageUtils.get_png_bounds`: the opaque pixel box of a texture as
+/// `(min_x, min_y, max_x, max_y)`; the whole texture if unreadable.
+pub fn sprite_bounds(path: &str) -> (f32, f32, f32, f32) {
+    use std::{collections::HashMap, sync::Mutex, sync::OnceLock};
+    static CACHE: OnceLock<Mutex<HashMap<String, (f32, f32, f32, f32)>>> = OnceLock::new();
+    let cache = CACHE.get_or_init(Default::default);
+    let key = trim(path);
+    if let Some(b) = cache.lock().unwrap().get(&key) {
+        return *b;
+    }
+    let (w, h) = texture_size(path);
+    let bounds = image::open(megatower_core::paths::recovered_root().join(&key))
+        .ok()
+        .and_then(|img| {
+            let img = img.to_rgba8();
+            let (mut x0, mut y0, mut x1, mut y1) = (u32::MAX, u32::MAX, 0, 0);
+            for (x, y, p) in img.enumerate_pixels() {
+                if p[3] > 0 {
+                    x0 = x0.min(x);
+                    y0 = y0.min(y);
+                    x1 = x1.max(x);
+                    y1 = y1.max(y);
+                }
+            }
+            (x0 != u32::MAX).then_some((x0 as f32, y0 as f32, x1 as f32, y1 as f32))
+        })
+        .unwrap_or((0.0, 0.0, w - 1.0, h - 1.0));
+    cache.lock().unwrap().insert(key, bounds);
+    bounds
+}
+
 pub fn image(rect: R, path: &str) -> Draw {
     Draw::Image {
         rect,
@@ -363,10 +394,10 @@ fn effect_row(
         let covered = spec_defs
             .iter()
             .any(|spec| spec.original_item_set.as_ref() == Some(set));
-        if let (false, Some(def)) = (covered, set_def(set)) {
-            if let Some(icon) = &def.icon {
-                push_effect(out, &mut x, y, icon, def.color, None);
-            }
+        if let (false, Some(def)) = (covered, set_def(set))
+            && let Some(icon) = &def.icon
+        {
+            push_effect(out, &mut x, y, icon, def.color, None);
         }
     }
     for spec in &spec_defs {
@@ -1148,10 +1179,10 @@ pub(crate) fn ability_tip(game: &Game, slot: usize) -> Option<TipView> {
         icons: vec![],
         price: None,
     };
-    if let Some(icon) = &def.icon {
-        if let Some(first) = view.rows.first_mut() {
-            first.insert(0, Seg::Icon(trim(icon), hex(0xa9a9a9)));
-        }
+    if let Some(icon) = &def.icon
+        && let Some(first) = view.rows.first_mut()
+    {
+        first.insert(0, Seg::Icon(trim(icon), hex(0xa9a9a9)));
     }
     if let Some(hint) = result.top_hint {
         view.rows.insert(1, vec![Seg::Text(hint, hex(0xa9a9a9))]);
@@ -1607,12 +1638,72 @@ fn enemy_visuals(
 
     // Enemy sprite: 64x64 frames stacked vertically in the resolved rect.
     let texture = view.texture.clone().unwrap_or_default();
-    let hit = (ui.time - ui.enemy_hit[idx.min(2)]).max(0.0);
-    let bob = if hit < 0.25 {
-        -((hit / 0.25 * std::f64::consts::PI).sin() as f32) * 6.0
-    } else {
-        0.0
+    // `player_attack` (squash and shake), `enemy_attack` (lunge) and
+    // `enemy_dodge` (sidestep) animations of `EnemyContainer`.
+    let key = |t: f32, keys: &[(f32, f32)]| -> f32 {
+        keys.windows(2)
+            .find(|w| t >= w[0].0 && t <= w[1].0)
+            .map_or(0.0, |w| {
+                let f = (t - w[0].0) / (w[1].0 - w[0].0).max(1e-6);
+                w[0].1 + (w[1].1 - w[0].1) * f
+            })
     };
+    let slot = idx.min(2);
+    let hit = (ui.time - ui.enemy_hit[slot]).max(0.0) as f32;
+    let lunge = (ui.time - ui.enemy_lunge[slot]).max(0.0) as f32;
+    let dodge = (ui.time - ui.enemy_dodge[slot]).max(0.0) as f32;
+    let (mut squash_x, mut squash_y, mut shake_x, mut bob) = (1.0_f32, 1.0_f32, 0.0_f32, 0.0_f32);
+    if hit < 0.25 {
+        squash_x = key(
+            hit,
+            &[
+                (0.0, 1.0),
+                (0.04, 1.25),
+                (0.08, 0.75),
+                (0.11, 0.75),
+                (0.13, 1.25),
+                (0.25, 1.0),
+            ],
+        );
+        squash_y = key(
+            hit,
+            &[
+                (0.0, 1.0),
+                (0.04, 0.75),
+                (0.08, 1.25),
+                (0.11, 1.25),
+                (0.13, 0.75),
+                (0.25, 1.0),
+            ],
+        );
+        shake_x = key(
+            hit,
+            &[
+                (0.0, 0.0),
+                (0.13, 0.0),
+                (0.16, 10.0),
+                (0.18, -10.0),
+                (0.2, 10.0),
+                (0.23, 0.0),
+                (0.25, 0.0),
+            ],
+        );
+    }
+    if lunge < 0.2 {
+        bob += key(
+            lunge,
+            &[
+                (0.0, 0.0),
+                (0.025, -15.0),
+                (0.075, 10.0),
+                (0.125, 10.0),
+                (0.2, 0.0),
+            ],
+        );
+    }
+    if dodge < 0.2 {
+        shake_x += key(dodge, &[(0.0, 0.0), (0.05, 6.0), (0.2, 0.0)]);
+    }
     // `flying_idle`: a 5px bob over the first 0.8s of each 1.2s loop.
     let flying_bob = |flying: bool, delay: f64| -> f32 {
         if !flying {
@@ -1633,14 +1724,18 @@ fn enemy_visuals(
     } else {
         WHITE
     };
-    // `Shadow`: `shadow.gdshader` cuts a 0.7 x 0.3 ellipse out of the 64x64
-    // rect at (6, 51), filled with the background colour.
-    if !view.out_of_combat {
+    // `Shadow`: `shadow.gdshader` cuts an ellipse out of a rect as wide as the
+    // texture; `EnemyContainer.set_texture` sizes it from the sprite bounds.
+    if !view.out_of_combat && !texture.is_empty() {
+        let (min_x, _, max_x, _) = sprite_bounds(&texture);
+        let shadow_width = ((max_x - min_x + 8.0) / tw).min(1.0);
+        let shadow_height = (shadow_width * 0.42 * 100.0).round() / 100.0;
         let (cx, cy) = (ox + 38.0, oy + 83.0);
-        let (a, b) = (22.4_f32, 9.6_f32);
+        let (a, b) = (shadow_width * tw / 2.0, shadow_height * 64.0 / 2.0);
         let mut shadow = palette(1);
         shadow[3] = 0.98;
-        for row in -9..9 {
+        let rows = b.ceil() as i32;
+        for row in -rows..rows {
             let dy = row as f32 + 0.5;
             let half = (a * (1.0 - (dy / b).powi(2)).max(0.0).sqrt()).round();
             if half > 0.0 {
@@ -1678,12 +1773,14 @@ fn enemy_visuals(
     if !texture.is_empty() {
         let visuals = at(l.rect("EnemyVisuals"));
         let w = tw.max(64.0);
+        // The squash is anchored at the sprite's centre (`pivot_offset`).
+        let (sw, sh) = (w * squash_x, 64.0 * squash_y);
         out.push(Draw::Image {
             rect: [
-                visuals[0] + (visuals[2] - w) / 2.0,
-                visuals[1] + bob + flying_bob(view.flying, 0.0),
-                w,
-                64.0,
+                visuals[0] + (visuals[2] - sw) / 2.0 + shake_x,
+                visuals[1] + (64.0 - sh) / 2.0 + bob + flying_bob(view.flying, 0.0),
+                sw,
+                sh,
             ],
             path: trim(&texture),
             region: Some([0.0, frame_y, w, 64.0]),
@@ -1778,8 +1875,8 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         let v = &frame.player;
         let has_armor = v.max_armor > 0.0;
         let mana_rect = rects.mana;
-        let health_rect;
-        if has_armor {
+
+        let health_rect = if has_armor {
             let armor_rect = rects.bar_top;
             bar(
                 armor_rect,
@@ -1795,17 +1892,17 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
                 hex(0x8b93af),
                 &mut out,
             );
-            health_rect = rects.bar_second;
+            rects.bar_second
         } else {
             // The armor bar is hidden: the VBox centers the health bar.
             let vbox_center = (rects.bar_top[1] + rects.bar_second[1] + rects.bar_second[3]) / 2.0;
-            health_rect = [
+            [
                 rects.bar_top[0],
                 (vbox_center - rects.bar_second[3] / 2.0).round(),
                 rects.bar_second[2],
                 rects.bar_second[3],
-            ];
-        }
+            ]
+        };
         // Without a mana bar the health bar takes its space; the label keeps
         // the position computed for the narrower bar.
         let mut label_cx = health_rect[0] + health_rect[2] / 2.0;
@@ -2033,12 +2130,11 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         }
     }
     super::panels::draw_dismantle_slot(game, ui, &mut out);
-    if let Some(item) = entity_slot(game.memory.dismantle, 0).get_item(&game.world) {
-        if ui.dragged != Some(entity_slot(game.memory.dismantle, 0))
-            && game.memory.room_type == Room::Dismantle
-        {
-            item_draws(game, item, super::panels::DISMANTLE_SLOT, false, &mut out);
-        }
+    if let Some(item) = entity_slot(game.memory.dismantle, 0).get_item(&game.world)
+        && ui.dragged != Some(entity_slot(game.memory.dismantle, 0))
+        && game.memory.room_type == Room::Dismantle
+    {
+        item_draws(game, item, super::panels::DISMANTLE_SLOT, false, &mut out);
     }
     super::panels::draw_drop_targets(game, ui, rects, &mut out);
     // ---- right: room ----
@@ -2154,10 +2250,10 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         }
     } else if let Some([cx, cy]) = ui.cursor {
         if let Some(slot) = hit_slot(game, ui, rects, cx, cy) {
-            if let Some(item) = slot.get_item(&game.world) {
-                if let Some(tip) = item_tip(game, item) {
-                    draw_tip(&mut out, rects, [cx, cy], tip);
-                }
+            if let Some(item) = slot.get_item(&game.world)
+                && let Some(tip) = item_tip(game, item)
+            {
+                draw_tip(&mut out, rects, [cx, cy], tip);
             }
         } else if let Some(id) = (ui.tab == Tab::Stats)
             .then(|| super::panels::stat_row_at(game, cx, cy))
@@ -2203,10 +2299,10 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
             });
         }
     }
-    if let Some((msg, until)) = &ui.message {
-        if ui.time < *until {
-            out.push(center_text(474.0, 280.0, 300.0, msg, palette(8)));
-        }
+    if let Some((msg, until)) = &ui.message
+        && ui.time < *until
+    {
+        out.push(center_text(474.0, 280.0, 300.0, msg, palette(8)));
     }
     if state_died {
         // `DeathScreen`: the resolved scene with the source's result texts.

@@ -70,7 +70,7 @@ fn property_name(text: &str, drop: &[&str]) -> String {
     for d in drop {
         s = s.replace(d, "");
     }
-    s.replace('-', "_").replace(' ', "_").to_uppercase()
+    s.replace(['-', ' '], "_").to_uppercase()
 }
 
 /// `Color(String)`: 6/8 digit hex (with optional `#`), invalid = black.

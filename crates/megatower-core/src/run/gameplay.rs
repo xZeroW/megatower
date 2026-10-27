@@ -609,10 +609,10 @@ impl Game {
                 }
             }
             let current = self.memory.battle.as_ref().unwrap().enemies_to_battle[idx];
-            if let Some(current) = current.filter(|e| self.world.get::<Enemy>(*e).is_some()) {
-                if !self.world.get::<Enemy>(current).unwrap().out_of_combat {
-                    continue;
-                }
+            if let Some(current) = current.filter(|e| self.world.get::<Enemy>(*e).is_some())
+                && !self.world.get::<Enemy>(current).unwrap().out_of_combat
+            {
+                continue;
             }
             self.add_status(next, None, Eff::Timeout, 1.0);
             if !force {
@@ -860,10 +860,9 @@ impl Game {
                         .world
                         .get::<Item>(item)
                         .and_then(|i| i.resource.as_ref().map(|r| r.id.clone()))
+                        && !ids.contains(&id)
                     {
-                        if !ids.contains(&id) {
-                            ids.push(id);
-                        }
+                        ids.push(id);
                     }
                 }
             }
