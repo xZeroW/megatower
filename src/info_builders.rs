@@ -241,7 +241,7 @@ pub fn enemy(e: &EnemyInput, show_extra: bool, tr: Tr) -> Tip {
             text: format!(" {}  ", format::number(s.amount, rules)),
         });
     }
-    let mut listed =
+    let listed =
         |t: &mut Tip, heading: &str, items: &[Option<String>], make: &dyn Fn(&str) -> BbPiece| {
             if items.is_empty() {
                 return;

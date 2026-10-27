@@ -3,8 +3,6 @@
 //! item names and modifier hints. Catalog lookups are supplied by the caller
 //! as names/booleans, so nothing here invents content.
 
-use crate::bb_scripts::BbColor;
-
 /// One parsed `|`-separated segment of a translation value.
 #[derive(Clone, Debug, PartialEq)]
 pub enum BbToken {

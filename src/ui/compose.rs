@@ -353,7 +353,7 @@ fn rows_from_tip(game: &Game, tip: &crate::info_builders::Tip) -> Vec<TipRow> {
         BbColor::Stat(s) => names_color(game, s),
     };
     let mut rows: Vec<TipRow> = vec![vec![]];
-    let mut push_text = |rows: &mut Vec<TipRow>, text: &str, col: Rgba| {
+    let push_text = |rows: &mut Vec<TipRow>, text: &str, col: Rgba| {
         for (i, part) in text.split('\n').enumerate() {
             if i > 0 {
                 rows.push(vec![]);
@@ -1273,7 +1273,8 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         ));
         let v = &frame.player;
         let has_armor = v.max_armor > 0.0;
-        let (mut health_rect, mana_rect) = (rects.bar_top, rects.mana);
+        let mana_rect = rects.mana;
+        let health_rect;
         if has_armor {
             let armor_rect = rects.bar_top;
             bar(

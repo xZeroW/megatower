@@ -3,7 +3,6 @@
 //! crossfade arithmetic of `AudioManager.play_music`.
 
 const GAMEPLAY: &str = "assets/music/gameplay/";
-const MENU: &str = "assets/music/main_menu/";
 
 pub const INTRO: &str = "assets/music/main_menu/intro.ogg";
 pub const MAIN_MENU: &str = "assets/music/main_menu/main_menu.ogg";

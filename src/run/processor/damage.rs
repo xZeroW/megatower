@@ -239,7 +239,7 @@ impl Game {
 
         let target_specs = self.specializations(target);
         let target_passives = self.passives(target);
-        let (battling_passives, battling_specs) =
+        let (battling_passives, _battling_specs) =
             match self.memory.battle.as_ref().and_then(|b| b.battling_player) {
                 Some(player) if self.is_character(player) => {
                     (self.passives(player), self.specializations(player))
