@@ -4,7 +4,7 @@
 
 use super::*;
 
-/// Input injected by the QA script driver (`megatower-dev`), consumed with
+/// Input injected by the QA script driver (`apps/megatower-game/src/dev`), consumed with
 /// the real input on the next frame.
 #[derive(Resource, Default)]
 #[auto_init_resource(plugin = UiPlugin)]
