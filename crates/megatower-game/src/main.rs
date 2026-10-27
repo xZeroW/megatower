@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use megatower_audio::GameAudioPlugin;
 use megatower_dev::DevPlugin;
-use megatower_frontend::{UiPlugin, settings::GameSettingsPlugin};
+use megatower_ui::{UiPlugin, settings::GameSettingsPlugin};
 use megatower_input::gameplay_input::GameInputPlugin;
 use megatower_render::palette_color;
 use megatower_render::{hud_layout::HudLayoutPlugin, room::RoomRenderPlugin};

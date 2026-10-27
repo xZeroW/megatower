@@ -10,6 +10,5 @@ path = "src/lib.rs"
 [dependencies]
 megatower-core = { path = "../megatower-core" }
 megatower-layout = { path = "../megatower-layout" }
-megatower-gameplay = { path = "../megatower-gameplay" }
 bevy.workspace = true
 bevy_auto_plugin.workspace = true

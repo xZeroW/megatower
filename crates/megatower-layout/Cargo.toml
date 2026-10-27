@@ -9,7 +9,6 @@ path = "src/lib.rs"
 
 [dependencies]
 megatower-core = { path = "../megatower-core" }
-megatower-gameplay = { path = "../megatower-gameplay" }
 serde.workspace = true
 serde_json.workspace = true
 

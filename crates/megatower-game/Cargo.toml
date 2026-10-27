@@ -13,7 +13,7 @@ bevy_brp_extras = { workspace = true, optional = true }
 megatower-audio = { path = "../megatower-audio" }
 megatower-dev = { path = "../megatower-dev" }
 megatower-input = { path = "../megatower-input" }
-megatower-frontend = { path = "../megatower-frontend" }
+megatower-ui = { path = "../megatower-ui" }
 megatower-render = { path = "../megatower-render" }
 
 [features]

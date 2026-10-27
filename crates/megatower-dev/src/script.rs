@@ -10,14 +10,14 @@
 
 use bevy::prelude::*;
 use bevy_auto_plugin::prelude::*;
-use megatower_frontend::{
+use megatower_ui::{
     GameSlot, ScriptedInput, UiRes, UiSystems,
     compose::market_container,
     model::{Screen, Tab, UiState},
     options_screen, refresh, run_action, screens,
 };
-use megatower_gameplay::combat::turn::TurnType;
-use megatower_gameplay::run::{game::Game, gameplay::NewRun};
+use megatower_core::combat::turn::TurnType;
+use megatower_core::run::{game::Game, gameplay::NewRun};
 
 #[derive(AutoPlugin)]
 #[auto_plugin(impl_plugin_trait)]
@@ -67,7 +67,7 @@ fn start_from_env(
     let Ok(name) = std::env::var("MEGALOOT_AUTOSTART") else {
         return;
     };
-    let catalog = megatower_gameplay::adventurers::AdventurerCatalog::recovered();
+    let catalog = megatower_core::adventurers::AdventurerCatalog::recovered();
     let Some(adventurer) = catalog.from_name(&name) else {
         return;
     };
@@ -80,7 +80,7 @@ fn start_from_env(
     // room's state is not otherwise set up).
     if let Some(room) = std::env::var("MEGALOOT_START_ROOM")
         .ok()
-        .and_then(|name| megatower_gameplay::game_mode::Room::from_debug_name(&name))
+        .and_then(|name| megatower_core::game_mode::Room::from_debug_name(&name))
     {
         game.memory.room_type = room;
     }
@@ -258,7 +258,7 @@ fn run_game_script(
 
 /// QA steps that touch UI state or grant test items; returns true if handled.
 fn ui_step(game: &mut Game, ui: &mut UiState, step: &str) -> bool {
-    use megatower_gameplay::inventory::Slot;
+    use megatower_core::inventory::Slot;
     let local = game.local();
     match step {
         "tab:stats" => ui.tab = Tab::Stats,
@@ -286,7 +286,7 @@ fn ui_step(game: &mut Game, ui: &mut UiState, step: &str) -> bool {
                 let rarity = parts.next().and_then(|r| r.parse().ok()).unwrap_or(0);
                 if let Some(def) = game
                     .items
-                    .get(&megatower_gameplay::run::game::item_id(name))
+                    .get(&megatower_core::run::game::item_id(name))
                     .cloned()
                 {
                     let floor = game.memory.floor_number;
@@ -323,12 +323,12 @@ fn ui_step(game: &mut Game, ui: &mut UiState, step: &str) -> bool {
 /// One scripted action for demos/tests: enter, attack, stance, ability, buy:N,
 /// refresh, equip, leave, chest, sort.
 fn run_script_step(game: &mut Game, step: &str) {
-    use megatower_gameplay::inventory::Slot;
-    use megatower_gameplay::items::instance::Item;
+    use megatower_core::inventory::Slot;
+    use megatower_core::items::instance::Item;
     let local = game.local();
     match step {
         "enter" | "attack" | "leave" | "chest" => game.primary_action(),
-        "speed8" => game.battle_speed_option = megatower_gameplay::run::game::BattleSpeedOption::X8,
+        "speed8" => game.battle_speed_option = megatower_core::run::game::BattleSpeedOption::X8,
         "stance" => game.turn_action(TurnType::Stance),
         "ability" => game.turn_action(TurnType::Ability0),
         "refresh" => refresh(game),
@@ -337,7 +337,7 @@ fn run_script_step(game: &mut Game, step: &str) {
             let inventory = game.state(local).inventory;
             let count = game
                 .world
-                .get::<megatower_gameplay::inventory::ItemContainer>(inventory)
+                .get::<megatower_core::inventory::ItemContainer>(inventory)
                 .unwrap()
                 .items
                 .len();

@@ -4089,29 +4089,9 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy_auto_plugin",
- "megatower-frontend",
- "megatower-gameplay",
- "megatower-render",
-]
-
-[[package]]
-name = "megatower-frontend"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "bevy_auto_plugin",
- "leafwing-input-manager",
- "megatower-audio",
  "megatower-core",
- "megatower-gameplay",
- "megatower-input",
- "megatower-layout",
- "megatower-profile",
  "megatower-render",
- "megatower-settings",
  "megatower-ui",
- "serde",
- "serde_json",
 ]
 
 [[package]]
@@ -4122,20 +4102,9 @@ dependencies = [
  "bevy_brp_extras",
  "megatower-audio",
  "megatower-dev",
- "megatower-frontend",
  "megatower-input",
  "megatower-render",
-]
-
-[[package]]
-name = "megatower-gameplay"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "megatower-core",
  "megatower-ui",
- "serde",
- "serde_json",
 ]
 
 [[package]]
@@ -4153,18 +4122,6 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "megatower-core",
- "megatower-gameplay",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "megatower-profile"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "megatower-core",
- "megatower-gameplay",
  "serde",
  "serde_json",
 ]
@@ -4176,18 +4133,7 @@ dependencies = [
  "bevy",
  "bevy_auto_plugin",
  "megatower-core",
- "megatower-gameplay",
  "megatower-layout",
-]
-
-[[package]]
-name = "megatower-settings"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "megatower-gameplay",
- "serde",
- "serde_json",
 ]
 
 [[package]]
@@ -4195,7 +4141,13 @@ name = "megatower-ui"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "bevy_auto_plugin",
+ "leafwing-input-manager",
+ "megatower-audio",
  "megatower-core",
+ "megatower-input",
+ "megatower-layout",
+ "megatower-render",
  "serde",
  "serde_json",
 ]
