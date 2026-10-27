@@ -76,13 +76,15 @@ fn start_from_env(
         .and_then(|s| s.parse().ok())
         .unwrap_or(42);
     let mut game = Game::new(NewRun::default_for(&adventurer.name, seed));
-    // Show a room's backdrop and action strip without playing to it (the
-    // room's state is not otherwise set up).
+    // Start in a given room type, set up like `setup_new_room`.
     if let Some(room) = std::env::var("MEGALOOT_START_ROOM")
         .ok()
         .and_then(|name| megatower_core::game_mode::Room::from_debug_name(&name))
     {
-        game.memory.room_type = room;
+        game.setup_room_of_type(room);
+        if room == megatower_core::game_mode::Room::MysticTrader {
+            game.refresh_mystic_trader(Vec::new());
+        }
     }
     slot.0 = Some(game);
     ui.screen = Screen::Playing;

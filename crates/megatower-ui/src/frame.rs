@@ -450,6 +450,7 @@ pub(super) fn handle_input(
                     Action::EnemyExtra => match room {
                         Room::Final | Room::EndlessMonolith => g.activate_endless(),
                         Room::Dismantle => g.dismantle_paid(),
+                        Room::Merchant => g.try_to_refresh_merchant(),
                         _ => {}
                     },
                 });
@@ -519,7 +520,6 @@ pub(super) fn handle_input(
 pub fn refresh(game: &mut Game) {
     use megatower_core::game_mode::Room;
     match game.memory.room_type {
-        Room::Merchant => game.try_to_refresh_merchant(),
         Room::MysticTrader => game.try_to_refresh_mystic_trader(),
         _ => game.try_to_refresh_market(),
     }

@@ -520,9 +520,15 @@ impl Game {
 
     /// `GameplayState.setup_new_room`.
     pub fn setup_new_room(&mut self) {
-        self.memory.room_type = self
+        let room = self
             .script()
             .room_type(self.memory.floor_number, self.memory.room_idx);
+        self.setup_room_of_type(room);
+    }
+
+    /// `setup_new_room` for a given room type (QA tooling forces rooms).
+    pub fn setup_room_of_type(&mut self, room: Room) {
+        self.memory.room_type = room;
         if self.memory.room_type == Room::Merchant {
             self.refresh_merchant();
         }

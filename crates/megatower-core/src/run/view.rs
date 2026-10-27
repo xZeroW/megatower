@@ -50,6 +50,7 @@ impl Game {
             attack_stat: attack_type,
             total_attacks: self.stat(e, StatId::TotalAttacks)[0],
             ability: enemy.ability().map(str::to_owned),
+            hide_stats: enemy.definition.hide_stats,
         }
     }
 

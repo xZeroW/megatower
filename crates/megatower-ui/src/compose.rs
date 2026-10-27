@@ -190,8 +190,7 @@ pub fn hit_slot(game: &Game, ui: &UiState, rects: &Rects, x: f32, y: f32) -> Opt
     if ui.tab != Tab::Profile {
         // Only the market row exists outside the profile tab.
         let shop = market_container(game)?;
-        return rects
-            .market
+        return shop_rects(game, rects)
             .iter()
             .position(|r| contains(*r, x, y))
             .map(|i| entity_slot(shop, i));
@@ -199,10 +198,11 @@ pub fn hit_slot(game: &Game, ui: &UiState, rects: &Rects, x: f32, y: f32) -> Opt
     let local = game.local();
     let state = game.state(local);
     let player = game.player(local);
-    let sets: [(Option<Entity>, &Vec<R>); 3] = [
+    let sets: [(Option<Entity>, &Vec<R>); 4] = [
         (state.equipment, &rects.equipment),
         (Some(state.inventory), &rects.inventory),
-        (market_container(game), &rects.market),
+        (market_container(game), shop_rects(game, rects)),
+        (Some(player.market), &rects.market),
     ];
     for (container, list) in sets {
         let Some(container) = container else { continue };
@@ -340,6 +340,16 @@ fn effect_row(
             color,
             Some(format!("{}{suffix}", number(amount))),
         );
+    }
+}
+
+/// Where `market_container`'s slots are drawn: the merchant's five slots sit in
+/// the action strip, every other shop in the bottom-left row.
+pub fn shop_rects<'a>(game: &Game, rects: &'a Rects) -> &'a Vec<R> {
+    if game.memory.room_type == megatower_core::game_mode::Room::Merchant {
+        &rects.merchant
+    } else {
+        &rects.market
     }
 }
 
@@ -1190,6 +1200,20 @@ fn enemy_widget(
     let l = megatower_assets::godot_layout::enemy_container_layout();
     let ox = cx - l.size[0] / 2.0;
     let oy = ENEMY_TOP;
+    if !view.hide_stats {
+        enemy_stats(rects, l, view, ox, oy, out);
+    }
+    enemy_visuals(l, policies, view, ox, oy, ui, idx, out);
+}
+
+fn enemy_stats(
+    rects: &Rects,
+    l: &megatower_assets::godot_layout::EnemyLayout,
+    view: &EnemyView,
+    ox: f32,
+    oy: f32,
+    out: &mut Vec<Draw>,
+) {
     let at = |r: [f32; 4]| [ox + r[0], oy + r[1], r[2], r[3]];
     let v = &view.vitals;
 
@@ -1303,6 +1327,21 @@ fn enemy_widget(
             color: hex(0x3978a8),
         });
     }
+}
+
+#[allow(clippy::too_many_arguments)]
+fn enemy_visuals(
+    l: &megatower_assets::godot_layout::EnemyLayout,
+    policies: &megatower_core::combat::profile::StatusPolicies,
+    view: &EnemyView,
+    ox: f32,
+    oy: f32,
+    ui: &UiState,
+    idx: usize,
+    out: &mut Vec<Draw>,
+) {
+    let at = |r: [f32; 4]| [ox + r[0], oy + r[1], r[2], r[3]];
+    let v = &view.vitals;
 
     // Enemy sprite: 64x64 frames stacked vertically in the resolved rect.
     let texture = view.texture.clone().unwrap_or_default();
@@ -1538,6 +1577,13 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         Align::Left,
     ));
 
+    // The action strip's backdrop goes under the merchant's slots.
+    out.push(Draw::Fill {
+        rect: [312.0, 297.0, 324.0, 59.0],
+        color: [0.0431373, 0.0588235, 0.0901961, 1.0],
+    });
+    out.push(nine_patch(rects.action_strip, &rects.big_panel, palette(1)));
+
     // ---- slots ----
     let local_state = game.state(local).clone();
     let equipment = local_state.equipment.unwrap();
@@ -1550,7 +1596,12 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         Vec::new()
     };
     let shop = market_container(game).unwrap();
-    for (container, list) in lists.into_iter().chain([(shop, &rects.market)]) {
+    let mut shops = vec![(shop, shop_rects(game, rects))];
+    if game.memory.room_type == Room::Merchant {
+        // The market row stays; the merchant's stock is in the action strip.
+        shops.push((player.market, &rects.market));
+    }
+    for (container, list) in lists.into_iter().chain(shops) {
         let items = container_items(game, container);
         let (locked, challenge) = game
             .world
@@ -1619,7 +1670,7 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     }
     super::panels::draw_tab_bar(ui, rects, &mut out);
     // Market refresh price.
-    if matches!(game.memory.room_type, Room::Merchant | Room::MysticTrader) {
+    if game.memory.room_type == Room::MysticTrader {
         out.push(text(
             [rects.refresh[0], rects.refresh[1] + 35.0, 34.0, 13.0],
             "1",
@@ -1876,6 +1927,16 @@ pub fn action_buttons(game: &mut Game, rects: &Rects) -> Vec<(R, Action, String,
             buttons.push((rects.learned[0], Action::Ability(1), String::new(), a1));
             buttons.push((rects.learned[1], Action::Ability(2), String::new(), a2));
         }
+        Room::Merchant => {
+            buttons.push((rects.merchant_leave, Action::Primary, String::new(), true));
+            let can = game.char_state(game.local()).diamonds > 0.0;
+            buttons.push((
+                rects.merchant_refresh,
+                Action::EnemyExtra,
+                String::new(),
+                can,
+            ));
+        }
         other => {
             let label = match other {
                 Room::Entrance => translation::t("enter the tower", "button").to_uppercase(),
@@ -1947,11 +2008,6 @@ fn action_strip(
 ) {
     use megatower_core::game_mode::Room;
     let _ = frame;
-    out.push(Draw::Fill {
-        rect: [312.0, 297.0, 324.0, 59.0],
-        color: [0.0431373, 0.0588235, 0.0901961, 1.0],
-    });
-    out.push(nine_patch(rects.action_strip, &rects.big_panel, palette(1)));
     let local = game.local();
     if game.memory.room_type == Room::Battle {
         let attack_type = game.with_attack(local, |view, _| view.attack_type());
@@ -1990,7 +2046,14 @@ fn action_strip(
             Action::Primary if battle => {
                 (Some("assets/textures/icons/attack_icon.png".to_owned()), 5)
             }
+            Action::Primary if game.memory.room_type == Room::Merchant => {
+                (Some("assets/textures/ui/leave_icon.png".to_owned()), 4)
+            }
             Action::Primary => (None, 5),
+            Action::EnemyExtra if game.memory.room_type == Room::Merchant => (
+                Some("assets/textures/icons/refresh_icon_small.png".to_owned()),
+                4,
+            ),
             Action::Ability(i) => (ability_icons.get(i).cloned().flatten(), 4),
             Action::EnemyExtra => (None, 5),
         };

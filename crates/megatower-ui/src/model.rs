@@ -20,6 +20,10 @@ pub struct Rects {
     pub equipment: Vec<R>,
     pub inventory: Vec<R>,
     pub market: Vec<R>,
+    /// `MerchantActionContainer`: five slots, then its refresh and leave buttons.
+    pub merchant: Vec<R>,
+    pub merchant_refresh: R,
+    pub merchant_leave: R,
     pub refresh: R,
     pub market_button: R,
     pub stance: R,
@@ -94,6 +98,14 @@ impl Rects {
         });
         let market: Vec<R> = slots.iter().copied().filter(|r| r[1] >= 300.0).collect();
         assert_eq!((equipment.len(), inventory.len(), market.len()), (8, 20, 4));
+        // `merchant_action_container.tscn` inside the 328x63 action strip: a
+        // 15 px left margin, the leave button, then (right-aligned, 30 px margin)
+        // the refresh button, a 15 px gap and five 34 px slots 4 px apart.
+        let strip = [310.0, 295.0, 328.0, 63.0];
+        let slots_x = strip[0] + strip[2] - 30.0 - (5.0 * 34.0 + 4.0 * 4.0);
+        let merchant: Vec<R> = (0..5)
+            .map(|i| [slots_x + i as f32 * 38.0, strip[1] + 14.0, 34.0, 34.0])
+            .collect();
         let button = |name: &str| {
             find(&|v| ends(v, &format!("{name}/NinePatchRect")) && v.kind == "NinePatchRect").rect
         };
@@ -109,6 +121,9 @@ impl Rects {
             equipment,
             inventory,
             market,
+            merchant_leave: [strip[0] + 15.0, strip[1] + 17.0, 29.0, 29.0],
+            merchant_refresh: [slots_x - 15.0 - 29.0, strip[1] + 17.0, 29.0, 29.0],
+            merchant,
             refresh: find(&|v| {
                 v.kind == "NinePatchRect" && ends(v, "MarketRefreshButton/NinePatchRect")
             })

@@ -57,6 +57,8 @@ pub struct EnemyView {
     pub attack_stat: StatId,
     pub total_attacks: f64,
     pub ability: Option<String>,
+    /// `EnemyResource.hide_stats`: no stats panel (merchants, chests, ...).
+    pub hide_stats: bool,
 }
 
 /// Compact UI view model captured at each timeline wait.
