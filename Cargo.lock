@@ -4065,53 +4065,53 @@ dependencies = [
 ]
 
 [[package]]
-name = "megaloot"
+name = "megatower"
 version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy_brp_extras",
- "megaloot-core",
+ "megatower-core",
 ]
 
 [[package]]
-name = "megaloot-core"
+name = "megatower-core"
 version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy_auto_plugin",
  "bevy_kira_audio",
  "leafwing-input-manager",
- "megaloot-game",
- "megaloot-info",
- "megaloot-kernel",
- "megaloot-profile",
+ "megatower-game",
+ "megatower-info",
+ "megatower-kernel",
+ "megatower-profile",
  "serde",
  "serde_json",
 ]
 
 [[package]]
-name = "megaloot-game"
+name = "megatower-game"
 version = "0.1.0"
 dependencies = [
  "bevy",
- "megaloot-info",
- "megaloot-kernel",
+ "megatower-info",
+ "megatower-kernel",
  "serde",
  "serde_json",
 ]
 
 [[package]]
-name = "megaloot-info"
+name = "megatower-info"
 version = "0.1.0"
 dependencies = [
  "bevy",
- "megaloot-kernel",
+ "megatower-kernel",
  "serde",
  "serde_json",
 ]
 
 [[package]]
-name = "megaloot-kernel"
+name = "megatower-kernel"
 version = "0.1.0"
 dependencies = [
  "bevy",
@@ -4120,12 +4120,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "megaloot-profile"
+name = "megatower-profile"
 version = "0.1.0"
 dependencies = [
  "bevy",
- "megaloot-game",
- "megaloot-kernel",
+ "megatower-game",
+ "megatower-kernel",
  "serde",
  "serde_json",
 ]

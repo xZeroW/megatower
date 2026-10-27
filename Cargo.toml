@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["apps/megaloot", "crates/megaloot-core", "crates/megaloot-kernel", "crates/megaloot-info", "crates/megaloot-game", "crates/megaloot-profile"]
+members = ["apps/megatower", "crates/megatower-core", "crates/megatower-kernel", "crates/megatower-info", "crates/megatower-game", "crates/megatower-profile"]
 
 [workspace.package]
 version = "0.1.0"

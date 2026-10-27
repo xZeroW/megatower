@@ -1,0 +1,20 @@
+[package]
+name = "megatower-core"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "megatower_core"
+path = "src/lib.rs"
+
+[dependencies]
+megatower-profile = { path = "../megatower-profile" }
+megatower-game = { path = "../megatower-game" }
+megatower-info = { path = "../megatower-info" }
+megatower-kernel = { path = "../megatower-kernel" }
+bevy.workspace = true
+bevy_auto_plugin.workspace = true
+bevy_kira_audio.workspace = true
+leafwing-input-manager.workspace = true
+serde.workspace = true
+serde_json.workspace = true

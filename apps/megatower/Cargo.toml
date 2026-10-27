@@ -1,0 +1,18 @@
+[package]
+name = "megatower"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "megatower"
+path = "src/main.rs"
+
+[dependencies]
+bevy.workspace = true
+bevy_brp_extras = { workspace = true, optional = true }
+megatower-core = { path = "../../crates/megatower-core" }
+
+[features]
+# Remote control for QA: BRP on port 15702 with bevy_brp_extras
+# (screenshots, key/mouse injection). `cargo run --features dev`.
+dev = ["dep:bevy_brp_extras", "bevy/bevy_remote", "bevy/png"]

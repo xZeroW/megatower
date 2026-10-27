@@ -1,0 +1,13 @@
+[package]
+name = "megatower-kernel"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "megatower_kernel"
+path = "src/lib.rs"
+
+[dependencies]
+bevy.workspace = true
+serde.workspace = true
+serde_json.workspace = true

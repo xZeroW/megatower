@@ -1,0 +1,15 @@
+[package]
+name = "megatower-game"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "megatower_game"
+path = "src/lib.rs"
+
+[dependencies]
+megatower-kernel = { path = "../megatower-kernel" }
+megatower-info = { path = "../megatower-info" }
+bevy.workspace = true
+serde.workspace = true
+serde_json.workspace = true

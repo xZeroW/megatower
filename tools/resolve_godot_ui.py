@@ -12,7 +12,7 @@ import json
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "Megaloot-GDRE-Recovered"
-PROBE = pathlib.Path("/tmp/opencode/megaloot-layout-probe")
+PROBE = pathlib.Path("/tmp/opencode/megatower-layout-probe")
 PROBE.mkdir(parents=True, exist_ok=True)
 for name in ("assets", "resources"):
     dest = PROBE / name

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Move top-level modules out of megaloot-core into their own crate.
+"""Move top-level modules out of megatower-core into their own crate.
 
-    tools/extract_crate.py <crate> <module>... [--dep name=spec ...] [--from crates/megaloot-core]
+    tools/extract_crate.py <crate> <module>... [--dep name=spec ...] [--from crates/megatower-core]
 
 For each module: `git mv` its file/directory into `crates/<crate>/src`, add
 `pub mod` lines to the new crate's lib.rs, drop them from the source crate's
@@ -71,7 +71,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("crate")
     ap.add_argument("modules", nargs="+")
-    ap.add_argument("--from", dest="src", default="crates/megaloot-core")
+    ap.add_argument("--from", dest="src", default="crates/megatower-core")
     ap.add_argument("--dep", action="append", default=[])
     args = ap.parse_args()
 
