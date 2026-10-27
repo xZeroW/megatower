@@ -1,0 +1,13 @@
+[package]
+name = "megatower-input"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "megatower_input"
+path = "src/lib.rs"
+
+[dependencies]
+bevy.workspace = true
+bevy_auto_plugin.workspace = true
+leafwing-input-manager.workspace = true

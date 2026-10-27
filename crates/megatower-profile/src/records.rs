@@ -290,7 +290,10 @@ impl Team {
     }
 
     /// `get_enemy_upgrade_stats`: copies of every matching upgrade's stats.
-    pub fn enemy_upgrade_stats(&self, enemy_resource: &str) -> Vec<megatower_gameplay::stats::Stat> {
+    pub fn enemy_upgrade_stats(
+        &self,
+        enemy_resource: &str,
+    ) -> Vec<megatower_gameplay::stats::Stat> {
         self.enemy_upgrades
             .iter()
             .filter(|u| u.enemy_resource == enemy_resource)

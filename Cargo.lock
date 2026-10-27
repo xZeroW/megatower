@@ -4074,6 +4074,7 @@ dependencies = [
  "leafwing-input-manager",
  "megatower-core",
  "megatower-gameplay",
+ "megatower-input",
  "megatower-layout",
  "megatower-profile",
  "megatower-settings",
@@ -4109,6 +4110,15 @@ dependencies = [
  "megatower-ui",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "megatower-input"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_auto_plugin",
+ "leafwing-input-manager",
 ]
 
 [[package]]

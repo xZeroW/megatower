@@ -8,8 +8,8 @@ use bevy_auto_plugin::prelude::*;
 #[auto_plugin(impl_plugin_trait)]
 pub struct GamePlugin;
 
-#[auto_init_resource(plugin = GamePlugin)]
-use crate::gameplay_input::InputContext;
+#[auto_add_plugin(plugin = GamePlugin)]
+use megatower_input::gameplay_input::GameInputPlugin;
 
 /// `global_colors.gdshader get_color()` / `project.godot [shader_globals]` as
 /// a Bevy color; `None` and unknown indices are white.

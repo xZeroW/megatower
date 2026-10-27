@@ -8,6 +8,7 @@ name = "megatower_client"
 path = "src/lib.rs"
 
 [dependencies]
+megatower-input = { path = "../megatower-input" }
 megatower-settings = { path = "../megatower-settings" }
 megatower-layout = { path = "../megatower-layout" }
 megatower-profile = { path = "../megatower-profile" }

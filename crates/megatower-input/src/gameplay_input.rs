@@ -5,10 +5,6 @@
 //! rebuilt from the player's saved [`KeyBindings`]; the frame's action state is
 //! then turned into [`GameplayCommand`] intents in the source's order.
 
-use crate::{
-    app::GamePlugin,
-    ui::{UiRes, UiSystems},
-};
 use bevy::prelude::*;
 use bevy_auto_plugin::prelude::*;
 use leafwing_input_manager::prelude::*;
@@ -139,26 +135,36 @@ pub fn input_map(bindings: &KeyBindings) -> InputMap<GameAction> {
 }
 
 #[derive(AutoPlugin)]
-#[auto_add_plugin(plugin = GamePlugin)]
 pub struct GameInputPlugin;
 
 impl Plugin for GameInputPlugin {
     #[auto_plugin]
     fn build(&self, app: &mut App) {
-        app.add_plugins(InputManagerPlugin::<GameAction>::default());
+        app.add_plugins(InputManagerPlugin::<GameAction>::default())
+            .init_resource::<InputContext>()
+            .init_resource::<ActiveBindings>();
     }
 }
 
+/// The bindings currently in force. The layer that edits them (the Options
+/// screen) writes this resource; the input map follows it.
+#[derive(Resource, Default)]
+pub struct ActiveBindings(pub KeyBindings);
+
+/// Ordering handle for systems that must run before the input map is synced.
+#[derive(SystemSet, Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct InputSystems;
+
 /// Keeps the player's input map in step with the bindings in Options, so a
 /// rebind takes effect immediately.
-#[auto_add_system(plugin = GameInputPlugin, schedule = Update, config(before = UiSystems::Screens))]
+#[auto_add_system(plugin = GameInputPlugin, schedule = Update, config(in_set = InputSystems))]
 fn sync_input_map(
     mut commands: Commands,
-    ui: Res<UiRes>,
+    active: Res<ActiveBindings>,
     player: Query<Entity, With<InputMap<GameAction>>>,
     mut applied: Local<Option<KeyBindings>>,
 ) {
-    let bindings = &ui.0.options_ui.bindings;
+    let bindings = &active.0;
     if applied.as_ref() == Some(bindings) {
         return;
     }

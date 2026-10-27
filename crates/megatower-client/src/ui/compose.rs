@@ -4,6 +4,7 @@
 use super::model::*;
 
 use bevy::prelude::Entity;
+use megatower_core::translation;
 use megatower_gameplay::enemies::Enemy;
 use megatower_gameplay::inventory::{ItemContainer, Slot};
 use megatower_gameplay::items::{instance::Item, rarity::ItemRarity};
@@ -12,7 +13,6 @@ use megatower_gameplay::run::{
     game::Game,
 };
 use megatower_gameplay::stats::StatId;
-use megatower_core::translation;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Align {
@@ -1791,8 +1791,10 @@ fn action_strip(
     let local = game.local();
     if game.memory.room_type == Room::Battle {
         let attack_type = game.with_attack(local, |view, _| view.attack_type());
-        let damage =
-            game.attack_data_for(local, megatower_gameplay::combat::damage::DamageSource::Attack);
+        let damage = game.attack_data_for(
+            local,
+            megatower_gameplay::combat::damage::DamageSource::Attack,
+        );
         let mut data = damage;
         game.with_attack(local, |view, _| view.apply_output_boosters(&mut data));
         let _ = attack_type;

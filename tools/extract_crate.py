@@ -107,7 +107,7 @@ def main():
     lib_old.write_text(text)
 
     # Rewrite uses everywhere else.
-    for crate_dir in list((ROOT / "crates").iterdir()) + list((ROOT / "apps").iterdir()):
+    for crate_dir in [d for base in ("crates", "apps") if (ROOT / base).exists() for d in (ROOT / base).iterdir()]:
         for dp, _, fs in os.walk(crate_dir / "src"):
             for f in fs:
                 if not f.endswith(".rs"):

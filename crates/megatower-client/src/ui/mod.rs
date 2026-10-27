@@ -56,7 +56,6 @@ mod library_data;
 mod overlays;
 mod window_options;
 
-use crate::gameplay_input::{GameAction, GameplayCommand, InputContext, commands_for_actions};
 use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_auto_plugin::prelude::*;
 use compose::{
@@ -72,6 +71,9 @@ use megatower_gameplay::run::{
     game::Game,
     gameplay::NewRun,
     state::Player,
+};
+use megatower_input::gameplay_input::{
+    GameAction, GameplayCommand, InputContext, commands_for_actions,
 };
 use megatower_layout::godot_layout::recovered_layout;
 use model::*;

@@ -58,10 +58,7 @@ fn apply_bus_volumes(
 #[auto_add_system(plugin = GameAudioPlugin, schedule = Update, config(in_set = UiSystems::Effects))]
 fn play_sfx(assets: Res<AssetServer>, sfx: Res<AudioChannel<SfxChannel>>, mut ui: ResMut<UiRes>) {
     for (path, db) in ui.0.audio.drain(..) {
-        if megatower_core::paths::recovered_root()
-            .join(&path)
-            .exists()
-        {
+        if megatower_core::paths::recovered_root().join(&path).exists() {
             sfx.play(assets.load(path)).with_volume(db);
         }
     }
