@@ -4088,6 +4088,7 @@ dependencies = [
  "megatower-input",
  "megatower-layout",
  "megatower-profile",
+ "megatower-render",
  "megatower-settings",
  "megatower-ui",
  "serde",
@@ -4110,6 +4111,7 @@ dependencies = [
  "bevy",
  "bevy_brp_extras",
  "megatower-client",
+ "megatower-render",
 ]
 
 [[package]]
@@ -4152,6 +4154,17 @@ dependencies = [
  "megatower-gameplay",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "megatower-render"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_auto_plugin",
+ "megatower-core",
+ "megatower-gameplay",
+ "megatower-layout",
 ]
 
 [[package]]

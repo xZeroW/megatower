@@ -80,3 +80,18 @@ mod tests {
         assert!(matches!(cue_for(&ui, &game_slot), MusicCue::Floor(_)));
     }
 }
+
+/// The room view follows the run's current room.
+#[auto_add_system(plugin = UiPlugin, schedule = Update)]
+fn publish_room_scene(
+    slot: Res<GameSlot>,
+    mut request: ResMut<megatower_render::room::RoomSceneRequest>,
+) {
+    let want = slot
+        .0
+        .as_ref()
+        .map(|game| megatower_layout::room_scene::scene_for(game.memory.room_type));
+    if request.0 != want {
+        request.0 = want;
+    }
+}

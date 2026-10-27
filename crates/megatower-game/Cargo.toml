@@ -11,6 +11,7 @@ path = "src/main.rs"
 bevy.workspace = true
 bevy_brp_extras = { workspace = true, optional = true }
 megatower-client = { path = "../megatower-client" }
+megatower-render = { path = "../megatower-render" }
 
 [features]
 # Remote control for QA: BRP on port 15702 with bevy_brp_extras

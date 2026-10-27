@@ -2,12 +2,13 @@
 //! the frame has settled, save the window to `artifacts/latest.png`
 //! (`MEGALOOT_CAPTURE_ROOM_SCREENSHOT=1` also saves the room render target).
 
-use crate::{app::GamePlugin, render::room::RoomRenderTarget};
+use crate::app::GamePlugin;
 use bevy::{
     prelude::*,
     render::view::screenshot::{Screenshot, save_to_disk},
 };
 use bevy_auto_plugin::prelude::*;
+use megatower_render::{CaptureReadiness, room::RoomRenderTarget};
 
 #[derive(AutoPlugin)]
 #[auto_add_plugin(plugin = GamePlugin)]
@@ -19,21 +20,6 @@ impl Plugin for CapturePlugin {
         if std::env::var_os("MEGALOOT_CAPTURE_SCREENSHOT").is_some() {
             app.init_resource::<CaptureReadiness>();
         }
-    }
-}
-
-/// Present only while a capture is requested; startup code registers the
-/// assets the shot must wait for.
-#[derive(Resource, Default)]
-pub struct CaptureReadiness {
-    assets: Vec<UntypedHandle>,
-    settled_frames: u32,
-    requested: bool,
-}
-
-impl CaptureReadiness {
-    pub fn wait_for(&mut self, handle: UntypedHandle) {
-        self.assets.push(handle);
     }
 }
 

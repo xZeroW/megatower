@@ -3,9 +3,8 @@
 //! and the 640x360 logical viewport scaling.
 
 use crate::{
-    app::{GamePlugin, palette_color},
-    dev::capture::CaptureReadiness,
-    render::room::{RoomRenderTarget, setup_room},
+    CaptureReadiness, palette_color,
+    room::{RoomRenderTarget, setup_room},
 };
 use bevy::prelude::*;
 use bevy_auto_plugin::prelude::*;
@@ -16,7 +15,6 @@ const FONT: &str = "assets/fonts/monogram-extended.ttf";
 
 #[derive(AutoPlugin)]
 #[auto_plugin(impl_plugin_trait)]
-#[auto_add_plugin(plugin = GamePlugin)]
 pub struct HudLayoutPlugin;
 
 /// Controls whose content is live game state; the dynamic HUD draws them.

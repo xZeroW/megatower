@@ -1,5 +1,6 @@
 use bevy::prelude::*;
-use megatower_client::app::{GamePlugin, palette_color};
+use megatower_client::app::GamePlugin;
+use megatower_render::palette_color;
 
 fn main() {
     App::new()

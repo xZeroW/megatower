@@ -3,11 +3,7 @@
 //! `pixel_toon.gdshader`, swapped when the run enters a room whose
 //! `RoomResource.scene` differs.
 
-use crate::{
-    app::{GamePlugin, palette_color},
-    dev::capture::CaptureReadiness,
-    ui::GameSlot,
-};
+use crate::{CaptureReadiness, palette_color};
 use bevy::{
     asset::embedded_asset,
     camera::{ClearColorConfig, RenderTarget, visibility::RenderLayers},
@@ -16,15 +12,20 @@ use bevy::{
     shader::ShaderRef,
 };
 use bevy_auto_plugin::prelude::*;
-use megatower_layout::room_scene::{RoomLight, scene, scene_for};
+use megatower_layout::room_scene::{RoomLight, scene};
 use megatower_layout::room_screen::{ROOM_CAMERA_FOV_DEGREES, ROOM_VIEWPORT_SIZE};
+
+/// The scene (`room_scene::scene_for`) the room view should show; `None`
+/// while there is no run.
+#[derive(Resource, Default)]
+#[auto_init_resource(plugin = RoomRenderPlugin)]
+pub struct RoomSceneRequest(pub Option<&'static str>);
 
 /// Render layer of the room scene, kept out of the UI camera.
 pub const ROOM_LAYER: usize = 1;
 const WALL_TEXTURE: &str = "assets/textures/3d/dungeon_wall.png";
 
 #[derive(AutoPlugin)]
-#[auto_add_plugin(plugin = GamePlugin)]
 pub struct RoomRenderPlugin;
 
 impl Plugin for RoomRenderPlugin {
@@ -72,7 +73,7 @@ pub struct RoomMaterial {
 
 impl Material for RoomMaterial {
     fn fragment_shader() -> ShaderRef {
-        "embedded://megatower_client/render/room_toon.wesl".into()
+        "embedded://megatower_render/room_toon.wesl".into()
     }
 }
 
@@ -209,16 +210,15 @@ fn spawn_room_scene(
 fn sync_room_scene(
     mut commands: Commands,
     assets: Res<AssetServer>,
-    game: Res<GameSlot>,
+    request: Res<RoomSceneRequest>,
     mut shown: ResMut<ShownRoom>,
     old: Query<Entity, With<RoomPart>>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<RoomMaterial>>,
 ) {
-    let Some(game) = game.0.as_ref() else {
+    let Some(next) = request.0 else {
         return;
     };
-    let next = scene_for(game.memory.room_type);
     if next == shown.0 {
         return;
     }

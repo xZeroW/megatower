@@ -44,22 +44,7 @@ pub enum Draw {
     },
 }
 
-// Source: global_colors.gdshader get_color() / project.godot [shader_globals].
-pub fn palette(index: u8) -> Rgba {
-    let rgb = match index {
-        1 => [0.0431373, 0.0588235, 0.0901961],
-        2 => [0.196078, 0.2, 0.239216],
-        3 => [0.145098, 0.14902, 0.188235],
-        4 => [0.321569, 0.360784, 0.419608],
-        5 => [0.368627, 0.501961, 0.486275],
-        6 => [0.67451, 0.419608, 0.152941],
-        7 => [0.341176, 0.270588, 0.192157],
-        8 => [0.960784, 0.756863, 0.509804],
-        9 => [0.439216, 0.737255, 0.564706],
-        _ => [1.0; 3],
-    };
-    [rgb[0], rgb[1], rgb[2], 1.0]
-}
+pub use megatower_layout::palette::palette;
 
 pub fn hex(rgb: u32) -> Rgba {
     [
