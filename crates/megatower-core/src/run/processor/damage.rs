@@ -453,19 +453,35 @@ impl Game {
         if let Some(target) = target {
             let idx = self.enemy_idx(target);
             if idx >= 0 {
+                // `EnemyPopupLabel.apply_damage_result`: the amount and the
+                // damage icon (right of it); armor damage shows the removed
+                // armor with the penetration icon; only hits, blocks and
+                // dodges show at all.
                 let mut popup = match kind {
                     BattleActionId::Hit => {
-                        let mut p = Popup::new(
-                            crate::run::characters::format_number(result.uncapped_total_damage),
-                            result.damage_type.map_or([1.0; 4], |t| self.stat_color(t)),
-                        );
-                        p.left_icon = result.damage_type.and_then(|t| self.stat_icon(t));
+                        let (amount, color, icon) = if result.armor_removed > 0.0 {
+                            (
+                                result.armor_removed,
+                                [0.427_451, 0.458_824, 0.552_941, 1.0],
+                                self.stat_icon(StatId::Penetration),
+                            )
+                        } else {
+                            (
+                                result.uncapped_total_damage - result.armor_removed,
+                                result.damage_type.map_or([1.0; 4], |t| self.stat_color(t)),
+                                result.damage_type.and_then(|t| self.stat_icon(t)),
+                            )
+                        };
+                        let mut p = Popup::new(crate::run::characters::format_number(amount), color);
+                        p.right_icon = icon;
+                        p.lucky = result.is_lucky;
                         p
                     }
-                    other => action(other).popup(),
+                    BattleActionId::Block | BattleActionId::Dodge => action(kind).popup(),
+                    _ => return,
                 };
                 if result.is_crit {
-                    popup.size = 1.45;
+                    popup.size = 2.0;
                 }
                 self.fx(Fx::EnemyPopup {
                     enemy_idx: idx as usize,

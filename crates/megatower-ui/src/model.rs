@@ -212,6 +212,23 @@ pub struct LivePopup {
     pub origin: [f32; 2],
 }
 
+/// One-shot visual effects played over the room.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum VfxKind {
+    PhysicalImpact,
+    MagicImpact,
+    DeathDust,
+}
+
+#[derive(Clone, Copy, Debug)]
+pub struct LiveVfx {
+    pub kind: VfxKind,
+    pub at: f64,
+    /// Logical x of the enemy the effect plays on.
+    pub cx: f32,
+    pub seed: u32,
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Screen {
     Intro,
@@ -290,6 +307,7 @@ pub struct UiState {
     pub dragged: Option<Slot>,
     pub cursor: Option<[f32; 2]>,
     pub popups: Vec<LivePopup>,
+    pub vfx: Vec<LiveVfx>,
     pub timeline: Timeline,
     pub time: f64,
     pub shake_until: f64,
@@ -330,6 +348,7 @@ impl Default for UiState {
             dragged: None,
             cursor: None,
             popups: Vec::new(),
+            vfx: Vec::new(),
             timeline: Timeline::default(),
             time: 0.0,
             shake_until: 0.0,

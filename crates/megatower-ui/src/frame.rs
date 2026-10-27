@@ -276,6 +276,34 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
         Fx::PlayerAttack { enemy_idx } | Fx::EnemyDodge { enemy_idx } => {
             ui.enemy_hit[enemy_idx.min(2)] = now
         }
+        Fx::Impact {
+            enemy_idx,
+            damage_type,
+        } => {
+            use megatower_core::stats::StatId;
+            let kind = match damage_type {
+                Some(StatId::PhysicalDamage) => VfxKind::PhysicalImpact,
+                Some(StatId::MagicDamage) => VfxKind::MagicImpact,
+                _ => return,
+            };
+            let frame = ui.timeline.frame.clone().unwrap_or_else(|| game.frame());
+            let seed = ui.vfx.len() as u32 + (now * 1000.0) as u32;
+            ui.vfx.push(LiveVfx {
+                kind,
+                at: now,
+                cx: enemy_cx(&frame, enemy_idx),
+                seed,
+            });
+        }
+        Fx::DeathParticles { enemy_idx } => {
+            let frame = ui.timeline.frame.clone().unwrap_or_else(|| game.frame());
+            ui.vfx.push(LiveVfx {
+                kind: VfxKind::DeathDust,
+                at: now,
+                cx: enemy_cx(&frame, enemy_idx),
+                seed: enemy_idx as u32 + (now * 1000.0) as u32,
+            });
+        }
         Fx::ScreenFlash(kind) => ui.flash = Some((kind, now)),
         Fx::CameraShake => {
             if ui.options_ui.options.screen_shake {

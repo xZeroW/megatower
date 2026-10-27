@@ -12,6 +12,8 @@ pub struct Popup {
     pub color: Rgba,
     pub left_icon: Option<String>,
     pub right_icon: Option<String>,
+    /// `LuckTextureRect`: shown after the amount on lucky hits.
+    pub lucky: bool,
     pub size: f32,
 }
 
@@ -22,6 +24,7 @@ impl Popup {
             color,
             left_icon: None,
             right_icon: None,
+            lucky: false,
             size: 1.0,
         }
     }

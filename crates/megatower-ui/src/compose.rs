@@ -1403,6 +1403,110 @@ fn preview_sparkles(ox: f32, oy: f32, color: Rgba, time: f64, seed: usize, out: 
     }
 }
 
+fn unit(seed: u32, salt: u32) -> f32 {
+    let mut h = (u64::from(seed) << 32 | u64::from(salt)).wrapping_mul(0x9E37_79B9_7F4A_7C15);
+    h ^= h >> 31;
+    h = h.wrapping_mul(0xBF58_476D_1CE4_E5B9);
+    h ^= h >> 29;
+    (h % 10_000) as f32 / 10_000.0
+}
+
+/// `PhysicalImpactEffect`, `MagicImpactEffect` and `DeathParticles`.
+fn vfx_draws(ui: &UiState, out: &mut Vec<Draw>) {
+    for vfx in &ui.vfx {
+        let age = (ui.time - vfx.at) as f32;
+        let (cx, cy) = (vfx.cx, ENEMY_TOP + 36.0);
+        match vfx.kind {
+            VfxKind::PhysicalImpact if age < 0.25 => {
+                // `hit.png` flash (orange) plus a pulsing `star_02`.
+                let alpha = if age < 0.02 {
+                    age / 0.02
+                } else if age < 0.05 {
+                    1.0
+                } else {
+                    1.0 - (age - 0.05) / 0.2
+                };
+                let size = 256.0 * (0.1 + 0.2 * age / 0.25);
+                out.push(tinted(
+                    [cx - size / 2.0, cy - size / 2.0, size, size],
+                    "assets/vfx/hit.png",
+                    [1.0, 0.354_667, 0.12, alpha],
+                ));
+                let pulse = [
+                    (0.0, 0.0),
+                    (0.02, 0.25),
+                    (0.03, 0.3),
+                    (0.04, 0.2),
+                    (0.14, 0.2),
+                    (0.25, 0.0),
+                ];
+                let scale = pulse
+                    .windows(2)
+                    .find(|w| age >= w[0].0 && age <= w[1].0)
+                    .map_or(0.0, |w| {
+                        w[0].1 + (w[1].1 - w[0].1) * (age - w[0].0) / (w[1].0 - w[0].0)
+                    });
+                let star = 512.0 * scale;
+                out.push(tinted(
+                    [cx - star / 2.0, cy - star / 2.0, star, star],
+                    "assets/vfx/star_02.png",
+                    [1.0, 0.325_333, 0.12, 0.423_529],
+                ));
+            }
+            VfxKind::MagicImpact if age < 0.25 => {
+                let t = age / 0.25;
+                let grow = (t * std::f32::consts::PI).sin();
+                let big = 512.0 * 0.3 * grow;
+                out.push(tinted(
+                    [cx - big / 2.0, cy - big / 2.0, big, big],
+                    "assets/vfx/star_09.png",
+                    [0.458_824, 0.411_765, 0.960_784, 0.8 * grow],
+                ));
+                let small = 512.0 * 0.2 * grow;
+                out.push(tinted(
+                    [cx - small / 2.0, cy - small / 2.0, small, small],
+                    "assets/vfx/star_08.png",
+                    [0.637_481, 0.641_771, 0.986_377, 1.0],
+                ));
+            }
+            VfxKind::DeathDust => {
+                for i in 0..25u32 {
+                    let life = 1.5 * (1.0 - unit(vfx.seed, i * 11 + 1));
+                    if life <= 0.05 || age >= life {
+                        continue;
+                    }
+                    let t = age / life;
+                    let angle = (unit(vfx.seed, i * 11 + 2) * 2.0 - 1.0) * 25.0_f32.to_radians();
+                    let v0 = 30.0 + 5.0 * unit(vfx.seed, i * 11 + 3);
+                    let damping = 15.0 + 10.0 * unit(vfx.seed, i * 11 + 4);
+                    let stop = v0 / damping;
+                    let dist = if age < stop {
+                        v0 * age - damping * age * age / 2.0
+                    } else {
+                        v0 * v0 / (2.0 * damping)
+                    };
+                    let x = cx + (unit(vfx.seed, i * 11 + 5) * 32.0 - 16.0) + angle.sin() * dist;
+                    let y = cy + (unit(vfx.seed, i * 11 + 6) * 32.0 - 16.0) + angle.cos() * dist;
+                    let curve = if t < 0.306 {
+                        1.0
+                    } else if t < 0.752 {
+                        1.0 - 0.326 * (t - 0.306) / 0.446
+                    } else {
+                        0.674 * (1.0 - (t - 0.752) / 0.248).max(0.0)
+                    };
+                    let size = 16.0 * (1.0 + unit(vfx.seed, i * 11 + 7)) * curve;
+                    out.push(tinted(
+                        [x - size / 2.0, y - size / 2.0, size, size],
+                        "assets/textures/particles/dust.png",
+                        [0.741, 0.741, 0.741, 1.0 - t],
+                    ));
+                }
+            }
+            _ => {}
+        }
+    }
+}
+
 #[allow(clippy::too_many_arguments)]
 fn enemy_visuals(
     l: &megatower_assets::godot_layout::EnemyLayout,
@@ -1896,6 +2000,8 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         Align::Left,
     ));
 
+    vfx_draws(ui, &mut out);
+
     // ---- popups ----
     // `EnemyPopupLabel`: rises 10px over 0.6s (cubic ease-out) and fades out
     // over 0.5s after 0.3s; the icons follow the amount, 3px apart.
@@ -1910,7 +2016,8 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         let text_w = popup.popup.text.chars().count() as f32 * CHAR_W * popup.popup.size;
         let icon_w = 9.0 * popup.popup.size.min(1.0);
         let icons = [&popup.popup.left_icon, &popup.popup.right_icon];
-        let icon_count = icons.iter().filter(|i| i.is_some()).count() as f32;
+        let icon_count =
+            icons.iter().filter(|i| i.is_some()).count() as f32 + f32::from(popup.popup.lucky);
         let width = text_w + icon_count * (icon_w + 3.0);
         let top = y - ease_out(age / 0.6) * 10.0;
         let mut cx = x - width / 2.0;
@@ -1934,6 +2041,13 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         });
         cx += text_w + 3.0;
         icon(&mut out, &mut cx, icons[1]);
+        if popup.popup.lucky {
+            icon(
+                &mut out,
+                &mut cx,
+                &Some("assets/textures/icons/luck_icon.png".to_owned()),
+            );
+        }
     }
 
     // ---- dragged item / tooltip ----
