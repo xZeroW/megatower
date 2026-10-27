@@ -6,7 +6,8 @@
 //! - `MEGALOOT_SCRIPT=a,b,c` runs one step every 0.4 s: `click:x:y`,
 //!   `rclick:x:y`, `type:text`, `backspace`, `esc`, `cursor:x:y`, and the run
 //!   steps of `run_script_step`/`ui_step` (`vfx:cast|cinder|hearts|death|magic|hit`
-//!   plays an effect);
+//!   plays an effect; `armor:N`, `giveset:<set>:<n>` and `lock:<slot>` set up
+//!   armor, equipped set pieces and a locked equipment slot);
 //! - `MEGALOOT_LOG_INPUT=1` logs each step with the resulting state.
 
 use bevy::prelude::*;
@@ -381,6 +382,46 @@ fn run_script_step(game: &mut Game, step: &str) {
         }
         other => {
             if let Some(n) = other
+                .strip_prefix("armor:")
+                .and_then(|n| n.parse::<f64>().ok())
+            {
+                use megatower_core::stats::{BonusStat, StatId};
+                game.add_temp_stat(local, &BonusStat::new(StatId::Armor, n, false), true);
+            } else if let Some(n) = other
+                .strip_prefix("lock:")
+                .and_then(|n| n.parse::<i64>().ok())
+            {
+                // Locks equipment slot n (`ItemContainer.locked_indexes`).
+                if let Some(equipment) = game.state(local).equipment {
+                    if let Some(mut c) = game
+                        .world
+                        .get_mut::<megatower_core::inventory::ItemContainer>(equipment)
+                    {
+                        c.locked_indexes.push(n);
+                    }
+                }
+            } else if let Some(rest) = other.strip_prefix("giveset:") {
+                // `giveset:<set>:<n>` equips n pieces of the item set.
+                let (set, n) = rest.split_once(':').unwrap_or((rest, "2"));
+                let n: usize = n.parse().unwrap_or(2);
+                let defs: Vec<_> = game
+                    .items
+                    .definitions
+                    .values()
+                    .filter(|d| {
+                        d.set_resources
+                            .iter()
+                            .any(|s| s.ends_with(&format!("/{set}.tres")))
+                    })
+                    .cloned()
+                    .collect();
+                let floor = game.memory.floor_number;
+                for def in defs.into_iter().take(n) {
+                    let item = game.new_item(def, floor, 0);
+                    game.drop_item(item, true);
+                }
+                run_script_step(game, "equip");
+            } else if let Some(n) = other
                 .strip_prefix("buy:")
                 .and_then(|n| n.parse::<i32>().ok())
             {

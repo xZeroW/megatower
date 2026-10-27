@@ -1932,10 +1932,10 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
             {
                 // `EquipmentSlotPreview.update_texture`: locked slots show the lock.
                 if locked.contains(&(index as i64)) || challenge.contains(&(index as i64)) {
-                    out.push(tinted(
+                    // `equipment_lock.png` carries its own slate fill.
+                    out.push(image(
                         [rect[0] + 1.0, rect[1] + 1.0, 32.0, 32.0],
                         super::library::preview_texture("", true),
-                        palette(1),
                     ));
                 } else {
                     out.push(socket_icon(*rect, *socket));
