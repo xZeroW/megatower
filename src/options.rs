@@ -3,10 +3,14 @@
 //! bus and `WorldEnvironment` application belong to the Bevy shell.
 
 use crate::definitions::InputModeType;
+use bevy::{
+    prelude::*,
+    settings::{ReflectSettingsGroup, SettingsGroup},
+};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, Reflect)]
 pub enum WindowMode {
     Windowed,
     Borderless,
@@ -14,7 +18,7 @@ pub enum WindowMode {
 }
 
 /// `Options.BattleSpeed` multipliers by enum index (X1, X2, X4, X8).
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, Reflect)]
 pub enum BattleSpeed {
     X1,
     X2,
@@ -42,7 +46,7 @@ pub const BINDINGS: [&str; 14] = [
 pub const BASE_RESOLUTION: (i32, i32) = (640, 360);
 
 /// An input event identity (the `Classes.instance_from_string` payload).
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Reflect)]
 pub struct Binding {
     pub mode: bool, // true = joypad
     pub event: String,
@@ -58,7 +62,11 @@ impl Binding {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+/// Persisted by `bevy::settings` as the `[options]` section of
+/// `settings.toml` (see `crate::settings`).
+#[derive(Clone, Debug, Serialize, Deserialize, Resource, SettingsGroup, Reflect)]
+#[reflect(Resource, SettingsGroup, Default)]
+#[settings_group(group = "options")]
 pub struct Options {
     pub speedrun_api_key: String,
     pub window_mode: WindowMode,

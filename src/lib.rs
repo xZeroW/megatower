@@ -34,6 +34,7 @@ pub mod room_screen;
 pub mod run;
 pub mod run_initialization;
 pub mod save_system;
+pub mod settings;
 pub mod state_flow;
 pub mod stats;
 pub mod status_effects;

@@ -315,7 +315,7 @@ impl Default for UiState {
             popup_tab: 0,
             library_scroll: 0,
             library_tab: 0,
-            options_ui: super::options_screen::OptionsUi::load(),
+            options_ui: super::options_screen::OptionsUi::default(),
             profile: crate::profile_store::ProfileStore::load(floor_one_items),
             library_ui: super::library_planner::LibraryUi::default(),
             log_pages: Default::default(),
