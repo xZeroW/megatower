@@ -28,6 +28,7 @@ fn is_dynamic(visual: &Visual) -> bool {
         || visual.path.contains("SubViewportContainer")
         || visual.path.contains("GameplayScreenTransition")
         || visual.path.contains("PingTextureRect")
+        || visual.path.contains("EquipmentSlotPreview") && visual.path.ends_with("/SlotTextureRect")
         || visual
             .texture
             .as_deref()
@@ -83,6 +84,12 @@ fn spawn_hud_layout(
     commands
         .spawn(absolute([0.0, 0.0, layout.viewport[0], layout.viewport[1]]))
         .with_children(|canvas| {
+            // The panels are inset by 2 px: the gaps show the border color.
+            canvas.spawn((
+                absolute([0.0, 0.0, layout.viewport[0], layout.viewport[1]]),
+                BackgroundColor(palette_color(Some(2))),
+                Name::new("Screen border background"),
+            ));
             let mut frame = absolute(ROOM_FRAME_RECT);
             frame.overflow = Overflow::clip();
             canvas.spawn(frame).with_children(|frame| {
@@ -109,6 +116,12 @@ fn spawn_hud_layout(
                         capture.wait_for(image.image.clone().untyped());
                     }
                     canvas.spawn((absolute(visual.rect), image, Name::new(visual.path.clone())));
+                } else if visual.kind == "ColorRect" && visual.palette.is_some() {
+                    canvas.spawn((
+                        absolute(visual.rect),
+                        BackgroundColor(palette_color(visual.palette)),
+                        Name::new(visual.path.clone()),
+                    ));
                 } else if let Some(text) = visual.text.clone().filter(|t| !t.is_empty()) {
                     canvas.spawn((
                         absolute(visual.rect),

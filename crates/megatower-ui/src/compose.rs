@@ -216,6 +216,30 @@ pub fn hit_slot(game: &Game, ui: &UiState, rects: &Rects, x: f32, y: f32) -> Opt
     None
 }
 
+/// `EquipmentSlotPreview`: the empty slot's `SocketType.texture`, a cell of
+/// `equipment_slots.png`.
+fn socket_icon(rect: R, socket: megatower_core::items::definition::SocketType) -> Draw {
+    use megatower_core::items::definition::SocketType::*;
+    let [x, y] = match socket {
+        Helmet => [0.0, 0.0],
+        Chestplate => [32.0, 0.0],
+        Leggings => [64.0, 0.0],
+        Boots => [96.0, 0.0],
+        Necklace => [128.0, 0.0],
+        Weapon => [160.0, 0.0],
+        ReplicatedWeapon => [160.0, 32.0],
+        Ring => [192.0, 0.0],
+    };
+    Draw::Image {
+        rect: [rect[0] + 1.0, rect[1] + 1.0, 32.0, 32.0],
+        path: trim("assets/textures/ui/equipment_slots.png"),
+        region: Some([x, y, 32.0, 32.0]),
+        tint: palette(1),
+        slice: None,
+        flip_x: false,
+    }
+}
+
 /// Which shop container the bottom-left row shows in the current room.
 pub fn market_container(game: &Game) -> Option<Entity> {
     use megatower_core::game_mode::Room;
@@ -1394,10 +1418,22 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
             .get::<ItemContainer>(container)
             .map(|c| (c.locked_indexes.clone(), c.challenge_locked_indexes.clone()))
             .unwrap_or_default();
+        let sockets = if container == equipment {
+            game.world
+                .get::<ItemContainer>(container)
+                .map(|c| c.sockets.clone())
+                .unwrap_or_default()
+        } else {
+            Vec::new()
+        };
         for (index, rect) in list.iter().enumerate() {
             let slot = entity_slot(container, index);
             if ui.dragged == Some(slot) {
                 continue;
+            }
+            if let (Some(None) | None, Some(Some(socket))) = (items.get(index), sockets.get(index))
+            {
+                out.push(socket_icon(*rect, *socket));
             }
             if let Some(Some(item)) = items.get(index) {
                 let is_locked =
