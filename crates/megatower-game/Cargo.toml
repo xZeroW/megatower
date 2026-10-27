@@ -1,5 +1,5 @@
 [package]
-name = "megatower"
+name = "megatower-game"
 version.workspace = true
 edition.workspace = true
 
@@ -10,7 +10,7 @@ path = "src/main.rs"
 [dependencies]
 bevy.workspace = true
 bevy_brp_extras = { workspace = true, optional = true }
-megatower-client = { path = "../../crates/megatower-client" }
+megatower-client = { path = "../megatower-client" }
 
 [features]
 # Remote control for QA: BRP on port 15702 with bevy_brp_extras

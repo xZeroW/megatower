@@ -4065,15 +4065,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "megatower"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "bevy_brp_extras",
- "megatower-client",
-]
-
-[[package]]
 name = "megatower-client"
 version = "0.1.0"
 dependencies = [
@@ -4098,6 +4089,15 @@ dependencies = [
  "bevy",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "megatower-game"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_brp_extras",
+ "megatower-client",
 ]
 
 [[package]]
