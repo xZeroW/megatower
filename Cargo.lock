@@ -4081,6 +4081,18 @@ dependencies = [
  "bevy_auto_plugin",
  "bevy_kira_audio",
  "leafwing-input-manager",
+ "megaloot-game",
+ "megaloot-info",
+ "megaloot-kernel",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "megaloot-game"
+version = "0.1.0"
+dependencies = [
+ "bevy",
  "megaloot-info",
  "megaloot-kernel",
  "serde",

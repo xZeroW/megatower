@@ -12,11 +12,11 @@ use super::{
 };
 use crate::{
     godot_layout::{Layout, Visual},
-    items::{instance::Item, rarity::ItemRarity},
     profile_store::{BUILD_SIZE, BuildItem, ProfileStore},
-    run::{game::Game, gameplay::NewRun},
 };
 use bevy::prelude::Entity;
+use megaloot_game::items::{instance::Item, rarity::ItemRarity};
+use megaloot_game::run::{game::Game, gameplay::NewRun};
 use std::collections::HashMap;
 
 const COLUMNS: usize = 9;

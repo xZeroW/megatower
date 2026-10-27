@@ -52,7 +52,7 @@ pub struct ItemVisual {
 /// `ItemTextureRect.apply_data`; later states (phantom, reforge, banish)
 /// override earlier ones.
 pub fn apply_data(i: &ItemVisualInput) -> ItemVisual {
-    use crate::items::rarity::ItemRarity;
+    use megaloot_game::items::rarity::ItemRarity;
     let mut rarity_texture = ItemRarity::texture(i.rarity).to_string();
     if i.texture.is_some() {
         if i.is_essential {

@@ -5,16 +5,14 @@ use super::{
     compose::{Align, Draw, WHITE, hex, image, palette, text, tinted},
     model::*,
 };
-use crate::{
-    battle_actions::BattleActionId,
-    inventory::{ItemContainer, Slot},
-    items::instance::Item,
-    run::{
-        events::{LogEntry, Rgba},
-        game::Game,
-    },
-    stats::StatId,
+use megaloot_game::battle_actions::BattleActionId;
+use megaloot_game::inventory::{ItemContainer, Slot};
+use megaloot_game::items::instance::Item;
+use megaloot_game::run::{
+    events::{LogEntry, Rgba},
+    game::Game,
 };
+use megaloot_game::stats::StatId;
 use megaloot_kernel::translation;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -34,7 +32,7 @@ const AREA: R = [8.0, 30.0, 292.0, 258.0];
 
 /// Slots outside the three main grids: the open stash and the dismantle slot.
 pub fn extra_slots(game: &Game, ui: &UiState, rects: &Rects) -> Vec<(R, Slot)> {
-    use crate::game_mode::Room;
+    use megaloot_game::game_mode::Room;
     let mut slots = Vec::new();
     let local = game.local();
     if ui.stash_open {
@@ -51,7 +49,7 @@ pub fn extra_slots(game: &Game, ui: &UiState, rects: &Rects) -> Vec<(R, Slot)> {
 
 /// Sell / split / tinker targets shown in place of the market while dragging.
 pub fn drop_targets(game: &Game, ui: &UiState) -> Vec<(R, DropAction, String, bool)> {
-    use crate::game_mode::Room;
+    use megaloot_game::game_mode::Room;
     let mut targets = Vec::new();
     let Some(dragged) = ui.dragged else {
         return targets;
@@ -227,7 +225,7 @@ fn rects_texture_panel(rects: &Rects) -> String {
 }
 
 pub fn draw_dismantle_slot(game: &Game, ui: &UiState, out: &mut Vec<Draw>) {
-    use crate::game_mode::Room;
+    use megaloot_game::game_mode::Room;
     if game.memory.room_type != Room::Dismantle {
         return;
     }
@@ -267,7 +265,7 @@ pub fn draw_dismantle_slot(game: &Game, ui: &UiState, out: &mut Vec<Draw>) {
                 ],
                 format!(
                     "+{} {}",
-                    crate::run::characters::format_number(bonus.amount),
+                    megaloot_game::run::characters::format_number(bonus.amount),
                     name
                 ),
                 game.rules.stats.get(bonus.resource).color,
@@ -285,7 +283,7 @@ pub fn draw_dismantle_slot(game: &Game, ui: &UiState, out: &mut Vec<Draw>) {
 }
 
 /// Stat row under the cursor on the stats tab (same grid as `draw_stats_tab`).
-pub fn stat_row_at(game: &Game, x: f32, y: f32) -> Option<crate::stats::StatId> {
+pub fn stat_row_at(game: &Game, x: f32, y: f32) -> Option<megaloot_game::stats::StatId> {
     let order = game.rules.stats.groups.get("display")?;
     order.iter().enumerate().find_map(|(i, stat)| {
         let (col, row) = (i / 17, i % 17);
@@ -326,14 +324,14 @@ pub fn draw_stats_tab(game: &Game, out: &mut Vec<Draw>) {
         let suffix = if def.is_percentage { "%" } else { "" };
         let mut value = format!(
             "{}{}",
-            crate::run::characters::format_number(final_amount),
+            megaloot_game::run::characters::format_number(final_amount),
             suffix
         );
         if modifier != 0.0 {
             value = format!(
                 "{value}  ({}+{}%)",
-                crate::run::characters::format_number(base),
-                crate::run::characters::format_number(modifier)
+                megaloot_game::run::characters::format_number(base),
+                megaloot_game::run::characters::format_number(modifier)
             );
         }
         out.push(text([x + 80.0, y, 66.0, 13.0], value, WHITE, Align::Right));
@@ -370,7 +368,7 @@ fn lower(name: &str) -> String {
 pub fn format_log(game: &Game, entry: &LogEntry) -> Option<(String, Rgba)> {
     let t = |key: &str| translation::text(key);
     let stat_name = |id: StatId| translation::t(&game.rules.stats.get(id).name, "Stat Name");
-    let num = crate::run::characters::format_number;
+    let num = megaloot_game::run::characters::format_number;
     Some(match entry {
         LogEntry::Damage {
             attacker,
@@ -387,7 +385,7 @@ pub fn format_log(game: &Game, entry: &LogEntry) -> Option<(String, Rgba)> {
                 Some(BattleActionId::Hit | BattleActionId::Block) => {
                     let mut line = t("Battle Log Received Damage").replace("{character}", &target);
                     let mut damage = *uncapped_total;
-                    if *source == crate::combat::damage::DamageSource::Attack {
+                    if *source == megaloot_game::combat::damage::DamageSource::Attack {
                         if *result == Some(BattleActionId::Hit) {
                             line = t("Battle Log Hit")
                                 .replace("{character-1}", &attacker)

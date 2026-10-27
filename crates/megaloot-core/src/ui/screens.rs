@@ -830,7 +830,7 @@ pub fn profile_popup_draws(
     record: i32,
     scroll: f32,
 ) -> Vec<Draw> {
-    use crate::definitions::BorderType;
+    use megaloot_game::definitions::BorderType;
     const BORDERS: [BorderType; 8] = [
         BorderType::Wooden,
         BorderType::Silver,

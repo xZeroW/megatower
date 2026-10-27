@@ -2,7 +2,7 @@
 //! `adventurer_overview_container`, `reward_container`,
 //! `memory_slot_container` and `memory_slot_adventurer_container` rules.
 
-use crate::definitions::BorderType;
+use megaloot_game::definitions::BorderType;
 
 pub const UNKNOWN_PORTRAIT: &str = "assets/textures/portraits/unknown.png";
 

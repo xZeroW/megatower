@@ -155,7 +155,7 @@ fn music(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::run::{game::Game, gameplay::NewRun};
+    use megaloot_game::run::{game::Game, gameplay::NewRun};
 
     #[test]
     fn music_follows_the_screen_and_the_floor() {

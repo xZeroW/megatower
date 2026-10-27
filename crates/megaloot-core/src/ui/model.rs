@@ -4,12 +4,10 @@
 //! enemy widget whose size is measured from `enemy_container.tscn`
 //! (`custom_minimum_size = 76x146`) and the reference footage.
 
-use crate::{
-    godot_layout::Layout,
-    inventory::Slot,
-    run::events::{Frame, Fx, Popup, Timed},
-};
+use crate::godot_layout::Layout;
 use bevy::prelude::Entity;
+use megaloot_game::inventory::Slot;
+use megaloot_game::run::events::{Frame, Fx, Popup, Timed};
 
 pub type R = [f32; 4];
 
@@ -252,7 +250,7 @@ pub struct UiState {
     pub tab: Tab,
     pub cursor_override: Option<[f32; 2]>,
     pub stash_open: bool,
-    pub log: Vec<(String, crate::run::events::Rgba)>,
+    pub log: Vec<(String, megaloot_game::run::events::Rgba)>,
     pub audio: Vec<(String, f32)>,
     pub screen: Screen,
     pub dragged: Option<Slot>,
@@ -261,7 +259,7 @@ pub struct UiState {
     pub timeline: Timeline,
     pub time: f64,
     pub shake_until: f64,
-    pub flash: Option<(crate::run::events::FlashKind, f64)>,
+    pub flash: Option<(megaloot_game::run::events::FlashKind, f64)>,
     pub enemy_x: [f32; 3],
     pub enemy_hit: [f64; 3],
     pub selected_adventurer: usize,
@@ -334,7 +332,7 @@ pub fn entity_slot(container: Entity, index: usize) -> Slot {
 
 /// `Profile._init`: ids of every floor-1 item in `Items.LIST` order.
 fn floor_one_items() -> Vec<String> {
-    let raw = crate::items::catalog::RawItemCatalog::recovered();
+    let raw = megaloot_game::items::catalog::RawItemCatalog::recovered();
     let order: Vec<String> = raw.0.iter().map(|d| d.id.clone()).collect();
     let Ok(catalog) = raw.initialize(&order, false) else {
         return vec![];

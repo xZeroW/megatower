@@ -57,15 +57,8 @@ mod overlays;
 mod window_options;
 
 use crate::{
-    combat::turn::TurnType,
     gameplay_input::{GameAction, GameplayCommand, InputContext, commands_for_actions},
     godot_layout::recovered_layout,
-    run::{
-        events::{FlashKind, Fx, Popup},
-        game::Game,
-        gameplay::NewRun,
-        state::Player,
-    },
 };
 use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_auto_plugin::prelude::*;
@@ -76,6 +69,13 @@ use compose::{
 use frame::{adventurer_cells, select_draws};
 pub(crate) use frame::{refresh, run_action};
 pub use input::FrameInput;
+use megaloot_game::combat::turn::TurnType;
+use megaloot_game::run::{
+    events::{FlashKind, Fx, Popup},
+    game::Game,
+    gameplay::NewRun,
+    state::Player,
+};
 use model::*;
 use panels::{DropAction, drop_targets, format_log};
 
@@ -112,7 +112,8 @@ pub enum UiSystems {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{godot_layout::recovered_layout, run::gameplay::NewRun};
+    use crate::godot_layout::recovered_layout;
+    use megaloot_game::run::gameplay::NewRun;
 
     /// Compose the HUD at every step of bot-driven runs, in every tab, with the
     /// stash open and an item dragged: no panics, and drawing is deterministic.
@@ -134,7 +135,7 @@ mod tests {
                 let local = game.local();
                 let inventory = game.state(local).inventory;
                 ui.dragged = if step % 5 == 0 {
-                    Some(crate::inventory::Slot {
+                    Some(megaloot_game::inventory::Slot {
                         container: Some(inventory),
                         index: (step % 20) as i32,
                     })
@@ -154,7 +155,7 @@ mod tests {
                     game.try_to_buy_item(market, i);
                 }
                 for index in 0..20 {
-                    game.alt_press(crate::inventory::Slot {
+                    game.alt_press(megaloot_game::inventory::Slot {
                         container: Some(inventory),
                         index,
                     });
@@ -175,7 +176,7 @@ mod tests {
         let market = market_container(&game).unwrap();
         let mut seen = 0;
         for i in 0..4 {
-            let slot = crate::inventory::Slot {
+            let slot = megaloot_game::inventory::Slot {
                 container: Some(market),
                 index: i,
             };
@@ -226,7 +227,7 @@ mod tests {
     #[test]
     fn select_screen_lists_all_adventurers() {
         let rects = Rects::from_layout(&recovered_layout());
-        let catalog = crate::adventurers::AdventurerCatalog::recovered();
+        let catalog = megaloot_game::adventurers::AdventurerCatalog::recovered();
         let draws = select_draws(&rects, &catalog, 0);
         let names = draws
             .iter()

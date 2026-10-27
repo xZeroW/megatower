@@ -26,7 +26,7 @@ fn update_screens(
     let ui = &mut ui.0;
     let rects = &rects.0;
     let (click, alt_click) = (input.click, input.alt_click);
-    let catalog = crate::adventurers::AdventurerCatalog::recovered();
+    let catalog = megaloot_game::adventurers::AdventurerCatalog::recovered();
     let overlay = if ui.profile_open {
         profile_frame(ui, &keys, click, alt_click)
     } else if ui.library_open {
@@ -97,7 +97,7 @@ fn update_screens(
                             if std::env::var("MEGALOOT_MODE")
                                 .is_ok_and(|m| m.eq_ignore_ascii_case("practice"))
                             {
-                                run.mode = crate::game_mode::GameMode::Practice;
+                                run.mode = megaloot_game::game_mode::GameMode::Practice;
                             }
                             slot.0 = Some(Game::new(run));
                             ui.screen = Screen::Playing;
@@ -167,7 +167,7 @@ pub(super) fn adventurer_cells(count: usize) -> Vec<R> {
 
 pub(super) fn select_draws(
     rects: &Rects,
-    adventurers: &crate::adventurers::AdventurerCatalog,
+    adventurers: &megaloot_game::adventurers::AdventurerCatalog,
     selected: usize,
 ) -> Vec<Draw> {
     let mut out = vec![Draw::Fill {
@@ -229,7 +229,7 @@ pub(crate) fn run_action(game: &mut Game, ui: &mut UiState, f: impl FnOnce(&mut 
     ui.timeline.push(events, total);
 }
 
-pub(super) fn enemy_cx(frame: &crate::run::events::Frame, idx: usize) -> f32 {
+pub(super) fn enemy_cx(frame: &megaloot_game::run::events::Frame, idx: usize) -> f32 {
     let visible: Vec<usize> = frame
         .enemies
         .iter()
@@ -278,7 +278,7 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
             }
         }
         Fx::RoomChanged => {
-            if game.memory.room_type == crate::game_mode::Room::Battle {
+            if game.memory.room_type == megaloot_game::game_mode::Room::Battle {
                 ui.log_pages.reset_for_new_battle();
                 ui.log_scroll = 0;
             }
@@ -390,7 +390,7 @@ pub(super) fn handle_input(
             }
         }
         if contains(panels::SPEED_BUTTON, x, y) {
-            use crate::run::game::BattleSpeedOption::*;
+            use megaloot_game::run::game::BattleSpeedOption::*;
             game.battle_speed_option = match game.battle_speed_option {
                 X1 => X2,
                 X2 => X4,
@@ -433,7 +433,7 @@ pub(super) fn handle_input(
         // Buttons.
         for (rect, action, _, enabled) in action_buttons(game, rects) {
             if contains(rect, x, y) && enabled {
-                use crate::game_mode::Room;
+                use megaloot_game::game_mode::Room;
                 let room = game.memory.room_type;
                 run_action(game, ui, |g| match action {
                     Action::Primary => g.primary_action(),
@@ -483,7 +483,7 @@ pub(super) fn handle_input(
             } else if let Some(item) = game.slot_item(slot) {
                 let locked = game
                     .world
-                    .get::<crate::items::instance::Item>(item)
+                    .get::<megaloot_game::items::instance::Item>(item)
                     .is_some_and(|i| i.drag_locked);
                 if !locked {
                     ui.dragged = Some(slot);
@@ -513,7 +513,7 @@ pub(super) fn handle_input(
 }
 
 pub(crate) fn refresh(game: &mut Game) {
-    use crate::game_mode::Room;
+    use megaloot_game::game_mode::Room;
     match game.memory.room_type {
         Room::Merchant => game.try_to_refresh_merchant(),
         Room::MysticTrader => game.try_to_refresh_mystic_trader(),

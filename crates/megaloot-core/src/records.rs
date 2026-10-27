@@ -264,21 +264,22 @@ pub fn team_border_region(team: TeamType) -> (f32, f32, f32) {
 /// `Team.enemy_upgrades`: enemy resource id plus accumulated stats.
 #[derive(Clone, Debug, Default)]
 pub struct Team {
-    pub enemy_upgrades: Vec<crate::definitions::EnemyUpgrade>,
+    pub enemy_upgrades: Vec<megaloot_game::definitions::EnemyUpgrade>,
 }
 
 impl Team {
     /// `add_enemy_upgrade`: merge into the matching enemy's stats (copying
     /// each incoming stat and changing the amount), else append.
-    pub fn add_enemy_upgrade(&mut self, new: crate::definitions::EnemyUpgrade) {
+    pub fn add_enemy_upgrade(&mut self, new: megaloot_game::definitions::EnemyUpgrade) {
         if let Some(existing) = self
             .enemy_upgrades
             .iter_mut()
             .find(|u| u.enemy_resource == new.enemy_resource)
         {
-            let mut stats = crate::stats::StatCollection(std::mem::take(&mut existing.stats));
+            let mut stats =
+                megaloot_game::stats::StatCollection(std::mem::take(&mut existing.stats));
             for stat in &new.stats {
-                let mut copy = crate::stats::Stat::new(stat.resource, 0.0);
+                let mut copy = megaloot_game::stats::Stat::new(stat.resource, 0.0);
                 copy.set_stat(stat);
                 stats.change_amount(copy);
             }
@@ -289,7 +290,7 @@ impl Team {
     }
 
     /// `get_enemy_upgrade_stats`: copies of every matching upgrade's stats.
-    pub fn enemy_upgrade_stats(&self, enemy_resource: &str) -> Vec<crate::stats::Stat> {
+    pub fn enemy_upgrade_stats(&self, enemy_resource: &str) -> Vec<megaloot_game::stats::Stat> {
         self.enemy_upgrades
             .iter()
             .filter(|u| u.enemy_resource == enemy_resource)
@@ -493,8 +494,8 @@ mod tests {
 
     #[test]
     fn misc_records() {
-        use crate::definitions::EnemyUpgrade;
-        use crate::stats::{Stat, StatId};
+        use megaloot_game::definitions::EnemyUpgrade;
+        use megaloot_game::stats::{Stat, StatId};
         assert_eq!(team_border_region(TeamType::Red).0, 114.0);
         assert!(adventurer_by_name("A", "B") && !adventurer_by_name("B", "B"));
         let mut n = 0u8;

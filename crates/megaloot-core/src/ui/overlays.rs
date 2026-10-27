@@ -197,13 +197,14 @@ pub(super) fn esc_frame(
                 let game = slot.0.as_ref().expect("checked above");
                 let local = game.local();
                 let name = game.player(local).adventurer.name.clone();
-                let practice = game.memory.game_mode == crate::game_mode::GameMode::Practice;
+                let practice =
+                    game.memory.game_mode == megaloot_game::game_mode::GameMode::Practice;
                 let seed = std::time::SystemTime::now()
                     .duration_since(std::time::UNIX_EPOCH)
                     .map_or(1, |d| d.as_nanos() as u64);
                 let mut run = NewRun::default_for(&name, seed);
                 if practice {
-                    run.mode = crate::game_mode::GameMode::Practice;
+                    run.mode = megaloot_game::game_mode::GameMode::Practice;
                 }
                 slot.0 = Some(Game::new(run));
                 *ui = UiState {

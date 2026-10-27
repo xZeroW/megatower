@@ -13,8 +13,8 @@ fn sync_profile_system(mut slot: ResMut<GameSlot>, mut ui: ResMut<UiRes>) {
 /// `UserData` hooks: the profile learns the items and enemies a run meets
 /// and its deepest floor. Practice runs never touch the profile.
 pub(super) fn sync_profile(game: &mut Game, ui: &mut UiState) {
-    use crate::run::game::Encounter;
-    let practice = game.memory.game_mode == crate::game_mode::GameMode::Practice;
+    use megaloot_game::run::game::Encounter;
+    let practice = game.memory.game_mode == megaloot_game::game_mode::GameMode::Practice;
     let mut changed = false;
     for encounter in game.encounters.drain(..) {
         if practice {
@@ -48,12 +48,12 @@ pub(super) struct LibraryCatalogs {
 pub(super) fn catalogs() -> &'static LibraryCatalogs {
     static CATALOGS: std::sync::OnceLock<LibraryCatalogs> = std::sync::OnceLock::new();
     CATALOGS.get_or_init(|| {
-        let raw = crate::items::catalog::RawItemCatalog::recovered();
+        let raw = megaloot_game::items::catalog::RawItemCatalog::recovered();
         let order: Vec<String> = raw.0.iter().map(|d| d.id.clone()).collect();
         let items = raw.initialize(&order, false).expect("item catalog");
-        let adventurers = crate::adventurers::AdventurerCatalog::recovered();
-        let enemies = crate::enemies::EnemyCatalog::recovered(false);
-        let content = crate::character::content::CharacterContent::recovered();
+        let adventurers = megaloot_game::adventurers::AdventurerCatalog::recovered();
+        let enemies = megaloot_game::enemies::EnemyCatalog::recovered(false);
+        let content = megaloot_game::character::content::CharacterContent::recovered();
         let names: Vec<String> = adventurers.list.iter().map(|a| a.name.clone()).collect();
         LibraryCatalogs {
             adventurer_sources: adventurers
@@ -122,7 +122,7 @@ pub(super) fn library_passives(
 pub(super) fn library_synergies() -> &'static [screens::SynergyEntry] {
     static SYNERGIES: std::sync::OnceLock<Vec<screens::SynergyEntry>> = std::sync::OnceLock::new();
     SYNERGIES.get_or_init(|| {
-        let content = crate::character::content::CharacterContent::recovered();
+        let content = megaloot_game::character::content::CharacterContent::recovered();
         let mut entries = vec![];
         for set in &content.item_sets {
             for spec in content
@@ -164,8 +164,11 @@ pub(super) fn profile_entries(
         .map(|(name, portrait)| screens::ProfileEntry {
             name: name.clone(),
             portrait: portrait.clone(),
-            border: crate::definitions::BorderType::from_floor(true, profile.floor_record(name))
-                .texture(),
+            border: megaloot_game::definitions::BorderType::from_floor(
+                true,
+                profile.floor_record(name),
+            )
+            .texture(),
         })
         .collect()
 }

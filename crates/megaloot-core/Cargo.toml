@@ -8,6 +8,7 @@ name = "megaloot_core"
 path = "src/lib.rs"
 
 [dependencies]
+megaloot-game = { path = "../megaloot-game" }
 megaloot-info = { path = "../megaloot-info" }
 megaloot-kernel = { path = "../megaloot-kernel" }
 bevy.workspace = true

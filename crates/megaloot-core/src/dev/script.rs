@@ -10,8 +10,6 @@
 
 use crate::{
     app::GamePlugin,
-    combat::turn::TurnType,
-    run::{game::Game, gameplay::NewRun},
     ui::{
         GameSlot, UiRes, UiSystems,
         compose::market_container,
@@ -21,6 +19,8 @@ use crate::{
 };
 use bevy::prelude::*;
 use bevy_auto_plugin::prelude::*;
+use megaloot_game::combat::turn::TurnType;
+use megaloot_game::run::{game::Game, gameplay::NewRun};
 
 #[derive(AutoPlugin)]
 #[auto_plugin(impl_plugin_trait)]
@@ -74,7 +74,7 @@ fn start_from_env(
     let Ok(name) = std::env::var("MEGALOOT_AUTOSTART") else {
         return;
     };
-    let catalog = crate::adventurers::AdventurerCatalog::recovered();
+    let catalog = megaloot_game::adventurers::AdventurerCatalog::recovered();
     let Some(adventurer) = catalog.from_name(&name) else {
         return;
     };
@@ -87,7 +87,7 @@ fn start_from_env(
     // room's state is not otherwise set up).
     if let Some(room) = std::env::var("MEGALOOT_START_ROOM")
         .ok()
-        .and_then(|name| crate::game_mode::Room::from_debug_name(&name))
+        .and_then(|name| megaloot_game::game_mode::Room::from_debug_name(&name))
     {
         game.memory.room_type = room;
     }
@@ -258,7 +258,7 @@ fn run_game_script(
 
 /// QA steps that touch UI state or grant test items; returns true if handled.
 fn ui_step(game: &mut Game, ui: &mut UiState, step: &str) -> bool {
-    use crate::inventory::Slot;
+    use megaloot_game::inventory::Slot;
     let local = game.local();
     match step {
         "tab:stats" => ui.tab = Tab::Stats,
@@ -284,7 +284,11 @@ fn ui_step(game: &mut Game, ui: &mut UiState, step: &str) -> bool {
                 let mut parts = rest.split(':');
                 let name = parts.next().unwrap_or("");
                 let rarity = parts.next().and_then(|r| r.parse().ok()).unwrap_or(0);
-                if let Some(def) = game.items.get(&crate::run::game::item_id(name)).cloned() {
+                if let Some(def) = game
+                    .items
+                    .get(&megaloot_game::run::game::item_id(name))
+                    .cloned()
+                {
                     let floor = game.memory.floor_number;
                     let item = game.new_item(def, floor, rarity);
                     game.drop_item(item, true);
@@ -319,11 +323,12 @@ fn ui_step(game: &mut Game, ui: &mut UiState, step: &str) -> bool {
 /// One scripted action for demos/tests: enter, attack, stance, ability, buy:N,
 /// refresh, equip, leave, chest, sort.
 fn run_script_step(game: &mut Game, step: &str) {
-    use crate::{inventory::Slot, items::instance::Item};
+    use megaloot_game::inventory::Slot;
+    use megaloot_game::items::instance::Item;
     let local = game.local();
     match step {
         "enter" | "attack" | "leave" | "chest" => game.primary_action(),
-        "speed8" => game.battle_speed_option = crate::run::game::BattleSpeedOption::X8,
+        "speed8" => game.battle_speed_option = megaloot_game::run::game::BattleSpeedOption::X8,
         "stance" => game.turn_action(TurnType::Stance),
         "ability" => game.turn_action(TurnType::Ability0),
         "refresh" => refresh(game),
@@ -332,7 +337,7 @@ fn run_script_step(game: &mut Game, step: &str) {
             let inventory = game.state(local).inventory;
             let count = game
                 .world
-                .get::<crate::inventory::ItemContainer>(inventory)
+                .get::<megaloot_game::inventory::ItemContainer>(inventory)
                 .unwrap()
                 .items
                 .len();

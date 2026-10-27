@@ -194,8 +194,8 @@ pub struct RoomScene {
 }
 
 /// `RoomResource.scene` for each room type (`resources/rooms/*.tres`).
-pub fn scene_for(room: crate::game_mode::Room) -> &'static str {
-    use crate::game_mode::Room;
+pub fn scene_for(room: megaloot_game::game_mode::Room) -> &'static str {
+    use megaloot_game::game_mode::Room;
     match room {
         Room::Chest | Room::Merchant => "chest_room",
         Room::MysticTrader => "mystic_trader",
@@ -315,7 +315,7 @@ mod tests {
 
     #[test]
     fn exported_scenes_cover_every_room_type() {
-        use crate::game_mode::Room;
+        use megaloot_game::game_mode::Room;
         for room in [
             Room::Entrance,
             Room::Final,

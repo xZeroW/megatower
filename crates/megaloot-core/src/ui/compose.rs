@@ -3,17 +3,15 @@
 
 use super::model::*;
 
-use crate::{
-    enemies::Enemy,
-    inventory::{ItemContainer, Slot},
-    items::{instance::Item, rarity::ItemRarity},
-    run::{
-        events::{EnemyView, Frame, Rgba},
-        game::Game,
-    },
-    stats::StatId,
-};
 use bevy::prelude::Entity;
+use megaloot_game::enemies::Enemy;
+use megaloot_game::inventory::{ItemContainer, Slot};
+use megaloot_game::items::{instance::Item, rarity::ItemRarity};
+use megaloot_game::run::{
+    events::{EnemyView, Frame, Rgba},
+    game::Game,
+};
+use megaloot_game::stats::StatId;
 use megaloot_kernel::translation;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -235,7 +233,7 @@ pub fn hit_slot(game: &Game, ui: &UiState, rects: &Rects, x: f32, y: f32) -> Opt
 
 /// Which shop container the bottom-left row shows in the current room.
 pub fn market_container(game: &Game) -> Option<Entity> {
-    use crate::game_mode::Room;
+    use megaloot_game::game_mode::Room;
     let player = game.player(game.local());
     Some(match game.memory.room_type {
         Room::Merchant => player.merchant,
@@ -446,7 +444,7 @@ fn rows_from_tip(game: &Game, tip: &megaloot_info::info_builders::Tip) -> Vec<Ti
             // `BattleActions.get_bb_container_data`: colored icon, steel-blue name.
             BbPiece::Action(id) => {
                 if let Some(aid) = action_from_key(id) {
-                    let action = crate::battle_actions::action(aid);
+                    let action = megaloot_game::battle_actions::action(aid);
                     if let Some(icon) = &action.icon {
                         rows.last_mut()
                             .expect("row")
@@ -460,7 +458,7 @@ fn rows_from_tip(game: &Game, tip: &megaloot_info::info_builders::Tip) -> Vec<Ti
                 }
             }
             BbPiece::Keyword(id) => {
-                if let Some(k) = crate::definitions::KEYWORDS
+                if let Some(k) = megaloot_game::definitions::KEYWORDS
                     .iter()
                     .find(|k| k.name.to_uppercase().replace(' ', "_") == *id)
                 {
@@ -763,11 +761,11 @@ pub(crate) fn draw_tip(out: &mut Vec<Draw>, rects: &Rects, cursor: [f32; 2], tip
     }
 }
 
-fn action_from_key(key: &str) -> Option<crate::battle_actions::BattleActionId> {
+fn action_from_key(key: &str) -> Option<megaloot_game::battle_actions::BattleActionId> {
     serde_json::from_value(serde_json::Value::String(key.to_lowercase())).ok()
 }
 
-fn status_from_key(key: &str) -> Option<crate::status_effects::StatusEffectId> {
+fn status_from_key(key: &str) -> Option<megaloot_game::status_effects::StatusEffectId> {
     serde_json::from_value(serde_json::Value::String(key.to_lowercase())).ok()
 }
 
@@ -826,7 +824,7 @@ fn lookup_piece(
             .clone();
         return Some(BbPiece::Ability(id));
     }
-    if crate::definitions::KEYWORDS
+    if megaloot_game::definitions::KEYWORDS
         .iter()
         .any(|k| k.name.to_uppercase().replace(' ', "_") == property)
     {
@@ -888,7 +886,7 @@ fn description_pieces_for(
 /// `Info.from_status_effect_resource` for a status id.
 pub(crate) fn status_tip(
     game: &Game,
-    id: crate::status_effects::StatusEffectId,
+    id: megaloot_game::status_effects::StatusEffectId,
 ) -> Option<TipView> {
     let policy = game.rules.status_policies.get(id);
     let description = description_pieces(game, &policy.name, "Status Effect Description");
@@ -990,7 +988,7 @@ pub(crate) fn hit_status(
     frame: &Frame,
     x: f32,
     y: f32,
-) -> Option<crate::status_effects::StatusEffectId> {
+) -> Option<megaloot_game::status_effects::StatusEffectId> {
     let inside = |r: [f32; 4]| x >= r[0] && x <= r[0] + r[2] && y >= r[1] && y <= r[1] + r[3];
     let mut px = rects.effects_row[0];
     for status in &frame.player.statuses {
@@ -1077,7 +1075,7 @@ const ENEMY_TOP: f32 = 148.0;
 
 fn enemy_widget(
     rects: &Rects,
-    policies: &crate::combat::profile::StatusPolicies,
+    policies: &megaloot_game::combat::profile::StatusPolicies,
     view: &EnemyView,
     cx: f32,
     ui: &UiState,
@@ -1251,7 +1249,7 @@ fn enemy_widget(
 
 /// Everything above the static scaffold.
 pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
-    use crate::game_mode::Room;
+    use megaloot_game::game_mode::Room;
     let mut out: Vec<Draw> = Vec::new();
     let local = game.local();
     let frame: Frame = ui.timeline.frame.clone().unwrap_or_else(|| game.frame());
@@ -1563,10 +1561,10 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         format!(
             "x{}",
             match game.battle_speed_option {
-                crate::run::game::BattleSpeedOption::X1 => 1,
-                crate::run::game::BattleSpeedOption::X2 => 2,
-                crate::run::game::BattleSpeedOption::X4 => 4,
-                crate::run::game::BattleSpeedOption::X8 => 8,
+                megaloot_game::run::game::BattleSpeedOption::X1 => 1,
+                megaloot_game::run::game::BattleSpeedOption::X2 => 2,
+                megaloot_game::run::game::BattleSpeedOption::X4 => 4,
+                megaloot_game::run::game::BattleSpeedOption::X8 => 8,
             }
         ),
         palette(2),
@@ -1640,8 +1638,12 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         let age = (ui.time - at) as f32;
         if age < 0.5 {
             let color = match kind {
-                crate::run::events::FlashKind::Damage => [1.0, 0.0, 0.0, 0.3 * (1.0 - age / 0.5)],
-                crate::run::events::FlashKind::Stun => [0.6, 0.6, 0.6, 0.4 * (1.0 - age / 0.5)],
+                megaloot_game::run::events::FlashKind::Damage => {
+                    [1.0, 0.0, 0.0, 0.3 * (1.0 - age / 0.5)]
+                }
+                megaloot_game::run::events::FlashKind::Stun => {
+                    [0.6, 0.6, 0.6, 0.4 * (1.0 - age / 0.5)]
+                }
             };
             out.push(Draw::Fill {
                 rect: rects.room_frame,
@@ -1690,7 +1692,8 @@ pub enum Action {
 
 /// Buttons along the bottom of the room screen, per room type.
 pub fn action_buttons(game: &mut Game, rects: &Rects) -> Vec<(R, Action, String, bool)> {
-    use crate::{combat::turn::TurnType, game_mode::Room};
+    use megaloot_game::combat::turn::TurnType;
+    use megaloot_game::game_mode::Room;
     let mut buttons = Vec::new();
     match game.memory.room_type {
         Room::Battle => {
@@ -1778,7 +1781,7 @@ fn action_strip(
     blocked: bool,
     out: &mut Vec<Draw>,
 ) {
-    use crate::game_mode::Room;
+    use megaloot_game::game_mode::Room;
     let _ = frame;
     out.push(Draw::Fill {
         rect: [312.0, 297.0, 324.0, 59.0],
@@ -1788,7 +1791,8 @@ fn action_strip(
     let local = game.local();
     if game.memory.room_type == Room::Battle {
         let attack_type = game.with_attack(local, |view, _| view.attack_type());
-        let damage = game.attack_data_for(local, crate::combat::damage::DamageSource::Attack);
+        let damage =
+            game.attack_data_for(local, megaloot_game::combat::damage::DamageSource::Attack);
         let mut data = damage;
         game.with_attack(local, |view, _| view.apply_output_boosters(&mut data));
         let _ = attack_type;
@@ -1844,7 +1848,7 @@ fn ability_button_at(game: &Game, rects: &Rects, x: f32, y: f32) -> Option<usize
     // `action_buttons` needs `&mut`; hit-testing only reads, so clone the
     // world-free parts by asking a scratch value for the geometry.
     let slots = [rects.ability, rects.learned[0], rects.learned[1]];
-    if game.memory.room_type != crate::game_mode::Room::Battle {
+    if game.memory.room_type != megaloot_game::game_mode::Room::Battle {
         return None;
     }
     slots
@@ -1868,7 +1872,7 @@ fn _stat(_: StatId) {}
 #[cfg(test)]
 mod tooltip_tests {
     use super::*;
-    use crate::run::{game::Game, gameplay::NewRun};
+    use megaloot_game::run::{game::Game, gameplay::NewRun};
 
     #[test]
     fn translated_text_resolves_battle_actions_and_draws_them() {

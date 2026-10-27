@@ -4,7 +4,7 @@
 //! `ConnectionOption` status art, achievement image names. No network or
 //! file IO happens here.
 
-use crate::definitions::BorderType;
+use megaloot_game::definitions::BorderType;
 use serde_json::Value;
 
 pub const GAME_API_URL: &str =
