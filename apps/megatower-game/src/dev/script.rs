@@ -5,7 +5,8 @@
 //!   starts a run immediately;
 //! - `MEGALOOT_SCRIPT=a,b,c` runs one step every 0.4 s: `click:x:y`,
 //!   `rclick:x:y`, `type:text`, `backspace`, `esc`, `cursor:x:y`, and the run
-//!   steps of `run_script_step`/`ui_step`;
+//!   steps of `run_script_step`/`ui_step` (`vfx:cast|cinder|hearts|death|magic|hit`
+//!   plays an effect);
 //! - `MEGALOOT_LOG_INPUT=1` logs each step with the resulting state.
 
 use bevy::prelude::*;
@@ -15,7 +16,7 @@ use megatower_core::run::{game::Game, gameplay::NewRun};
 use megatower_ui::{
     GameSlot, ScriptedInput, UiRes, UiSystems,
     compose::market_container,
-    model::{Screen, Tab, UiState},
+    model::{LiveVfx, Screen, Tab, UiState, VfxKind},
     options_screen, refresh, run_action, screens,
 };
 
@@ -268,6 +269,24 @@ fn ui_step(game: &mut Game, ui: &mut UiState, step: &str) -> bool {
         "tab:profile" => ui.tab = Tab::Profile,
         "stash" => ui.stash_open = !ui.stash_open,
         "esc" => ui.esc_open = !ui.esc_open,
+        // `vfx:<kind>` plays an effect over the first enemy slot.
+        vfx if vfx.starts_with("vfx:") => {
+            let kind = match &vfx[4..] {
+                "cast" => VfxKind::AbilityCast,
+                "cinder" => VfxKind::Cinder,
+                "hearts" => VfxKind::Hearts,
+                "death" => VfxKind::DeathDust,
+                "magic" => VfxKind::MagicImpact,
+                _ => VfxKind::PhysicalImpact,
+            };
+            ui.vfx.push(LiveVfx {
+                kind,
+                at: ui.time,
+                cx: 474.0,
+                seed: 7,
+                color: [0.0, 0.46, 1.0, 1.0],
+            });
+        }
         _ => {
             if let Some(n) = step
                 .strip_prefix("drag:")

@@ -1508,6 +1508,84 @@ fn vfx_draws(ui: &UiState, out: &mut Vec<Draw>) {
                     ));
                 }
             }
+            VfxKind::AbilityCast => {
+                // `AbilityParticles`: ten beams rise along the enemy's feet
+                // over 0.45s, thin at both ends of their life.
+                for i in 0..10u32 {
+                    let delay = 0.2 * unit(vfx.seed, i * 13 + 1);
+                    let t = (age - delay) / 0.45;
+                    if !(0.0..1.0).contains(&t) {
+                        continue;
+                    }
+                    let x = cx + (unit(vfx.seed, i * 13 + 2) * 60.0 - 30.0);
+                    let y = ENEMY_TOP + 68.0 - 75.0 * (age - delay) * (1.0 - 0.5 * t);
+                    let width = 16.0 * (1.0 - ((t - 0.27) / 0.6).powi(2)).clamp(0.0, 1.0);
+                    let height = 42.0 * (0.18 + 1.57 * (t / 0.54).min(1.0));
+                    let alpha = if t < 0.327 {
+                        t / 0.327
+                    } else {
+                        1.0 - (t - 0.327) / 0.673
+                    };
+                    out.push(tinted(
+                        [x - width / 2.0, y - height / 2.0, width, height],
+                        "assets/textures/particles/beam.png",
+                        [vfx.color[0], vfx.color[1], vfx.color[2], alpha],
+                    ));
+                }
+            }
+            VfxKind::Cinder | VfxKind::Hearts => {
+                // Bursts of 9px sprites that drift up and slow down; speed
+                // scale 2 (cinder) / 1.75 (hearts) shortens their life.
+                let (count, speed, texture, extent, base_y) = if vfx.kind == VfxKind::Cinder {
+                    (
+                        20u32,
+                        2.0_f32,
+                        "assets/textures/particles/flame_0.png",
+                        [25.0, 25.0],
+                        60.0,
+                    )
+                } else {
+                    (
+                        7u32,
+                        1.75,
+                        "assets/textures/particles/heart_0.png",
+                        [35.0, 15.0],
+                        44.0,
+                    )
+                };
+                let age = age * speed;
+                if age >= 1.0 {
+                    continue;
+                }
+                for i in 0..count {
+                    let v0 = 15.0 + 30.0 * unit(vfx.seed, i * 13 + 3);
+                    let damping = 15.0 + 10.0 * unit(vfx.seed, i * 13 + 4);
+                    let secs = age;
+                    let stop = v0 / damping;
+                    let dist = if secs < stop {
+                        v0 * secs - damping * secs * secs / 2.0
+                    } else {
+                        v0 * v0 / (2.0 * damping)
+                    };
+                    let x = cx + (unit(vfx.seed, i * 13 + 5) * 2.0 - 1.0) * extent[0];
+                    let y =
+                        ENEMY_TOP + base_y + (unit(vfx.seed, i * 13 + 6) * 2.0 - 1.0) * extent[1]
+                            - dist;
+                    let scale = (0.5 + unit(vfx.seed, i * 13 + 7)) * (1.0 - age * 0.5);
+                    let size = 9.0
+                        * scale.max(0.2)
+                        * if vfx.kind == VfxKind::Hearts {
+                            1.5
+                        } else {
+                            1.0
+                        };
+                    out.push(tinted(
+                        [x - size / 2.0, y - size / 2.0, size, size],
+                        texture,
+                        [1.0, 1.0, 1.0, 1.0 - age],
+                    ));
+                }
+            }
             _ => {}
         }
     }
@@ -1534,6 +1612,18 @@ fn enemy_visuals(
         -((hit / 0.25 * std::f64::consts::PI).sin() as f32) * 6.0
     } else {
         0.0
+    };
+    // `flying_idle`: a 5px bob over the first 0.8s of each 1.2s loop.
+    let flying_bob = |flying: bool, delay: f64| -> f32 {
+        if !flying {
+            return 0.0;
+        }
+        let t = (ui.time - delay).rem_euclid(1.2) as f32;
+        if t < 0.8 {
+            -5.0 * (t / 0.8 * std::f32::consts::PI).sin()
+        } else {
+            0.0
+        }
     };
     let (tw, th) = texture_size(&texture);
     let frames = ((th / 64.0).floor() as i64).max(1);
@@ -1568,7 +1658,12 @@ fn enemy_visuals(
         let (nw, _) = texture_size(next);
         let w = nw.max(64.0);
         out.push(Draw::Image {
-            rect: [visuals[0] + (visuals[2] - w) / 2.0, oy + 5.0, w, 64.0],
+            rect: [
+                visuals[0] + (visuals[2] - w) / 2.0,
+                oy + 5.0 + flying_bob(view.next_flying, idx as f64 * 0.1),
+                w,
+                64.0,
+            ],
             path: trim(next),
             region: Some([0.0, 0.0, w, 64.0]),
             tint: palette(1),
@@ -1586,7 +1681,7 @@ fn enemy_visuals(
         out.push(Draw::Image {
             rect: [
                 visuals[0] + (visuals[2] - w) / 2.0,
-                visuals[1] + bob,
+                visuals[1] + bob + flying_bob(view.flying, 0.0),
                 w,
                 64.0,
             ],

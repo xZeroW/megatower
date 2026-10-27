@@ -218,6 +218,9 @@ pub enum VfxKind {
     PhysicalImpact,
     MagicImpact,
     DeathDust,
+    AbilityCast,
+    Cinder,
+    Hearts,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -227,6 +230,7 @@ pub struct LiveVfx {
     /// Logical x of the enemy the effect plays on.
     pub cx: f32,
     pub seed: u32,
+    pub color: [f32; 4],
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

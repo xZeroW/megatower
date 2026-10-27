@@ -1362,6 +1362,7 @@ impl Game {
         }
         self.pay(currency, amount, false);
         self.drop_item(item, true);
+        self.fx(Fx::HeartParticles);
         true
     }
 

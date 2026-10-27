@@ -63,6 +63,10 @@ impl Game {
             next_texture: next
                 .and_then(|n| self.world.get::<Enemy>(n))
                 .and_then(|n| n.definition.texture.clone()),
+            flying: enemy.definition.flying,
+            next_flying: next
+                .and_then(|n| self.world.get::<Enemy>(n))
+                .is_some_and(|n| n.definition.flying),
             level: enemy.level,
             out_of_combat: enemy.out_of_combat,
             selected,

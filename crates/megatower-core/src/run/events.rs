@@ -52,6 +52,9 @@ pub struct EnemyView {
     pub name: String,
     pub texture: Option<String>,
     pub next_texture: Option<String>,
+    /// `EnemyResource.flying` of the enemy and of the one queued behind it.
+    pub flying: bool,
+    pub next_flying: bool,
     pub level: i32,
     pub out_of_combat: bool,
     pub selected: bool,
@@ -110,6 +113,17 @@ pub enum Fx {
     DeathParticles {
         enemy_idx: usize,
     },
+    /// `play_enemy_ability`: beams in the ability's cast colour.
+    AbilityCast {
+        enemy_idx: usize,
+        color: Rgba,
+    },
+    /// An enemy's cinder particles before it burns the player.
+    CinderParticles {
+        enemy_idx: usize,
+    },
+    /// Hearts over the first enemy slot after tinkering.
+    HeartParticles,
     ScreenFlash(FlashKind),
     CameraShake,
     Log(LogEntry),

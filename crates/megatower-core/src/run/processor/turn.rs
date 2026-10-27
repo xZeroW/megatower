@@ -756,6 +756,19 @@ impl Game {
                         name: "use_ability",
                         volume_db: -2.5,
                     });
+                    let cast = self
+                        .rules
+                        .content
+                        .abilities
+                        .iter()
+                        .find(|a| a.id == ability.resource)
+                        .map(|a| a.cast_color().to_srgba());
+                    if let Some(c) = cast {
+                        self.fx(Fx::AbilityCast {
+                            enemy_idx: idx as usize,
+                            color: [c.red, c.green, c.blue, c.alpha],
+                        });
+                    }
                 }
             }
             self.activate_ability(character, &ability, use_cost);

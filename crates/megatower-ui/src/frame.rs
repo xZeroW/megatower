@@ -293,6 +293,7 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
                 at: now,
                 cx: enemy_cx(&frame, enemy_idx),
                 seed,
+                color: [1.0; 4],
             });
         }
         Fx::DeathParticles { enemy_idx } => {
@@ -302,6 +303,37 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
                 at: now,
                 cx: enemy_cx(&frame, enemy_idx),
                 seed: enemy_idx as u32 + (now * 1000.0) as u32,
+                color: [1.0; 4],
+            });
+        }
+        Fx::AbilityCast { enemy_idx, color } => {
+            let frame = ui.timeline.frame.clone().unwrap_or_else(|| game.frame());
+            ui.vfx.push(LiveVfx {
+                kind: VfxKind::AbilityCast,
+                at: now,
+                cx: enemy_cx(&frame, enemy_idx),
+                seed: enemy_idx as u32 + (now * 1000.0) as u32,
+                color,
+            });
+        }
+        Fx::CinderParticles { enemy_idx } => {
+            let frame = ui.timeline.frame.clone().unwrap_or_else(|| game.frame());
+            ui.vfx.push(LiveVfx {
+                kind: VfxKind::Cinder,
+                at: now,
+                cx: enemy_cx(&frame, enemy_idx),
+                seed: enemy_idx as u32 + (now * 1000.0) as u32,
+                color: [1.0; 4],
+            });
+        }
+        Fx::HeartParticles => {
+            let frame = ui.timeline.frame.clone().unwrap_or_else(|| game.frame());
+            ui.vfx.push(LiveVfx {
+                kind: VfxKind::Hearts,
+                at: now,
+                cx: enemy_cx(&frame, 0),
+                seed: (now * 1000.0) as u32,
+                color: [1.0; 4],
             });
         }
         Fx::ScreenFlash(kind) => ui.flash = Some((kind, now)),

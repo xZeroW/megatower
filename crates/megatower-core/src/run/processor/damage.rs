@@ -1419,6 +1419,9 @@ impl Game {
             targets = battling.into_iter().collect();
             let idx = self.enemy_idx(source);
             if idx >= 0 {
+                self.fx(Fx::CinderParticles {
+                    enemy_idx: idx as usize,
+                });
                 self.wait_battle(0.25);
             }
         }
