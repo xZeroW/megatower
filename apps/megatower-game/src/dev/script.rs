@@ -350,6 +350,7 @@ fn run_script_step(game: &mut Game, step: &str) {
     let local = game.local();
     match step {
         "enter" | "attack" | "leave" | "chest" => game.primary_action(),
+        "die" => game.try_to_end_game(),
         "speed8" => game.battle_speed_option = megatower_core::run::game::BattleSpeedOption::X8,
         "stance" => game.turn_action(TurnType::Stance),
         "ability" => game.turn_action(TurnType::Ability0),

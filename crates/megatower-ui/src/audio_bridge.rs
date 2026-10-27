@@ -85,13 +85,38 @@ mod tests {
 #[auto_add_system(plugin = UiPlugin, schedule = Update)]
 fn publish_room_scene(
     slot: Res<GameSlot>,
+    ui: Res<super::UiRes>,
     mut request: ResMut<megatower_runtime::render::room::RoomSceneRequest>,
 ) {
+    // The old room stays until the wipe has covered it.
+    if ui
+        .0
+        .transition
+        .is_some_and(|t| t.start && ui.0.time - t.at < t.seconds)
+    {
+        return;
+    }
     let want = slot
         .0
         .as_ref()
         .map(|game| megatower_assets::room_scene::scene_for(game.memory.room_type));
     if request.0 != want {
         request.0 = want;
+    }
+}
+
+/// The camera dolly follows the screen transition that wipes the room in.
+#[auto_add_system(plugin = UiPlugin, schedule = Update)]
+fn drive_room_dolly(
+    ui: Res<super::UiRes>,
+    mut dolly: ResMut<megatower_runtime::render::room::RoomCameraDolly>,
+) {
+    let want = match ui.0.transition {
+        // The camera animation runs slightly faster than the wipe.
+        Some(t) if t.start => ((ui.0.time - t.at) / (t.seconds * 0.967)).clamp(0.0, 1.0) as f32,
+        _ => 0.0,
+    };
+    if dolly.0 != want {
+        dolly.0 = want;
     }
 }

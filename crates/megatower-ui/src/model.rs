@@ -212,6 +212,15 @@ pub struct LivePopup {
     pub origin: [f32; 2],
 }
 
+/// A running `GameplayScreenTransition`: `start` wipes in (and the camera
+/// dollies forward), otherwise it wipes out.
+#[derive(Clone, Copy, Debug)]
+pub struct Transition {
+    pub start: bool,
+    pub at: f64,
+    pub seconds: f64,
+}
+
 /// One-shot visual effects played over the room.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum VfxKind {
@@ -312,6 +321,9 @@ pub struct UiState {
     pub cursor: Option<[f32; 2]>,
     pub popups: Vec<LivePopup>,
     pub vfx: Vec<LiveVfx>,
+    pub transition: Option<Transition>,
+    /// When the run ended; the death screen's wipe starts from it.
+    pub death_at: Option<f64>,
     pub timeline: Timeline,
     pub time: f64,
     pub shake_until: f64,
@@ -356,6 +368,8 @@ impl Default for UiState {
             cursor: None,
             popups: Vec::new(),
             vfx: Vec::new(),
+            transition: None,
+            death_at: None,
             timeline: Timeline::default(),
             time: 0.0,
             shake_until: 0.0,

@@ -102,6 +102,8 @@ fn update_screens(
                             slot.0 = Some(Game::new(run));
                             ui.screen = Screen::Playing;
                             ui.timeline = Timeline::default();
+                            ui.transition = None;
+                            ui.death_at = None;
                             ui.dragged = None;
                             ui.popups.clear();
                             break;
@@ -276,6 +278,13 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
         Fx::PlayerAttack { enemy_idx } => ui.enemy_hit[enemy_idx.min(2)] = now,
         Fx::EnemyDodge { enemy_idx } => ui.enemy_dodge[enemy_idx.min(2)] = now,
         Fx::EnemyAttack { enemy_idx } => ui.enemy_lunge[enemy_idx.min(2)] = now,
+        Fx::ScreenTransition { start, seconds } => {
+            ui.transition = Some(Transition {
+                start,
+                at: now,
+                seconds,
+            })
+        }
         Fx::ScreenFlash(kind) => ui.flash = Some((kind, now)),
         Fx::CameraShake => {
             if ui.options_ui.options.screen_shake {
@@ -289,6 +298,9 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
             }
         }
         Fx::GameEnded | Fx::PhantomRevived => {
+            if matches!(fx, Fx::GameEnded) {
+                ui.death_at = Some(now);
+            }
             if matches!(fx, Fx::PhantomRevived) {
                 ui.log_pages.reset_for_phantom();
             }

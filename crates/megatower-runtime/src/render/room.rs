@@ -26,6 +26,15 @@ use megatower_assets::room_screen::{ROOM_CAMERA_FOV_DEGREES, ROOM_VIEWPORT_SIZE}
 #[auto_init_resource(plugin = RoomRenderPlugin)]
 pub struct RoomSceneRequest(pub Option<&'static str>);
 
+/// Progress (0..=1) of the room camera's `start` animation: the dolly into
+/// the next room while the screen transition wipes in.
+#[derive(Resource, Default)]
+#[auto_init_resource(plugin = RoomRenderPlugin)]
+pub struct RoomCameraDolly(pub f32);
+
+#[derive(Component)]
+struct RoomCamera;
+
 /// Render layer of the room scene, kept out of the UI camera.
 pub const ROOM_LAYER: usize = 1;
 const WALL_TEXTURE: &str = "assets/textures/3d/dungeon_wall.png";
@@ -152,6 +161,7 @@ pub fn setup_room(
         Transform::from_xyz(0.0, 1.357, 2.75)
             .looking_to(Vec3::new(0.0, -0.182236, -0.983255), Vec3::Y),
         RenderLayers::layer(ROOM_LAYER),
+        RoomCamera,
         Name::new("RoomScreen source Camera3D"),
     ));
     let room = spawn_room_scene(&mut commands, &assets, "room_normal");
@@ -276,4 +286,24 @@ fn sync_room_scene(
         commands.entity(entity).despawn();
     }
     spawn_room_scene(&mut commands, &assets, next);
+}
+
+/// `Camera3DAnimationPlayer.start`: the camera travels from its resting
+/// position to (0, 0, -9) with a strong ease-out (curve 0.3).
+#[auto_add_system(plugin = RoomRenderPlugin, schedule = Update)]
+fn drive_room_camera(
+    dolly: Res<RoomCameraDolly>,
+    mut camera: Query<&mut Transform, With<RoomCamera>>,
+) {
+    let rest = Vec3::new(0.0, 1.357, 2.75);
+    let end = Vec3::new(0.0, 0.0, -9.0);
+    let t = dolly.0.clamp(0.0, 1.0);
+    let eased = if t <= 0.0 {
+        0.0
+    } else {
+        1.0 - (1.0 - t).powf(1.0 / 0.3)
+    };
+    for mut transform in &mut camera {
+        transform.translation = rest.lerp(end, eased);
+    }
 }

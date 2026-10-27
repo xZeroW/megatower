@@ -128,6 +128,12 @@ pub enum Fx {
     CameraShake,
     Log(LogEntry),
     RoomChanged,
+    /// `GameplayScreenTransition.start/end`: the diamond wipe over the room
+    /// column (and, for `start`, the camera dolly into the next room).
+    ScreenTransition {
+        start: bool,
+        seconds: f64,
+    },
     EnemySpawned {
         enemy_idx: usize,
     },

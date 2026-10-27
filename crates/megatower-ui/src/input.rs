@@ -64,6 +64,12 @@ fn collect_input(
     ui.time += f64::from(time.delta_secs());
     ui.popups.retain(|p| ui.time - p.at < 1.2);
     ui.vfx.retain(|v| ui.time - v.at < 2.0);
+    if ui
+        .transition
+        .is_some_and(|t| !t.start && ui.time - t.at >= t.seconds)
+    {
+        ui.transition = None;
+    }
     ui.cursor = ui.cursor_override.or_else(|| {
         window
             .cursor_position()

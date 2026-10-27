@@ -579,6 +579,12 @@ impl Game {
             battle.setup_in_progress = false;
         }
         self.fx(Fx::RoomChanged);
+        // `setup_new_room`: `screen_transition.end(1.45 / speed)`.
+        let speed = 0.5 + self.battle_speed * 0.5;
+        self.fx(Fx::ScreenTransition {
+            start: false,
+            seconds: 0.75 / (1.45 / speed),
+        });
     }
 
     /// `Memory.cleanup_battle`.
@@ -660,7 +666,12 @@ impl Game {
         });
         // `screen_transition.start(1.45 / speed)` passes a playback speed to the
         // 0.75s `transition_start` animation, so its duration is 0.75 / (1.45 / speed).
-        self.wait_real(0.75 / (1.45 / speed));
+        let seconds = 0.75 / (1.45 / speed);
+        self.fx(Fx::ScreenTransition {
+            start: true,
+            seconds,
+        });
+        self.wait_real(seconds);
         self.reset_room();
         let local = self.local();
         self.char_state_mut(local).is_phantom = false;
