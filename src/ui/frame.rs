@@ -20,6 +20,7 @@ fn update_screens(
     mut slot: ResMut<GameSlot>,
     mut draw_state: ResMut<DrawState>,
     mut input_context: ResMut<InputContext>,
+    actions: Query<&leafwing_input_manager::prelude::ActionState<GameAction>>,
     mut exit: MessageWriter<AppExit>,
 ) {
     let ui = &mut ui.0;
@@ -136,7 +137,16 @@ fn update_screens(
                     }
                 }
                 if !busy && !died {
-                    handle_input(game, ui, rects, &keys, click, alt_click, &mut input_context);
+                    handle_input(
+                        game,
+                        ui,
+                        rects,
+                        actions.single().ok(),
+                        &keys,
+                        click,
+                        alt_click,
+                        &mut input_context,
+                    );
                 }
                 compose(game, ui, rects)
             }
@@ -314,6 +324,7 @@ pub(super) fn handle_input(
     game: &mut Game,
     ui: &mut UiState,
     rects: &Rects,
+    actions: Option<&leafwing_input_manager::prelude::ActionState<GameAction>>,
     keys: &ButtonInput<KeyCode>,
     click: bool,
     alt_click: bool,
@@ -329,7 +340,8 @@ pub(super) fn handle_input(
     let shop = market_container(game).unwrap();
 
     // Keyboard.
-    for command in commands_for_bindings(keys, *context, &ui.options_ui.bindings) {
+    let commands = actions.map_or_else(Vec::new, |a| commands_for_actions(a, keys, *context));
+    for command in commands {
         match command {
             GameplayCommand::RefreshMarket => run_action(game, ui, refresh),
             GameplayCommand::SortInventory => run_action(game, ui, |g| g.sort_inventory()),

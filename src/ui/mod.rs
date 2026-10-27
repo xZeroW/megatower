@@ -58,7 +58,7 @@ mod window_options;
 
 use crate::{
     combat::turn::TurnType,
-    gameplay_input::{GameplayCommand, InputContext, commands_for_bindings},
+    gameplay_input::{GameAction, GameplayCommand, InputContext, commands_for_actions},
     godot_layout::recovered_layout,
     run::{
         events::{FlashKind, Fx, Popup},
