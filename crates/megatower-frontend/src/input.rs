@@ -3,7 +3,16 @@
 //! the same way real input does.
 
 use super::*;
-use crate::dev::script::ScriptDriver;
+
+/// Input injected by the QA script driver (`megatower-dev`), consumed with
+/// the real input on the next frame.
+#[derive(Resource, Default)]
+#[auto_init_resource(plugin = UiPlugin)]
+pub struct ScriptedInput {
+    pub pending_click: Option<bool>,
+    pub pending_text: String,
+    pub pending_backspace: bool,
+}
 
 #[derive(Resource, Default)]
 #[auto_init_resource(plugin = UiPlugin)]
@@ -25,7 +34,7 @@ fn collect_input(
     window: Single<&Window, With<PrimaryWindow>>,
     scale: Res<UiScale>,
     mut ui: ResMut<UiRes>,
-    mut script: ResMut<ScriptDriver>,
+    mut script: ResMut<ScriptedInput>,
     mut input: ResMut<FrameInput>,
     mut logged_window: Local<bool>,
 ) {

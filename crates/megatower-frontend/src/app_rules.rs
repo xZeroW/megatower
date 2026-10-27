@@ -163,7 +163,7 @@ pub fn game_end(
 
 /// Resolution option string for the window size: `str(Vector2i)`.
 pub fn resolution_key(size: (i32, i32)) -> String {
-    crate::ui::library_state::resolution_text(size)
+    crate::library_state::resolution_text(size)
 }
 
 /// `on_window_position_changed`: only a real screen change updates options.

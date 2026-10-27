@@ -2,7 +2,6 @@
 //! the frame has settled, save the window to `artifacts/latest.png`
 //! (`MEGALOOT_CAPTURE_ROOM_SCREENSHOT=1` also saves the room render target).
 
-use crate::app::GamePlugin;
 use bevy::{
     prelude::*,
     render::view::screenshot::{Screenshot, save_to_disk},
@@ -11,7 +10,6 @@ use bevy_auto_plugin::prelude::*;
 use megatower_render::{CaptureReadiness, room::RoomRenderTarget};
 
 #[derive(AutoPlugin)]
-#[auto_add_plugin(plugin = GamePlugin)]
 pub struct CapturePlugin;
 
 impl Plugin for CapturePlugin {

@@ -118,7 +118,7 @@ pub fn emitter_grid(viewport: V2, mut jitter: impl FnMut() -> f32) -> Vec<V2> {
 /// toward -80 dB when fading out, at 12.75 dB/s.
 pub fn player_volume(current: f32, original: f32, fade_out: bool, delta: f32) -> f32 {
     let target = if fade_out { -80.0 } else { original };
-    crate::ui::widgets_text::move_toward(
+    crate::widgets_text::move_toward(
         f64::from(current),
         f64::from(target),
         f64::from(delta * 12.75),

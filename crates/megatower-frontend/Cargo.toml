@@ -1,25 +1,24 @@
 [package]
-name = "megatower-client"
+name = "megatower-frontend"
 version.workspace = true
 edition.workspace = true
 
 [lib]
-name = "megatower_client"
+name = "megatower_frontend"
 path = "src/lib.rs"
 
 [dependencies]
-megatower-render = { path = "../megatower-render" }
 megatower-audio = { path = "../megatower-audio" }
+megatower-gameplay = { path = "../megatower-gameplay" }
 megatower-input = { path = "../megatower-input" }
-megatower-settings = { path = "../megatower-settings" }
 megatower-layout = { path = "../megatower-layout" }
 megatower-profile = { path = "../megatower-profile" }
-megatower-gameplay = { path = "../megatower-gameplay" }
-megatower-ui = { path = "../megatower-ui" }
-megatower-core = { path = "../megatower-core" }
-bevy.workspace = true
+megatower-render = { path = "../megatower-render" }
+megatower-settings = { path = "../megatower-settings" }
 bevy_auto_plugin.workspace = true
-bevy_kira_audio.workspace = true
 leafwing-input-manager.workspace = true
+megatower-core = { path = "../megatower-core" }
+megatower-ui = { path = "../megatower-ui" }
+bevy.workspace = true
 serde.workspace = true
 serde_json.workspace = true

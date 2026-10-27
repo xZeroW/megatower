@@ -1,0 +1,15 @@
+[package]
+name = "megatower-dev"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "megatower_dev"
+path = "src/lib.rs"
+
+[dependencies]
+megatower-gameplay = { path = "../megatower-gameplay" }
+megatower-render = { path = "../megatower-render" }
+megatower-frontend = { path = "../megatower-frontend" }
+bevy.workspace = true
+bevy_auto_plugin.workspace = true

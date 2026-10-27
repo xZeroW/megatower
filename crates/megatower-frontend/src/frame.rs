@@ -222,7 +222,7 @@ pub(super) fn select_draws(
     out
 }
 
-pub(crate) fn run_action(game: &mut Game, ui: &mut UiState, f: impl FnOnce(&mut Game)) {
+pub fn run_action(game: &mut Game, ui: &mut UiState, f: impl FnOnce(&mut Game)) {
     game.tick(0.0);
     f(game);
     let (events, total) = game.finish_action();
@@ -516,7 +516,7 @@ pub(super) fn handle_input(
     }
 }
 
-pub(crate) fn refresh(game: &mut Game) {
+pub fn refresh(game: &mut Game) {
     use megatower_gameplay::game_mode::Room;
     match game.memory.room_type {
         Room::Merchant => game.try_to_refresh_merchant(),

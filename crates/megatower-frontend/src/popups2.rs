@@ -134,7 +134,7 @@ pub struct MarketItemView {
 /// requirement-locked items fade border and icon and show the lock at y=23.
 pub fn market_item_view(is_banish: bool, requirement_locked: bool) -> MarketItemView {
     let mut v = MarketItemView {
-        rarity_texture: crate::ui::item_visual::TOGGLE_OFF_BORDER,
+        rarity_texture: crate::item_visual::TOGGLE_OFF_BORDER,
         rarity_alpha: 1.0,
         item_alpha: 1.0,
         lock_visible: false,

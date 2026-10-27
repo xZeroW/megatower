@@ -5,10 +5,7 @@
 //! edits its own copy; changes are written back and saved shortly after.
 //! A `options.json` from earlier builds is migrated once.
 
-use crate::{
-    app::GamePlugin,
-    ui::{UiRes, UiSystems, options_screen::OptionsUi},
-};
+use crate::{UiRes, UiSystems, options_screen::OptionsUi};
 use bevy::{
     prelude::*,
     settings::{SaveSettingsDeferred, SaveSettingsSync, SettingsPlugin},
@@ -20,7 +17,6 @@ use std::time::Duration;
 pub const APP_ID: &str = "io.github.xzerow.megatower";
 
 #[derive(AutoPlugin)]
-#[auto_add_plugin(plugin = GamePlugin)]
 pub struct GameSettingsPlugin;
 
 impl Plugin for GameSettingsPlugin {

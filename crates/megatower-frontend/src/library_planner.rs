@@ -392,7 +392,7 @@ pub fn draws(
             }
             None => out.push(image(
                 [cell[0] + 1.0, cell[1] + 1.0, 32.0, 32.0],
-                crate::ui::item_visual::UNKNOWN_ITEM,
+                crate::item_visual::UNKNOWN_ITEM,
             )),
         }
     }

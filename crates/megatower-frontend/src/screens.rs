@@ -495,7 +495,7 @@ pub fn library_draws(
             let Some(item) = items.get(idx) else { break };
             let path = item
                 .as_deref()
-                .map_or_else(|| crate::ui::item_visual::UNKNOWN_ITEM.to_owned(), trim);
+                .map_or_else(|| crate::item_visual::UNKNOWN_ITEM.to_owned(), trim);
             out.push(Draw::Image {
                 rect: [
                     LIBRARY_PANEL[0] + LIBRARY_MARGIN + col as f32 * LIBRARY_CELL + 1.0,
@@ -707,10 +707,10 @@ pub fn profile_draws(layout: &Layout, entries: &[ProfileEntry]) -> Vec<Draw> {
         };
         out.push(Draw::Image {
             rect: [cell[0] + 9.0, cell[1] + 9.0, 32.0, 32.0],
-            path: entry.portrait.as_deref().map_or_else(
-                || crate::ui::adventurer_ui::UNKNOWN_PORTRAIT.to_owned(),
-                trim,
-            ),
+            path: entry
+                .portrait
+                .as_deref()
+                .map_or_else(|| crate::adventurer_ui::UNKNOWN_PORTRAIT.to_owned(), trim),
             region: None,
             tint: [1.0; 4],
             slice: None,

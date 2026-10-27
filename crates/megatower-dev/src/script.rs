@@ -8,33 +8,26 @@
 //!   steps of `run_script_step`/`ui_step`;
 //! - `MEGALOOT_LOG_INPUT=1` logs each step with the resulting state.
 
-use crate::{
-    app::GamePlugin,
-    ui::{
-        GameSlot, UiRes, UiSystems,
-        compose::market_container,
-        model::{Screen, Tab, UiState},
-        options_screen, refresh, run_action, screens,
-    },
-};
 use bevy::prelude::*;
 use bevy_auto_plugin::prelude::*;
+use megatower_frontend::{
+    GameSlot, ScriptedInput, UiRes, UiSystems,
+    compose::market_container,
+    model::{Screen, Tab, UiState},
+    options_screen, refresh, run_action, screens,
+};
 use megatower_gameplay::combat::turn::TurnType;
 use megatower_gameplay::run::{game::Game, gameplay::NewRun};
 
 #[derive(AutoPlugin)]
 #[auto_plugin(impl_plugin_trait)]
-#[auto_add_plugin(plugin = GamePlugin)]
 pub struct DevScriptPlugin;
 
-/// Steps of `MEGALOOT_SCRIPT` still to run, and the input they inject into
-/// the next frame (read by `ui::input`).
+/// Steps of `MEGALOOT_SCRIPT` still to run; the input they inject goes
+/// through [`ScriptedInput`].
 #[derive(Resource, Default)]
 #[auto_init_resource(plugin = DevScriptPlugin)]
 pub struct ScriptDriver {
-    pub pending_click: Option<bool>,
-    pub pending_text: String,
-    pub pending_backspace: bool,
     started: bool,
     steps: Vec<String>,
     wait: f64,
@@ -150,7 +143,12 @@ fn apply_start_screen(ui: &mut UiState) {
 
 /// Takes the next step when 0.4 s have passed. `click`/`rclick` steps move
 /// the cursor now and click on the next frame, so hover state is current.
-fn next_step(script: &mut ScriptDriver, ui: &mut UiState, delta: f64) -> Option<String> {
+fn next_step(
+    script: &mut ScriptDriver,
+    injected: &mut ScriptedInput,
+    ui: &mut UiState,
+    delta: f64,
+) -> Option<String> {
     if script.steps.is_empty() {
         return None;
     }
@@ -167,7 +165,7 @@ fn next_step(script: &mut ScriptDriver, ui: &mut UiState, delta: f64) -> Option<
     {
         let mut xy = rest.split(':').filter_map(|v| v.parse::<f32>().ok());
         ui.cursor_override = Some([xy.next().unwrap_or(0.0), xy.next().unwrap_or(0.0)]);
-        script.pending_click = Some(alt);
+        injected.pending_click = Some(alt);
         script.wait = 0.3;
     }
     Some(step)
@@ -182,6 +180,7 @@ fn is_click(step: &str) -> bool {
 fn run_menu_script(
     time: Res<Time>,
     mut script: ResMut<ScriptDriver>,
+    mut injected: ResMut<ScriptedInput>,
     mut ui: ResMut<UiRes>,
     slot: Res<GameSlot>,
 ) {
@@ -190,15 +189,15 @@ fn run_menu_script(
     if slot.0.is_some() && !overlay {
         return;
     }
-    let Some(step) = next_step(&mut script, ui, f64::from(time.delta_secs())) else {
+    let Some(step) = next_step(&mut script, &mut injected, ui, f64::from(time.delta_secs())) else {
         return;
     };
     if step == "esc" {
         ui.esc_open = !ui.esc_open;
     } else if let Some(text) = step.strip_prefix("type:") {
-        script.pending_text.push_str(&text.replace('_', " "));
+        injected.pending_text.push_str(&text.replace('_', " "));
     } else if step == "backspace" {
-        script.pending_backspace = true;
+        injected.pending_backspace = true;
     }
     if log_input() {
         info!(
@@ -220,6 +219,7 @@ fn run_menu_script(
 fn run_game_script(
     time: Res<Time>,
     mut script: ResMut<ScriptDriver>,
+    mut injected: ResMut<ScriptedInput>,
     mut ui: ResMut<UiRes>,
     mut slot: ResMut<GameSlot>,
 ) {
@@ -235,7 +235,7 @@ fn run_game_script(
     {
         return;
     }
-    let Some(step) = next_step(&mut script, ui, f64::from(time.delta_secs())) else {
+    let Some(step) = next_step(&mut script, &mut injected, ui, f64::from(time.delta_secs())) else {
         return;
     };
     if log_input() {

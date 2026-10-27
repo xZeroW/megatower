@@ -4,7 +4,7 @@
 
 use super::compose::{Align, Draw, palette, text};
 use super::screens::{button_rect, layout_visuals};
-use crate::ui::library_state::db_to_linear;
+use crate::library_state::db_to_linear;
 use bevy::prelude::KeyCode;
 use megatower_input::gameplay_input::{DEFAULT_KEYS, KeyBindings};
 use megatower_layout::godot_layout::{Layout, Visual};

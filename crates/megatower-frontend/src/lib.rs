@@ -49,12 +49,16 @@ pub mod turn_timer;
 pub mod widgets;
 pub mod widgets_text;
 
+pub mod app_rules;
 mod audio_bridge;
 mod draw;
-mod frame;
+pub mod frame;
 mod input;
 mod library_data;
 mod overlays;
+pub mod settings;
+pub mod vfx_rules;
+
 mod window_options;
 
 use bevy::{prelude::*, window::PrimaryWindow};
@@ -64,8 +68,8 @@ use compose::{
 };
 #[cfg(test)]
 use frame::{adventurer_cells, select_draws};
-pub(crate) use frame::{refresh, run_action};
-pub use input::FrameInput;
+pub use frame::{refresh, run_action};
+pub use input::{FrameInput, ScriptedInput};
 use megatower_gameplay::combat::turn::TurnType;
 use megatower_gameplay::run::{
     events::{FlashKind, Fx, Popup},
@@ -82,7 +86,6 @@ use panels::{DropAction, drop_targets, format_log};
 
 #[derive(AutoPlugin)]
 #[auto_plugin(impl_plugin_trait)]
-#[auto_add_plugin(plugin = crate::app::GamePlugin)]
 pub struct UiPlugin;
 
 /// The run in progress, if any.
