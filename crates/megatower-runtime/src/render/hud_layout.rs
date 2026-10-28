@@ -179,8 +179,29 @@ fn spawn_hud_layout(
     });
 }
 
-/// The game is laid out on a 640x360 canvas scaled to fit the window.
+/// The game is laid out on a 640x360 canvas scaled to fit the window; the
+/// camera's viewport is that 16:9 area centred in the window, so ultrawide
+/// and portrait windows get bars instead of a canvas stuck to one side.
 #[auto_add_system(plugin = HudLayoutPlugin, schedule = Update)]
-fn fit_logical_viewport(window: Single<&Window>, mut scale: ResMut<UiScale>) {
-    scale.0 = (window.width() / 640.0).min(window.height() / 360.0);
+fn fit_logical_viewport(
+    window: Single<&Window>,
+    mut camera: Single<&mut Camera, With<Camera2d>>,
+    mut scale: ResMut<UiScale>,
+) {
+    let fit = (window.width() / 640.0).min(window.height() / 360.0);
+    scale.0 = fit;
+    let factor = window.scale_factor();
+    let size = UVec2::new(
+        (640.0 * fit * factor).round() as u32,
+        (360.0 * fit * factor).round() as u32,
+    );
+    let position = UVec2::new(
+        window.physical_width().saturating_sub(size.x) / 2,
+        window.physical_height().saturating_sub(size.y) / 2,
+    );
+    let viewport = camera.viewport.get_or_insert_with(default);
+    if viewport.physical_size != size || viewport.physical_position != position {
+        viewport.physical_size = size;
+        viewport.physical_position = position;
+    }
 }

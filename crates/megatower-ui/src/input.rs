@@ -71,9 +71,14 @@ fn collect_input(
         ui.transition = None;
     }
     ui.cursor = ui.cursor_override.or_else(|| {
-        window
-            .cursor_position()
-            .map(|p| [p.x / scale.0, p.y / scale.0])
+        window.cursor_position().map(|p| {
+            // The canvas is centred in the window (see `fit_logical_viewport`).
+            let origin = [
+                (window.width() - 640.0 * scale.0) / 2.0,
+                (window.height() - 360.0 * scale.0) / 2.0,
+            ];
+            [(p.x - origin[0]) / scale.0, (p.y - origin[1]) / scale.0]
+        })
     });
 
     let injected = std::mem::take(&mut script.pending_click);
