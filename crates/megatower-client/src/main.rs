@@ -15,9 +15,8 @@ fn main() {
         .add_plugins((
             DefaultPlugins
                 .set(AssetPlugin {
-                    // Cargo sets the asset root to this package; the recovered Godot
-                    // project sits at the workspace root.
-                    file_path: "../../Megaloot-GDRE-Recovered".into(),
+                    // Resolve runtime media from the Rust workspace, not recovered Godot source.
+                    file_path: "../..".into(),
                     ..default()
                 })
                 .set(ImagePlugin::default_nearest())

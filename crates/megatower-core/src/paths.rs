@@ -8,3 +8,8 @@ use std::path::{Path, PathBuf};
 pub fn recovered_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("../../Megaloot-GDRE-Recovered")
 }
+
+/// Rust workspace root containing packaged runtime assets.
+pub fn runtime_root() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("../..")
+}
