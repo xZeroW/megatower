@@ -16,7 +16,9 @@ fn follow(ui: &mut UiState, key: BarKey, tag: u64, value: f64, max: f64, dt: f64
         TrackedBar { tag, state }
     };
     let bar = ui.bars.entry(key).or_insert_with(fresh);
-    if bar.tag != tag {
+    // A new occupant, or a bar coming back from empty (an enemy whose vitals
+    // are filled a moment after it spawns), starts full instead of filling.
+    if bar.tag != tag || (bar.state.target <= 0.0 && value > 0.0) {
         *bar = fresh();
     }
     let state = &mut bar.state;
