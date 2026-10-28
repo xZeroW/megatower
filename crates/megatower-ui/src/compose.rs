@@ -193,18 +193,21 @@ fn pill_bar(rect: R, frac: f32, under: Option<(f32, Rgba)>, color: Rgba, out: &m
 
 fn pill_fill(rect: R, frac: f32, color: Rgba, out: &mut Vec<Draw>) {
     let w = (rect[2] * frac.clamp(0.0, 1.0)).round();
-    if w >= 8.0 {
+    if w >= 1.0 {
+        // A nine-patch narrower than its two 4px corners shrinks them, so a
+        // nearly empty bar keeps the pill's rounded shape.
+        let corner = (w / 2.0).min(4.0);
         out.push(Draw::Image {
             rect: [rect[0], rect[1], w, rect[3]],
             path: trim("assets/textures/ui/minimal_bar_fill.png"),
             region: None,
             tint: color,
-            slice: Some([4.0; 4]),
+            slice: Some([corner, 4.0, corner, 4.0]),
             flip_x: false,
         });
     } else {
         out.push(Draw::Fill {
-            rect: [rect[0], rect[1] + 1.0, w, rect[3] - 2.0],
+            rect: [rect[0], rect[1], 0.0, rect[3]],
             color,
         });
     }
