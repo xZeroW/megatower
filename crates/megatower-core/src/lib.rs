@@ -19,6 +19,7 @@ pub mod paths;
 pub mod profile_store;
 pub mod records;
 pub mod rng;
+pub mod ron_data;
 pub mod run;
 pub mod run_initialization;
 pub mod save_system;

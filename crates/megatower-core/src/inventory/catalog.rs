@@ -1,9 +1,9 @@
 //! `ItemContainerResource` and `ItemContainerResources`, exported without scenes.
 
 use bevy::prelude::Resource;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Hash)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize, Eq, PartialEq, Hash)]
 #[serde(rename_all = "snake_case")]
 pub enum ContainerId {
     Library,
@@ -39,7 +39,7 @@ impl ContainerId {
     ];
 }
 
-#[derive(Clone, Debug, Default, Deserialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct ContainerDefinition {
     pub id: Option<ContainerId>,
     pub source_path: String,
@@ -57,15 +57,15 @@ impl ContainerDefinition {
     }
 }
 
-#[derive(Resource, Debug, Deserialize)]
+#[derive(Resource, Debug, Serialize, Deserialize)]
 pub struct ContainerCatalog(pub Vec<ContainerDefinition>);
 
 impl ContainerCatalog {
     pub fn recovered() -> Self {
-        serde_json::from_str(include_str!(
-            "../../../../assets/data/content/item-containers.json"
+        Self(crate::ron_data::from_str(
+            include_str!("../../../../assets/data/content/item-containers.ron"),
+            "item-containers.ron",
         ))
-        .expect("validated recovered container definitions")
     }
 
     pub fn get(&self, id: ContainerId) -> &ContainerDefinition {

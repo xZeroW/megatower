@@ -8,7 +8,7 @@ pub use upgrades::StatUpgrade;
 use bevy::prelude::{Component, Resource};
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Copy, Debug, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[serde(rename_all = "snake_case")]
 pub enum StatId {
     Accuracy,
@@ -113,7 +113,7 @@ fn serialize_boosting_sets<S: serde::Serializer>(
         .serialize(serializer)
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct StatDefinition {
     pub id: StatId,
     pub name: String,
@@ -129,7 +129,7 @@ pub struct StatDefinition {
     pub bb_script: Option<String>,
 }
 
-#[derive(Resource, Debug, Deserialize)]
+#[derive(Resource, Debug, Serialize, Deserialize)]
 pub struct StatCatalog {
     pub definitions: Vec<StatDefinition>,
     pub groups: std::collections::BTreeMap<String, Vec<StatId>>,
@@ -137,8 +137,10 @@ pub struct StatCatalog {
 
 impl StatCatalog {
     pub fn recovered() -> Self {
-        serde_json::from_str(include_str!("../../../../assets/data/content/stats.json"))
-            .expect("validated recovered stat catalog")
+        crate::ron_data::from_str(
+            include_str!("../../../../assets/data/content/stats.ron"),
+            "stats.ron",
+        )
     }
 
     pub fn get(&self, id: StatId) -> &StatDefinition {
@@ -149,7 +151,7 @@ impl StatCatalog {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct BonusStat {
     pub resource: StatId,
     pub amount: f64,

@@ -165,7 +165,7 @@ pub const ROOM_NORMAL_BOXES: [RoomBox; 18] = [
 ];
 
 /// One CSG part flattened to world space by `tools/export_room_scenes.py`.
-#[derive(Clone, Debug, serde::Deserialize)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct RoomPart {
     pub name: String,
     pub shape: String,
@@ -180,14 +180,14 @@ pub struct RoomPart {
 }
 
 /// An `AnimatedLight` OmniLight3D in world space.
-#[derive(Clone, Debug, serde::Deserialize)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct RoomLight {
     pub position: [f32; 3],
     pub range: f32,
     pub attenuation: f32,
 }
 
-#[derive(Clone, Debug, serde::Deserialize)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct RoomScene {
     pub parts: Vec<RoomPart>,
     pub lights: Vec<RoomLight>,
@@ -208,12 +208,13 @@ pub fn scene_for(room: megatower_core::game_mode::Room) -> &'static str {
 }
 
 pub fn scene(name: &str) -> RoomScene {
-    let mut all: std::collections::HashMap<String, RoomScene> =
-        serde_json::from_str(&crate::room_materials::artifact_json(
-            "rooms/room-scenes.json",
-            include_str!("../../../assets/data/rooms/room-scenes.json"),
-        ))
-        .unwrap();
+    let mut all: std::collections::HashMap<String, RoomScene> = megatower_core::ron_data::from_str(
+        &crate::room_materials::artifact_ron(
+            "rooms/room-scenes.ron",
+            include_str!("../../../assets/data/rooms/room-scenes.ron"),
+        ),
+        "room-scenes.ron",
+    );
     all.remove(name).unwrap_or(RoomScene {
         parts: vec![],
         lights: vec![],

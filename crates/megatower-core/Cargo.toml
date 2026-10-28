@@ -11,3 +11,4 @@ path = "src/lib.rs"
 bevy.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+ron.workspace = true

@@ -7,10 +7,10 @@ use crate::{
     status_effects::{StatusEffect, StatusEffectId},
 };
 use bevy::prelude::{Component, Entity, Resource};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 
-#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum StatusKind {
     Buff,
@@ -21,7 +21,7 @@ pub enum StatusKind {
     Rule,
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct StatusPolicy {
     pub id: StatusEffectId,
     pub name: String,
@@ -36,15 +36,15 @@ pub struct StatusPolicy {
     pub is_percent: bool,
 }
 
-#[derive(Resource, Debug, Deserialize)]
+#[derive(Resource, Debug, Serialize, Deserialize)]
 pub struct StatusPolicies(pub Vec<StatusPolicy>);
 
 impl StatusPolicies {
     pub fn recovered() -> Self {
-        serde_json::from_str(include_str!(
-            "../../../../assets/data/content/status-effect-policies.json"
+        Self(crate::ron_data::from_str(
+            include_str!("../../../../assets/data/content/status-effect-policies.ron"),
+            "status-effect-policies.ron",
         ))
-        .expect("validated status policies")
     }
     pub fn get(&self, id: StatusEffectId) -> &StatusPolicy {
         self.0

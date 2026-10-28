@@ -4070,6 +4070,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "megatower-core",
+ "ron",
  "serde",
  "serde_json",
 ]
@@ -4079,6 +4080,7 @@ name = "megatower-core"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "ron",
  "serde",
  "serde_json",
 ]
@@ -4118,6 +4120,7 @@ dependencies = [
  "megatower-assets",
  "megatower-core",
  "megatower-runtime",
+ "ron",
  "serde",
  "serde_json",
 ]

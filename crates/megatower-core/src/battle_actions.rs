@@ -3,10 +3,10 @@
 
 use crate::run::events::Popup;
 use crate::translation;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
 
-#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Hash)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize, Eq, PartialEq, Hash)]
 #[serde(rename_all = "snake_case")]
 pub enum BattleActionId {
     ArmorBreak,
@@ -27,7 +27,7 @@ pub enum BattleActionId {
     Polymorph,
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct BattleAction {
     pub id: BattleActionId,
     pub name: String,
@@ -54,10 +54,10 @@ pub fn action(id: BattleActionId) -> &'static BattleAction {
     static ACTIONS: OnceLock<Vec<BattleAction>> = OnceLock::new();
     ACTIONS
         .get_or_init(|| {
-            serde_json::from_str(include_str!(
-                "../../../assets/data/content/battle-actions.json"
-            ))
-            .expect("validated battle actions")
+            crate::ron_data::from_str(
+                include_str!("../../../assets/data/content/battle-actions.ron"),
+                "battle-actions.ron",
+            )
         })
         .iter()
         .find(|action| action.id == id)

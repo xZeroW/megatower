@@ -7,10 +7,10 @@ use crate::{
     stats::{BonusStat, StatId},
 };
 use bevy::prelude::Resource;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Adventurer {
     pub id: String,
     pub name: String,
@@ -27,7 +27,7 @@ pub struct Adventurer {
     pub sockets: Vec<SocketType>,
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 struct Raw {
     list: Vec<Adventurer>,
     starting: Vec<String>,
@@ -43,10 +43,10 @@ pub struct AdventurerCatalog {
 
 impl AdventurerCatalog {
     pub fn recovered() -> Self {
-        let raw: Raw = serde_json::from_str(include_str!(
-            "../../../assets/data/content/adventurers.json"
-        ))
-        .expect("validated recovered adventurers");
+        let raw: Raw = crate::ron_data::from_str(
+            include_str!("../../../assets/data/content/adventurers.ron"),
+            "adventurers.ron",
+        );
         Self {
             list: raw.list.into_iter().map(Arc::new).collect(),
             starting: raw.starting,

@@ -5,7 +5,7 @@
 //! statuses, etc. by id; resolving them to icons/colors/translations belongs
 //! to the (unported) `Stats`/`StatusEffects.get_bb_container_data` functions.
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -72,7 +72,7 @@ pub enum BbPiece {
     },
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(tag = "op", rename_all = "snake_case")]
 enum Op {
     Text { text: String, color: String },
@@ -88,18 +88,18 @@ enum Op {
     MatchSpecialization { cases: Vec<Case> },
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 struct Case {
     specialization: String,
     ops: Vec<Op>,
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 struct Script {
     ops: Vec<Op>,
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 struct Raw {
     scripts: BTreeMap<String, Script>,
     unsupported: BTreeMap<String, String>,
@@ -112,9 +112,10 @@ pub struct BbScripts {
 
 impl BbScripts {
     pub fn recovered() -> Self {
-        let raw: Raw =
-            serde_json::from_str(include_str!("../../../assets/data/content/bb-scripts.json"))
-                .expect("validated bb scripts");
+        let raw: Raw = megatower_core::ron_data::from_str(
+            include_str!("../../../assets/data/content/bb-scripts.ron"),
+            "bb-scripts.ron",
+        );
         Self {
             scripts: raw.scripts,
             unsupported: raw.unsupported,

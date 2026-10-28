@@ -10,7 +10,7 @@ use bevy::prelude::Component;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
-#[derive(Clone, Copy, Debug, Default, Deserialize, Serialize, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, Serialize, Deserialize, PartialEq)]
 #[serde(default)]
 pub struct CachedStat {
     pub base_amount: f64,
@@ -19,7 +19,7 @@ pub struct CachedStat {
     pub final_amount: f64,
 }
 
-#[derive(Clone, Debug, Default, Deserialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct RecalculationContext {
     pub item_sets: Vec<String>,
     pub passives: Vec<String>,

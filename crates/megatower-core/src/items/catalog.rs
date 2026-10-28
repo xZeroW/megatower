@@ -20,10 +20,10 @@ pub enum CatalogError {
 
 impl RawItemCatalog {
     pub fn recovered() -> Self {
-        Self(
-            serde_json::from_str(include_str!("../../../../assets/data/content/items.json"))
-                .expect("validated raw item definitions"),
-        )
+        Self(crate::ron_data::from_str(
+            include_str!("../../../../assets/data/content/items.ron"),
+            "items.ron",
+        ))
     }
     /// Explicit file order is required; sorted metadata order is not claimed
     /// as the original engine's filesystem order (ties affect LIST sorting).

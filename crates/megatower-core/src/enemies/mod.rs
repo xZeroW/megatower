@@ -19,16 +19,16 @@ use crate::{
 };
 use bevy::prelude::*;
 use scaling::Scaling;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct StartingStatusEffect {
     pub resource: Option<StatusEffectId>,
     pub amount: i32,
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct EnemyDefinition {
     pub id: String,
     pub name: String,
@@ -53,7 +53,7 @@ impl EnemyDefinition {
     }
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 struct RawEnemies {
     enemies: Vec<EnemyDefinition>,
     special_enemies: Vec<EnemyDefinition>,
@@ -71,9 +71,10 @@ impl EnemyCatalog {
     /// Godot 4.4.1 `DirAccess` on the original pack), then the source's
     /// unstable floor sort. Demo mode drops enemies above floor 15.
     pub fn recovered(demo: bool) -> Self {
-        let raw: RawEnemies =
-            serde_json::from_str(include_str!("../../../../assets/data/content/enemies.json"))
-                .expect("validated recovered enemies");
+        let raw: RawEnemies = crate::ron_data::from_str(
+            include_str!("../../../../assets/data/content/enemies.ron"),
+            "enemies.ron",
+        );
         let mut list: Vec<Arc<EnemyDefinition>> = raw
             .enemies
             .into_iter()

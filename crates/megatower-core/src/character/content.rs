@@ -7,7 +7,7 @@ use bevy::prelude::Resource;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeSet;
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ItemSetDefinition {
     pub id: String,
     pub name: String,
@@ -18,7 +18,7 @@ pub struct ItemSetDefinition {
     pub bb_script: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct PassiveDefinition {
     pub id: String,
     pub name: String,
@@ -27,7 +27,7 @@ pub struct PassiveDefinition {
     pub bb_script: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SpecializationDefinition {
     pub id: String,
     pub name: String,
@@ -50,7 +50,7 @@ impl SpecializationDefinition {
     }
 }
 
-#[derive(Resource, Debug, Deserialize)]
+#[derive(Resource, Debug, Serialize, Deserialize)]
 pub struct CharacterContent {
     pub item_sets: Vec<ItemSetDefinition>,
     pub passives: Vec<PassiveDefinition>,
@@ -60,10 +60,10 @@ pub struct CharacterContent {
 
 impl CharacterContent {
     pub fn recovered() -> Self {
-        serde_json::from_str(include_str!(
-            "../../../../assets/data/content/character-content.json"
-        ))
-        .expect("validated recovered character content")
+        crate::ron_data::from_str(
+            include_str!("../../../../assets/data/content/character-content.ron"),
+            "character-content.ron",
+        )
     }
     pub fn stat_sources(&self) -> StatSourceDefinitions {
         StatSourceDefinitions {

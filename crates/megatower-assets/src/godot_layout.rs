@@ -1,13 +1,13 @@
 //! Geometry produced by Godot's Container layout, not a hand-written HUD.
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Layout {
     pub viewport: [f32; 2],
     pub visuals: Vec<Visual>,
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Visual {
     pub path: String,
     pub kind: String,
@@ -21,125 +21,125 @@ pub struct Visual {
 }
 
 pub fn recovered_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/godot-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/godot-layout.ron"),
+        "godot-layout.ron",
+    )
 }
 
 /// Godot-resolved layout of `esc_menu_screen.tscn` (640x360).
 pub fn esc_menu_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/esc-menu-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/esc-menu-layout.ron"),
+        "esc-menu-layout.ron",
+    )
 }
 
 /// Godot-resolved `options_screen.tscn` (640x360, Controls tab).
 pub fn options_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/options-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/options-layout.ron"),
+        "options-layout.ron",
+    )
 }
 
 /// Godot-resolved `library_state.tscn` (640x360, Items tab).
 pub fn library_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/library-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/library-layout.ron"),
+        "library-layout.ron",
+    )
 }
 
 /// `options_screen.tscn` staged on its video tab.
 pub fn options_video_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/options-video-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/options-video-layout.ron"),
+        "options-video-layout.ron",
+    )
 }
 
 /// `options_screen.tscn` staged on its audio tab.
 pub fn options_audio_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/options-audio-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/options-audio-layout.ron"),
+        "options-audio-layout.ron",
+    )
 }
 
 /// `options_screen.tscn` staged on its misc tab.
 pub fn options_misc_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/options-misc-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/options-misc-layout.ron"),
+        "options-misc-layout.ron",
+    )
 }
 
 /// `adventurer_profile_popup.tscn` as saved: its Records tab (640x360).
 pub fn adventurer_records_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/adventurer-profile-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/adventurer-profile-layout.ron"),
+        "adventurer-profile-layout.ron",
+    )
 }
 
 /// `adventurer_profile_popup.tscn` on its Overview tab (640x360).
 pub fn adventurer_overview_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/adventurer-overview-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/adventurer-overview-layout.ron"),
+        "adventurer-overview-layout.ron",
+    )
 }
 
 /// Godot-resolved `profile_state.tscn` (640x360).
 pub fn profile_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/profile-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/profile-layout.ron"),
+        "profile-layout.ron",
+    )
 }
 
 /// `library_state.tscn` staged with `current_tab = 1` (Bestiary).
 pub fn library_bestiary_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/library-bestiary-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/library-bestiary-layout.ron"),
+        "library-bestiary-layout.ron",
+    )
 }
 
 /// `library_state.tscn` staged with `current_tab = 3` (Passives).
 pub fn library_passives_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/library-passives-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/library-passives-layout.ron"),
+        "library-passives-layout.ron",
+    )
 }
 
 /// `library_state.tscn` staged with `current_tab = 2` (Synergies).
 pub fn library_synergies_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/library-synergies-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/library-synergies-layout.ron"),
+        "library-synergies-layout.ron",
+    )
 }
 
 /// Godot-resolved `intro_state.tscn` (640x360).
 pub fn intro_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/intro-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/intro-layout.ron"),
+        "intro-layout.ron",
+    )
 }
 
 /// Godot-resolved `main_menu_state.tscn` (640x360).
 pub fn main_menu_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/main-menu-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/main-menu-layout.ron"),
+        "main-menu-layout.ron",
+    )
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct EnemyNode {
     pub path: String,
     pub kind: String,
@@ -153,7 +153,7 @@ pub struct EnemyNode {
 
 /// `enemy_container.tscn` resolved by Godot at its natural 76x146 size;
 /// rects are relative to the container's top-left.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct EnemyLayout {
     pub size: [f32; 2],
     pub nodes: Vec<EnemyNode>,
@@ -176,28 +176,28 @@ impl EnemyLayout {
 pub fn enemy_container_layout() -> &'static EnemyLayout {
     static LAYOUT: std::sync::OnceLock<EnemyLayout> = std::sync::OnceLock::new();
     LAYOUT.get_or_init(|| {
-        serde_json::from_str(include_str!(
-            "../../../assets/data/layouts/enemy-container-layout.json"
-        ))
-        .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+        megatower_core::ron_data::from_str(
+            include_str!("../../../assets/data/layouts/enemy-container-layout.ron"),
+            "enemy-container-layout.ron",
+        )
     })
 }
 
 /// Godot-resolved layout of `death_screen.tscn` (640x360).
 pub fn death_screen_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/death-screen-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/death-screen-layout.ron"),
+        "death-screen-layout.ron",
+    )
 }
 
 /// Godot-resolved layout of `battle_log_tab_container.tscn` placed in the
 /// inventory's 308x268 player area (y offset 26).
 pub fn battle_log_layout() -> Layout {
-    serde_json::from_str(include_str!(
-        "../../../assets/data/layouts/battle-log-layout.json"
-    ))
-    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    megatower_core::ron_data::from_str(
+        include_str!("../../../assets/data/layouts/battle-log-layout.ron"),
+        "battle-log-layout.ron",
+    )
 }
 
 #[cfg(test)]

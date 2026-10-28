@@ -2,8 +2,8 @@
 //! (baked by Godot, `tools/export_room_gltf.py`) drawn with the `room_toon.wesl`
 //! port of `pixel_toon.gdshader`/`flat_light.gdshader`, swapped when the run
 //! enters a room whose `RoomResource.scene` differs. Lights come from
-//! `assets/data/rooms/room-scenes.json`, per-mesh materials from
-//! `assets/data/rooms/room-materials.json`.
+//! `assets/data/rooms/room-scenes.ron`, per-mesh materials from
+//! `assets/data/rooms/room-materials.ron`.
 
 use crate::render::{CaptureReadiness, palette_color};
 use bevy::world_serialization::WorldInstanceReady;
@@ -365,8 +365,8 @@ fn hot_reload_rooms(
             .map(|e| e.path())
             .filter(|p| p.extension().is_some_and(|e| e == "glb"))
             .collect();
-        for json in ["rooms/room-materials.json", "rooms/room-scenes.json"] {
-            files.push(format!("{}/../../assets/data/{json}", env!("CARGO_MANIFEST_DIR")).into());
+        for file in ["rooms/room-materials.ron", "rooms/room-scenes.ron"] {
+            files.push(format!("{}/../../assets/data/{file}", env!("CARGO_MANIFEST_DIR")).into());
         }
         state.files = files
             .into_iter()

@@ -16,4 +16,5 @@ leafwing-input-manager.workspace = true
 bevy.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+ron.workspace = true
 image = { version = "0.25", default-features = false, features = ["png"] }
