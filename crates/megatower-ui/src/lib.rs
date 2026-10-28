@@ -272,4 +272,35 @@ mod tests {
         let market = game.player(local).market;
         assert_ne!(market, shop);
     }
+
+    /// The next room's UI (the merchant's stock) waits for the room change
+    /// event; until then the screen keeps drawing the room being left.
+    #[test]
+    fn next_rooms_ui_waits_for_the_room_change() {
+        use megatower_core::game_mode::Room;
+        let rects = Rects::from_layout(&recovered_layout());
+        let mut game = Game::new(NewRun::default_for("Fren", 7));
+        game.battle_speed = 1.0;
+        // Floor 1's last room is the merchant.
+        game.memory.room_idx = 3;
+        game.setup_new_room();
+        game.take_events();
+        assert_eq!(game.memory.room_type, Room::Battle);
+        let mut ui = UiState::default();
+        ui.screen = Screen::Playing;
+        frame::run_action(&mut game, &mut ui, |g| g.advance(1));
+        assert_eq!(game.memory.room_type, Room::Merchant);
+        assert_eq!(ui.presented_room, Some(Room::Battle));
+        let before = compose(&mut game, &ui, &rects);
+        assert_eq!(game.memory.room_type, Room::Merchant, "compose restores it");
+        let mut ready = UiState::default();
+        ready.screen = Screen::Playing;
+        let after = compose(&mut game, &ready, &rects);
+        assert_ne!(before, after, "the merchant's slots are not drawn yet");
+        // Playing the timeline to its end clears it.
+        for fx in ui.timeline.advance(60.0) {
+            frame::apply_event(&mut ui, &mut game, fx);
+        }
+        assert_eq!(ui.presented_room, None);
+    }
 }

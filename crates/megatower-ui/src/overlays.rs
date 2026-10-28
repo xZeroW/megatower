@@ -230,6 +230,7 @@ pub(super) fn esc_frame(
                 ui.screen = Screen::MainMenu;
                 ui.esc_open = false;
                 ui.timeline = Timeline::default();
+                ui.presented_room = None;
                 ui.transition = None;
                 ui.death_at = None;
                 ui.dragged = None;

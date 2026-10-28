@@ -2336,6 +2336,17 @@ fn draw_tabs(ui: &UiState, rects: &Rects, out: &mut Vec<Draw>) {
 }
 
 pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
+    // While the next room is wiped in, draw the one still on screen.
+    let live = game.memory.room_type;
+    if let Some(shown) = ui.presented_room {
+        game.memory.room_type = shown;
+    }
+    let out = compose_room(game, ui, rects);
+    game.memory.room_type = live;
+    out
+}
+
+fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     use megatower_core::game_mode::Room;
     let mut out: Vec<Draw> = Vec::new();
     let local = game.local();

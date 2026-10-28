@@ -106,6 +106,7 @@ fn update_screens(
                             slot.0 = Some(Game::new(run));
                             ui.screen = Screen::Playing;
                             ui.timeline = Timeline::default();
+                            ui.presented_room = None;
                             ui.transition = None;
                             ui.death_at = None;
                             ui.dragged = None;
@@ -244,8 +245,14 @@ pub(super) fn select_draws(
 
 pub fn run_action(game: &mut Game, ui: &mut UiState, f: impl FnOnce(&mut Game)) {
     game.tick(0.0);
+    let room_before = game.memory.room_type;
     f(game);
     let (events, total) = game.finish_action();
+    // The game is already in the next room; the screen keeps showing this one
+    // until the room change reaches the timeline (`Fx::RoomChanged`).
+    if game.memory.room_type != room_before && !ui.timeline.busy() {
+        ui.presented_room = Some(room_before);
+    }
     ui.timeline.push(events, total);
     // The game already holds the action's final state; play what is due now so
     // this frame shows the timeline's first frame instead of that state.
@@ -310,6 +317,7 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
             }
         }
         Fx::RoomChanged => {
+            ui.presented_room = None;
             if game.memory.room_type == megatower_core::game_mode::Room::Battle {
                 ui.log_pages.reset_for_new_battle();
                 ui.log_scroll = 0;

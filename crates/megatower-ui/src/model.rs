@@ -347,6 +347,8 @@ pub struct UiState {
     pub popups: Vec<LivePopup>,
     pub vfx: Vec<LiveVfx>,
     pub transition: Option<Transition>,
+    /// The room the screen still shows while the next one is wiped in.
+    pub presented_room: Option<megatower_core::game_mode::Room>,
     /// The layout button under the pointer last frame (for the hover sound).
     pub hovered_button: Option<String>,
     /// When the run ended; the death screen's wipe starts from it.
@@ -396,6 +398,7 @@ impl Default for UiState {
             popups: Vec::new(),
             vfx: Vec::new(),
             transition: None,
+            presented_room: None,
             hovered_button: None,
             death_at: None,
             timeline: Timeline::default(),
