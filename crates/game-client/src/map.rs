@@ -7,6 +7,7 @@ use bevy::prelude::*;
 use game_sim::character::INVENTORY_SIZE;
 use game_sim::content;
 use game_sim::labyrinth::{Dir, Floor, Pos, RoomKind, Visibility};
+use game_sim::passives::xp_to_next;
 
 const CELL: f32 = 64.0;
 const GAP: f32 = 18.0;
@@ -173,6 +174,7 @@ fn spawn_panel(commands: &mut Commands, run: &Run) -> Entity {
         "unresolved"
     };
     let hero = run.character.fighter();
+    let progress = &run.character.progress;
     let skills: Vec<String> = run
         .character
         .skills(&content::get().gems)
@@ -191,6 +193,16 @@ fn spawn_panel(commands: &mut Commands, run: &Run) -> Entity {
             16.0,
             TEXT,
         ),
+        (
+            format!(
+                "Level {}  ({}/{} XP)",
+                progress.level,
+                progress.xp,
+                xp_to_next(progress.level)
+            ),
+            16.0,
+            TEXT,
+        ),
         (format!("Skills: {}", skills.join(", ")), 16.0, TEXT_DIM),
         (
             format!("Bag: {}/{}", run.character.inventory.len(), INVENTORY_SIZE),
@@ -199,6 +211,13 @@ fn spawn_panel(commands: &mut Commands, run: &Run) -> Entity {
         ),
         (run.message.clone(), 16.0, ACCENT),
     ];
+    if progress.points > 0 {
+        lines.push((
+            format!("{} passive point(s) to spend: press P", progress.points),
+            16.0,
+            ACCENT,
+        ));
+    }
     if let RoomKind::GemAltar { uses_left } = room.kind {
         lines.push((format!("Altar uses left: {uses_left}"), 16.0, TEXT));
     }
@@ -210,6 +229,7 @@ fn spawn_panel(commands: &mut Commands, run: &Run) -> Entity {
             "Space: resolve room",
             "Enter: descend (on resolved stairs)",
             "I / Tab: inventory",
+            "P: passive tree",
         ],
     )
 }

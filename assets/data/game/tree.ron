@@ -1,0 +1,160 @@
+// The passive tree. Loaded by game-sim (`content.rs`); the shape is `TreeDb`
+// in crates/game-sim/src/passives.rs. Links are listed once and work both ways;
+// x / y place the node on the tree screen.
+(
+    nodes: [
+        (id: "str_start", name: "Might", kind: Start, x: -5.0, y: 3.0, links: [], mods: [
+            (stat: Life, kind: Flat, value: 10.0),
+        ]),
+        (id: "str_life1", name: "Vigour", kind: Small, x: -6.5, y: 2.0, links: ["str_start"], mods: [
+            (stat: Life, kind: Flat, value: 10.0),
+        ]),
+        (id: "str_armour1", name: "Plating", kind: Small, x: -8.0, y: 1.5, links: ["str_life1"], mods: [
+            (stat: Armour, kind: Flat, value: 20.0),
+        ]),
+        (id: "iron_hide", name: "Iron Hide", kind: Notable, x: -9.5, y: 1.0, links: ["str_armour1"], mods: [
+            (stat: Armour, kind: Flat, value: 60.0),
+            (stat: Armour, kind: Increased, value: 15.0),
+        ]),
+        (id: "str_phys1", name: "Heft", kind: Small, x: -5.0, y: 4.5, links: ["str_start"], mods: [
+            (stat: Damage, kind: Increased, value: 10.0, requires: [Physical]),
+        ]),
+        (id: "str_phys2", name: "Heft", kind: Small, x: -5.0, y: 6.0, links: ["str_phys1"], mods: [
+            (stat: Damage, kind: Increased, value: 10.0, requires: [Physical]),
+        ]),
+        (id: "brute_force", name: "Brute Force", kind: Notable, x: -6.5, y: 7.0, links: ["str_phys2"], mods: [
+            (stat: Damage, kind: Increased, value: 20.0, requires: [Physical]),
+            (stat: AddedMin(Physical), kind: Flat, value: 1.0, requires: [Attack]),
+            (stat: AddedMax(Physical), kind: Flat, value: 3.0, requires: [Attack]),
+        ]),
+        (id: "glass_cannon", name: "Glass Cannon", kind: Keystone, x: -8.0, y: 8.5, links: ["brute_force"], mods: [
+            (stat: Damage, kind: More, value: 40.0),
+            (stat: Life, kind: More, value: -30.0),
+        ]),
+        (id: "str_bleed", name: "Serrated Edge", kind: Small, x: -3.5, y: 7.0, links: ["str_phys2"], mods: [
+            (stat: AilmentChance(Bleed), kind: Flat, value: 10.0),
+        ]),
+        (id: "butcher", name: "Butcher", kind: Notable, x: -2.5, y: 8.2, links: ["str_bleed"], mods: [
+            (stat: AilmentChance(Bleed), kind: Flat, value: 20.0),
+            (stat: LifeLeech, kind: Flat, value: 2.0, requires: [Attack]),
+        ]),
+        (id: "str_attack", name: "Weapon Training", kind: Small, x: -3.5, y: 4.0, links: ["str_start"], mods: [
+            (stat: Damage, kind: Increased, value: 10.0, requires: [Attack]),
+        ]),
+        (id: "str_fire1", name: "Kindling", kind: Small, x: -6.5, y: 0.0, links: ["str_life1"], mods: [
+            (stat: Damage, kind: Increased, value: 10.0, requires: [Fire]),
+        ]),
+        (id: "str_fire2", name: "Embers", kind: Small, x: -5.5, y: -1.5, links: ["str_fire1"], mods: [
+            (stat: AilmentChance(Ignite), kind: Flat, value: 10.0),
+        ]),
+        (id: "pyromancer", name: "Pyromancer", kind: Notable, x: -4.5, y: -3.0, links: ["str_fire2"], mods: [
+            (stat: Damage, kind: Increased, value: 20.0, requires: [Fire]),
+            (stat: Penetration(Fire), kind: Flat, value: 5.0),
+        ]),
+        (id: "blood_pact", name: "Blood Pact", kind: Keystone, x: -6.5, y: -4.0, links: ["pyromancer"], mods: [
+            (stat: SkillsCostLife, kind: Flat, value: 1.0),
+            (stat: Life, kind: More, value: 15.0),
+        ]),
+        (id: "str_int_bridge", name: "Tempered Mind", kind: Small, x: -3.0, y: -4.5, links: ["pyromancer"], mods: [
+            (stat: Life, kind: Flat, value: 8.0),
+            (stat: Mana, kind: Flat, value: 5.0),
+        ]),
+        (id: "int_start", name: "Insight", kind: Start, x: 0.0, y: -5.0, links: [], mods: [
+            (stat: Mana, kind: Flat, value: 10.0),
+        ]),
+        (id: "int_mana1", name: "Clarity", kind: Small, x: -1.5, y: -6.0, links: ["int_start", "str_int_bridge"], mods: [
+            (stat: Mana, kind: Flat, value: 10.0),
+        ]),
+        (id: "int_regen", name: "Flow", kind: Small, x: -3.0, y: -7.0, links: ["int_mana1"], mods: [
+            (stat: ManaRegen, kind: Flat, value: 1.0),
+        ]),
+        (id: "arcane_mind", name: "Arcane Mind", kind: Notable, x: -4.5, y: -8.0, links: ["int_regen"], mods: [
+            (stat: Mana, kind: Flat, value: 20.0),
+            (stat: ManaRegen, kind: Flat, value: 2.0),
+        ]),
+        (id: "int_spell1", name: "Incantation", kind: Small, x: 0.0, y: -6.8, links: ["int_start"], mods: [
+            (stat: Damage, kind: Increased, value: 10.0, requires: [Spell]),
+        ]),
+        (id: "int_spell2", name: "Incantation", kind: Small, x: 0.0, y: -8.5, links: ["int_spell1"], mods: [
+            (stat: Damage, kind: Increased, value: 10.0, requires: [Spell]),
+        ]),
+        (id: "spellcraft", name: "Spellcraft", kind: Notable, x: 0.0, y: -10.0, links: ["int_spell2"], mods: [
+            (stat: Damage, kind: Increased, value: 20.0, requires: [Spell]),
+            (stat: CritChance, kind: Increased, value: 20.0, requires: [Spell]),
+        ]),
+        (id: "spellweaver", name: "Spellweaver", kind: Keystone, x: 2.0, y: -11.0, links: ["spellcraft"], mods: [
+            (stat: RepeatChance, kind: Flat, value: 25.0, requires: [Spell]),
+            (stat: ManaCost, kind: More, value: 40.0),
+        ]),
+        (id: "int_light1", name: "Static", kind: Small, x: 1.5, y: -6.0, links: ["int_start"], mods: [
+            (stat: Damage, kind: Increased, value: 10.0, requires: [Lightning]),
+        ]),
+        (id: "int_shock", name: "Overcharge", kind: Small, x: 3.0, y: -7.0, links: ["int_light1"], mods: [
+            (stat: AilmentChance(Shock), kind: Flat, value: 10.0),
+        ]),
+        (id: "stormcaller", name: "Stormcaller", kind: Notable, x: 4.5, y: -8.0, links: ["int_shock"], mods: [
+            (stat: Damage, kind: Increased, value: 20.0, requires: [Lightning]),
+            (stat: AilmentChance(Shock), kind: Flat, value: 15.0),
+        ]),
+        (id: "int_cold1", name: "Frost", kind: Small, x: 2.0, y: -3.5, links: ["int_start"], mods: [
+            (stat: Damage, kind: Increased, value: 10.0, requires: [Cold]),
+        ]),
+        (id: "int_chill", name: "Rime", kind: Small, x: 3.5, y: -2.2, links: ["int_cold1"], mods: [
+            (stat: AilmentChance(Chill), kind: Flat, value: 10.0),
+        ]),
+        (id: "winters_grip", name: "Winter's Grip", kind: Notable, x: 5.0, y: -1.0, links: ["int_chill"], mods: [
+            (stat: Damage, kind: Increased, value: 20.0, requires: [Cold]),
+            (stat: AilmentChance(Freeze), kind: Flat, value: 5.0),
+        ]),
+        (id: "int_hub", name: "Focus", kind: Small, x: 0.0, y: -2.5, links: ["int_start"], mods: [
+            (stat: Mana, kind: Flat, value: 5.0),
+            (stat: Life, kind: Flat, value: 5.0),
+        ]),
+        (id: "dex_start", name: "Agility", kind: Start, x: 5.0, y: 3.0, links: [], mods: [
+            (stat: Evasion, kind: Flat, value: 3.0),
+        ]),
+        (id: "dex_ev1", name: "Footwork", kind: Small, x: 6.5, y: 2.0, links: ["dex_start", "winters_grip"], mods: [
+            (stat: Evasion, kind: Flat, value: 3.0),
+        ]),
+        (id: "dex_ev2", name: "Footwork", kind: Small, x: 8.0, y: 1.5, links: ["dex_ev1"], mods: [
+            (stat: Evasion, kind: Flat, value: 3.0),
+        ]),
+        (id: "shadowstep", name: "Shadowstep", kind: Notable, x: 9.5, y: 1.0, links: ["dex_ev2"], mods: [
+            (stat: Evasion, kind: Flat, value: 8.0),
+            (stat: Life, kind: Flat, value: 10.0),
+        ]),
+        (id: "dex_crit1", name: "Keen Eye", kind: Small, x: 5.0, y: 4.5, links: ["dex_start"], mods: [
+            (stat: CritChance, kind: Increased, value: 15.0),
+        ]),
+        (id: "dex_crit2", name: "Cruelty", kind: Small, x: 5.0, y: 6.0, links: ["dex_crit1"], mods: [
+            (stat: CritMultiplier, kind: Flat, value: 10.0),
+        ]),
+        (id: "deadeye", name: "Deadeye", kind: Notable, x: 6.5, y: 7.0, links: ["dex_crit2"], mods: [
+            (stat: CritChance, kind: Increased, value: 40.0),
+            (stat: CritMultiplier, kind: Flat, value: 20.0),
+        ]),
+        (id: "steady_hand", name: "Steady Hand", kind: Keystone, x: 8.0, y: 8.5, links: ["deadeye"], mods: [
+            (stat: CritChance, kind: More, value: -100.0),
+            (stat: Damage, kind: More, value: 30.0),
+        ]),
+        (id: "dex_proj", name: "Fletching", kind: Small, x: 3.5, y: 7.0, links: ["dex_crit2"], mods: [
+            (stat: Damage, kind: Increased, value: 10.0, requires: [Projectile]),
+        ]),
+        (id: "dex_poison", name: "Toxins", kind: Small, x: 2.5, y: 8.2, links: ["dex_proj"], mods: [
+            (stat: AilmentChance(Poison), kind: Flat, value: 10.0),
+        ]),
+        (id: "venomous", name: "Venomous", kind: Notable, x: 1.5, y: 9.6, links: ["dex_poison"], mods: [
+            (stat: AilmentChance(Poison), kind: Flat, value: 20.0),
+            (stat: Damage, kind: Increased, value: 20.0, requires: [Chaos]),
+        ]),
+        (id: "dex_attack", name: "Quick Hands", kind: Small, x: 3.5, y: 4.0, links: ["dex_start"], mods: [
+            (stat: Damage, kind: Increased, value: 10.0, requires: [Attack]),
+        ]),
+        (id: "crossroads", name: "Crossroads", kind: Small, x: 0.0, y: 2.0, links: ["str_attack", "dex_attack", "int_hub"], mods: [
+            (stat: Life, kind: Flat, value: 8.0),
+        ]),
+        (id: "low_road", name: "Low Road", kind: Small, x: -0.5, y: 9.4, links: ["butcher", "venomous"], mods: [
+            (stat: Life, kind: Flat, value: 10.0),
+        ]),
+    ],
+)

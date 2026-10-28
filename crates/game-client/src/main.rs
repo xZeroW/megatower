@@ -9,6 +9,7 @@ mod inventory;
 mod map;
 mod menus;
 mod run;
+mod tree;
 mod ui;
 
 use bevy::prelude::*;

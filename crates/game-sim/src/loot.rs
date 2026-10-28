@@ -5,6 +5,7 @@ use crate::content::Content;
 use crate::gems::{Gem, GemDb, GemRarity, SocketGroup};
 use crate::items::{RarityWeights, normal_item, random_item};
 use crate::labyrinth::RoomKind;
+use crate::passives::Progress;
 use crate::rng::Rng;
 use crate::tags::Tag;
 
@@ -68,6 +69,16 @@ pub fn room_loot(kind: RoomKind, floor: u32, content: &Content, rng: &mut Rng) -
     loot
 }
 
+/// Where on the passive tree a starter gem begins: spells in Intelligence,
+/// melee attacks in Strength, other attacks in Dexterity.
+pub fn class_start(starter: &str, content: &Content) -> &'static str {
+    match content.gems.active(starter) {
+        Some(g) if g.tags.has(Tag::Spell) => "int_start",
+        Some(g) if g.tags.has(Tag::Melee) => "str_start",
+        _ => "dex_start",
+    }
+}
+
 /// A blade for attack gems, a wand for spells, with the gem socketed in
 /// [`STARTING_LINKS`] links, plus a plain vest.
 pub fn starting_character(starter: &str, content: &Content, rng: &mut Rng) -> Character {
@@ -93,7 +104,10 @@ pub fn starting_character(starter: &str, content: &Content, rng: &mut Rng) -> Ch
         1,
         rng,
     );
-    Character::new([(EquipSlot::Weapon, weapon), (EquipSlot::Body, vest)])
+    let mut character = Character::new([(EquipSlot::Weapon, weapon), (EquipSlot::Body, vest)]);
+    character.progress = Progress::new(class_start(starter, content));
+    character.heal_full();
+    character
 }
 
 #[cfg(test)]
@@ -166,6 +180,8 @@ mod tests {
                 .unwrap();
             assert_eq!(sockets.links, STARTING_LINKS);
             assert!(ch.equipped(EquipSlot::Body).is_some());
+            assert_eq!(ch.progress.level, 1);
+            assert_eq!(ch.life, ch.max_life());
         }
     }
 }

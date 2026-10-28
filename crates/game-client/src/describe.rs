@@ -86,6 +86,8 @@ fn line(m: &Modifier) -> String {
         Stat::AilmentChance(a) => format!("{:+.0}% chance to {}", m.value, lower(format!("{a:?}"))),
         Stat::ManaRegen => signed(m.kind, m.value, "mana per turn"),
         Stat::LifeLeech => format!("{:.0}% of damage leeched as life", m.value),
+        Stat::SkillsCostLife => "Skills cost life instead of mana".to_string(),
+        Stat::RepeatChance => format!("{:.0}% chance to repeat skills", m.value),
     }
     .to_string()
         + &if m.requires.is_empty() || matches!(m.stat, Stat::Damage) {

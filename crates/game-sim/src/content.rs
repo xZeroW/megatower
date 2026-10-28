@@ -3,6 +3,7 @@
 use crate::combat::EnemyDef;
 use crate::gems::GemDb;
 use crate::items::ItemDb;
+use crate::passives::TreeDb;
 use serde::de::DeserializeOwned;
 use std::sync::OnceLock;
 
@@ -10,6 +11,7 @@ pub struct Content {
     pub gems: GemDb,
     pub enemies: Vec<EnemyDef>,
     pub items: ItemDb,
+    pub tree: TreeDb,
 }
 
 /// A malformed embedded file is a build mistake, so it panics with its name.
@@ -31,6 +33,10 @@ pub fn get() -> &'static Content {
         items: parse(
             include_str!("../../../assets/data/game/items.ron"),
             "items.ron",
+        ),
+        tree: parse(
+            include_str!("../../../assets/data/game/tree.ron"),
+            "tree.ron",
         ),
     })
 }

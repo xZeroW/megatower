@@ -73,6 +73,7 @@ pub fn spawn(def: &EnemyDef, floor: u32, elite: bool) -> Enemy {
         fighter: Fighter::new(name, life, 0.0, mods),
         id: def.id.clone(),
         boss: def.boss,
+        elite,
         intents: def.intents.clone(),
         next: 0,
     }

@@ -93,6 +93,7 @@ pub struct Enemy {
     pub fighter: Fighter,
     pub id: String,
     pub boss: bool,
+    pub elite: bool,
     pub intents: Vec<Intent>,
     next: usize,
 }
@@ -171,6 +172,7 @@ pub enum ActionError {
     /// The target is out of range or already dead.
     InvalidTarget,
     NotEnoughMana,
+    NotEnoughLife,
 }
 
 pub struct Battle {
@@ -258,7 +260,13 @@ impl Battle {
         }
     }
 
-    /// Mana the skill costs the hero right now.
+    /// Skills cost life instead of mana (the Blood Pact keystone).
+    pub fn pays_with_life(&self) -> bool {
+        self.hero.mods.flat(Stat::SkillsCostLife, Tags::NONE) > 0.0
+    }
+
+    /// What the skill costs the hero right now, in mana or (with
+    /// [`Battle::pays_with_life`]) life.
     pub fn skill_cost(&self, index: usize) -> Option<f64> {
         let skill = self.skills.get(index)?;
         Some(
@@ -293,7 +301,12 @@ impl Battle {
             if !self.enemies.get(target).is_some_and(|e| e.fighter.alive()) {
                 return Err(ActionError::InvalidTarget);
             }
-            if self.hero.mana < cost {
+            if self.pays_with_life() {
+                // Paying may not kill the hero.
+                if self.hero.life <= cost {
+                    return Err(ActionError::NotEnoughLife);
+                }
+            } else if self.hero.mana < cost {
                 return Err(ActionError::NotEnoughMana);
             }
         }
@@ -328,7 +341,12 @@ impl Battle {
 
     fn use_skill(&mut self, index: usize, primary: usize) {
         let skill = self.skills[index].clone();
-        self.hero.mana -= self.skill_cost(index).unwrap_or(0.0);
+        let cost = self.skill_cost(index).unwrap_or(0.0);
+        if self.pays_with_life() {
+            self.hero.life -= cost;
+        } else {
+            self.hero.mana -= cost;
+        }
         self.log.push(CombatEvent::Action {
             actor: Actor::Hero,
             name: skill.name.clone(),
@@ -344,7 +362,9 @@ impl Battle {
         let mut primary = primary;
         for cast in 0..2 {
             if cast == 1 {
-                if !self.rng.chance(skill.repeat_chance) {
+                let chance =
+                    skill.repeat_chance + self.hero.mods.flat(Stat::RepeatChance, skill.tags);
+                if !self.rng.chance(chance) {
                     break;
                 }
                 let living = self.living();
@@ -490,6 +510,7 @@ mod tests {
             fighter: Fighter::new("Dummy", life, 0.0, ModSet::new()),
             id: "dummy".into(),
             boss: false,
+            elite: false,
             intents: intents
                 .into_iter()
                 .map(|kind| Intent {
@@ -732,6 +753,53 @@ mod tests {
         assert!(b.log.contains(&CombatEvent::Repeat));
         assert_eq!(hits(&b), 2);
         approx(b.hero.mana, HERO_MANA - 5.0 + HERO_MANA_REGEN.min(5.0));
+    }
+
+    #[test]
+    fn blood_pact_pays_with_life() {
+        let mut mods = ModSet::new();
+        mods.push(Modifier::flat(Stat::SkillsCostLife, 1.0));
+        let hero = Fighter::hero(mods);
+        let mut b = Battle::new(
+            hero,
+            vec![skill(Fire, 1.0, Targeting::Single)],
+            vec![idle(100.0)],
+            Rng::seeded(1),
+        );
+        b.hero.mana = 0.0;
+        b.act(HeroAction::Skill {
+            index: 0,
+            target: 0,
+        })
+        .unwrap();
+        approx(b.hero.life, HERO_LIFE - 5.0);
+        b.hero.life = 5.0;
+        assert_eq!(
+            b.act(HeroAction::Skill {
+                index: 0,
+                target: 0
+            }),
+            Err(ActionError::NotEnoughLife)
+        );
+    }
+
+    #[test]
+    fn repeat_chance_from_the_hero_counts() {
+        let mut mods = ModSet::new();
+        mods.push(Modifier::flat(Stat::RepeatChance, 100.0).requiring(Tag::Spell));
+        let hero = Fighter::hero(mods);
+        let mut b = Battle::new(
+            hero,
+            vec![skill(Fire, 1.0, Targeting::Single)],
+            vec![idle(100.0)],
+            Rng::seeded(1),
+        );
+        b.act(HeroAction::Skill {
+            index: 0,
+            target: 0,
+        })
+        .unwrap();
+        assert_eq!(hits(&b), 2);
     }
 
     #[test]

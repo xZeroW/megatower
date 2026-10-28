@@ -2,7 +2,7 @@
 //! changes, with the screen chosen by the run's mode.
 
 use crate::run::{Mode, Run};
-use crate::{combat, inventory, map, menus};
+use crate::{combat, inventory, map, menus, tree};
 use bevy::prelude::*;
 
 pub const TEXT: Color = Color::srgb(0.92, 0.9, 0.85);
@@ -44,6 +44,7 @@ fn redraw(mut commands: Commands, run: Res<Run>, root: Single<Entity, With<Scree
         Mode::Map => map::spawn(&mut commands, &run),
         Mode::Combat => combat::spawn(&mut commands, &run),
         Mode::Inventory => inventory::spawn(&mut commands, &run),
+        Mode::Tree => tree::spawn(&mut commands, &run),
         Mode::Dead => menus::spawn_dead(&mut commands, &run),
     };
     commands.entity(root).add_children(&children);

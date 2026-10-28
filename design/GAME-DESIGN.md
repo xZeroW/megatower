@@ -92,6 +92,14 @@ Converted damage keeps the modifiers of the types it passed through.
 - Small nodes (+stats), notables (bigger clusters), ~4 keystones with real trade-offs
   (e.g. skills cost life instead of mana; can't crit but deal more damage).
 - 1 point per level; respec costs a currency item.
+- Current implementation (`game-sim/src/passives.rs`, data in `assets/data/game/tree.ron`
+  with hand-placed node positions): 45 nodes, 3 starts. The start comes from the
+  starter gem (spells: Intelligence, melee: Strength, other attacks: Dexterity).
+  Keystones: Glass Cannon (40% more damage, 30% less life), Blood Pact (skills cost life,
+  15% more life), Steady Hand (no crits, 30% more damage), Spellweaver (spells 25% repeat
+  chance, 40% more mana cost). Levels: XP to next = 10·L + 5·L²; an enemy gives
+  6 + 4·floor XP (elites ×3, bosses ×8); each level adds 1 point, +5 life, +2 mana.
+  Refunds exist in the sim but no screen or currency uses them yet.
 
 ### Gem Altar
 A special room that upgrades a gem's rarity by one tier for free. Each altar has

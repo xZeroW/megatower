@@ -5,7 +5,9 @@
 //!   or use a skill, `N`/`E`/`S`/`W` move, `.` resolves the room, `>`
 //!   descends, `_` passes a combat turn, `*` walks to the stairs without
 //!   fighting and enters them, `i` toggles the inventory, `$` adds a
-//!   treasure room's loot, `b` selects the first bag slot, `w` the weapon.
+//!   treasure room's loot, `b` selects the first bag slot, `w` the weapon,
+//!   `p` toggles the passive tree, `+` grants a level, `^` allocates the
+//!   first node the tree allows.
 //! - `GAME_CAPTURE=<path>`: save a screenshot there once the UI has settled,
 //!   then exit.
 
@@ -37,6 +39,27 @@ fn apply_moves(mut run: ResMut<Run>) {
             'W' => run.step(Dir::West),
             '.' => run.resolve(),
             'i' => run.toggle_inventory(),
+            'p' => run.toggle_tree(),
+            '^' => {
+                // Allocate the first node the tree allows.
+                let tree = &game_sim::content::get().tree;
+                let next = tree
+                    .nodes
+                    .iter()
+                    .find(|n| run.character.progress.can_allocate(tree, &n.id).is_ok())
+                    .map(|n| n.id.clone());
+                if let Some(id) = next {
+                    run.select_node(&id);
+                    run.allocate_selected();
+                }
+            }
+            '+' => {
+                // Grant a level's worth of experience.
+                let level = run.character.progress.level;
+                run.character
+                    .progress
+                    .gain_xp(game_sim::passives::xp_to_next(level));
+            }
             '$' => run.dev_loot(),
             'b' => run.select(crate::run::Selection::Bag(0)),
             'w' => run.select(crate::run::Selection::Worn(

@@ -42,6 +42,10 @@ pub enum Stat {
     ManaRegen,
     /// Percent of hit damage dealt gained as life.
     LifeLeech,
+    /// Any positive value: skills cost life instead of mana.
+    SkillsCostLife,
+    /// Percent chance for a skill to repeat for free, on top of its supports.
+    RepeatChance,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]

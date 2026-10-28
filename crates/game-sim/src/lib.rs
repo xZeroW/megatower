@@ -8,6 +8,7 @@
 //! - [`gems`]: skill and support gems, rarity, and the skill a socket group makes.
 //! - [`items`]: gear bases, affixes, rarity and uniques.
 //! - [`character`]: equipment, the bag and socketing.
+//! - [`passives`]: the passive tree, experience and levels.
 //! - [`loot`]: room drops and the starting gear.
 //! - [`combat`]: the turn loop, enemy intents and encounters.
 //! - [`content`]: gem and enemy data from `assets/data/game/`.
@@ -24,5 +25,6 @@ pub mod items;
 pub mod labyrinth;
 pub mod loot;
 pub mod modifier;
+pub mod passives;
 pub mod rng;
 pub mod tags;

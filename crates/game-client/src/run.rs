@@ -6,6 +6,7 @@ use game_sim::combat::{Battle, HeroAction, Outcome, encounter};
 use game_sim::content;
 use game_sim::labyrinth::{self, Dir, Floor, MoveError, Pos, RoomKind};
 use game_sim::loot::{room_loot, starting_character};
+use game_sim::passives::{PassiveError, enemy_xp};
 use game_sim::rng::Rng;
 
 pub struct RunPlugin;
@@ -41,6 +42,7 @@ pub enum Mode {
     Map,
     Combat,
     Inventory,
+    Tree,
     Dead,
 }
 
@@ -60,6 +62,8 @@ pub struct Run {
     pub message: String,
     pub character: Character,
     pub selection: Option<Selection>,
+    /// Node picked on the passive tree screen.
+    pub tree_selection: Option<String>,
     pub battle: Option<Battle>,
     /// The enemy the hero's next skill aims at.
     pub target: usize,
@@ -78,6 +82,17 @@ pub fn gem_name(id: &str) -> String {
         .map(|g| g.name.clone())
         .or_else(|| gems.support(id).map(|g| g.name.clone()))
         .unwrap_or_else(|| id.to_string())
+}
+
+fn passive_error(e: PassiveError) -> &'static str {
+    match e {
+        PassiveError::UnknownNode => "No such node.",
+        PassiveError::AlreadyAllocated => "Already allocated.",
+        PassiveError::NotConnected => "It must link to an allocated node.",
+        PassiveError::NoPoints => "No passive points left. Level up first.",
+        PassiveError::WouldDisconnect => "That would cut off other nodes.",
+        PassiveError::StartNode => "Start nodes cannot be bought.",
+    }
 }
 
 fn gear_error(e: GearError) -> &'static str {
@@ -126,6 +141,7 @@ impl Run {
             message: "Choose your first skill gem.".into(),
             character: Character::new([]),
             selection: None,
+            tree_selection: None,
             battle: None,
             target: 0,
         }
@@ -264,6 +280,9 @@ impl Run {
             Err(e) => {
                 self.message = match e {
                     game_sim::combat::ActionError::NotEnoughMana => "Not enough mana.".into(),
+                    game_sim::combat::ActionError::NotEnoughLife => {
+                        "Not enough life to pay for it.".into()
+                    }
                     other => format!("{other:?}"),
                 };
                 return;
@@ -278,11 +297,25 @@ impl Run {
             }
             Outcome::Won => {
                 let battle = self.battle.take().expect("checked above");
+                let floor = self.floor.number;
+                let xp: u32 = battle
+                    .enemies
+                    .iter()
+                    .map(|e| enemy_xp(floor, e.elite, e.boss))
+                    .sum();
                 self.character.life = battle.into_hero().life;
                 self.floor.resolve_current();
                 self.mode = Mode::Map;
+                let gained = self.character.progress.gain_xp(xp);
+                let mut intro = format!("Victory, +{xp} XP.");
+                if gained > 0 {
+                    intro.push_str(&format!(
+                        " Level {}! Press P to spend passive points.",
+                        self.character.progress.level
+                    ));
+                }
                 let kind = self.floor.current_room().kind;
-                self.message = self.take_loot(kind, "Victory.");
+                self.message = self.take_loot(kind, &intro);
             }
             Outcome::Lost => self.mode = Mode::Dead,
         }
@@ -315,10 +348,37 @@ impl Run {
         message
     }
 
+    pub fn toggle_tree(&mut self) {
+        self.mode = match self.mode {
+            Mode::Map | Mode::Inventory => Mode::Tree,
+            Mode::Tree => Mode::Map,
+            _ => return,
+        };
+        self.tree_selection = None;
+    }
+
+    pub fn select_node(&mut self, id: &str) {
+        self.tree_selection = Some(id.to_string());
+    }
+
+    pub fn allocate_selected(&mut self) {
+        let Some(id) = self.tree_selection.clone() else {
+            return;
+        };
+        let tree = &content::get().tree;
+        self.message = match self.character.progress.allocate(tree, &id) {
+            Ok(()) => format!(
+                "{} allocated.",
+                tree.node(&id).map_or("Node", |n| n.name.as_str())
+            ),
+            Err(e) => passive_error(e).into(),
+        };
+    }
+
     pub fn toggle_inventory(&mut self) {
         self.mode = match self.mode {
             Mode::Map => Mode::Inventory,
-            Mode::Inventory => Mode::Map,
+            Mode::Inventory | Mode::Tree => Mode::Map,
             _ => return,
         };
         self.selection = None;
@@ -420,11 +480,23 @@ fn keyboard(keys: Res<ButtonInput<KeyCode>>, mut run: ResMut<Run>) {
         KeyCode::Digit4,
     ];
     let number = NUMBERS.iter().position(|&k| keys.just_pressed(k));
-    if matches!(run.mode, Mode::Map | Mode::Inventory)
-        && keys.any_just_pressed([KeyCode::KeyI, KeyCode::Tab])
-        || run.mode == Mode::Inventory && keys.just_pressed(KeyCode::Escape)
-    {
+    let browsing = matches!(run.mode, Mode::Map | Mode::Inventory | Mode::Tree);
+    if browsing && keys.any_just_pressed([KeyCode::KeyI, KeyCode::Tab]) {
+        if run.mode == Mode::Tree {
+            run.toggle_tree();
+        }
         run.toggle_inventory();
+        return;
+    }
+    if browsing && keys.just_pressed(KeyCode::KeyP) {
+        if run.mode == Mode::Inventory {
+            run.toggle_inventory();
+        }
+        run.toggle_tree();
+        return;
+    }
+    if matches!(run.mode, Mode::Inventory | Mode::Tree) && keys.just_pressed(KeyCode::Escape) {
+        run.mode = Mode::Map;
         return;
     }
     match run.mode {
@@ -465,6 +537,11 @@ fn keyboard(keys: Res<ButtonInput<KeyCode>>, mut run: ResMut<Run>) {
             }
         }
         Mode::Inventory => {}
+        Mode::Tree => {
+            if keys.just_pressed(KeyCode::Enter) {
+                run.allocate_selected();
+            }
+        }
         Mode::Dead => {
             if keys.just_pressed(KeyCode::Enter) {
                 run.restart();

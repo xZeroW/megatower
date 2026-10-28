@@ -168,7 +168,11 @@ fn hero_area(commands: &mut Commands, battle: &Battle) -> Entity {
         .id();
     for (i, skill) in battle.skills.iter().enumerate() {
         let cost = battle.skill_cost(i).unwrap_or(0.0);
-        let affordable = hero.mana >= cost;
+        let (affordable, resource) = if battle.pays_with_life() {
+            (hero.life > cost, "life")
+        } else {
+            (hero.mana >= cost, "mana")
+        };
         let border = if affordable {
             ACCENT
         } else {
@@ -184,7 +188,7 @@ fn hero_area(commands: &mut Commands, battle: &Battle) -> Entity {
                 .id(),
             commands
                 .spawn(text(
-                    format!("{cost:.0} mana"),
+                    format!("{cost:.0} {resource}"),
                     13.0,
                     if affordable { MANA } else { TEXT_DIM },
                 ))

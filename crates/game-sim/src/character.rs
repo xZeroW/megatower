@@ -6,6 +6,7 @@ use crate::combat::Fighter;
 use crate::gems::{Gem, GemDb, Skill};
 use crate::items::{Item, Slot};
 use crate::modifier::ModSet;
+use crate::passives::Progress;
 use serde::{Deserialize, Serialize};
 
 /// Bag slots for loose items and gems.
@@ -82,6 +83,8 @@ pub struct Character {
     pub inventory: Vec<Loot>,
     /// Current life; capped by the gear's maximum when a fight starts.
     pub life: f64,
+    /// Level, experience and the passive tree.
+    pub progress: Progress,
 }
 
 impl Character {
@@ -90,6 +93,7 @@ impl Character {
             equipment: Default::default(),
             inventory: Vec::new(),
             life: 0.0,
+            progress: Progress::default(),
         };
         for (slot, item) in equipment {
             c.equipment[slot.index()] = Some(item);
@@ -102,8 +106,9 @@ impl Character {
         self.equipment[slot.index()].as_ref()
     }
 
+    /// Gear, passives and level together.
     pub fn mods(&self) -> ModSet {
-        let mut mods = ModSet::new();
+        let mut mods = self.progress.mods(&crate::content::get().tree);
         for item in self.equipment.iter().flatten() {
             mods.extend(item.mods().iter());
         }
