@@ -234,8 +234,8 @@ pub fn battle_log_arrows(layout: &Layout, x: f32, y: f32) -> Option<bool> {
     }
 }
 
-/// Buttons that do nothing yet because their target screen is not built.
-pub const ESC_UNAVAILABLE: [&str; 2] = ["LibraryButton", "OptionsButton"];
+/// Escape-menu buttons drawn disabled: none, every target screen is built.
+pub const ESC_UNAVAILABLE: [&str; 0] = [];
 
 #[cfg(test)]
 mod tests {

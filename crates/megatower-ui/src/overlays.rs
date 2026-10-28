@@ -235,7 +235,6 @@ pub(super) fn esc_frame(
                 ui.dragged = None;
                 ui.popups.clear();
             }
-            // Library and options screens are not built yet.
             Some(EscButton::Options) => ui.options_open = true,
             Some(EscButton::Library) => ui.library_open = true,
             None => {}
