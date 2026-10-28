@@ -29,6 +29,16 @@ builds), exploring hidden labyrinth floors.
   extra door per 8 rooms; elites = 1 + floor / 3; Rest, Treasure, Merchant and Gem Altar
   once per floor; Shrine on half the floors; 1–2 Events; the rest are Fights. You can only
   leave a room once it is resolved.
+- The room view (`game-client/src/room_view.rs`): the hero stands in the 3D room from
+  `megatower-runtime` and faces the way they last walked (`Floor::facing`). Doors are
+  built in code where the floor has exits: ahead in the baked far doorway (bricked up
+  when there is no exit ahead), left and right on the side walls between z -8.0 and
+  -5.45 (the middle pillars of the trader / altar / chest / monolith scenes are hidden
+  so those doors show). The way back is the "Turn back" button. Click a door (it
+  lights up under the cursor) or press W / A / D / S; a short dolly or turn plays,
+  then the hero moves. The corner minimap and the full map (M) are for looking only.
+  Scenes: treasure `chest_room`, merchant `mystic_trader`, Gem Altar `altar_room`,
+  shrine `monolith_room`, everything else `room_normal`.
 - Later options: scouting items that reveal room types, a danger clock that makes fights
   harder the longer you wander.
 

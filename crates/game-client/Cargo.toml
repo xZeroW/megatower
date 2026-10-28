@@ -10,3 +10,5 @@ path = "src/main.rs"
 [dependencies]
 bevy.workspace = true
 game-sim = { path = "../../crates/game-sim" }
+megatower-assets = { path = "../../crates/megatower-assets" }
+megatower-runtime = { path = "../../crates/megatower-runtime" }

@@ -2,9 +2,10 @@
 //! changes, with the screen chosen by the run's mode.
 
 use crate::run::{Mode, Overlay, Run};
-use crate::{combat, inventory, map, menus, rooms, tree};
+use crate::{combat, inventory, map, menus, room_view, rooms, tree};
 use bevy::picking::events::PointerClick;
 use bevy::prelude::*;
+use megatower_runtime::render::room::RoomRenderTarget;
 
 pub const TEXT: Color = Color::srgb(0.92, 0.9, 0.85);
 pub const TEXT_DIM: Color = Color::srgb(0.6, 0.58, 0.55);
@@ -37,14 +38,20 @@ fn setup(mut commands: Commands) {
     ));
 }
 
-fn redraw(mut commands: Commands, run: Res<Run>, root: Single<Entity, With<ScreenRoot>>) {
+fn redraw(
+    mut commands: Commands,
+    run: Res<Run>,
+    root: Single<Entity, With<ScreenRoot>>,
+    room: Option<Res<RoomRenderTarget>>,
+) {
     let root = *root;
     commands.entity(root).despawn_related::<Children>();
     let children = match (run.overlay, &run.mode) {
         (Some(Overlay::Inventory), _) => inventory::spawn(&mut commands, &run),
         (Some(Overlay::Tree), _) => tree::spawn(&mut commands, &run),
+        (Some(Overlay::Map), _) => map::spawn_full(&mut commands, &run),
         (None, Mode::Starter(_)) => menus::spawn_starter(&mut commands, &run),
-        (None, Mode::Map) => map::spawn(&mut commands, &run),
+        (None, Mode::Map) => room_view::spawn_explore(&mut commands, &run, room.as_deref()),
         (None, Mode::Combat) => combat::spawn(&mut commands, &run),
         (None, Mode::Shop) => rooms::spawn_shop(&mut commands, &run),
         (None, Mode::Shrine(_)) => rooms::spawn_shrine(&mut commands, &run),

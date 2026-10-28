@@ -3072,6 +3072,8 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "game-sim",
+ "megatower-assets",
+ "megatower-runtime",
 ]
 
 [[package]]

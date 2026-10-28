@@ -5,7 +5,7 @@
 use crate::character::{Character, GearError, GemSpot, Loot};
 use crate::combat::{ActionError, Battle, HeroAction, Outcome, encounter};
 use crate::content;
-use crate::labyrinth::{self, Dir, Floor, MoveError, Pos, RoomKind};
+use crate::labyrinth::{self, Dir, Floor, MoveError, Pos, RoomKind, Turn};
 use crate::loot::{room_loot, starting_character};
 use crate::merchant::{Shop, ShopError, sell as sell_gem};
 use crate::passives::{PassiveError, enemy_xp};
@@ -165,6 +165,12 @@ impl Run {
                 self.message = "Resolve this room before leaving.".into();
             }
         }
+    }
+
+    /// Moves through the door at `turn` relative to the facing.
+    pub fn step_turn(&mut self, turn: Turn) {
+        let dir = self.floor.facing.turned(turn);
+        self.step(dir);
     }
 
     /// Moves to a room next to the current one, if a door leads there.

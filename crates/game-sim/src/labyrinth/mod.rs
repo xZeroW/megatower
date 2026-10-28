@@ -48,6 +48,52 @@ impl Dir {
     const fn bit(self) -> u8 {
         1 << self as u8
     }
+
+    /// A quarter turn counter-clockwise (north → west).
+    pub const fn left(self) -> Dir {
+        match self {
+            Dir::North => Dir::West,
+            Dir::West => Dir::South,
+            Dir::South => Dir::East,
+            Dir::East => Dir::North,
+        }
+    }
+
+    /// A quarter turn clockwise (north → east).
+    pub const fn right(self) -> Dir {
+        self.left().opposite()
+    }
+
+    /// The map direction of `turn` for someone facing `self`.
+    pub const fn turned(self, turn: Turn) -> Dir {
+        match turn {
+            Turn::Ahead => self,
+            Turn::Left => self.left(),
+            Turn::Right => self.right(),
+            Turn::Back => self.opposite(),
+        }
+    }
+
+    /// Which way `dir` lies for someone facing `self`.
+    pub fn relative(self, dir: Dir) -> Turn {
+        Turn::ALL
+            .into_iter()
+            .find(|&t| self.turned(t) == dir)
+            .expect("every direction is one of the four turns")
+    }
+}
+
+/// A direction relative to where the hero faces.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum Turn {
+    Ahead,
+    Left,
+    Right,
+    Back,
+}
+
+impl Turn {
+    pub const ALL: [Turn; 4] = [Turn::Ahead, Turn::Left, Turn::Right, Turn::Back];
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -129,6 +175,8 @@ pub struct Floor {
     rooms: Vec<Room>,
     pub start: Pos,
     pub current: Pos,
+    /// The way the hero faces: the direction of the last move.
+    pub facing: Dir,
 }
 
 impl Floor {
@@ -237,6 +285,14 @@ impl Floor {
         }
     }
 
+    /// Doors out of the current room as the hero sees them.
+    pub fn turns(&self) -> Vec<(Turn, Exit)> {
+        self.exits()
+            .into_iter()
+            .map(|e| (self.facing.relative(e.dir), e))
+            .collect()
+    }
+
     pub fn exits(&self) -> Vec<Exit> {
         self.linked(self.current)
             .map(|(dir, pos)| {
@@ -262,6 +318,7 @@ impl Floor {
         else {
             return Err(MoveError::NoDoor);
         };
+        self.facing = dir;
         let first_visit = self.room(pos).visibility != Visibility::Visited;
         if first_visit {
             self.reveal(pos);
@@ -409,6 +466,34 @@ mod tests {
         assert!(f.use_altar());
         assert!(!f.use_altar());
         assert_eq!(f.current_room().kind, RoomKind::GemAltar { uses_left: 0 });
+    }
+
+    #[test]
+    fn turns_follow_the_facing() {
+        assert_eq!(Dir::North.left(), Dir::West);
+        assert_eq!(Dir::North.right(), Dir::East);
+        assert_eq!(Dir::East.turned(Turn::Left), Dir::North);
+        assert_eq!(Dir::South.turned(Turn::Back), Dir::North);
+        for facing in Dir::ALL {
+            for turn in Turn::ALL {
+                assert_eq!(facing.relative(facing.turned(turn)), turn);
+            }
+        }
+    }
+
+    #[test]
+    fn moving_sets_the_facing() {
+        let mut f = floor(1, 4);
+        assert_eq!(f.facing, Dir::North);
+        let (dir, _) = f.linked(f.start).next().unwrap();
+        f.move_to(dir).unwrap();
+        assert_eq!(f.facing, dir);
+        let back = f
+            .turns()
+            .into_iter()
+            .find(|(t, _)| *t == Turn::Back)
+            .unwrap();
+        assert_eq!(back.1.pos, f.start);
     }
 
     #[test]

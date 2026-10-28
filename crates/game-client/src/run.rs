@@ -1,11 +1,12 @@
 //! The run in progress ([`game_sim::run::Run`]) plus what only the screens
 //! need: which overlay is open, what is selected, and the combat target.
 
+use crate::room_view::Walk;
 use bevy::prelude::*;
 use game_sim::character::EquipSlot;
 use game_sim::combat::{HeroAction, Outcome};
 use game_sim::content;
-use game_sim::labyrinth::Dir;
+use game_sim::labyrinth::Turn;
 use game_sim::run::{gear_error, loot_name};
 use std::ops::{Deref, DerefMut};
 
@@ -37,6 +38,8 @@ fn clock_seed() -> u64 {
 pub enum Overlay {
     Inventory,
     Tree,
+    /// The full floor map.
+    Map,
 }
 
 /// What the inventory screen has selected.
@@ -213,7 +216,7 @@ impl Run {
     }
 }
 
-fn keyboard(keys: Res<ButtonInput<KeyCode>>, mut run: ResMut<Run>) {
+fn keyboard(keys: Res<ButtonInput<KeyCode>>, mut run: ResMut<Run>, mut walk: ResMut<Walk>) {
     const NUMBERS: [KeyCode; 4] = [
         KeyCode::Digit1,
         KeyCode::Digit2,
@@ -228,6 +231,10 @@ fn keyboard(keys: Res<ButtonInput<KeyCode>>, mut run: ResMut<Run>) {
         }
         if keys.just_pressed(KeyCode::KeyP) {
             run.toggle(Overlay::Tree);
+            return;
+        }
+        if keys.just_pressed(KeyCode::KeyM) {
+            run.toggle(Overlay::Map);
             return;
         }
     }
@@ -246,19 +253,19 @@ fn keyboard(keys: Res<ButtonInput<KeyCode>>, mut run: ResMut<Run>) {
             }
         }
         Mode::Map => {
-            let dir = if keys.any_just_pressed([KeyCode::ArrowUp, KeyCode::KeyW]) {
-                Some(Dir::North)
+            let turn = if keys.any_just_pressed([KeyCode::ArrowUp, KeyCode::KeyW]) {
+                Some(Turn::Ahead)
             } else if keys.any_just_pressed([KeyCode::ArrowRight, KeyCode::KeyD]) {
-                Some(Dir::East)
+                Some(Turn::Right)
             } else if keys.any_just_pressed([KeyCode::ArrowDown, KeyCode::KeyS]) {
-                Some(Dir::South)
+                Some(Turn::Back)
             } else if keys.any_just_pressed([KeyCode::ArrowLeft, KeyCode::KeyA]) {
-                Some(Dir::West)
+                Some(Turn::Left)
             } else {
                 None
             };
-            if let Some(dir) = dir {
-                run.step(dir);
+            if let Some(turn) = turn {
+                walk.start(turn, &mut run);
             } else if keys.just_pressed(KeyCode::Enter) {
                 run.descend();
             }

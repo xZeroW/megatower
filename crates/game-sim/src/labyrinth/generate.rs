@@ -39,6 +39,7 @@ pub fn generate(number: u32, rng: &mut Rng) -> Floor {
         rooms: vec![blank; usize::from(size) * usize::from(size)],
         start,
         current: start,
+        facing: Dir::North,
     };
     carve_tree(&mut floor, rng);
     add_loops(&mut floor, rng);

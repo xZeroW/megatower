@@ -8,6 +8,7 @@ mod dev;
 mod inventory;
 mod map;
 mod menus;
+mod room_view;
 mod rooms;
 mod run;
 mod tree;
@@ -34,6 +35,7 @@ fn main() {
                 }),
             run::RunPlugin,
             ui::UiPlugin,
+            room_view::RoomViewPlugin,
             dev::DevPlugin,
         ))
         .run();

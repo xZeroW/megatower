@@ -8,14 +8,17 @@
 //!   treasure room's loot, `b` selects the first bag slot, `w` the weapon,
 //!   `p` toggles the passive tree, `+` grants a level, `^` allocates the
 //!   first node the tree allows, `M` / `H` / `V` / `A` walk to the merchant,
-//!   shrine, event or Gem Altar and enter it, `g` grants 100 gold.
+//!   shrine, event or Gem Altar (`T`: treasure) and enter it, `x` leaves a
+//!   room screen, `g` grants 100 gold, `f` / `a`
+//!   / `d` / `z` walk ahead / left / right / back through the room view, `m`
+//!   toggles the full map.
 //! - `GAME_CAPTURE=<path>`: save a screenshot there once the UI has settled,
 //!   then exit.
 
 use crate::run::Run;
 use bevy::prelude::*;
 use bevy::render::view::screenshot::{Screenshot, save_to_disk};
-use game_sim::labyrinth::{Dir, RoomKind};
+use game_sim::labyrinth::{Dir, RoomKind, Turn};
 
 pub struct DevPlugin;
 
@@ -28,7 +31,7 @@ impl Plugin for DevPlugin {
     }
 }
 
-fn apply_moves(mut run: ResMut<Run>) {
+fn apply_moves(mut run: ResMut<Run>, mut walk: ResMut<crate::room_view::Walk>) {
     let Ok(moves) = std::env::var("GAME_MOVES") else {
         return;
     };
@@ -40,11 +43,19 @@ fn apply_moves(mut run: ResMut<Run>) {
             'W' => run.step(Dir::West),
             'i' => run.toggle(crate::run::Overlay::Inventory),
             'p' => run.toggle(crate::run::Overlay::Tree),
+            'm' => run.toggle(crate::run::Overlay::Map),
+            // Walks played by the room view (only the last one runs).
+            'f' => walk.start(Turn::Ahead, &mut run),
+            'a' => walk.start(Turn::Left, &mut run),
+            'd' => walk.start(Turn::Right, &mut run),
+            'z' => walk.start(Turn::Back, &mut run),
             'M' => run.debug_walk_to_kind(|k| k == RoomKind::Merchant),
             'H' => run.debug_walk_to_kind(|k| k == RoomKind::Shrine),
             'V' => run.debug_walk_to_kind(|k| k == RoomKind::Event),
             'A' => run.debug_walk_to_kind(|k| matches!(k, RoomKind::GemAltar { .. })),
             'g' => run.character.gold += 100,
+            'T' => run.debug_walk_to_kind(|k| k == RoomKind::Treasure),
+            'x' => run.leave_room(),
             '^' => {
                 // Allocate the first node the tree allows.
                 let tree = &game_sim::content::get().tree;
