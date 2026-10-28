@@ -554,6 +554,16 @@ pub fn market_container(game: &Game) -> Option<Entity> {
     })
 }
 
+/// Multiplies the opacity of every draw in `draws`.
+fn fade(draws: &mut [Draw], alpha: f32) {
+    for draw in draws {
+        match draw {
+            Draw::Fill { color, .. } | Draw::Text { color, .. } => color[3] *= alpha,
+            Draw::Image { tint, .. } => tint[3] *= alpha,
+        }
+    }
+}
+
 pub(crate) fn item_draws(game: &Game, item: Entity, rect: R, locked: bool, out: &mut Vec<Draw>) {
     let Some(value) = game.world.get::<Item>(item) else {
         return;
@@ -2315,20 +2325,12 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
             if let Some(Some(item)) = items.get(index) {
                 let is_locked =
                     locked.contains(&(index as i64)) || challenge.contains(&(index as i64));
+                let start = out.len();
                 item_draws(game, *item, *rect, is_locked, &mut out);
-                if container == shop {
-                    let (currency, amount) = game.item_buy_price(*item);
-                    let can = game.can_buy_item(container, index as i32);
-                    out.push(text(
-                        [rect[0], rect[1] + 35.0, 34.0, 13.0],
-                        number(amount),
-                        if can {
-                            game.rules.stats.get(currency).color
-                        } else {
-                            palette(4)
-                        },
-                        Align::Center,
-                    ));
+                // Shop items you cannot buy are drawn at about 20% opacity.
+                let shops = [player.market, player.merchant, player.mystic_trader];
+                if shops.contains(&container) && !game.can_buy_item(container, index as i32) {
+                    fade(&mut out[start..], 0.19);
                 }
             }
         }
@@ -2347,21 +2349,6 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         Tab::Profile => {}
     }
     super::panels::draw_tab_bar(ui, rects, &mut out);
-    // Market refresh price.
-    {
-        let price = game.market_refresh_price();
-        let can = game.can_refresh_market();
-        out.push(text(
-            [rects.refresh[0], rects.refresh[1] + 35.0, 34.0, 13.0],
-            number(price),
-            if can {
-                game.rules.stats.get(StatId::Gold).color
-            } else {
-                palette(4)
-            },
-            Align::Center,
-        ));
-    }
     // Loot stash count.
     let stash = game
         .world
