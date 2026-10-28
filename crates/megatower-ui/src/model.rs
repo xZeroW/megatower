@@ -361,6 +361,8 @@ pub struct UiState {
     pub enemy_hit: [f64; 3],
     /// When each enemy last lunged (`enemy_attack`) or dodged (`enemy_dodge`).
     pub enemy_lunge: [f64; 3],
+    /// `ResourceBar` motion (main fill, trailing "under" fill) per bar.
+    pub bars: std::collections::HashMap<BarKey, TrackedBar>,
     pub enemy_dodge: [f64; 3],
     pub selected_adventurer: usize,
     pub message: Option<(String, f64)>,
@@ -408,6 +410,7 @@ impl Default for UiState {
             enemy_x: [0.0; 3],
             enemy_hit: [-10.0; 3],
             enemy_lunge: [-10.0; 3],
+            bars: Default::default(),
             enemy_dodge: [-10.0; 3],
             selected_adventurer: 0,
             message: None,
@@ -451,4 +454,21 @@ fn floor_one_items() -> Vec<String> {
         .filter(|d| d.spawn_floor == 1)
         .map(|d| d.id.clone())
         .collect()
+}
+
+/// A health or armor bar of the gameplay screen.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum BarKey {
+    PlayerHealth,
+    PlayerArmor,
+    EnemyHealth(usize),
+    EnemyArmor(usize),
+}
+
+/// A bar's `ResourceBar` state and the identity of what it shows (a new
+/// enemy in the slot starts a fresh bar instead of animating from the last).
+#[derive(Clone, Debug)]
+pub struct TrackedBar {
+    pub tag: u64,
+    pub state: super::resource_bar::ResourceBarState,
 }

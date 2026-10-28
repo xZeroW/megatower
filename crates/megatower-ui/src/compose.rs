@@ -175,7 +175,7 @@ fn label_panel(rects: &Rects, cx: f32, y: f32, text_: &str, color: Rgba, out: &m
 
 /// `resource_bar.tscn`: the `minimal_bar` outline (`BackPanel`) around a
 /// `minimal_bar_fill` pill, both modulated by the bar colour.
-fn pill_bar(rect: R, frac: f32, color: Rgba, out: &mut Vec<Draw>) {
+fn pill_bar(rect: R, frac: f32, under: Option<(f32, Rgba)>, color: Rgba, out: &mut Vec<Draw>) {
     out.push(Draw::Image {
         rect: [rect[0] - 1.0, rect[1] - 1.0, rect[2] + 2.0, rect[3] + 2.0],
         path: trim("assets/textures/ui/minimal_bar.png"),
@@ -184,6 +184,14 @@ fn pill_bar(rect: R, frac: f32, color: Rgba, out: &mut Vec<Draw>) {
         slice: Some([4.0; 4]),
         flip_x: false,
     });
+    // `ProgressBarUnder` is the trailing fill, drawn beneath the main one.
+    if let Some((under, under_color)) = under {
+        pill_fill(rect, under, under_color, out);
+    }
+    pill_fill(rect, frac, color, out);
+}
+
+fn pill_fill(rect: R, frac: f32, color: Rgba, out: &mut Vec<Draw>) {
     let w = (rect[2] * frac.clamp(0.0, 1.0)).round();
     if w >= 8.0 {
         out.push(Draw::Image {
@@ -202,8 +210,25 @@ fn pill_bar(rect: R, frac: f32, color: Rgba, out: &mut Vec<Draw>) {
     }
 }
 
-fn bar(rect: R, frac: f32, fill: Rgba, out: &mut Vec<Draw>) {
-    pill_bar(rect, frac, fill, out);
+/// `health_bar.tscn`'s `ProgressBarUnder` is orange; the armor bar keeps the
+/// scene default, white.
+const HEALTH_TRAIL: Rgba = [1.0, 0.529_412, 0.0, 1.0];
+const ARMOR_TRAIL: Rgba = [1.0, 1.0, 1.0, 1.0];
+
+/// A tracked bar's fractions: the main fill and the trailing fill with its colour.
+fn bar_fracs(
+    ui: &UiState,
+    key: BarKey,
+    value: f64,
+    max: f64,
+    trail: Rgba,
+) -> (f32, Option<(f32, Rgba)>) {
+    let (main, under) = crate::bar_motion::fractions(ui, key, value, max);
+    (main, under.map(|u| (u, trail)))
+}
+
+fn bar(rect: R, frac: (f32, Option<(f32, Rgba)>), fill: Rgba, out: &mut Vec<Draw>) {
+    pill_bar(rect, frac.0, frac.1, fill, out);
 }
 
 /// `SmallResourceBar._process`: 10px for one mana, 7px more for each extra.
@@ -1778,7 +1803,7 @@ fn enemy_widget(
     let ox = cx - l.size[0] / 2.0;
     let oy = ENEMY_TOP;
     if !view.hide_stats {
-        enemy_stats(rects, l, view, ox, oy, out);
+        enemy_stats(rects, l, view, ox, oy, ui, idx, out);
     }
     enemy_visuals(l, policies, view, ox, oy, ui, idx, out);
 }
@@ -1789,6 +1814,8 @@ fn enemy_stats(
     view: &EnemyView,
     ox: f32,
     oy: f32,
+    ui: &UiState,
+    idx: usize,
     out: &mut Vec<Draw>,
 ) {
     let at = |r: [f32; 4]| [ox + r[0], oy + r[1], r[2], r[3]];
@@ -1835,11 +1862,22 @@ fn enemy_stats(
         l.rect("ArmorBar/HBoxContainer/MarginContainer/BackPanel")[2]
             - l.rect("HealthBar/HBoxContainer/MarginContainer/BackPanel")[2]
     };
-    let bar_frame =
-        |out: &mut Vec<Draw>, _back: &str, main: &str, frac: f32, fill: Rgba, dy: f32, dw: f32| {
-            let m = at(l.rect(main));
-            pill_bar([m[0], m[1] + dy, m[2] + dw, m[3]], frac, fill, out);
-        };
+    let bar_frame = |out: &mut Vec<Draw>,
+                     _back: &str,
+                     main: &str,
+                     frac: (f32, Option<(f32, Rgba)>),
+                     fill: Rgba,
+                     dy: f32,
+                     dw: f32| {
+        let m = at(l.rect(main));
+        pill_bar(
+            [m[0], m[1] + dy, m[2] + dw, m[3]],
+            frac.0,
+            frac.1,
+            fill,
+            out,
+        );
+    };
     let center = ox + l.size[0] / 2.0;
     if has_armor {
         let back = at(l.rect("ArmorBar/HBoxContainer/MarginContainer/BackPanel"));
@@ -1847,7 +1885,13 @@ fn enemy_stats(
             out,
             "ArmorBar/HBoxContainer/MarginContainer/BackPanel",
             "ArmorBar/HBoxContainer/MarginContainer/MainBarContainer/ProgressBarMain",
-            (v.armor / v.max_armor) as f32,
+            bar_fracs(
+                ui,
+                BarKey::EnemyArmor(idx),
+                v.armor,
+                v.max_armor,
+                ARMOR_TRAIL,
+            ),
             hex(0x4a5462),
             0.0,
             0.0,
@@ -1866,7 +1910,13 @@ fn enemy_stats(
         out,
         "HealthBar/HBoxContainer/MarginContainer/BackPanel",
         "HealthBar/HBoxContainer/MarginContainer/MainBarContainer/ProgressBarMain",
-        (v.health / v.max_health.max(1.0)) as f32,
+        bar_fracs(
+            ui,
+            BarKey::EnemyHealth(idx),
+            v.health,
+            v.max_health,
+            HEALTH_TRAIL,
+        ),
         hex(0x990f35),
         health_dy,
         health_dw,
@@ -2443,7 +2493,7 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
             let armor_rect = rects.bar_top;
             bar(
                 armor_rect,
-                (v.armor / v.max_armor) as f32,
+                bar_fracs(ui, BarKey::PlayerArmor, v.armor, v.max_armor, ARMOR_TRAIL),
                 hex(0x4a5462),
                 &mut out,
             );
@@ -2495,7 +2545,13 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         };
         bar(
             health_rect,
-            (v.health / v.max_health.max(1.0)) as f32,
+            bar_fracs(
+                ui,
+                BarKey::PlayerHealth,
+                v.health,
+                v.max_health,
+                HEALTH_TRAIL,
+            ),
             health_color,
             &mut out,
         );

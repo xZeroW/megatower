@@ -8,6 +8,7 @@
 //! turned into UI nodes.
 
 pub mod adventurer_ui;
+pub mod bar_motion;
 pub mod battle_log_pages;
 pub mod battle_speed;
 pub mod compose;

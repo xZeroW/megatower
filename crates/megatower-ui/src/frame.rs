@@ -126,6 +126,7 @@ fn update_screens(
                 for fx in ui.timeline.advance(f64::from(time.delta_secs())) {
                     apply_event(ui, game, fx);
                 }
+                bar_motion::track(ui, f64::from(time.delta_secs()));
                 let busy = ui.timeline.busy();
                 let died = game.char_state(game.local()).died;
                 if !busy {
