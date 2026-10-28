@@ -2492,7 +2492,7 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         shops.push((player.market, &rects.market));
     }
     let glows = merge_glows(game, ui, rects);
-    let ratio = (ui.time * 4.5).sin().abs() as f32;
+    let ratio = (ui.time * 3.2).sin().abs() as f32;
     for (container, list) in lists.into_iter().chain(shops) {
         let items = container_items(game, container);
         let (locked, challenge) = game
