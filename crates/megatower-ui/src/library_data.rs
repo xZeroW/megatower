@@ -16,6 +16,9 @@ pub(super) fn sync_profile(game: &mut Game, ui: &mut UiState) {
     use megatower_core::run::game::Encounter;
     let practice = game.memory.game_mode == megatower_core::game_mode::GameMode::Practice;
     let mut changed = false;
+    let name = game.player(game.local()).adventurer.name.clone();
+    ui.portrait_floor
+        .get_or_insert_with(|| ui.profile.floor_record(&name));
     for encounter in game.encounters.drain(..) {
         if practice {
             continue;
@@ -26,7 +29,6 @@ pub(super) fn sync_profile(game: &mut Game, ui: &mut UiState) {
         };
     }
     if !practice {
-        let name = game.player(game.local()).adventurer.name.clone();
         changed |= ui.profile.set_floor_record(&name, game.memory.floor_number);
     }
     if changed {

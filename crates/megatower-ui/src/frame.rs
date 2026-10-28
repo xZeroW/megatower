@@ -107,6 +107,7 @@ fn update_screens(
                             ui.screen = Screen::Playing;
                             ui.timeline = Timeline::default();
                             ui.presented_room = None;
+                            ui.portrait_floor = None;
                             ui.transition = None;
                             ui.death_at = None;
                             ui.dragged = None;
