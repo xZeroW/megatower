@@ -1,12 +1,14 @@
-//! Fights in the room view: a placeholder figure per enemy standing in the
-//! 3D room (the target drawn brighter), enemy cards that follow the figures
+//! Fights in the room view: each enemy's sprite stands upright in the 3D room
+//! (the target drawn brighter, the dead tipped over), enemy cards that follow the figures
 //! on screen, and clicking a figure to target it.
 
 use crate::room_view::{RoomImage, cursor_ray, view_size};
 use crate::run::{Mode, Run};
 use bevy::camera::visibility::RenderLayers;
+use bevy::image::{ImageLoaderSettings, ImageSampler};
 use bevy::prelude::*;
 use bevy::ui::RelativeCursorPosition;
+use game_sim::content;
 use megatower_assets::room_screen::ROOM_VIEWPORT_SIZE;
 use megatower_runtime::render::room::ROOM_LAYER;
 
@@ -14,7 +16,10 @@ pub struct FightersPlugin;
 
 impl Plugin for FightersPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, (sync_figures, place_labels, target_clicks).chain());
+        app.add_systems(
+            Update,
+            (sync_figures, fit_figures, place_labels, target_clicks).chain(),
+        );
     }
 }
 
@@ -27,9 +32,13 @@ const FLOOR_Y: f32 = -1.5;
 #[derive(Component)]
 struct EnemyFigure {
     index: usize,
+    /// Click box: the sprite's visible pixels once [`fit_figures`] has seen them.
     center: Vec3,
     half: Vec3,
+    /// Where the card hangs: just over the visible head.
     top: Vec3,
+    /// The upright sprite quad, for fitting.
+    quad: Option<(Vec3, f32, Handle<Image>)>,
 }
 
 /// Everything spawned for the fight in the room.
@@ -40,91 +49,44 @@ struct FigurePart;
 #[derive(Component)]
 pub struct EnemyLabel(pub usize);
 
-enum Shape {
-    Box(Vec3),
-    Capsule { radius: f32, length: f32 },
-    Blob(f32),
+/// Sprite height in room units; the art is 64x64 with the feet a few pixels
+/// above the bottom edge.
+const SPRITE_SIZE: f32 = 2.6;
+const FEET: f32 = 4.0 / 64.0;
+const UNKNOWN_SPRITE: &str = "assets/textures/enemies/unknown.png";
+
+fn sprite_path(id: &str) -> &'static str {
+    content::get()
+        .enemies
+        .iter()
+        .find(|d| d.id == id)
+        .and_then(|d| d.sprite.as_deref())
+        .unwrap_or(UNKNOWN_SPRITE)
 }
 
-/// Placeholder looks until the enemies have art.
-fn look(id: &str) -> (Shape, Color) {
-    match id {
-        "tunnel_rat" => (
-            Shape::Box(Vec3::new(0.8, 0.5, 1.0)),
-            Color::srgb(0.5, 0.33, 0.22),
-        ),
-        "bone_archer" => (
-            Shape::Capsule {
-                radius: 0.28,
-                length: 1.2,
-            },
-            Color::srgb(0.86, 0.83, 0.72),
-        ),
-        "acid_slime" => (Shape::Blob(0.6), Color::srgb(0.38, 0.78, 0.32)),
-        "ember_cultist" => (
-            Shape::Capsule {
-                radius: 0.32,
-                length: 1.15,
-            },
-            Color::srgb(0.78, 0.27, 0.16),
-        ),
-        "stone_golem" => (
-            Shape::Box(Vec3::new(1.1, 1.9, 0.8)),
-            Color::srgb(0.55, 0.55, 0.6),
-        ),
-        "stair_warden" => (
-            Shape::Capsule {
-                radius: 0.55,
-                length: 1.7,
-            },
-            Color::srgb(0.5, 0.28, 0.66),
-        ),
-        _ => (
-            Shape::Capsule {
-                radius: 0.3,
-                length: 1.0,
-            },
-            Color::srgb(0.6, 0.6, 0.6),
-        ),
-    }
+/// Pixel art keeps its pixels.
+fn load_sprite(assets: &AssetServer, path: &str) -> Handle<Image> {
+    assets
+        .load_builder()
+        .with_settings(|s: &mut ImageLoaderSettings| {
+            s.sampler = ImageSampler::nearest();
+        })
+        .load(path.to_owned())
 }
 
-/// The mesh and its half extents (before scaling).
-fn mesh_for(shape: &Shape, meshes: &mut Assets<Mesh>) -> (Handle<Mesh>, Vec3) {
-    match *shape {
-        Shape::Box(size) => (meshes.add(Cuboid::from_size(size)), size / 2.0),
-        Shape::Capsule { radius, length } => (
-            meshes.add(Capsule3d::new(radius, length)),
-            Vec3::new(radius, radius + length / 2.0, radius),
-        ),
-        Shape::Blob(radius) => (
-            meshes.add(Sphere::new(radius)),
-            Vec3::new(radius, radius * 0.7, radius),
-        ),
-    }
-}
-
-fn unlit(materials: &mut Assets<StandardMaterial>, color: Color) -> Handle<StandardMaterial> {
+fn sprite_material(
+    materials: &mut Assets<StandardMaterial>,
+    texture: Handle<Image>,
+    tint: Color,
+) -> Handle<StandardMaterial> {
     materials.add(StandardMaterial {
-        base_color: color,
+        base_color: tint,
+        base_color_texture: Some(texture),
         unlit: true,
+        alpha_mode: AlphaMode::Mask(0.5),
+        cull_mode: None,
         ..default()
     })
-}
-
-/// The targeted enemy stands out.
-fn bright(color: Color) -> Color {
-    let c = color.to_srgba();
-    Color::srgb(
-        c.red + (1.0 - c.red) * 0.35,
-        c.green + (1.0 - c.green) * 0.35,
-        c.blue + (1.0 - c.blue) * 0.35,
-    )
-}
-
-fn dim(color: Color) -> Color {
-    let c = color.to_srgba();
-    Color::srgb(c.red * 0.35, c.green * 0.35, c.blue * 0.35)
 }
 
 /// Respawns the figures when the fight changes shape: who is alive, who is
@@ -132,6 +94,7 @@ fn dim(color: Color) -> Color {
 fn sync_figures(
     mut commands: Commands,
     run: Res<Run>,
+    assets: Res<AssetServer>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     parts: Query<Entity, With<FigurePart>>,
@@ -161,49 +124,108 @@ fn sync_figures(
         return;
     };
     let layer = RenderLayers::layer(ROOM_LAYER);
+    let quad = meshes.add(Rectangle::new(1.0, 1.0));
     let n = battle.enemies.len() as f32;
     for (i, enemy) in battle.enemies.iter().enumerate() {
-        let (shape, color) = look(&enemy.id);
-        let scale = if enemy.elite { 1.25 } else { 1.0 };
-        let (mesh, half) = mesh_for(&shape, &mut meshes);
-        let half = half * scale;
+        let scale = if enemy.boss {
+            1.5
+        } else if enemy.elite {
+            1.25
+        } else {
+            1.0
+        };
+        let size = SPRITE_SIZE * scale;
         let x = (i as f32 - (n - 1.0) / 2.0) * SPACING;
         let z = if enemy.boss { ROW_Z - 1.0 } else { ROW_Z };
         let alive = enemy.fighter.alive();
+        let feet = FLOOR_Y - size * FEET;
         let (center, rotation) = if alive {
-            (Vec3::new(x, FLOOR_Y + half.y, z), Quat::IDENTITY)
+            (Vec3::new(x, feet + size / 2.0, z), Quat::IDENTITY)
         } else {
-            // Fallen: lying on the floor.
+            // Fallen: tipped over onto the floor.
             (
-                Vec3::new(x, FLOOR_Y + half.x, z),
+                Vec3::new(x, FLOOR_Y + size * 0.15, z),
                 Quat::from_rotation_z(std::f32::consts::FRAC_PI_2),
             )
         };
-        let top = Vec3::new(x, FLOOR_Y + 2.0 * half.y + 0.2, z);
+        let tint = if !alive {
+            Color::srgb(0.35, 0.35, 0.35)
+        } else if i == run.target {
+            // The target stands out.
+            Color::linear_rgb(1.5, 1.5, 1.4)
+        } else {
+            Color::WHITE
+        };
+        let texture = load_sprite(&assets, sprite_path(&enemy.id));
         commands.spawn((
-            Mesh3d(mesh),
-            MeshMaterial3d(unlit(
-                &mut materials,
-                if !alive {
-                    dim(color)
-                } else if i == run.target {
-                    bright(color)
-                } else {
-                    color
-                },
-            )),
+            Mesh3d(quad.clone()),
+            MeshMaterial3d(sprite_material(&mut materials, texture.clone(), tint)),
             Transform::from_translation(center)
                 .with_rotation(rotation)
-                .with_scale(Vec3::splat(scale)),
+                .with_scale(Vec3::splat(size)),
             layer.clone(),
             FigurePart,
             EnemyFigure {
                 index: i,
                 center,
-                half,
-                top,
+                // Until the sprite is loaded and measured.
+                half: Vec3::new(size * 0.3, size * 0.45, 0.2),
+                top: Vec3::new(x, feet + size * 0.95, z),
+                quad: alive.then(|| (center, size, texture.clone())),
             },
         ));
+    }
+}
+
+/// The visible pixels of a sprite as (left, top, right, bottom) in 0..1, top
+/// down; `None` while the image is not loaded or has no CPU copy.
+fn opaque_bounds(image: &Image) -> Option<[f32; 4]> {
+    let data = image.data.as_ref()?;
+    let (w, h) = (image.width() as usize, image.height() as usize);
+    if data.len() < w * h * 4 {
+        return None;
+    }
+    let (mut x0, mut y0, mut x1, mut y1) = (w, h, 0, 0);
+    for y in 0..h {
+        for x in 0..w {
+            if data[(y * w + x) * 4 + 3] > 127 {
+                x0 = x0.min(x);
+                y0 = y0.min(y);
+                x1 = x1.max(x + 1);
+                y1 = y1.max(y + 1);
+            }
+        }
+    }
+    (x0 < x1).then(|| {
+        [
+            x0 as f32 / w as f32,
+            y0 as f32 / h as f32,
+            x1 as f32 / w as f32,
+            y1 as f32 / h as f32,
+        ]
+    })
+}
+
+/// Shrinks each standing figure's click box and card anchor to the sprite's
+/// visible pixels, once the image has loaded.
+fn fit_figures(images: Res<Assets<Image>>, mut figures: Query<&mut EnemyFigure>) {
+    for mut figure in &mut figures {
+        let Some((center, size, texture)) = figure.quad.clone() else {
+            continue;
+        };
+        let Some([u0, v0, u1, v1]) = images.get(&texture).and_then(opaque_bounds) else {
+            continue;
+        };
+        let at = |u: f32, v: f32| center + Vec3::new((u - 0.5) * size, (0.5 - v) * size, 0.0);
+        let (top_left, bottom_right) = (at(u0, v0), at(u1, v1));
+        figure.center = (top_left + bottom_right) / 2.0;
+        figure.half = Vec3::new(
+            (bottom_right.x - top_left.x) / 2.0,
+            (top_left.y - bottom_right.y) / 2.0,
+            0.2,
+        );
+        figure.top = Vec3::new(figure.center.x, top_left.y + 0.1, center.z);
+        figure.quad = None;
     }
 }
 
@@ -290,12 +312,34 @@ mod tests {
     use super::*;
 
     #[test]
+    fn opaque_bounds_find_the_visible_pixels() {
+        use bevy::render::render_resource::{Extent3d, TextureDimension, TextureFormat};
+        let mut data = vec![0u8; 8 * 8 * 4];
+        for (x, y) in [(2, 3), (5, 6)] {
+            data[(y * 8 + x) * 4 + 3] = 255;
+        }
+        let image = Image::new(
+            Extent3d {
+                width: 8,
+                height: 8,
+                depth_or_array_layers: 1,
+            },
+            TextureDimension::D2,
+            data,
+            TextureFormat::Rgba8UnormSrgb,
+            Default::default(),
+        );
+        assert_eq!(opaque_bounds(&image), Some([0.25, 0.375, 0.75, 0.875]));
+    }
+
+    #[test]
     fn rays_hit_figure_boxes() {
         let figure = EnemyFigure {
             index: 0,
             center: Vec3::new(0.0, -0.5, -5.4),
             half: Vec3::new(0.3, 1.0, 0.3),
             top: Vec3::ZERO,
+            quad: None,
         };
         let eye = Vec3::new(0.0, 1.357, 2.75);
         let at = |p: Vec3| Ray3d::new(eye, Dir3::new(p - eye).unwrap());

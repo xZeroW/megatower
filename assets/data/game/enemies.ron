@@ -1,9 +1,11 @@
 // Enemies at floor 1; `encounter.rs` scales them with depth. Each enemy
 // repeats its intents in order, and the player sees the next one.
-// The shape is `EnemyDef` in crates/game-sim/src/combat/encounter.rs.
+// The shape is `EnemyDef` in crates/game-sim/src/combat/encounter.rs. `sprite`
+// is the 64x64 picture the room view stands up for it.
 [
     (
         id: "tunnel_rat",
+        sprite: Some("assets/textures/enemies/rat.png"),
         name: "Tunnel Rat",
         life: 18.0,
         intents: [
@@ -14,6 +16,7 @@
     ),
     (
         id: "bone_archer",
+        sprite: Some("assets/textures/enemies/skeleton_warrior.png"),
         name: "Bone Archer",
         life: 22.0,
         resistances: [(Cold, 30.0)],
@@ -24,6 +27,7 @@
     ),
     (
         id: "acid_slime",
+        sprite: Some("assets/textures/enemies/slime.png"),
         name: "Acid Slime",
         life: 30.0,
         armour: 40.0,
@@ -35,6 +39,7 @@
     ),
     (
         id: "ember_cultist",
+        sprite: Some("assets/textures/enemies/shadow_wizard.png"),
         name: "Ember Cultist",
         life: 20.0,
         resistances: [(Fire, 50.0)],
@@ -45,6 +50,7 @@
     ),
     (
         id: "stone_golem",
+        sprite: Some("assets/textures/enemies/stone_golem.png"),
         name: "Stone Golem",
         life: 45.0,
         armour: 120.0,
@@ -56,6 +62,7 @@
     ),
     (
         id: "stair_warden",
+        sprite: Some("assets/textures/enemies/golden_guardian.png"),
         name: "Warden of the Stair",
         life: 160.0,
         armour: 60.0,

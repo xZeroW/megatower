@@ -40,6 +40,9 @@ pub struct EnemyDef {
     pub resistances: Vec<(DamageType, f64)>,
     #[serde(default)]
     pub boss: bool,
+    /// Picture for the room view (an asset path).
+    #[serde(default)]
+    pub sprite: Option<String>,
     /// Repeated in order.
     pub intents: Vec<Intent>,
 }
