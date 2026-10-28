@@ -1,0 +1,1230 @@
+language-name-text,English
+leaderboard-progress-text,You surpassed {player-percentage-amount} of players by reaching floor {floor-record}
+leaderboard-progress-connection-failed-text,Failed connecting to leaderboards; Reached floor {floor-record}
+final-floor-reached-text,Final Floor Reached
+ascension-level-text,Ascension {level}
+final-floor-text,Final Floor
+new-journey-text,New Journey
+select-save-slot-text,Select
+delete-save-slot-text,Delete
+update-text,Update
+upload-text,Upload
+death-message-title-text,Death Message by {player-name}
+player-floor-record-text,{player-name}'s Floor Record
+view-steam-profile-text,View Steam Profile
+no-achievements-text,No Achievements
+loading-file-text,Loading
+saving-file-text,Saving
+proceed-text,Proceed
+join-lobby-text,Join
+enter-password-text,enter password
+enter-ip-text,enter ip
+specialization-floor-text,Activates On Floor {floor-number}
+convert-to-battle-stats-text,Convert to Battle Stats
+stat-per-kill-text,{stat} Per Kill
+item-found-text,{item-name} found
+doubles-own-stat-text,Doubles own |{stat}
+victory-text,Victory
+defeat-text,Defeat
+ascend-text,Ascend
+negative-flow-text,Negative |{flow}|; unequip item sets
+cannot-be-dismantled-text,Cannot Be Dismantled
+waiting-for-dismantle-text,Waiting for Dismantle
+request-to-dismantle-text,Request to Dismantle
+battles-remaining-text,Battles Remaining
+current-battle-text,Current Battle
+last-battle-text,Last Battle
+gold-per-battle-text,Gold Per Battle
+gold-per-kill-text,Gold Per Kill
+enemy-player-immunity-text,Takes {amount}% Less Damage On||\n||{player-name}'s Turn
+enemy-player-immunity-misc-text,Reduced by {amount}% every turn
+player-sent-an-item-text,{player-name} Sent You {item-name}
+send-item-to-player-text,Send Item
+burnout-description-text,Burnout: effects are inactive
+infuse-description-text,Grants item's stats and effects||\n||for this floor
+infused-flow-info-text,infused; doesn't cost |{flow-stat}
+infuse-text,Infuse
+to-open-battle-log-text,To Open Battle Log
+to-unlock-stats-text,To Unlock Stats
+to-lock-stats-text,To Lock Stats
+to-deselect-text,To Deselect
+to-convert-text,To Convert
+to-select-text,To Select
+to-toggle-text,To Toggle
+to-unlock-text,To Unlock
+to-learn-text,To Learn
+to-lock-text,To Lock
+to-consume-text,To Consume
+to-activate-text,To Activate
+to-restore-text,To Restore
+to-remove-text,To Remove
+to-banish-text,To Banish
+to-equip-text,To Equip
+to-swap-text,To Swap
+to-take-text,To Take
+to-buy-text,To Buy
+silenced-text,Silenced
+highest-text,Highest
+cost-text,Cost
+diamond-reward-text,Get an extra {diamond} every {floor} floors
+gold-start-text,Start with +{amount} {gold}
+reforge-token-description-text,+{amount}% chance for |{stat}| to be||\n||applied on a reforged item
+item-multiplier-text,Multiply this stat by total |{item-set}| items equipped
+specialization-info-text,Transforms |{item-set}| into |{specialization}
+required-item-sets-text,Required |{item-set}| item to be equipped
+required-stat-text,Required |{stat}
+cant-move-during-battle-text,Can't Move During Battle
+missing-item-socket-text,Missing {socket-name} Socket
+item-set-no-flow-text,{item-set}| costs 0% |{flow}
+item-set-limit-reached-text,Item Set Limit Reached
+cant-equip-duplicates-text,Can't Equip Duplicates
+cannot-be-upgraded-text,Cannot be upgraded
+unlearned-ability-text,Unlearned Ability
+learn-ability-text,Learn {ability}
+skip-stance-text,Skip: don't attack this turn
+guard-stance-text,Guard: recieve {amount}% less damage this turn
+attack-on-activation-ability-text,attack on activation
+reforged-item-stats-text,Reforged Item Stats
+favorite-item-sets-text,Favorite Item Sets
+market-item-sets-text,Market Item Sets
+tinker-kit-item-name-text,Tinker Kit
+battle-information-text,Battle Information
+current-turn-text,Turn {turn-number}
+local-player-name-text,You
+dead-text,Dead
+battle-log-applied-status-effect-text,{character-1} applied status effect on {character-2}
+battle-log-applied-status-on-self-text,{character} applied status effect on self
+battle-log-received-damage-from-source-text,{character} received damage from {source}
+battle-log-received-damage-text,{character} received damage
+battle-log-hit-with-text,{character-1} hit {character-2} with {source}
+battle-log-activated-effect-text,{character} activated effect
+battle-log-parry-text,{character-1} parried {character-2}
+battle-log-block-text,{character-1} blocked {character-2}
+battle-log-killed-text,{character-1} killed {character-2}
+battle-log-steal-text,{character} stole from {source}
+battle-log-hit-text,{character-1} hit {character-2}
+battle-log-cleanse-text,{character} cleansed
+battle-log-dodged-text,{character} dodged
+battle-log-healed-text,{character} healed
+overhealed-text,Overhealed
+overheal-text,Overheal
+executed-text,Executed
+blocked-text,Blocked
+debuff-immune-text,Debuff Immune
+failed-steal-text,Failed Steal
+steal-text,Steal
+escaped-text,Escaped
+cleanse-text,Cleanse
+inventory-full-text,Inventory Full
+armor-break-text,Armor Break!
+counter-attack-break-text,Counter Attack!
+missing-mana-text,Missing Mana
+cleansed-text,Cleansed
+heal-text,Heal
+attack-text,Attack
+enter-text,Enter
+skip-text,Skip
+open-text,Open
+sell-all-text,Sell All
+close-text,Close
+demo-tower-completed-text,Demo Tower Completed
+grants-stat-consumable-text,Grants |{amount}| |{stat}| this battle
+temp-stat-to-add-potion-description-text,Grants |{stat}| for this battle
+status-effect-potion-description-multiple-text,Grants {amount} Stacks of |{status-effect}
+status-effect-potion-description-single-text,Grants a Stack of |{status-effect}
+potion-restores-text,Restores {amount} |{stat}
+potion-regenerates-text,Regenerates {amount} |{stat}
+potion-repairs-text,Repairs {amount}% of Your |{stat}
+refills-every-battle-potion-text,Refills Every Battle
+stat-transform-text,Transforms |{stat-1}| into |{stat-2}
+banished-item-text,Banished {item-name}
+reforged-item-text,Reforged {item-name}
+item-reforge-text,{item-name} Reforge
+banish-description-text,Permanently removes {item-name}|\n|from the tower
+unlock-requirements-description-text,Required completed battles to unlock:
+unlimited-amount-text,Unlimited
+max-amount-text,Max: {amount}
+corrupted-fragment-text,Corrupted Fragment
+specialization-text,Specialization
+unknown-enemy-text,Unknown Enemy
+unknown-item-text,Unknown Item
+passive-set-text,Passive Set
+empty-set-text,Empty Set
+sell-for-text,Sell For
+level-up-text,Level Up
+chapter-text,Chapter
+abilities-text,Abilities
+ability-text,Ability
+passives-text,Passives
+passive-text,Passive
+rewards-text,Rewards
+convert-text,Convert
+upgrade-text,Upgrade
+command-list-text,commands
+help-command-info-text,write "{command}" for help
+kick-command-info-text,{command} [player index]|\n|kicks the player form the lobby|\n|example: {command} 1 (kicks the first player after you)
+end-game-text-text,Forged within the tower; your soul was proven worthy.
+highest-floor-result-screen-text,Highest Floor: {floor-number}
+died-on-floor-text,Died on floor {floor-number}
+merchant-exclusive-text,Merchant Exclusive
+upgrades-into-text,Upgrades Into:
+highest-floor-text,Highest Floor
+floor-number-text,Floor {number}
+not-refinable-text,Not Refinable
+top-player-text,Top Player
+refinable-text,Refinable
+deforge-text,Deforge
+active-text,Active
+floor-text,Floor
+split-text,Split
+elite-text,Elite
+gold-text,Gold
+level-text,Lv
+set-text,Set
+xp-text,Xp
+memories-button,memories
+name-label,Name
+lobbies-button,lobbies
+game-mode-label,Game Mode
+locked-label,Locked
+players-label,Players
+select-button,SELECT
+select-label,SELECT
+back-button,BACK
+button-label,BUTTON
+wishlist-on-steam!-label,wishlist on steam!
+enter-the-tower-button,ENTER THE TOWER
+library-button,LIBRARY
+library-label,LIBRARY
+workshop-button,WORKSHOP
+quit-button,QUIT
+market-hover-name,Market
+market-hover-description,<696969>new items are added every floor
+market-hover-bottom-hint,show items
+refresh-market-hover-name,REFRESH MARKET
+refresh-market-hover-description,<696969>price resets every battle
+sell-label,SELL
+split-label,SPLIT
+search-line-edit,search...
+current-battle-label,CURRENT BATTLE
+turn-1-label,TURN 1
+normal-battle-label,NORMAL BATTLE
+ping-hover-name,Ping
+ping-hover-description,0| ms
+10-label,10
+open-button,OPEN
+loot-stash-hover-name,Loot Stash
+loot-stash-hover-description,<696969>excess loot goes here
+button-button,BUTTON
+market-items-label,Market Items
+close-button,CLOSE
+waiting-for-all-players-to-connect-label,Waiting for all players to connect...
+floor-record-x-label,Floor Record: x
+battle-log-button,BATTLE LOG
+battle-log-label,BATTLE LOG
+feedback-button,FEEDBACK
+feedback-label,FEEDBACK
+confirm-button,CONFIRM
+overview-button,overview
+speedruns-button,speedruns
+submit-run-button,submit run
+version-label,Version:
+selection-label,selection
+highest-floor-10-label,Highest Floor: 10
+top-player-label,TOP PLAYER
+time-label,Time
+enter-password-line-edit,enter password...
+join-button,JOIN
+password-label,Password
+connection-type-label,Connection Type
+challenge-drop-down-selection,Challenge
+pvp-no-achievements-drop-down-selection,PvP [No Achievements]
+practice-no-achievements-drop-down-selection,Practice [No Achievements]
+public-label,PUBLIC
+--credits--label,- Credits -
+thanks-button,THANKS
+no-tutorial-label,No Tutorial
+no-tutorial-info-label-label,This game believes learning should be done through|\n|experimentation and discovery; not instruction.
+proceed-button,PROCEED
+items-button,items
+bestiary-button,bestiary
+synergies-button,synergies
+passives-button,passives
+build-planner-label,Build Planner
+delete-label,DELETE
+build-1-label,BUILD 1
+blue-team-label,BLUE TEAM
++-join-label,[+] JOIN
+player-name-label,Player Name
+select-adventurer-label,SELECT ADVENTURER
+red-team-label,RED TEAM
+trials-label,TRIALS
+configure-button,CONFIGURE
+0/4-label,0/4
+begin-button,BEGIN
+begin-label,BEGIN
+restart-button,RESTART
+restart-label,RESTART
+resume-button,RESUME
+resume-label,RESUME
+options-button,OPTIONS
+save-&-exit-button,SAVE & EXIT
+text-label,Text
+controls-button,controls
+video-button,video
+audio-button,audio
+misc-button,misc
+primary-action-button,primary action
+key-label,key
+"?"-label,"?"
+listening-for-input-label,Listening for input...
+ability-button,ability
+skip-button,skip
+refresh-market-button,refresh market
+brightness-label,Brightness
+contrast-label,Contrast
+window-mode-label,Window Mode:
+resolution-label,Resolution:
+v-sync-label,V-Sync
+music-label,Music
+sfx-label,SFX
+tooltip-lock-time-label,Tooltip Lock Time
+language-label,Language:
+chromatic-aberration-label,Chromatic Aberration
+display-run-time-label,Display Run Time
+screen-shake-label,Screen Shake
+scan-lines-label,Scan Lines
+reset-to-defaults-button,RESET TO DEFAULTS
+->-label, >
+end-button,END
+enter-endless-button,ENTER ENDLESS
+refresh-merchant-hover-name,REFRESH MERCHANT
+refresh-merchant-hover-description,<696969>offers new items
+upgrade-label,UPGRADE
+-button, 
+stance-hover-name,Stance
+activate-endless-button,ACTIVATE ENDLESS
+refresh-mystic-trader-hover-name,REFRESH MYSTIC TRADER
+refresh-mystic-trader-hover-description,<696969>conjures new items
+0/3-label,0/3
+request-to-dismantle-button,REQUEST TO DISMANTLE
+dismantle-button,DISMANTLE
+windowed-window-mode-name,Windowed
+borderless-window-mode-name,Borderless
+fullscreen-window-mode-name,Fullscreen
+challenge-game-mode-name,Challenge
+pvp-game-mode-name,PvP
+practice-game-mode-name,Practice
+-popup,
+counter-attack!-popup,Counter Attack!
+lucky-attack-popup,Lucky Attack
+armor-break!-popup,Armor Break!
+backstabbed-popup,Backstabbed
+dodged-popup,Dodged
+parried-popup,Parried
+blocked-popup,Blocked
+missed-popup,Missed
+helmet-socket-name,Helmet
+chestplate-socket-name,Chestplate
+leggings-socket-name,Leggings
+boots-socket-name,Boots
+necklace-socket-name,Necklace
+weapon-socket-name,Weapon
+ring-socket-name,Ring
+zefrot-item-name,Zefrot
+totem-of-greed-item-name,Totem of Greed
+steak-item-name,Steak
+ribbon-of-fortune-item-name,Ribbon of Fortune
+poor-mans-path-item-name,Poor Man's Path
+pallac-item-name,Pallac
+merchant-upgrade-item-name,Merchant Upgrade
+frokt-item-name,Frokt
+poor-mans-blade-item-name,Poor Man's Blade
+wooden-shoes-item-name,Wooden Shoes
+natures-gift-item-name,Nature's Gift
+magical-stick-item-name,Magical Stick
+training-hammer-item-name,Training Hammer
+natures-collar-item-name,Nature's Collar
+poor-mans-helmet-item-name,Poor Man's Helmet
+training-axe-item-name,Training Axe
+wooden-plates-item-name,Wooden Plates
+leather-boots-item-name,Leather Boots
+leather-helmet-item-name,Leather Helmet
+leather-pants-item-name,Leather Pants
+leather-chestplate-item-name,Leather Chestplate
+training-sword-item-name,Training Sword
+insightus-item-name,Insightus
+amulet-of-life-item-name,Amulet of Life
+starborn-ring-item-name,Starborn Ring
+recruits-boots-item-name,Recruit's Boots
+keepsake-item-name,Keepsake
+recruits-hood-item-name,Recruit's Hood
+iron-dagger-item-name,Iron Dagger
+hunters-boots-item-name,Hunter's Boots
+hunters-hood-item-name,Hunter's Hood
+recruits-pants-item-name,Recruit's Pants
+chainmail-item-name,Chainmail
+hunters-necklace-item-name,Hunter's Necklace
+hunters-pants-item-name,Hunter's Pants
+recruits-cloak-item-name,Recruit's Cloak
+hunters-ring-item-name,Hunter's Ring
+hunters-jerkin-item-name,Hunter's Jerkin
+crystal-staff-item-name,Crystal Staff
+vitality-ring-item-name,Vitality Ring
+ring-of-anger-item-name,Ring of Anger
+zephyrons-tome-item-name,Zephyron's Tome
+silver-ring-item-name,Silver Ring
+marauders-helmet-item-name,Marauder's Helmet
+silver-sabatons-item-name,Silver Sabatons
+silver-helmet-item-name,Silver Helmet
+life-seeker-item-name,Life Seeker
+silver-leggings-item-name,Silver Leggings
+zephyrons-magical-shoes-item-name,Zephyron's Magical Shoes
+silver-chestplate-item-name,Silver Chestplate
+zephyrons-eye-item-name,Zephyron's Eye
+bastolics-guardian-item-name,Bastolic's Guardian
+silver-sword-item-name,Silver Sword
+zephyrons-magical-ring-item-name,Zephyron's Magical Ring
+bastolics-gauntlet-item-name,Bastolic's Gauntlet
+zephyrons-magical-cloak-item-name,Zephyron's Magical Cloak
+zephyrons-magical-cap-item-name,Zephyron's Magical Cap
+zephyrons-magical-staff-item-name,Zephyron's Magical Staff
+believers-locket-item-name,Believer's Locket
+silver-axe-item-name,Silver Axe
+tome-of-arcanum-item-name,Tome of Arcanum
+arcanum-hood-item-name,Arcanum Hood
+golden-dagger-item-name,Golden Dagger
+golden-sabatons-item-name,Golden Sabatons
+golden-helmet-item-name,Golden Helmet
+arcanum-shoes-item-name,Arcanum Shoes
+golden-leggings-item-name,Golden Leggings
+arcanum-robe-item-name,Arcanum Robe
+golden-chestplate-item-name,Golden Chestplate
+precious-ring-item-name,Precious Ring
+magic-wand-item-name,Magic Wand
+golden-crown-item-name,Golden Crown
+golden-warden-item-name,Golden Warden
+greeds-grasp-item-name,Greed's Grasp
+golden-sword-item-name,Golden Sword
+omni-ring-item-name,Omni Ring
+darkwood-plates-item-name,Darkwood Plates
+tome-of-attacks-item-name,Tome of Attacks
+warriors-sabatons-item-name,Warrior's Sabatons
+hunger-blade-item-name,Hunger Blade
+warriors-helmet-item-name,Warrior's Helmet
+famished-blade-item-name,Famished Blade
+unchained-gauntlet-item-name,Unchained Gauntlet
+blackthorn-sabatons-item-name,Blackthorn Sabatons
+warriors-leggings-item-name,Warrior's Leggings
+blackthorn-leggings-item-name,Blackthorn Leggings
+warriors-chestplate-item-name,Warrior's Chestplate
+warriors-war-hammer-item-name,Warrior's War Hammer
+blackthorn-chestplate-item-name,Blackthorn Chestplate
+unchained-ring-item-name,Unchained Ring
+hy-sword-item-name,HySword
+pantaloons-of-greatness-item-name,Pantaloons of Greatness
+warriors-ring-item-name,Warrior's Ring
+blackthorn-crown-item-name,Blackthorn Crown
+orions-core-item-name,Orion's Core
+orions-path-item-name,Orion's Path
+orions-destiny-item-name,Orion's Destiny
+orions-leggings-item-name,Orion's Leggings
+orions-sanguine-salvation-item-name,Orion's Sanguine Salvation
+orions-heart-item-name,Orion's Heart
+orions-rage-item-name,Orion's Rage
+living-boots-item-name,Living Boots
+living-helmet-item-name,Living Helmet
+living-leggings-item-name,Living Leggings
+living-chestplate-item-name,Living Chestplate
+berserkers-axe-item-name,Berserker's Axe
+berserkers-helmet-item-name,Berserker's Helmet
+eldrids-ring-item-name,Eldrid's Ring
+ring-of-power-item-name,Ring of Power
+silver-heart-item-name,Silver Heart
+thunderiders-item-name,Thunderiders
+thunderhelm-item-name,Thunderhelm
+royal-sabatons-item-name,Royal Sabatons
+royal-helmet-item-name,Royal Helmet
+royal-leggings-item-name,Royal Leggings
+thunderstriders-item-name,Thunderstriders
+royal-chestplate-item-name,Royal Chestplate
+thundergrace-item-name,Thundergrace
+thunderblade-item-name,Thunderblade
+thundervow-item-name,Thundervow
+iron-eater-item-name,Iron Eater
+tome-of-darkness-item-name,Tome of Darkness
+witherscar-item-name,Witherscar
+dark-magical-ring-item-name,Dark Magical Ring
+nighthorn-item-name,Nighthorn
+ashcrow-item-name,Ashcrow
+dark-harness-item-name,Dark Harness
+alchemists-wisdom-item-name,Alchemist's Wisdom
+shadow-wisdom-item-name,Shadow Wisdom
+shadow-ring-item-name,Shadow Ring
+shadow-piercer-item-name,Shadow Piercer
+demonic-sabatons-item-name,Demonic Sabatons
+shadow-cloak-item-name,Shadow Cloak
+shadow-echo-item-name,Shadow Echo
+demonic-helmet-item-name,Demonic Helmet
+demonic-axe-item-name,Demonic Axe
+shadow-sentence-item-name,Shadow Sentence
+shadow-vortex-item-name,Shadow Vortex
+demonic-leggings-item-name,Demonic Leggings
+demonic-claymore-item-name,Demonic Claymore
+demonic-chestplate-item-name,Demonic Chestplate
+demonic-ring-item-name,Demonic Ring
+shard-of-power-item-name,Shard of Power
+emperors-will-item-name,Emperor's Will
+wooden-crown-item-name,Wooden Crown
+witchcraft-leggings-item-name,Witchcraft Leggings
+cursed-ring-item-name,Cursed Ring
+cursed-necklace-item-name,Cursed Necklace
+mask-of-the-cursed-item-name,Mask of the Cursed
+blade-of-the-ruined-item-name,Blade of the Ruined
+lightning-boots-item-name,Lightning Boots
+shamans-robe-item-name,Shaman's Robe
+turtle-sabatons-item-name,Turtle Sabatons
+turtle-leggings-item-name,Turtle Leggings
+cowards-ring-item-name,Coward's Ring
+soul-collector-item-name,Soul Collector
+heart-of-gold-item-name,Heart of Gold
+turtle-chestplate-item-name,Turtle Chestplate
+elemental-necklace-item-name,Elemental Necklace
+giants-ring-item-name,Giants Ring
+black-oath-item-name,Black Oath
+turtle-gauntlet-item-name,Turtle Gauntlet
+gloom-item-name,Gloom
+qolk-item-name,Qolk
+blake-item-name,Blake
+vampiric-helmet-item-name,Vampiric Helmet
+vampiric-chestplate-item-name,Vampiric Chestplate
+glimmer-item-name,Glimmer
+vurk-item-name,Vurk
+bloodedge-item-name,Bloodedge
+ethercrests-tome-item-name,Ethercrest's Tome
+ethercrests-sabatons-item-name,Ethercrest's Sabatons
+ethercrests-blade-item-name,Ethercrest's Blade
+ethercrests-helmet-item-name,Ethercrest's Helmet
+ethercrests-staff-item-name,Ethercrest's Staff
+ethercrests-sword-item-name,Ethercrest's Sword
+ethercrests-leggings-item-name,Ethercrest's Leggings
+ethercrests-chestplate-item-name,Ethercrest's Chestplate
+ethercrests-ring-item-name,Ethercrest's Ring
+mask-of-cataclysm-item-name,Mask of Cataclysm
+ring-of-interest-item-name,Ring of Interest
+rod-of-doom-item-name,Rod of Doom
+shadow-whisper-item-name,Shadow Whisper
+magma-sabatons-item-name,Magma Sabatons
+magma-helmet-item-name,Magma Helmet
+magma-leggings-item-name,Magma Leggings
+magma-chestplate-item-name,Magma Chestplate
+magma-necklace-item-name,Magma Necklace
+magma-poleaxe-item-name,Magma Poleaxe
+ring-of-ice-item-name,Ring of Ice
+jesters-bone-mask-item-name,Jester's Bone Mask
+celestial-sabatons-item-name,Celestial Sabatons
+celestial-helmet-item-name,Celestial Helmet
+celestial-leggings-item-name,Celestial Leggings
+celestial-chestplate-item-name,Celestial Chestplate
+throngler-item-name,Throngler
+dawnbringer-item-name,Dawnbringer
+ring-of-unity-item-name,Ring of Unity
+excalibur-item-name,Excalibur
+ribbon-of-fortune-item-description,<696969>+25% of getting an extra item when|\n|<696969>opening a chest
+merchant-upgrade-item-description,Unlocks |[tinker]
+bloodedge-item-description,<696969>"used to get stronger every kill"
+excalibur-item-description,<696969>"a gift from the lake"
+bat-enemy-name,Bat
+leafing-enemy-name,Leafing
+fronk-enemy-name,Fronk
+boar-enemy-name,Boar
+snow-pix-enemy-name,Snow Pix
+pebbling-enemy-name,Pebbling
+slime-enemy-name,Slime
+rat-enemy-name,Rat
+goblin-enemy-name,Goblin
+skeleton-warrior-enemy-name,Skeleton Warrior
+shadow-wizard-enemy-name,Shadow Wizard
+jellyrak-enemy-name,Jellyrak
+efis-enemy-name,Efis
+rogue-enemy-name,Rogue
+slorn-enemy-name,Slorn
+armored-goblin-enemy-name,Armored Goblin
+stone-golem-enemy-name,Stone Golem
+witch-enemy-name,Witch
+wizard-skeleton-enemy-name,Wizard Skeleton
+giant-spider-enemy-name,Giant Spider
+blood-ghoul-enemy-name,Blood Ghoul
+armored-spirit-enemy-name,Armored Spirit
+red-orc-enemy-name,Red Orc
+snow-wraith-enemy-name,Snow Wraith
+venomous-spider-enemy-name,Venomous Spider
+harpy-enemy-name,Harpy
+bravura-enemy-name,Bravura
+fire-dragon-enemy-name,Fire Dragon
+void-squid-enemy-name,Void Squid
+brother-enemy-name,Brother
+shadow-ghost-enemy-name,Shadow Ghost
+kotya-enemy-name,Kotya
+magma-golem-enemy-name,Magma Golem
+overseer-enemy-name,Overseer
+braskap-enemy-name,Braskap
+cloud-dragon-enemy-name,Cloud Dragon
+ruined-king-enemy-name,Ruined King
+blinded-priest-enemy-name,Blinded Priest
+morizon-enemy-name,Morizon
+moon-enemy-name,Moon
+cursed-abomination-enemy-name,Cursed Abomination
+mars-enemy-name,Mars
+pinto-enemy-name,Pinto
+neptune-enemy-name,Neptune
+thunder-dragon-enemy-name,Thunder Dragon
+eldrids-flesh-enemy-name,Eldrid's Flesh
+golden-guardian-enemy-name,Golden Guardian
+venus-enemy-name,Venus
+jupiter-enemy-name,Jupiter
+saturn-enemy-name,Saturn
+uranus-enemy-name,Uranus
+sun-enemy-name,Sun
+iron-golem-enemy-name,Iron Golem
+windwatcher-enemy-name,Windwatcher
+graven-enemy-name,Graven
+death-enemy-name,Death
+perfect-slave-enemy-name,Perfect Slave
+common-chest-enemy-name,Common Chest
+golden-chest-enemy-name,Golden Chest
+heart-of-the-tower-enemy-name,Heart of the Tower
+merchant-enemy-name,Merchant
+mystic-bison-enemy-name,Mystic Bison
+mystic-trader-enemy-name,Mystic Trader
+training-dummy-enemy-name,Training Dummy
+ancient-ice-item-set-name,Ancient Ice
+ancient-shell-item-set-name,Ancient Shell
+arcanum-item-set-name,Arcanum
+bastolic-item-set-name,Bastolic
+berserker-item-set-name,Berserker
+blackthorn-item-set-name,Blackthorn
+cataclysm-item-set-name,Cataclysm
+celestial-item-set-name,Celestial
+chromalure-item-set-name,Chromalure
+consumable-item-set-name,Consumable
+cursed-item-set-name,Cursed
+darkness-item-set-name,Darkness
+demonic-item-set-name,Demonic
+essential-item-set-name,Essential
+flesh-item-set-name,Flesh
+generic-item-set-name,Generic
+golden-item-set-name,Golden
+hunter-item-set-name,Hunter
+jade-item-set-name,Jade
+legacy-item-set-name,Legacy
+magma-item-set-name,Magma
+mercenary-item-set-name,Mercenary
+orion-item-set-name,Orion
+phantom-item-set-name,Phantom
+poverty-item-set-name,Poverty
+reforge-item-set-name,Reforge
+royal-item-set-name,Royal
+scout-item-set-name,Scout
+shadow-item-set-name,Shadow
+silver-item-set-name,Silver
+swiftness-item-set-name,Swiftness
+thunder-item-set-name,Thunder
+tome-item-set-name,Tome
+unchained-item-set-name,Unchained
+vampiric-item-set-name,Vampiric
+warrior-item-set-name,Warrior
+wood-item-set-name,Wood
+zephyron-item-set-name,Zephyron
+beastbound-specialization-name,Beastbound
+bloodcaster-specialization-name,Bloodcaster
+vampiercer-specialization-name,Vampiercer
+venomire-specialization-name,Venomire
+bloodmoon-specialization-name,Bloodmoon
+moonlighter-specialization-name,Moonlighter
+nighthrust-specialization-name,Nighthrust
+challenger-specialization-name,Challenger
+chromaguard-specialization-name,Chromaguard
+chromaspite-specialization-name,Chromaspite
+chromathorn-specialization-name,Chromathorn
+cinderthorn-specialization-name,Cinderthorn
+mindthorn-specialization-name,Mindthorn
+thornfrost-specialization-name,Thornfrost
+dauntless-specialization-name,Dauntless
+quickblade-specialization-name,Quickblade
+rampager-specialization-name,Rampager
+thunderborn-specialization-name,Thunderborn
+debilitator-specialization-name,Debilitator
+mindbreaker-specialization-name,Mindbreaker
+deserter-specialization-name,Deserter
+faithbound-specialization-name,Faithbound
+echomancer-specialization-name,Echomancer
+evadium-specialization-name,Evadium
+invulnerium-specialization-name,Invulnerium
+stunium-specialization-name,Stunium
+harbinger-specialization-name,Harbinger
+lionheart-specialization-name,Lionheart
+pursuer-specialization-name,Pursuer
+striker-specialization-name,Striker
+windwalker-specialization-name,Windwalker
+accuracy-stat-name,Accuracy
+active-armor-stat-name,Active Armor
+adaptive-attack-stat-name,Adaptive Attack
+agility-stat-name,Agility
+armor-stat-name,Armor
+armor-damage-stat-name,Armor Damage
+armor-shields-stat-name,Armor Shields
+armor-steal-stat-name,Armor Steal
+armored-attack-stat-name,Armored Attack
+blackrot-damage-stat-name,Blackrot Damage
+bleed-damage-stat-name,Bleed Damage
+cinder-damage-stat-name,Cinder Damage
+combat-stat-name,Combat
+crit-chance-stat-name,Crit Chance
+critical-damage-stat-name,Critical Damage
+dazzle-stat-name,Dazzle
+dazzle-damage-stat-name,Dazzle Damage
+diamond-stat-name,Diamond
+eldership-stat-name,Eldership
+electric-damage-stat-name,Electric Damage
+electricity-stat-name,Electricity
+elemental-power-stat-name,Elemental Power
+elemental-resistance-stat-name,Elemental Resistance
+energy-stat-name,Energy
+faith-stat-name,Faith
+flow-stat-name,Flow
+freeze-attack-stat-name,Freeze Attack
+freeze-damage-stat-name,Freeze Damage
+gold-stat-name,Gold
+gold-on-kill-stat-name,Gold On Kill
+greed-stat-name,Greed
+health-stat-name,Health
+lethality-stat-name,Lethality
+life-steal-stat-name,Life Steal
+luck-stat-name,Luck
+magic-attack-stat-name,Magic Attack
+magic-damage-stat-name,Magic Damage
+malice-stat-name,Malice
+malice-damage-stat-name,Malice Damage
+mana-stat-name,Mana
+max-health-stat-name,Max Health
+max-mana-stat-name,Max Mana
+omni-crit-chance-stat-name,Omni Crit Chance
+omni-vamp-stat-name,Omni Vamp
+penetration-stat-name,Penetration
+physical-attack-stat-name,Physical Attack
+physical-damage-stat-name,Physical Damage
+poison-damage-stat-name,Poison Damage
+power-stat-name,Power
+random-stat-stat-name,Random Stat
+recovery-stat-name,Recovery
+spelldom-stat-name,Spelldom
+tenacity-stat-name,Tenacity
+total-attacks-stat-name,Total Attacks
+toughness-stat-name,Toughness
+toxicity-stat-name,Toxicity
+true-damage-stat-name,True Damage
+wisdom-stat-name,Wisdom
+enervation-status-effect-name,Enervation
+enervated-status-effect-application-message,Enervated
+weakness-status-effect-name,Weakness
+weakened-status-effect-application-message,Weakened
+black-curse-status-effect-name,Black Curse
+cursed-status-effect-application-message,Cursed
+curse-status-effect-name,Curse
+stun-status-effect-name,Stun
+stunned-status-effect-application-message,Stunned
+slowness-status-effect-name,Slowness
+slowed-status-effect-application-message,Slowed
+confusion-status-effect-name,Confusion
+confused-status-effect-application-message,Confused
+silence-status-effect-name,Silence
+silenced-status-effect-application-message,Silenced
+toxic-transmute-status-effect-name,Toxic Transmute
+poison-status-effect-name,Poison
+poisoned-status-effect-application-message,Poisoned
+bleed-status-effect-name,Bleed
+sparkle-status-effect-name,Sparkle
+sparkle-status-effect-application-message,Sparkle
+magic-shield-status-effect-name,Magic Shield
+ephemeral-armor-status-effect-name,Ephemeral Armor
+ephemeral-shell-status-effect-name,Ephemeral Shell
+electro-charge-status-effect-name,Electro Charge
+ephemeral-lock-status-effect-name,Ephemeral Lock
+exhaustion-status-effect-name,Exhaustion
+malice-shield-status-effect-name,Malice Shield
+armor-shield-status-effect-name,Armor Shield
+freeze-status-effect-name,Freeze
+frozen-status-effect-application-message,Frozen
+fear-status-effect-name,Fear
+invulnerability-status-effect-name,Invulnerability
+inherited-sin-status-effect-name,Inherited Sin
+arthurs-mark-status-effect-name,Arthur's Mark
+timeout-status-effect-name,Timeout
+cinder-essence-status-effect-name,Cinder Essence
+combat-insight-status-effect-name,Combat Insight
+magic-blitz-status-effect-name,Magic Blitz
+magic-blitz-status-effect-application-message,Magic Blitz
+omni-blitz-status-effect-name,Omni Blitz
+omni-blitz-status-effect-application-message,Omni Blitz
+vimblow-status-effect-name,Vimblow
+dread-status-effect-name,Dread
+fury-status-effect-name,Fury
+fury-status-effect-application-message,Fury
+counter-attack-charge-status-effect-name,Counter Attack Charge
+multi-attack-charge-status-effect-name,Multi Attack Charge
+stun-attack-charge-status-effect-name,Stun Attack Charge
+debuff-immunity-status-effect-name,Debuff Immunity
+golden-heart-status-effect-name,Golden Heart
+golden-lock-status-effect-name,Golden Lock
+lethality-status-effect-name,Lethality
+madness-status-effect-name,Madness
+focused-status-effect-name,Focused
+blindness-status-effect-name,Blindness
+clarity-status-effect-name,Clarity
+elusive-status-effect-name,Elusive
+purification-status-effect-name,Purification
+grace-status-effect-name,Grace
+curse-of-the-tower-status-effect-name,Curse of the Tower
+blue-team-status-effect-name,Blue Team
+red-team-status-effect-name,Red Team
+unavoidable-keyword-name,Unavoidable
+anti-steal-keyword-name,Anti Steal
+attack-damage-keyword-name,Attack Damage
+execute-keyword-name,Execute
+ascend-keyword-name,Ascend
+tinker-keyword-name,Tinker
+heal-keyword-name,Heal
+tier-i-reward-keyword-name,Tier I Reward
+critical-strike-battle-action-name,Critical Strike
+counter-attack-battle-action-name,Counter Attack
+multi-attack-battle-action-name,Multi Attack
+lucky-attack-battle-action-name,Lucky Attack
+armor-break-battle-action-name,Armor Break
+omni-crit-battle-action-name,Omni Crit
+polymorph-battle-action-name,Polymorph
+immolate-battle-action-name,Immolate
+backstab-battle-action-name,Backstab
+cleanse-battle-action-name,Cleanse
+dodge-battle-action-name,Dodge
+parry-battle-action-name,Parry
+block-battle-action-name,Block
+guard-battle-action-name,Guard
+miss-battle-action-name,Miss
+hit-battle-action-name,Hit
+arcane-roulette-ability-name,Arcane Roulette
+astral-dissolution-ability-name,Astral Dissolution
+barrier-ability-name,Barrier
+bloodlust-aura-ability-name,Bloodlust Aura
+burden-of-power-ability-name,Burden of Power
+confusion-strike-ability-name,Confusion Strike
+death-strike-ability-name,Death Strike
+drain-react-ability-name,Drain React
+drop-of-chaos-ability-name,Drop of Chaos
+enchanted-attack-ability-name,Enchanted attack
+fear-of-faith-ability-name,Fear of Faith
+frozen-strike-ability-name,Frozen Strike
+frozen-wind-ability-name,Frozen Wind
+galefire-ability-name,Galefire
+harness-ability-name,Harness
+headbutt-ability-name,Headbutt
+heart-of-iron-ability-name,Heart of Iron
+iron-will-ability-name,Iron Will
+mana-regen-ability-name,Mana Regen
+mind-control-ability-name,Mind Control
+multi-cleanse-ability-name,Multi Cleanse
+multi-heal-ability-name,Multi Heal
+multi-magic-shield-ability-name,Multi Magic Shield
+multi-shield-ability-name,Multi Shield
+multi-stun-ability-name,Multi Stun
+my-justice-ability-name,My Justice
+my-way-ability-name,My Way
+normal-attack-ability-name,Normal Attack
+noxious-empowerment-ability-name,Noxious Empowerment
+persistent-payback-ability-name,Persistent Payback
+prowlers-strike-ability-name,Prowler's Strike
+purify-ability-name,Purify
+replay-ability-name,Replay
+repulse-ability-name,Repulse
+safeguard-ability-name,Safeguard
+shatter-strike-ability-name,Shatter Strike
+silhouette-ability-name,Silhouette
+spell-bind-ability-name,Spell Bind
+steady-grip-ability-name,Steady Grip
+steal-ability-name,Steal
+stun-attack-ability-name,Stun Attack
+stun-strike-ability-name,Stun Strike
+toxic-attack-ability-name,Toxic Attack
+triple-attack-ability-name,Triple Attack
+venom-spit-ability-name,Venom Spit
+absolution-passive-name,Absolution
+all-is-mine-passive-name,All Is Mine
+arcane-control-passive-name,Arcane Control
+arcane-equilibrium-passive-name,Arcane Equilibrium
+battleborn-passive-name,Battleborn
+battleforged-heart-passive-name,Battleforged Heart
+beyond-the-grave-passive-name,Beyond the Grave
+bloodedges-blood-slash-passive-name,Bloodedge's Blood Slash
+cinder-touch-passive-name,Cinder Touch
+combat-instinct-passive-name,Combat Instinct
+consuming-darkness-passive-name,Consuming Darkness
+crimson-pact-passive-name,Crimson Pact
+critical-focus-passive-name,Critical Focus
+crystal-hardening-passive-name,Crystal Hardening
+crystal-insight-passive-name,Crystal Insight
+cursed-chain-passive-name,Cursed Chain
+edens-wish-passive-name,Eden's Wish
+edge-of-death-passive-name,Edge of Death
+edge-of-the-ruined-passive-name,Edge of the Ruined
+eldrids-fury-passive-name,Eldrid's Fury
+empty-bastion-passive-name,Empty Bastion
+emulator-passive-name,Emulator
+escape-passive-name,Escape
+evil-mark-passive-name,Evil Mark
+exploited-opportunity-passive-name,Exploited Opportunity
+faded-discipline-passive-name,Faded Discipline
+faultbreaker-passive-name,Faultbreaker
+fear-of-pain-passive-name,Fear of Pain
+folly-of-kings-passive-name,Folly of Kings
+freedom-drive-passive-name,Freedom Drive
+frozen-heart-passive-name,Frozen Heart
+golden-altruism-passive-name,Golden Altruism
+growing-anger-passive-name,Growing Anger
+iron-pact-passive-name,Iron Pact
+ironclad-passive-name,Ironclad
+judgments-call-passive-name,Judgment's Call
+liberation-passive-name,Liberation
+litany-of-malice-passive-name,Litany of Malice
+luminous-trial-passive-name,Luminous Trial
+magic-flux-passive-name,Magic Flux
+magical-frostflare-passive-name,Magical Frostflare
+mana-steal-passive-name,Mana Steal
+manaflow-passive-name,Manaflow
+mimicry-passive-name,Mimicry
+plated-rot-passive-name,Plated Rot
+potential-seeker-passive-name,Potential Seeker
+prime-guard-passive-name,Prime Guard
+shaded-essence-passive-name,Shaded Essence
+shattered-breath-passive-name,Shattered Breath
+shatterwave-passive-name,Shatterwave
+spell-block-passive-name,Spell Block
+spirit-of-the-unbroken-passive-name,Spirit of the Unbroken
+strike-of-destiny-passive-name,Strike of Destiny
+thunderstrike-passive-name,Thunderstrike
+toxic-redemption-passive-name,Toxic Redemption
+toxshield-passive-name,Toxshield
+undead-blessing-passive-name,Undead Blessing
+undying-curse-passive-name,Undying Curse
+vengeful-edge-passive-name,Vengeful Edge
+warriors-resolute-passive-name,Warrior's Resolute
+whispers-of-anger-passive-name,Whispers of Anger
+wind’s-grace-passive-name,Wind’s Grace
+wrath-of-the-broken-flesh-passive-name,Wrath of the Broken Flesh
+honor-trial-name,Honor
+resilience-trial-name,Resilience
+swarm-trial-name,Swarm
+confrontation-trial-name,Confrontation
+sagacity-trial-name,Sagacity
+common-rarity-name,COMMON
+uncommon-rarity-name,UNCOMMON
+rare-rarity-name,RARE
+legendary-rarity-name,LEGENDARY
+mythic-rarity-name,MYTHIC
+eternal-rarity-name,ETERNAL
+abyssal-rarity-name,ABYSSAL
+cosmic-rarity-name,COSMIC
+divine-rarity-name,DIVINE
+fren-adventurer-name,Fren
+pyry-adventurer-name,Pyry
+sid-adventurer-name,Sid
+elys-adventurer-name,Elys
+fael-adventurer-name,Fael
+tyr-adventurer-name,Tyr
+viran-adventurer-name,Viran
+kinno-adventurer-name,Kinno
+riel-adventurer-name,Riel
+amon-adventurer-name,Amon
+jace-adventurer-name,Jace
+buff-status-effect-type-name,Buff
+debuff-status-effect-type-name,Debuff
+penalty-status-effect-type-name,Penalty
+neutral-status-effect-type-name,Neutral
+blessing-status-effect-type-name,Blessing
+accuracy-stat-description,Determines your chance of hitting a target
+active-armor-stat-description,Remaining |[armor]
+adaptive-attack-stat-description,Increases your current attack damage
+agility-stat-description,<.>| Determines your chance to |[dodge]|\n|<.>| Reduced by your |[active-armor]
+armor-stat-description,Absorb damage in place of |[health]
+armor-shields-stat-description,The amount of |[armor-shield]| stacks you will|\n|get at the start of the battle
+armor-steal-stat-description,The amount of |[armor]| to steal from the target on hit|\n|<696969>You cannot steal more than your missing |[armor]
+armored-attack-stat-description,Converts % of your |[active-armor]| to |[armor-damage]| dealt on hit
+blackrot-damage-stat-description,Unaffected by any effects
+combat-stat-description,Increases |[physical-damage]| output by total |[combat]
+crit-chance-stat-description,Chance to |[critical-strike]
+critical-damage-stat-description,Increases |[critical-strike]| and |[omni-crit]| damage
+dazzle-stat-description,The amount of |[sparkle]| stacks to apply on target on hit
+eldership-stat-description,<.>| Increases |[magic-damage]| output by total |[eldership]|\n|<.>| Increases |[armor]| by total |[eldership]
+electricity-stat-description,Apply stacks of |[electro-charge]| equal to total |[electricity]| to the target|\n|on hit; adjacent enemies will receive 25% of the stacks
+elemental-power-stat-description,Multiplies the following: |\n|<.>| |[freeze-attack]|\n|<.>| |[cinder-damage]|\n|<.>| |[electricity]|\n|<.>| |[toxicity]
+elemental-resistance-stat-description,Reduces the following: |\n|<.>| |[freeze-damage]|\n|<.>| |[cinder-damage]|\n|<.>| |[electric-damage]|\n|<.>| |[toxicity]
+energy-stat-description,Allows you to perform actions
+faith-stat-description,<.>| Determines your chance to |[cleanse]|:|\n|[0@silver]|[*0@silver]| At the end of the turn|\n|[4@silver]|[*4@silver]| When you receive a debuff|\n|\n|<.>| Reduced by your |[greed]
+flow-stat-description,Unable to take a turn while |[flow]| is below 0%
+freeze-attack-stat-description,The amount of |[freeze-damage]| to deal on hit
+gold-on-kill-stat-description,Increases |[gold]| per kill
+greed-stat-description,Multiplies gold earned
+health-stat-description,The maximum amount of damage that a character can take before dying
+lethality-stat-description,Dealing damage to the target that would leave it below % |[max-health]|\n|that equals to % |[lethality]| will |[execute]| it
+life-steal-stat-description,Makes you |[heal]| % |[physical-damage]| dealt to |[health]
+luck-stat-description,Your chance to perform the following:|\n|[lucky-attack]
+magic-attack-stat-description,Amount of |[magic-damage]| to deal when attacking on hit
+malice-stat-description,Every time the owner is attacked; apply |[malice-damage]|\n|to the attacker equal to total |[malice]
+mana-stat-description,A resource that is often consumed when casting an ability
+max-health-stat-description,Largest value that |[health]| can be restored to
+max-mana-stat-description,Largest value that |[mana]| can be restored to
+omni-crit-chance-stat-description,Chance to |[omni-crit]
+omni-vamp-stat-description,Makes you |[heal]| % |damage| dealt to |[health]
+penetration-stat-description,Ignores %|[armor]
+physical-attack-stat-description,Amount of |[physical-damage]| to deal when attacking on hit
+power-stat-description,Multiplies all |[attack-damage]
+recovery-stat-description,[heal]| a portion of your missing |[health]| each turn|\n|based on your |[recovery]
+spelldom-stat-description,The amount of |[magic-blitz]| you get on the first turn
+tenacity-stat-description,Chance to not receive the following: |\n|<.>| |[slowness]|\n|<.>| |[stun]
+total-attacks-stat-description,The amount of times you will attack a target
+toughness-stat-description,Reduces damage taken from attacks
+toxicity-stat-description,Apply |[poison]| stack on hit for every |[toxicity]
+wisdom-stat-description,<.>| Increases |[magic-damage]| output by total |[wisdom]
+enervation-status-effect-description,Reduces all attack damage by 25% per stack
+weakness-status-effect-description,Reduces all attack damage by 25% per stack
+black-curse-status-effect-description,Reduces all healing by 75%
+curse-status-effect-description,Reduces all healing by 75%
+stun-status-effect-description,Once applied: unable to perform any actions this turn
+slowness-status-effect-description,Reduces |[agility]| by 100%
+confusion-status-effect-description,Reduces |[accuracy]| by 100%
+silence-status-effect-description,Unable to use abilities
+toxic-transmute-status-effect-description,Every time your health is about to take damage;|\n|negate it; convert it to |[poison]| and apply|\n|on yourself
+poison-status-effect-description,Damages health directly at the end of the turn
+bleed-status-effect-description,After every attack; take |[bleed-damage]| to your |[health]|\n|that equal to % |[bleed]| stacks on you multiplied by your|\n|[max-health]|\n|\n|<696969>every turn lose 2% |[bleed]
+sparkle-status-effect-description,Hitting a target will pop all |[sparkle]| stacks and will|\n|do the following for each stack:|\n|\n|- Grant |[ephemeral-armor]| to the attacker|\n|- Deal |[dazzle-damage]| to the target|\n
+magic-shield-status-effect-description,While active; blocks any damage; then breaks and|\n|becomes inactive|\n|\n|<696969>(will not break from |[magic-damage]|<696969>)
+ephemeral-armor-status-effect-description,Temporary |[armor]| that disappears after the end of the battle|\n|\n|Receive |[ephemeral-lock]| after taking damage
+ephemeral-shell-status-effect-description,Received damage is reduced by 12% per stack
+electro-charge-status-effect-description,Deals |[electric-damage]| equals to the amount of stacks to the owner every turn
+ephemeral-lock-status-effect-description,Unable to receive |[ephemeral-armor]
+exhaustion-status-effect-description,Limits |[total-attacks]| to 1
+malice-shield-status-effect-description,Next time you're about to get hit; break one shield and|\n|ignore |[malice]*|<483a5d>+1| damage
+armor-shield-status-effect-description,Next time you about to get hit; break one shield and|\n|ignore |[armor]*|<6d758d>+1| damage
+freeze-status-effect-description,Takes 25% more damage from all sources
+fear-status-effect-description,Unable to receive buffs
+invulnerability-status-effect-description,Can't receive any damage
+arthurs-mark-status-effect-description,The target with this mark is unable to |[block]|; |[parry]| or |[dodge]
+timeout-status-effect-description,Can't do anything this turn
+cinder-essence-status-effect-description,At the start of the turn; consume |\n|all stacks of |[cinder-essence]|\n|and |[immolate]| for each one
+combat-insight-status-effect-description,The next time you're about to be attacked and|\n|you have 5 or more stacks of |[combat-insight]|\n|consume them and |[parry]
+magic-blitz-status-effect-description,When attacking consume all stacks and gain +100%|\n|[magic-attack]| per stack
+omni-blitz-status-effect-description,When attacking consume all stacks and gain +100%|\n|[physical-attack]| and |[magic-attack]| per stack
+vimblow-status-effect-description,When attacking; consume one stack and gain bonus |[physical-attack]|\n|equal to 25% of your |[max-health]
+dread-status-effect-description,Enemies with |[fear]| won't attack you
+fury-status-effect-description,Increase your |[physical-attack]| by 25% for every stack of |[fury]|\n|<696969>(resets at the end of the battle)|\n
+counter-attack-charge-status-effect-description,Attack the attacker
+multi-attack-charge-status-effect-description,[multi-attack]| this turn
+stun-attack-charge-status-effect-description,All your hits will apply |[stun]| on the target
+debuff-immunity-status-effect-description,Stops all debuffs from being applied
+golden-heart-status-effect-description,Upon dropping to 0 |[health]|:|\n|<.>| revive and |[heal]| for 25% of your |[max-health]|\n|[3@golden]|<.>| |[*3@golden]| gain |[invulnerability]
+lethality-status-effect-description,Dealing damage to the target that would leave it below % |[max-health]|\n|that equals to % |[lethality]| will |[execute]| it
+madness-status-effect-description,Only attack yourself
+blindness-status-effect-description,Reduces your |[accuracy]| by 100%
+clarity-status-effect-description,The next time you are about to receive |[stun]|\n|consume 1 |[clarity]| stack and negate it
+elusive-status-effect-description,All attacks against you will lose 100% |[accuracy]
+purification-status-effect-description,At the end of the turn; conume 1 stack and |[cleanse]
+grace-status-effect-description,Increases all damage
+curse-of-the-tower-status-effect-description,Every turn receive |[true-damage]| that equals to 1% of your |[max-health]|\n|<696969>(recieved when a battle takes too long)
+unavoidable-keyword-description,The attack will always land
+anti-steal-keyword-description,Protects you from |[steal]
+ascend-keyword-description,Start an ascended run from floor 1; the |[diamond]|\n|you earn will be multiplied by 2|<696969> (+1 each level)|\n|<ff4500>Floor 2+ items used in previous runs will be|\n|<ff4500>removed
+tinker-keyword-description,The merchant will do the following to the items you give him:|\n|<.>| Convert reforges and items into tinker kits|\n|<.>| Upgrade reforged items
+heal-keyword-description,The action of replenishing a character's current |[health]
+tier-i-reward-keyword-description,<.>| |Get an extra |[diamond]| from opening a chest|\n|<.>| |Start with +{gold} |[gold]
+critical-strike-battle-action-description,Increase |[physical-damage]| |by 100% + % |[critical-damage]
+counter-attack-battle-action-description,Attack the attacker
+multi-attack-battle-action-description,Attack all enemies in a single turn
+lucky-attack-battle-action-description,Deals 25% extra damage
+armor-break-battle-action-description,Break target's armor by reducing it to 0
+omni-crit-battle-action-description,Increase |[physical-damage]| |and |[magic-damage]|\n|by 100% + % |[critical-damage]
+polymorph-battle-action-description,Transforms the strongest enemy into a random enemy|\n|and resets their stats
+immolate-battle-action-description,Deal |[cinder-damage]| that equals to 25% of your |\n|[max-health]| to all enemies in front
+backstab-battle-action-description,Backstab an enemy dealing attack damage|\n|<.>| |Enemy |[max-health]| is above 75%: The damage is reduced by 45%|\n|<.>| |Enemy |[max-health]| is below or equal to 75%: The attack|\n|  will be a |[critical-strike]| and have +25% |[accuracy]
+cleanse-battle-action-description,Removes a random debuff and reduces your |[faith]| by 25%|\n|<696969>resets every battle
+dodge-battle-action-description,Avoid incoming damage|\n|\n|Every time you |[dodge]|:|\n|reduce |[agility]| by 25%|\n|\n|<696969>resets every battle
+parry-battle-action-description,Return the damage and status effects to the attacker|\n|<696969>Getting parried 10 times will end your turn
+block-battle-action-description,Reduce incoming damage by 100%
+guard-battle-action-description,Reduce received damage by 25%
+miss-battle-action-description,Attacking but not hitting your target|\n|<696969>Missing 10 times will end your turn
+arcane-roulette-ability-description,Every time your |[magic-shield]| breaks; attack a random|\n|enemy|\n|\n|<696969>ACTIVATION CONDITION: have an active |[magic-shield]
+astral-dissolution-ability-description,Remove all buffs from the target
+barrier-ability-description,Gain a |[magic-shield]
+bloodlust-aura-ability-description,Apply |[madness]| to all enemies|\n|<696969>ACTIVATION CONDITION: |[heal]|<696969> 25% of|\n|<696969>your |[max-health]|<696969> in one turn
+burden-of-power-ability-description,Steal 75% attack damage from all enemies with |[fear]|\n|at the start of the turn|\n|<696969>ACTIVATION CONDITION: Applied |[fear]|<696969> on an enemy
+confusion-strike-ability-description,Apply 2 stacks of |[confusion]| on hit
+death-strike-ability-description,Gain 100% |[crit-chance]|\n|this turn
+drain-react-ability-description,Apply 5 stacks of |[enervation]| to all enemies|\n|<696969>ACTIVATION CONDITION: receive a hit from an enemy with |[poison]
+drop-of-chaos-ability-description,Apply a random debuff on your target
+enchanted-attack-ability-description,Gain +100% attack damage this turn
+fear-of-faith-ability-description,Gain 2 stacks of |[invulnerability]
+frozen-strike-ability-description,Apply 3 stacks |[weakness]| to target on hit
+frozen-wind-ability-description,Apply |[weakness]| on target; attack it afterwards
+galefire-ability-description,Apply |[slowness]| on the target
+headbutt-ability-description,Apply |[stun]| on the target on hit
+heart-of-iron-ability-description,Receive |[armor]| that equals to your |[health]|\n|<696969>ACTIVATION CONDITION: receive 3 hits|\n|<696969>resets every battle
+mana-regen-ability-description,Regenerate all your missing |[mana]
+mind-control-ability-description,Apply |[confusion]| to all targets
+multi-cleanse-ability-description,[cleanse]| yourself and all allies
+multi-heal-ability-description,Restore 25% health to you and all allies
+multi-magic-shield-ability-description,Grant you and your allies |[magic-shield]
+multi-shield-ability-description,Grant you and your allies |[ephemeral-armor]|\n|that equals to your |[health]
+multi-stun-ability-description,Receive |[multi-attack-charge]| and |[stun-attack-charge]|;|\n|attack afterwards|\n|<696969>ACTIVATION CONDITION: parry an attack|\n|<696969>resets every battle
+my-justice-ability-description,Receive |[invulnerability]| and |[counter-attack-charge]| this turn|\n|<696969>ACTIVATION CONDITION: receive |[invulnerability]
+my-way-ability-description,Receive |[counter-attack-charge]| this turn|\n|<696969>ACTIVATION CONDITION: attack 3 times
+noxious-empowerment-ability-description,Multiply |[toxicity]| by 2 this turn
+persistent-payback-ability-description,[counter-attack]| for this turn
+prowlers-strike-ability-description,Every time you hit an enemy this turn; get {agility-amount}% |[agility]|\n|<696969>ACTIVATION CONDITION: |[dodge]|<696969> at least once
+replay-ability-description,Activate your last mimicked ability|\n|<696969>ACTIVATION CONDITION: mimic an ability
+repulse-ability-description,[parry]| this turn
+safeguard-ability-description,Grant |[armor]| to you and your allies|\n|equal to 25% of your |[max-health]
+shatter-strike-ability-description,[armor-break]| on hit
+silhouette-ability-description,Become |[elusive]| and attack|\n|<696969>ACTIVATION CONDITION: |[backstab]|\n|<696969>resets every battle
+spell-bind-ability-description,Apply |[silence]| on the target
+steady-grip-ability-description,Increase your |[total-attacks]| by 1 for this battle
+steal-ability-description,Steal 25% |[gold]| from the target
+stun-attack-ability-description,Apply |[stun]| on the target on hit
+stun-strike-ability-description,Apply |[stun]| on the target on hit
+toxic-attack-ability-description,When hitting a target; apply 1 |[poison]
+venom-spit-ability-description,Apply stacks of |[poison]| equal to total|\n|[toxicity]| to your target
+absolution-passive-description,Every time you attack; deal 5 |[magic-damage]|\n|to a random enemy
+all-is-mine-passive-description,At the start of the turn; steal all|\n|buffs from the target
+arcane-control-passive-description,Every time you avoid an attack; break your|\n|[magic-shield]| and immediately refill it
+arcane-equilibrium-passive-description,At the end of every turn; convert everyone's|\n|[invulnerability]| into |[magic-shield]
+battleborn-passive-description,Every time you |[parry]|; |[stun]| the target
+battleforged-heart-passive-description,After your |[armor]| is damaged; convert|\n|that amount to |[max-health]|\n|<696969>resets every battle
+beyond-the-grave-passive-description,At the end of the turn; transform opponents status effects|\n|<.>| |[weakness]| into |[enervation]|\n|<.>| |[curse]| into |[black-curse]
+bloodedges-blood-slash-passive-description,Every time you're about to attack; convert 10%|\n|of your |[health]| to |[physical-attack]|\n|<696969>resets every battle
+cinder-touch-passive-description,[immolate]| on hit
+combat-instinct-passive-description,[parry]| damage is doubled
+consuming-darkness-passive-description,When an enemy with |[fear]| and |[confusion]| is killed;|\n|gain all it's base stats |<696969>(resets every battle)
+crimson-pact-passive-description,Upon dropping below 45% |[health]|; apply|\n|[confusion]| to all enemies
+critical-focus-passive-description,Your |[critical-strike]| or |[omni-crit]| attacks|\n|will have +25% |[accuracy]
+crystal-hardening-passive-description,Receive 0 damage on the first turn
+crystal-insight-passive-description,Gain +100% |[magic-attack]| on the first turn
+cursed-chain-passive-description,Apply on-hit status effects even if your attacks|\n|don't hit
+edens-wish-passive-description,At the start of every turn; grant a random ally|\n|a random blessing or buff
+edge-of-death-passive-description,Your |[health]| cannot fall below 1 on the first turn
+edge-of-the-ruined-passive-description,While you have |[curse]| or |[black-curse]|:|\n|attacks will deal extra damage that equals|\n|to targets 11% |[health]
+eldrids-fury-passive-description,Everytime you heal gain a stack of |[vimblow]|\n|<696969>once per turn
+empty-bastion-passive-description,Multiplies your |[armor]| by 8; but you start|\n|with 0 |[active-armor]| every battle 
+emulator-passive-description,Reapply debuffs at the end of the turn
+escape-passive-description,Leave the battle after attempting to steal
+evil-mark-passive-description,Applies |[curse]| on your target|\n|at the start of the turn
+exploited-opportunity-passive-description,After |[dodge]|; |[stun]| the attacker
+faded-discipline-passive-description,Receive +5 |[total-attacks]| but your first 5|\n|attacks will deal 99% less damage
+faultbreaker-passive-description,If your attack leaves the target with 75%|\n|[active-armor]| or below; |[armor-break]
+fear-of-pain-passive-description,Won't attack targets that received damage this turn
+folly-of-kings-passive-description,Recieve a random status effect every turn|\n|and |[polymorph]| every 2 turns
+freedom-drive-passive-description,Receive +100% |[tenacity]| while you have |[invulnerability]
+golden-altruism-passive-description,Grants all allies |[golden-heart]
+growing-anger-passive-description,Gain 5% |[crit-chance]| every hit |<696969>(resets every battle)
+iron-pact-passive-description,Every time your |[active-armor]| reaches 0%; consume 10%|\n|your |[health]| and convert it to |[active-armor]
+ironclad-passive-description,[block]
+judgments-call-passive-description,Your attacks will apply debuffs you removed|\n|via |[cleanse]| (resets every battle)
+liberation-passive-description,Converts all |[armor]| to |[adaptive-attack]
+litany-of-malice-passive-description,For every unique status effect on the target; |\n|Deal +25% bonus |[malice-damage]| to it
+luminous-trial-passive-description,<.>| Applies 1 stacks of |[blindness]| when entering combat|<|\n||<.>| Opponents get +25% |[accuracy]| for every |[miss]
+magical-frostflare-passive-description,Receive |[ephemeral-armor]| that equals to |[magic-damage]|\n|dealt to enemies with |[freeze]
+mana-steal-passive-description,Steal 1 |[mana]| on hit
+manaflow-passive-description,Sets your|[max-mana]| to 1
+mimicry-passive-description,Use your target's ability
+plated-rot-passive-description,Damage dealt to |[armor]|; will be converted to |[max-health]
+prime-guard-passive-description,Other enemies will take 99% less damage until|\n|the owner of the passive is defeated
+shaded-essence-passive-description,Deal +375% |[magic-damage]| to enemies with |[silence]
+shattered-breath-passive-description,Every time you |[parry]|; apply |[exhaustion]|\n|on target
+shatterwave-passive-description,After hitting an enemy; deal 25% of your|\n|attack damage to adjacent enemies
+spell-block-passive-description,At the start of the turn; apply |[silence]|\n|on first enemy with an ability
+strike-of-destiny-passive-description,Remove all buffs from the target on hit|\n|if you have |[invulnerability]
+thunderstrike-passive-description,Apply |[stun]| on hit if the target has |[electro-charge]
+toxic-redemption-passive-description,Upon killing an enemy; remove all |[poison]| on you and deal |[physical-damage]|\n|to all enemies that equals to the amount of the removed poison
+toxshield-passive-description,Every time |[poison-damage]| is dealt during your|\n|turn gain |[ephemeral-armor]| that equals to|\n|that amount
+undead-blessing-passive-description,When an ally dies; gain a stack|\n|of |[purification]
+undying-curse-passive-description,Upon death; apply |[curse]|\n|on the killer
+vengeful-edge-passive-description,When you |[counter-attack]|; |[counter-attack]| again
+warriors-resolute-passive-description,Receive a |[clarity]| in the first 3 turns
+wind’s-grace-passive-description,Grants all allies |[swiftness]
+wrath-of-the-broken-flesh-passive-description,Every time your health is damaged; gain a stack of |[fury]
+ancient-ice-item-set-description,[1@ancient-ice]|[*1@ancient-ice]|<.>| Receive |[ephemeral-armor]| that equals to |[freeze-damage]|\n|  dealt to enemies with |[freeze]|\n|\n|<.>| At the end of your first turn; apply |[freeze]| to all|\n|  enemies
+ancient-shell-item-set-description,If you used a stance this turn:|\n|[1@ancient-shell]|[*1@ancient-shell]| |[toughness]| will reduce all types of damage|\n|[3@ancient-shell]|[*3@ancient-shell]| Receive |[ephemeral-shell]| at the end of the turn|\n|[5@ancient-shell]|[*5@ancient-shell]| Removes |[ephemeral-lock]| at the end of the turn
+arcanum-item-set-description,[1@arcanum]|[*1@arcanum]| While |[magic-shield]| is active; gain |<7569f5>+375%|[magic-damage]|\n|[2@arcanum]|[*2@arcanum]| Gain a |[magic-shield]| at the end of the turn|\n|[4@arcanum]|[*4@arcanum]| Gain a |[magic-shield]| after killing an enemy
+bastolic-item-set-description,[1@bastolic]|[*1@bastolic]| When you deal |[magic-damage]|; deal another|\n| |({magic_damage})|<7569f5> 5% of your max health| to a random enemy|\n|\n|[2@bastolic]|[*2@bastolic]| |[magic-damage]| you receive on the first|\n| turn will be converted to |[max-health]|\n|<696969> resets every battle
+berserker-item-set-description,[1@berserker]|[*1@berserker]| Gain bonus |[total-attacks]| based on missing |[health]|:|\n| |<.>| 25% -> +1 |[total-attacks]|\n| |<.>| 50% -> +3 |[total-attacks]|\n| |<.>| 75% -> +6 |[total-attacks]|\n|\n|[2@berserker]|[*2@berserker]| While below 25% |[health]|; gain 100% |[tenacity]
+blackthorn-item-set-description,After getting hit from an attack:|\n|<.>| Deal |[active-armor]*| as |[magic-damage]| to the attacker
+cataclysm-item-set-description,All enemies will receive up to 45% |[lethality]
+celestial-item-set-description,Upon taking any damage; transform it into |[elemental-power]|\n|<696969>resets every battle
+chromalure-item-set-description,[1@chromalure]|[*1@chromalure]| After applying |[poison]|; deal |[poison-damage]| that|\n|  equals to that amount to the target|\n|\n|[3@chromalure]|[*3@chromalure]| At the start of every turn; recieve |[toxic-transmute]|[0@chromalure]
+cursed-item-set-description,[1@cursed]|[*1@cursed]| At the start of the battle; receive |[curse]|\n| and 5 stacks of |[malice-shield]|\n|\n|[3@cursed]|[*3@cursed]| |[malice-damage]| you deal will be spread|\n| to all enemies with |[curse]
+darkness-item-set-description,[1@darkness]|[*1@darkness]| Apply |[fear]| to all enemies with lower attack damage|\n|  than you at the start of the turn|[3@darkness]|\n|[*3@darkness]| After killing an enemy; receive 2 stacks of |[dread]|[4@darkness]|\n|[*4@darkness]| At the start of the first turn receive |[madness]|[0@darkness]
+demonic-item-set-description,[1@demonic]|[*1@demonic]| For every 25 base |[max-health]|\n| gain 1% |[physical-attack]|\n|\n|[3@demonic]|[*3@demonic]| Receive |[multi-attack-charge]|\n| at the start of the first turn
+flesh-item-set-description,Allows to |[heal]| over your |[max-health]|\n|<696969>the over healed amount is removed at the|\n|<696969>end of the turn
+generic-item-set-description,Counts as +1 to all active item sets
+golden-item-set-description,At the start of every battle; gain |[golden-heart]
+hunter-item-set-description,[1@hunter]|[*1@hunter]| Every 1% |[crit-chance]| above 100% will be converted to|\n| 10% |[critical-damage]|\n|[3@hunter]|[*3@hunter]| Targets cannot |[dodge]| your |[critical-strike]| attacks
+jade-item-set-description,Reapply all |[sparkle]| stacks on the target after popping them
+legacy-item-set-description,<.>| At the start of the battle; receive |[invulnerability]|\n|\n|<.>| At the end of your first turn; apply a stack|\n|  of |[arthurs-mark]| on a random enemy|\n|\n|<.>| When an enemy with |[arthurs-mark]| dies;|\n|  it will be applied on another enemy
+magma-item-set-description,Grants 1 stack of |[cinder-essence]| before| |\n||the start of the turn
+mercenary-item-set-description,If a target is over 90% |[health]|:|\n|[1@mercenary]|[*1@mercenary]| Deal 25%|<00cd58> +|[luck]*| increased attack damage|\n|[3@mercenary]|[*3@mercenary]| Gain +1 |[total-attacks]| this turn
+orion-item-set-description,[1@orion]|[*1@orion]| Gain increased damage resistance as your |[health]|\n| falls; up to 75% resistance when at 25% |[health]|\n|\n|[3@orion]|[*3@orion]| At the end of the first 3 turns; repair 25%|\n| of your |[armor]|\n|\n|[4@orion]|[*4@orion]| Unable to |[heal]
+phantom-item-set-description,Unable to equip
+poverty-item-set-description,<.>| While below 25% |[health]|; gain 75% |[crit-chance]|\n|<.>| Gain |[anti-steal]
+royal-item-set-description,Receive an |[inherited-sin]| on the first turn|\n|\n|If |[cleanse]| removed |[inherited-sin]|; gain 5|\n|stacks of |[debuff-immunity]
+scout-item-set-description,[1@scout]|\n|<.>| |[*1@scout]|[dodge]| is guaranteed if you have any amount of |[agility]|[3@scout]|\n|<.>| |[*3@scout]| After you |[dodge]| 3 times; become |[elusive]|[0@scout]
+shadow-item-set-description,[1@shadow]|[*1@shadow]| Every time you avoid an attack; |[backstab]|\n|[3@shadow]|[*3@shadow]| Damage avoided while |[elusive]| will be gained|\n| as |[adaptive-attack]|<696969> - resets every battle
+silver-item-set-description,[1@silver]|[*1@silver]| |[cleanse]| is guaranteed if you have any|\n|  amount of |[faith]|\n|\n|[3@silver]|[*3@silver]| On |[cleanse]| recieve |[faith]*| |[grace]
+swiftness-item-set-description,Doubles your |[total-attacks]|; but after every attack|\n|lose 5% |[accuracy]|<696969> resets every turn
+thunder-item-set-description,[1@thunder]|[*1@thunder]|[electric-damage]| has a 25% + |[luck]*| chance to |[stun]|\n| during your turn|\n|[3@thunder]|[*3@thunder]| Doubles the |[stun]| duration applied in your turn
+unchained-item-set-description,[1@unchained]|[*1@unchained]| Debuffs will be applied to all enemies|\n|[2@unchained]|[*2@unchained]| Double the debuffs you apply
+vampiric-item-set-description,[1@vampiric]|[*1@vampiric]| On your first attack on a new target apply 8% |[bleed]|\n|\n|[3@vampiric]|[*3@vampiric]| Every time an enemy takes |[bleed-damage]|; |[heal]|\n| for that amount|\n|\n|[5@vampiric]|[*5@vampiric]|[bleed-damage]| will be converted to |[power]|\n|<696969> resets every battle
+warrior-item-set-description,[1@warrior]|[*1@warrior]| Every time you attack; receive |[combat-insight]|\n|[4@warrior]|[*4@warrior]| When you get attacked; receive |[combat-insight]|[0@warrior]
+wood-item-set-description,[1@wood]|[*1@wood]| +25% |[luck]|\n|[3@wood]|[*3@wood]| +10% |[luck]
+zephyron-item-set-description,[1@zephyron]|<.>| |[*1@zephyron]| Gain {amount}% |[magic-damage]| on every turn|<696969> resets every battle|\n|[2@zephyron]|<.>| |[*2@zephyron]| Dealt |[magic-damage]| will be applied to enemies with |[silence]|\n|[4@zephyron]|<.>| |[*4@zephyron]| First activated ability won't consume any |[mana]
+beastbound-specialization-description,[1@hunter]|[*1@hunter]| Every 1% |[crit-chance]| above 100% will be converted to|\n| 10% |[critical-damage]|\n|[3@hunter]|[*3@hunter]| Targets cannot |[dodge]| your |[critical-strike]| attacks|\n|\n|<.>| |[crit-chance]| will affect |[parry]| attacks
+bloodcaster-specialization-description,[1@vampiric]|[*1@vampiric]| On your first attack on a new target apply 8% |[bleed]|\n|\n|[3@vampiric]|[*3@vampiric]| Every time an enemy takes |[bleed-damage]|; |[heal]|\n| for that amount|\n|\n|[5@vampiric]|[*5@vampiric]|[bleed-damage]| will be converted to |[power]|\n|<696969> resets every battle|\n|\n|Everytime you |[heal]|:|\n|<.>| Deal |[magic-damage]| that equals to the amount you|\n|  healed to a selected enemy
+vampiercer-specialization-description,[1@vampiric]|[*1@vampiric]| On your first attack on a new target apply 8% |[bleed]|\n|\n|[3@vampiric]|[*3@vampiric]| Every time an enemy takes |[bleed-damage]|; |[heal]|\n| for that amount|\n|\n|[5@vampiric]|[*5@vampiric]|[bleed-damage]| will be converted to |[power]|\n|<696969> resets every battle|\n|\n|Everytime you |[heal]|:|\n|<.>| Deal direct |[physical-damage]| that equals to the amount you|\n|  healed to a selected enemy; bypassing their |[armor]
+venomire-specialization-description,[1@vampiric]|[*1@vampiric]| On your first attack on a new target apply 8% |[bleed]|\n|\n|[3@vampiric]|[*3@vampiric]| Every time an enemy takes |[bleed-damage]|; |[heal]|\n| for that amount|\n|\n|[5@vampiric]|[*5@vampiric]|[bleed-damage]| will be converted to |[power]|\n|<696969> resets every battle|\n|\n|Everytime you |[heal]|:|\n|<.>| Apply |[poison]| stacks to the selected enemy that|\n|  equals to the amount you healed
+bloodmoon-specialization-description,<.>| Transforms 200% of lost |[health]| into |[physical-attack]|\n|<696969>  resets every battle|\n|[1@shadow]|[*1@shadow]| Every time you avoid an attack; |[backstab]|\n|[3@shadow]|[*3@shadow]| Damage avoided while |[elusive]| will be gained|\n| as |[adaptive-attack]|<696969> - resets every battle
+moonlighter-specialization-description,[1@shadow]|[*1@shadow]| Every time you avoid an attack; |[backstab]|\n|[3@shadow]|[*3@shadow]| Damage avoided while |[elusive]| will be gained|\n| as |[adaptive-attack]|<696969> - resets every battle
+nighthrust-specialization-description,[1@shadow]|[*1@shadow]| Every time you avoid an attack; |[backstab]|\n|[3@shadow]|[*3@shadow]| Damage avoided while |[elusive]| will be gained|\n| as |[adaptive-attack]|<696969> - resets every battle|\n|<.>| Gain attack damage avoided with |[dodge]|\n|<696969>  resets every battle
+challenger-specialization-description,[1@demonic]|[*1@demonic]| For every 25 base |[max-health]|\n| gain 1% |[physical-attack]|\n|\n|[3@demonic]|[*3@demonic]| Receive |[multi-attack-charge]|\n| at the start of the first turn|\n|\n|<.>| 45% of the damage dealt to an enemy|\n|  with an |[arthurs-mark]| will|\n|  spread to adjacent enemies
+chromaguard-specialization-description,[1@chromalure]|[*1@chromalure]| After applying |[poison]|; deal |[poison-damage]| that|\n|  equals to that amount to the target|\n|\n|[3@chromalure]|[*3@chromalure]| At the start of every turn; recieve |[toxic-transmute]|[0@chromalure]
+chromaspite-specialization-description,[1@chromalure]|[*1@chromalure]| After applying |[poison]|; deal |[poison-damage]| that|\n|  equals to that amount to the target|\n|\n|[3@chromalure]|[*3@chromalure]| At the start of every turn; recieve |[toxic-transmute]|[0@chromalure]|\n|\n|<.>| Convert 75% of your |[physical-attack]| to|\n| |[toxicity]
+chromathorn-specialization-description,After getting hit from an attack:|\n|<.>| Deal |[active-armor]*| as |[magic-damage]| to the attacker|\n|<.>| Everytime you get hit; apply |[poison]| on the|\n|  attacker that equals to your |[toxicity]
+cinderthorn-specialization-description,After getting hit from an attack:|\n|<.>| Deal |[active-armor]*| as |[magic-damage]| to the attacker|\n|<.>| |[immolate]
+mindthorn-specialization-description,After getting hit from an attack:|\n|<.>| Deal |[active-armor]*| as |[magic-damage]| to the attacker|\n|<.>| Get +25% |[wisdom]|<696969> (resets every battle)
+thornfrost-specialization-description,After getting hit from an attack:|\n|<.>| Deal |[active-armor]*| as |[magic-damage]| to the attacker|\n|<.>| apply 2 stacks of |[weakness]| on the attacker
+dauntless-specialization-description,[1@warrior]|[*1@warrior]| Every time you attack; receive |[combat-insight]|\n|[4@warrior]|[*4@warrior]| When you get attacked; receive |[combat-insight]|[0@warrior]
+quickblade-specialization-description,[1@warrior]|[*1@warrior]| Every time you attack; receive |[combat-insight]|\n|[4@warrior]|[*4@warrior]| When you get attacked; receive |[combat-insight]|[0@warrior]|\n|\n|<.>|  Every time you |[parry]|; receive +1 |[total-attacks]|\n|<696969>   resets every battle
+rampager-specialization-description,[1@warrior]|[*1@warrior]| Every time you attack; receive |[combat-insight]|\n|[4@warrior]|[*4@warrior]| When you get attacked; receive |[combat-insight]|[0@warrior]
+thunderborn-specialization-description,[1@warrior]|[*1@warrior]| Every time you attack; receive |[combat-insight]|\n|[4@warrior]|[*4@warrior]| When you get attacked; receive |[combat-insight]|[0@warrior]|\n|\n|<.>| Everytime you stun an enemy; attack it
+debilitator-specialization-description,[1@darkness]|[*1@darkness]| Apply |[fear]| to all enemies with lower attack damage|\n|  than you at the start of the turn|[3@darkness]|\n|[*3@darkness]| After killing an enemy; receive 2 stacks of |[dread]|[4@darkness]|\n|[*4@darkness]| At the start of the first turn receive |[madness]|[0@darkness]
+mindbreaker-specialization-description,<.>| Apply 2 stacks of |[madness]| to enemies with |[confusion]|\n|[1@darkness]|[*1@darkness]| Apply |[fear]| to all enemies with lower attack damage|\n|  than you at the start of the turn|[3@darkness]|\n|[*3@darkness]| After killing an enemy; receive 2 stacks of |[dread]|[4@darkness]|\n|[*4@darkness]| At the start of the first turn receive |[madness]|[0@darkness]
+deserter-specialization-description,If a target is over 90% |[health]|:|\n|[1@mercenary]|[*1@mercenary]| Deal 25%|<00cd58> +|[luck]*| increased attack damage|\n|[3@mercenary]|[*3@mercenary]| Gain +1 |[total-attacks]| this turn|\n|\n|<.>| gain +1 to |[total-attacks]| every 10 floors
+faithbound-specialization-description,If a target is over 90% |[health]|:|\n|[1@mercenary]|[*1@mercenary]| Deal 25%|<00cd58> +|[luck]*| increased attack damage|\n|[3@mercenary]|[*3@mercenary]| Gain +1 |[total-attacks]| this turn|\n|\n|<.>| PASSIVE: |[judgments-call]
+echomancer-specialization-description,[1@unchained]|[*1@unchained]| Debuffs will be applied to all enemies|\n|[2@unchained]|[*2@unchained]| Double the debuffs you apply
+evadium-specialization-description,[1@arcanum]|[*1@arcanum]| While |[magic-shield]| is active; gain |<7569f5>+375%|[magic-damage]|\n|[2@arcanum]|[*2@arcanum]| Gain a |[magic-shield]| at the end of the turn|\n|[4@arcanum]|[*4@arcanum]| Gain a |[magic-shield]| after killing an enemy|\n|\n|<.> | Every time you |[dodge]|; |[counter-attack]
+invulnerium-specialization-description,[1@arcanum]|[*1@arcanum]| While |[magic-shield]| is active; gain |<7569f5>+375%|[magic-damage]|\n|[2@arcanum]|[*2@arcanum]| Gain a |[magic-shield]| at the end of the turn|\n|[4@arcanum]|[*4@arcanum]| Gain a |[magic-shield]| after killing an enemy|\n|\n|<.>| The first time your |[magic-shield]| breaks; gain |[invulnerability]
+stunium-specialization-description,[1@arcanum]|[*1@arcanum]| While |[magic-shield]| is active; gain |<7569f5>+375%|[magic-damage]|\n|<.>| When your |[magic-shield]| breaks; |[stun]| all enemies|\n|[2@arcanum]|[*2@arcanum]| Gain a |[magic-shield]| at the end of the turn|\n|[4@arcanum]|[*4@arcanum]| Gain a |[magic-shield]| after killing an enemy
+harbinger-specialization-description,<.>| Deal +1000% attack damage to enemies with |[arthurs-mark]|\n|\n|<.>| At the start of the battle; receive |[invulnerability]|\n|\n|<.>| At the end of your first turn; apply a stack|\n|  of |[arthurs-mark]| on a random enemy|\n|\n|<.>| When an enemy with |[arthurs-mark]| dies;|\n|  it will be applied on another enemy
+lionheart-specialization-description,<.>| Reduce damage by 1000% from enemies with |[arthurs-mark]|\n|\n|<.>| At the start of the battle; receive |[invulnerability]|\n|\n|<.>| At the end of your first turn; apply a stack|\n|  of |[arthurs-mark]| on a random enemy|\n|\n|<.>| When an enemy with |[arthurs-mark]| dies;|\n|  it will be applied on another enemy
+pursuer-specialization-description,[1@scout]|\n|<.>| |[*1@scout]|[dodge]| is guaranteed if you have any amount of |[agility]|[3@scout]|\n|<.>| |[*3@scout]| After you |[dodge]| 3 times; become |[elusive]|[0@scout]|\n|\n|Every time you avoid an attack:|\n|<.>| Gain {lethality-amount}% |[lethality]|<696969> - resets every battle
+striker-specialization-description,[1@scout]|\n|<.>| |[*1@scout]|[dodge]| is guaranteed if you have any amount of |[agility]|[3@scout]|\n|<.>| |[*3@scout]| After you |[dodge]| 3 times; become |[elusive]|[0@scout]|\n|\n|Every time you avoid an attack:|\n|<.>| |[counter-attack]
+windwalker-specialization-description,[1@scout]|\n|<.>| |[*1@scout]|[dodge]| is guaranteed if you have any amount of |[agility]|[3@scout]|\n|<.>| |[*3@scout]| After you |[dodge]| 3 times; become |[elusive]|[0@scout]|\n|\n|Every time you avoid an attack:
+honor-trial-description,<.>| All enemies gain 1 level
+resilience-trial-description,<.>| All enemies will gain |[armor]
+swarm-trial-description,<.>| Every battle will be filled with 6 enemies
+confrontation-trial-description,<.>| All enemies gain +1 to |[total-attacks]
+sagacity-trial-description,Adds a timer to your actions; if the|\n|timer reaches 0; end the run
