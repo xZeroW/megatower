@@ -24,7 +24,7 @@ func export_container() -> void:
 	container.position = Vector2.ZERO
 	await process_frame
 	walk(container, container)
-	var file = FileAccess.open(output.path_join("artifacts/enemy-container-layout.json"), FileAccess.WRITE)
+	var file = FileAccess.open(output.path_join("assets/data/layouts/enemy-container-layout.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify({"size": [container.size.x, container.size.y], "nodes": nodes}, "\t"))
 	print("Resolved ", nodes.size(), " enemy container nodes")
 	quit()

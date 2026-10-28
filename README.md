@@ -47,11 +47,11 @@ Lower crates own the resources they consume; the UI writes them.
 
 Room scenes are baked by Godot: `python3 tools/export_room_gltf.py` (needs `godot`
 4.4.1 on `PATH`) writes one `.glb` per room to `crates/megatower-runtime/src/render/rooms/`
-and the per-mesh materials to `artifacts/room-materials.json`. Lights still come from
-`tools/export_room_scenes.py` (`artifacts/room-scenes.json`).
+and the per-mesh materials to `assets/data/rooms/room-materials.json`. Lights still come from
+`tools/export_room_scenes.py` (`assets/data/rooms/room-scenes.json`).
 
 **Hot reload.** In dev (debug) builds, edit a room while the game runs: when a `.glb` in
-`crates/megatower-runtime/src/render/rooms/` or `artifacts/room-materials.json` /
+`crates/megatower-runtime/src/render/rooms/` or `assets/data/rooms/room-materials.json` /
 `room-scenes.json` changes on disk, the room is respawned from the new files within half a
 second, with no rebuild. Works from any editor that writes those files (Blender, Godot export).
 Release builds use the embedded copies; `MEGALOOT_HOT_ROOMS=0` turns it off in dev builds.

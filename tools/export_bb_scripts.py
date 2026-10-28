@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DIR = ROOT / "Megaloot-GDRE-Recovered/resources/bb_scripts"
-OUT = ROOT / "artifacts/bb-scripts.json"
+OUT = ROOT / "assets/data/content/bb-scripts.json"
 
 STR = r'"((?:[^"\\]|\\.)*)"'
 COLORS = {"DARK_GRAY", "DIM_GRAY", "ORANGE_RED"}

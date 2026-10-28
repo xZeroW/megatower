@@ -42,7 +42,7 @@ pub struct StatusPolicies(pub Vec<StatusPolicy>);
 impl StatusPolicies {
     pub fn recovered() -> Self {
         serde_json::from_str(include_str!(
-            "../../../../artifacts/status-effect-policies.json"
+            "../../../../assets/data/content/status-effect-policies.json"
         ))
         .expect("validated status policies")
     }

@@ -6,7 +6,7 @@ project; the recovered project is never touched.
     tools/export_room_gltf.py [out_dir]   (default: crates/megatower-runtime/src/render/rooms)
 
 The .glb files are embedded by `megatower-runtime`; `room-materials.json`
-goes to `artifacts/` for `megatower-assets`.
+goes to `assets/data/` for `megatower-assets`.
 """
 import json
 import pathlib
@@ -41,5 +41,5 @@ for metadata in (SOURCE / "assets").rglob("*.import"):
 subprocess.run(["godot", "--headless", "--path", str(PROBE), "--script", "export_room_gltf.gd", "--", str(OUT)],
                check=True, timeout=600)
 
-(ROOT / "artifacts/room-materials.json").write_text((OUT / "room-materials.json").read_text())
+(ROOT / "assets/data/rooms/room-materials.json").write_text((OUT / "room-materials.json").read_text())
 (OUT / "room-materials.json").unlink()

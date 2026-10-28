@@ -32,7 +32,7 @@ func export_layout() -> void:
 	await process_frame
 	await process_frame
 	walk(main)
-	var file = FileAccess.open(output.path_join("artifacts/godot-layout.json"), FileAccess.WRITE)
+	var file = FileAccess.open(output.path_join("assets/data/layouts/godot-layout.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify({"viewport": [640, 360], "visuals": visuals}, "\t"))
 	print("Resolved ", visuals.size(), " visible controls using Godot containers")
 	quit()
@@ -116,7 +116,7 @@ func export_screen(scene_path: String, name: String, size_text: String, position
 	for _i in range(6):
 		await process_frame
 	walk(scene)
-	var file = FileAccess.open(output.path_join("artifacts/" + name + ".json"), FileAccess.WRITE)
+	var file = FileAccess.open(output.path_join("assets/data/layouts/" + name + ".json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify({"viewport": [640, 360], "visuals": visuals}, "\t"))
 	print("Resolved ", visuals.size(), " controls for ", name)
 	quit()

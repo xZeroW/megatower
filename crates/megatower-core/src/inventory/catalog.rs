@@ -62,8 +62,10 @@ pub struct ContainerCatalog(pub Vec<ContainerDefinition>);
 
 impl ContainerCatalog {
     pub fn recovered() -> Self {
-        serde_json::from_str(include_str!("../../../../artifacts/item-containers.json"))
-            .expect("validated recovered container definitions")
+        serde_json::from_str(include_str!(
+            "../../../../assets/data/content/item-containers.json"
+        ))
+        .expect("validated recovered container definitions")
     }
 
     pub fn get(&self, id: ContainerId) -> &ContainerDefinition {

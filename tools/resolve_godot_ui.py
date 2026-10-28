@@ -180,7 +180,7 @@ def patch_instanced_button_texts(layout_name, scene_res):
         elif current and line.startswith('text = "'):
             texts[current] = line[len('text = "'):-1]
             current = None
-    target = ROOT / "artifacts" / f"{layout_name}.json"
+    target = ROOT / "assets/data/layouts" / f"{layout_name}.json"
     data = json.loads(target.read_text())
     for visual in data["visuals"]:
         path = visual["path"]

@@ -27,7 +27,7 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--check', action='store_true')
     a = p.parse_args()
-    target = ROOT / 'artifacts/battle-actions.json'
+    target = ROOT / 'assets/data/content/battle-actions.json'
     content = export()
     if a.check:
         if target.read_text() != content: raise SystemExit('Battle actions stale; run python3 tools/export_battle_actions.py')

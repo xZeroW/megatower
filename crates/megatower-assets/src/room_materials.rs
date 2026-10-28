@@ -1,4 +1,4 @@
-//! Surface materials of the baked room meshes (`artifacts/room-materials.json`,
+//! Surface materials of the baked room meshes (`assets/data/rooms/room-materials.json`,
 //! written by `tools/export_room_gltf.py` next to each room's `.glb`). Mesh
 //! nodes of a `.glb` are named `m1`, `m2`, ... and keyed the same way here.
 
@@ -22,11 +22,11 @@ pub fn hot_reload_enabled() -> bool {
     cfg!(debug_assertions) && std::env::var_os("MEGALOOT_HOT_ROOMS").is_none_or(|v| v != "0")
 }
 
-/// A JSON file of `artifacts/`: the copy compiled in, or, in dev builds, the
+/// A JSON file of `assets/data/`: the copy compiled in, or, in dev builds, the
 /// file on disk so edits show without a rebuild.
 pub fn artifact_json(name: &str, embedded: &'static str) -> std::borrow::Cow<'static, str> {
     if hot_reload_enabled() {
-        let path = format!("{}/../../artifacts/{name}", env!("CARGO_MANIFEST_DIR"));
+        let path = format!("{}/../../assets/data/{name}", env!("CARGO_MANIFEST_DIR"));
         if let Ok(text) = std::fs::read_to_string(path) {
             return text.into();
         }
@@ -42,8 +42,8 @@ fn source_path(path: &str) -> String {
 pub fn room_materials(room: &str) -> HashMap<String, MeshMaterial> {
     let all: HashMap<String, HashMap<String, serde_json::Value>> =
         serde_json::from_str(&artifact_json(
-            "room-materials.json",
-            include_str!("../../../artifacts/room-materials.json"),
+            "rooms/room-materials.json",
+            include_str!("../../../assets/data/rooms/room-materials.json"),
         ))
         .unwrap();
     let Some(nodes) = all.get(room) else {

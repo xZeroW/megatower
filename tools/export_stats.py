@@ -61,7 +61,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
-    target = ROOT / "artifacts/stats.json"
+    target = ROOT / "assets/data/content/stats.json"
     content = export()
     if args.check:
         if target.read_text() != content:

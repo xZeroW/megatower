@@ -113,10 +113,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
-    out = ROOT / "artifacts/room-scenes.json"
+    out = ROOT / "assets/data/rooms/room-scenes.json"
     data = json.dumps(export(), indent=1) + "\n"
     if args.check:
-        assert out.read_text() == data, "artifacts/room-scenes.json is stale"
+        assert out.read_text() == data, "assets/data/rooms/room-scenes.json is stale"
     else:
         out.write_text(data)
         print({k: (len(v["parts"]), len(v["lights"])) for k, v in json.loads(data).items()})

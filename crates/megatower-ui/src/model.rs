@@ -1,5 +1,5 @@
 //! UI-side state: resolved control rectangles, the presentation timeline and
-//! interaction state. Rectangles come from `artifacts/godot-layout.json`
+//! interaction state. Rectangles come from `assets/data/layouts/godot-layout.json`
 //! (Godot's own Container layout), never from hand-placed values, except the
 //! enemy widget whose size is measured from `enemy_container.tscn`
 //! (`custom_minimum_size = 76x146`) and the reference footage.

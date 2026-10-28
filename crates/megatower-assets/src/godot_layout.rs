@@ -21,50 +21,64 @@ pub struct Visual {
 }
 
 pub fn recovered_layout() -> Layout {
-    serde_json::from_str(include_str!("../../../artifacts/godot-layout.json"))
-        .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    serde_json::from_str(include_str!(
+        "../../../assets/data/layouts/godot-layout.json"
+    ))
+    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
 
 /// Godot-resolved layout of `esc_menu_screen.tscn` (640x360).
 pub fn esc_menu_layout() -> Layout {
-    serde_json::from_str(include_str!("../../../artifacts/esc-menu-layout.json"))
-        .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    serde_json::from_str(include_str!(
+        "../../../assets/data/layouts/esc-menu-layout.json"
+    ))
+    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
 
 /// Godot-resolved `options_screen.tscn` (640x360, Controls tab).
 pub fn options_layout() -> Layout {
-    serde_json::from_str(include_str!("../../../artifacts/options-layout.json"))
-        .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    serde_json::from_str(include_str!(
+        "../../../assets/data/layouts/options-layout.json"
+    ))
+    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
 
 /// Godot-resolved `library_state.tscn` (640x360, Items tab).
 pub fn library_layout() -> Layout {
-    serde_json::from_str(include_str!("../../../artifacts/library-layout.json"))
-        .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    serde_json::from_str(include_str!(
+        "../../../assets/data/layouts/library-layout.json"
+    ))
+    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
 
 /// `options_screen.tscn` staged on its video tab.
 pub fn options_video_layout() -> Layout {
-    serde_json::from_str(include_str!("../../../artifacts/options-video-layout.json"))
-        .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    serde_json::from_str(include_str!(
+        "../../../assets/data/layouts/options-video-layout.json"
+    ))
+    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
 
 /// `options_screen.tscn` staged on its audio tab.
 pub fn options_audio_layout() -> Layout {
-    serde_json::from_str(include_str!("../../../artifacts/options-audio-layout.json"))
-        .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    serde_json::from_str(include_str!(
+        "../../../assets/data/layouts/options-audio-layout.json"
+    ))
+    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
 
 /// `options_screen.tscn` staged on its misc tab.
 pub fn options_misc_layout() -> Layout {
-    serde_json::from_str(include_str!("../../../artifacts/options-misc-layout.json"))
-        .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    serde_json::from_str(include_str!(
+        "../../../assets/data/layouts/options-misc-layout.json"
+    ))
+    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
 
 /// `adventurer_profile_popup.tscn` as saved: its Records tab (640x360).
 pub fn adventurer_records_layout() -> Layout {
     serde_json::from_str(include_str!(
-        "../../../artifacts/adventurer-profile-layout.json"
+        "../../../assets/data/layouts/adventurer-profile-layout.json"
     ))
     .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
@@ -72,21 +86,23 @@ pub fn adventurer_records_layout() -> Layout {
 /// `adventurer_profile_popup.tscn` on its Overview tab (640x360).
 pub fn adventurer_overview_layout() -> Layout {
     serde_json::from_str(include_str!(
-        "../../../artifacts/adventurer-overview-layout.json"
+        "../../../assets/data/layouts/adventurer-overview-layout.json"
     ))
     .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
 
 /// Godot-resolved `profile_state.tscn` (640x360).
 pub fn profile_layout() -> Layout {
-    serde_json::from_str(include_str!("../../../artifacts/profile-layout.json"))
-        .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    serde_json::from_str(include_str!(
+        "../../../assets/data/layouts/profile-layout.json"
+    ))
+    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
 
 /// `library_state.tscn` staged with `current_tab = 1` (Bestiary).
 pub fn library_bestiary_layout() -> Layout {
     serde_json::from_str(include_str!(
-        "../../../artifacts/library-bestiary-layout.json"
+        "../../../assets/data/layouts/library-bestiary-layout.json"
     ))
     .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
@@ -94,7 +110,7 @@ pub fn library_bestiary_layout() -> Layout {
 /// `library_state.tscn` staged with `current_tab = 3` (Passives).
 pub fn library_passives_layout() -> Layout {
     serde_json::from_str(include_str!(
-        "../../../artifacts/library-passives-layout.json"
+        "../../../assets/data/layouts/library-passives-layout.json"
     ))
     .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
@@ -102,21 +118,25 @@ pub fn library_passives_layout() -> Layout {
 /// `library_state.tscn` staged with `current_tab = 2` (Synergies).
 pub fn library_synergies_layout() -> Layout {
     serde_json::from_str(include_str!(
-        "../../../artifacts/library-synergies-layout.json"
+        "../../../assets/data/layouts/library-synergies-layout.json"
     ))
     .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
 
 /// Godot-resolved `intro_state.tscn` (640x360).
 pub fn intro_layout() -> Layout {
-    serde_json::from_str(include_str!("../../../artifacts/intro-layout.json"))
-        .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    serde_json::from_str(include_str!(
+        "../../../assets/data/layouts/intro-layout.json"
+    ))
+    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
 
 /// Godot-resolved `main_menu_state.tscn` (640x360).
 pub fn main_menu_layout() -> Layout {
-    serde_json::from_str(include_str!("../../../artifacts/main-menu-layout.json"))
-        .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    serde_json::from_str(include_str!(
+        "../../../assets/data/layouts/main-menu-layout.json"
+    ))
+    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -157,7 +177,7 @@ pub fn enemy_container_layout() -> &'static EnemyLayout {
     static LAYOUT: std::sync::OnceLock<EnemyLayout> = std::sync::OnceLock::new();
     LAYOUT.get_or_init(|| {
         serde_json::from_str(include_str!(
-            "../../../artifacts/enemy-container-layout.json"
+            "../../../assets/data/layouts/enemy-container-layout.json"
         ))
         .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
     })
@@ -165,15 +185,19 @@ pub fn enemy_container_layout() -> &'static EnemyLayout {
 
 /// Godot-resolved layout of `death_screen.tscn` (640x360).
 pub fn death_screen_layout() -> Layout {
-    serde_json::from_str(include_str!("../../../artifacts/death-screen-layout.json"))
-        .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    serde_json::from_str(include_str!(
+        "../../../assets/data/layouts/death-screen-layout.json"
+    ))
+    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
 
 /// Godot-resolved layout of `battle_log_tab_container.tscn` placed in the
 /// inventory's 308x268 player area (y offset 26).
 pub fn battle_log_layout() -> Layout {
-    serde_json::from_str(include_str!("../../../artifacts/battle-log-layout.json"))
-        .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
+    serde_json::from_str(include_str!(
+        "../../../assets/data/layouts/battle-log-layout.json"
+    ))
+    .expect("regenerate layout with python3 tools/resolve_godot_ui.py")
 }
 
 #[cfg(test)]

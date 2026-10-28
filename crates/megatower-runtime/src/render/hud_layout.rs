@@ -1,5 +1,5 @@
 //! The static part of `gameplay_canvas_layer.tscn` as resolved by Godot
-//! (`artifacts/godot-layout.json`), the room render target inside its frame,
+//! (`assets/data/layouts/godot-layout.json`), the room render target inside its frame,
 //! and the 640x360 logical viewport scaling.
 
 use crate::render::{

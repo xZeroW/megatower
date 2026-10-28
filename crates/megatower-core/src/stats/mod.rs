@@ -137,7 +137,7 @@ pub struct StatCatalog {
 
 impl StatCatalog {
     pub fn recovered() -> Self {
-        serde_json::from_str(include_str!("../../../../artifacts/stats.json"))
+        serde_json::from_str(include_str!("../../../../assets/data/content/stats.json"))
             .expect("validated recovered stat catalog")
     }
 

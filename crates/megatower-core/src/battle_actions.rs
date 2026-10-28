@@ -54,8 +54,10 @@ pub fn action(id: BattleActionId) -> &'static BattleAction {
     static ACTIONS: OnceLock<Vec<BattleAction>> = OnceLock::new();
     ACTIONS
         .get_or_init(|| {
-            serde_json::from_str(include_str!("../../../artifacts/battle-actions.json"))
-                .expect("validated battle actions")
+            serde_json::from_str(include_str!(
+                "../../../assets/data/content/battle-actions.json"
+            ))
+            .expect("validated battle actions")
         })
         .iter()
         .find(|action| action.id == id)

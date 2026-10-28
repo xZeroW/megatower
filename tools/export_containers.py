@@ -29,7 +29,7 @@ if __name__ == "__main__":
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     content = export()
-    target = ROOT / "artifacts/item-containers.json"
+    target = ROOT / "assets/data/content/item-containers.json"
     if args.check:
         if target.read_text() != content:
             raise SystemExit("Container catalog is stale; run python3 tools/export_containers.py")

@@ -60,8 +60,10 @@ pub struct CharacterContent {
 
 impl CharacterContent {
     pub fn recovered() -> Self {
-        serde_json::from_str(include_str!("../../../../artifacts/character-content.json"))
-            .expect("validated recovered character content")
+        serde_json::from_str(include_str!(
+            "../../../../assets/data/content/character-content.json"
+        ))
+        .expect("validated recovered character content")
     }
     pub fn stat_sources(&self) -> StatSourceDefinitions {
         StatSourceDefinitions {

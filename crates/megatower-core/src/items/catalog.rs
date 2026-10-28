@@ -21,7 +21,7 @@ pub enum CatalogError {
 impl RawItemCatalog {
     pub fn recovered() -> Self {
         Self(
-            serde_json::from_str(include_str!("../../../../artifacts/items.json"))
+            serde_json::from_str(include_str!("../../../../assets/data/content/items.json"))
                 .expect("validated raw item definitions"),
         )
     }

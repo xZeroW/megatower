@@ -46,7 +46,7 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--check', action='store_true')
     a = p.parse_args()
-    target = ROOT / 'artifacts/adventurers.json'
+    target = ROOT / 'assets/data/content/adventurers.json'
     content = export()
     if a.check:
         if target.read_text() != content: raise SystemExit('Adventurers stale; run python3 tools/export_adventurers.py')

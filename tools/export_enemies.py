@@ -53,7 +53,7 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--check', action='store_true')
     a = p.parse_args()
-    target = ROOT / 'artifacts/enemies.json'
+    target = ROOT / 'assets/data/content/enemies.json'
     content = export()
     if a.check:
         if target.read_text() != content: raise SystemExit('Enemies stale; run python3 tools/export_enemies.py')

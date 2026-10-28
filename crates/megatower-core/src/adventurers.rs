@@ -43,8 +43,10 @@ pub struct AdventurerCatalog {
 
 impl AdventurerCatalog {
     pub fn recovered() -> Self {
-        let raw: Raw = serde_json::from_str(include_str!("../../../artifacts/adventurers.json"))
-            .expect("validated recovered adventurers");
+        let raw: Raw = serde_json::from_str(include_str!(
+            "../../../assets/data/content/adventurers.json"
+        ))
+        .expect("validated recovered adventurers");
         Self {
             list: raw.list.into_iter().map(Arc::new).collect(),
             starting: raw.starting,

@@ -40,7 +40,7 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check',action='store_true')
     args = parser.parse_args()
-    target = ROOT/'artifacts/items.json'
+    target = ROOT/'assets/data/content/items.json'
     content = export()
     if args.check:
         if target.read_text()!=content: raise SystemExit('Raw item catalog stale; run python3 tools/export_items.py')

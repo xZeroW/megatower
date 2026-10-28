@@ -112,8 +112,9 @@ pub struct BbScripts {
 
 impl BbScripts {
     pub fn recovered() -> Self {
-        let raw: Raw = serde_json::from_str(include_str!("../../../artifacts/bb-scripts.json"))
-            .expect("validated bb scripts");
+        let raw: Raw =
+            serde_json::from_str(include_str!("../../../assets/data/content/bb-scripts.json"))
+                .expect("validated bb scripts");
         Self {
             scripts: raw.scripts,
             unsupported: raw.unsupported,

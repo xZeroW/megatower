@@ -112,7 +112,7 @@ if __name__ == '__main__':
     parser.add_argument('--check',action='store_true')
     args = parser.parse_args()
     content = export()
-    path = ROOT/'artifacts/character-content.json'
+    path = ROOT/'assets/data/content/character-content.json'
     if args.check:
         if path.read_text() != content: raise SystemExit('Character content stale; run python3 tools/export_character_content.py')
     else:

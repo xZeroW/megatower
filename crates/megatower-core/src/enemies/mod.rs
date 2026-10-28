@@ -72,7 +72,7 @@ impl EnemyCatalog {
     /// unstable floor sort. Demo mode drops enemies above floor 15.
     pub fn recovered(demo: bool) -> Self {
         let raw: RawEnemies =
-            serde_json::from_str(include_str!("../../../../artifacts/enemies.json"))
+            serde_json::from_str(include_str!("../../../../assets/data/content/enemies.json"))
                 .expect("validated recovered enemies");
         let mut list: Vec<Arc<EnemyDefinition>> = raw
             .enemies
