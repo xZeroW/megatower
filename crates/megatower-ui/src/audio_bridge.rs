@@ -137,7 +137,12 @@ fn drive_wipe(
     let want = if died {
         megatower_runtime::render::wipe::ScreenWipe {
             region: [0.0, 0.0, 640.0, 360.0],
-            progress: super::compose::death_wipe_progress(ui),
+            // From 0.76 on the death screen draws its own full-screen
+            // background (above the HUD, which the wipe node would otherwise
+            // cover), so the wipe steps aside.
+            progress: Some(super::compose::death_wipe_progress(ui))
+                .filter(|p| *p < 0.76)
+                .unwrap_or(0.0),
         }
     } else if let Some(t) = ui.transition {
         let age = ((ui.time - t.at) / t.seconds.max(1e-3)).clamp(0.0, 1.0) as f32;

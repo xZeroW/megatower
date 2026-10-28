@@ -356,4 +356,25 @@ mod tests {
         }
         assert!(waves > 50, "the run reached battles");
     }
+
+    #[test]
+    fn dying_shows_the_death_screen() {
+        let rects = Rects::from_layout(&recovered_layout());
+        let mut game = Game::new(NewRun::default_for("Fren", 7));
+        game.battle_speed = 1.0;
+        let mut ui = UiState::default();
+        ui.screen = Screen::Playing;
+        frame::run_action(&mut game, &mut ui, |g| g.try_to_end_game());
+        for fx in ui.timeline.advance(60.0) {
+            frame::apply_event(&mut ui, &mut game, fx);
+        }
+        assert!(game.char_state(game.local()).died);
+        ui.time = 10.0;
+        let draws = compose(&mut game, &ui, &rects);
+        let texts = draws
+            .iter()
+            .filter(|d| matches!(d, crate::Draw::Text { .. }))
+            .count();
+        assert!(texts > 0);
+    }
 }
