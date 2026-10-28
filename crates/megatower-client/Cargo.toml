@@ -1,5 +1,5 @@
 [package]
-name = "megatower-game"
+name = "megatower-client"
 version.workspace = true
 edition.workspace = true
 

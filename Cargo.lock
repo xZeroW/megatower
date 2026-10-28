@@ -4085,7 +4085,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "megatower-game"
+name = "megatower-client"
 version = "0.1.0"
 dependencies = [
  "bevy",
