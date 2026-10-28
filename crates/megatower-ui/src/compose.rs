@@ -2409,8 +2409,7 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
             rects.portrait_border,
             megatower_core::definitions::BorderType::from_floor(
                 true,
-                ui.portrait_floor
-                    .unwrap_or_else(|| ui.profile.floor_record(&player.adventurer.name)),
+                ui.profile.floor_record(&player.adventurer.name),
             )
             .texture(),
         ));
