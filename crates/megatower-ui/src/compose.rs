@@ -595,18 +595,14 @@ fn item_draws_with(
         let outer = [rect[0], rect[1], 34.0, 34.0];
         match glow {
             Some((next, ratio)) => {
-                let c = ItemRarity::font_color(next).to_srgba();
                 let lerp = |a: f32, b: f32| a + (b - a) * ratio;
+                // The next rarity's own border texture, untinted: its fill is
+                // the original's olive green at the pulse's peak.
                 out.push(tinted(outer, &border, [1.0, 1.0, 1.0, 1.0 - ratio]));
                 out.push(tinted(
                     outer,
                     ItemRarity::texture(next),
-                    [
-                        lerp(1.0, c.red),
-                        lerp(1.0, c.green),
-                        lerp(1.0, c.blue),
-                        ratio,
-                    ],
+                    [1.0, 1.0, 1.0, ratio],
                 ));
                 let grey = lerp(1.0, 0.4);
                 out.push(tinted(inner, &icon, [grey, grey, grey, 1.0]));
