@@ -10,7 +10,6 @@ path = "src/lib.rs"
 [dependencies]
 megatower-core = { path = "../megatower-core" }
 serde.workspace = true
-serde_json.workspace = true
 ron.workspace = true
 
 [dev-dependencies]

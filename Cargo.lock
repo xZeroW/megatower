@@ -4072,7 +4072,6 @@ dependencies = [
  "megatower-core",
  "ron",
  "serde",
- "serde_json",
 ]
 
 [[package]]
