@@ -25,6 +25,10 @@ builds), exploring hidden labyrinth floors.
   (heal + refill flasks), Event, Gem Altar, Stairs/Boss. Start room is always empty.
 - Placement rules: Stairs far from start (BFS distance), at least one Rest and one
   Treasure per floor, Elites off the main path.
+- Current numbers (`game-sim/src/labyrinth`): side = 5 + (floor − 1) / 2, max 8; one
+  extra door per 8 rooms; elites = 1 + floor / 3; Rest, Treasure, Merchant and Gem Altar
+  once per floor; Shrine on half the floors; 1–2 Events; the rest are Fights. You can only
+  leave a room once it is resolved.
 - Later options: scouting items that reveal room types, a danger clock that makes fights
   harder the longer you wander.
 

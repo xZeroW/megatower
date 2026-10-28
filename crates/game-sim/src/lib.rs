@@ -4,9 +4,11 @@
 //! - [`tags`]: skill/support tags and the damage types they carry.
 //! - [`modifier`]: stats, modifiers (flat / increased / more) and their sums.
 //! - [`damage`]: the hit pipeline (roll, conversion, scaling, crit, mitigation).
+//! - [`labyrinth`]: floors of hidden rooms, their generation and movement.
 //! - [`rng`]: the seeded random stream every roll goes through.
 
 pub mod damage;
+pub mod labyrinth;
 pub mod modifier;
 pub mod rng;
 pub mod tags;
