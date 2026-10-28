@@ -3,7 +3,7 @@
 ## Run
 
 ```bash
-cargo run -p megatower-game
+cargo run -p megatower-client
 ```
 
 Settings are saved to `~/.config/io.github.xzerow.megatower/settings.toml`
@@ -13,7 +13,7 @@ Settings are saved to `~/.config/io.github.xzerow.megatower/settings.toml`
 ## QA
 
 ```bash
-cargo run -p megatower-game --features dev
+cargo run -p megatower-client --features dev
 ```
 
 enables the Bevy Remote Protocol with `bevy_brp_extras` on port 15702 (screenshots,
@@ -24,15 +24,15 @@ curl -s -X POST http://127.0.0.1:15702 -H 'content-type: application/json' \
   -d '{"jsonrpc":"2.0","id":1,"method":"brp_extras/send_keys","params":{"keys":["Space"]}}'
 ```
 
-The `MEGALOOT_*` variables in `apps/megatower-game/src/dev/script.rs` drive scripted runs and screenshots.
+The `MEGALOOT_*` variables in `crates/megatower-client/src/dev/script.rs` drive scripted runs and screenshots.
 `tools/qa-shot.sh OUT.png [VAR=value ...]` builds, runs the game once with them, saves the screenshot and exits (`MEGALOOT_CAPTURE_FRAMES=n` also writes `artifacts/frames/`).
 
 ## Architecture
 
-`apps/megatower-game` is the thin binary: `DefaultPlugins`, every plugin
+`crates/megatower-client` is the thin binary: `DefaultPlugins`, every plugin
 below, and the env-driven QA tooling (`src/dev`). The libraries sit under
 `crates/`, and dependencies only point down (enforced by
-`apps/megatower-game/tests/architecture.rs`).
+`crates/megatower-client/tests/architecture.rs`).
 
 | Crate | Role |
 | --- | --- |
