@@ -358,7 +358,7 @@ fn push_effect(
     *x += 16.0;
     if let Some(amount) = amount {
         out.push(text(
-            [*x + 3.0, y + 1.0, 36.0, 13.0],
+            [*x + 3.0, y - 1.0, 36.0, 13.0],
             amount.clone(),
             color,
             Align::Left,
