@@ -15,10 +15,17 @@ pub struct MeshMaterial {
     pub uv_scale: Option<f32>,
 }
 
-/// A JSON file of `artifacts/`: the copy compiled in, or, with
-/// `MEGALOOT_HOT_ROOMS` set, the file on disk so edits show without a rebuild.
+/// Whether room files are read from disk and watched for edits: in debug
+/// (dev) builds, unless `MEGALOOT_HOT_ROOMS=0`. Release builds use the copies
+/// compiled in.
+pub fn hot_reload_enabled() -> bool {
+    cfg!(debug_assertions) && std::env::var_os("MEGALOOT_HOT_ROOMS").is_none_or(|v| v != "0")
+}
+
+/// A JSON file of `artifacts/`: the copy compiled in, or, in dev builds, the
+/// file on disk so edits show without a rebuild.
 pub fn artifact_json(name: &str, embedded: &'static str) -> std::borrow::Cow<'static, str> {
-    if std::env::var_os("MEGALOOT_HOT_ROOMS").is_some() {
+    if hot_reload_enabled() {
         let path = format!("{}/../../artifacts/{name}", env!("CARGO_MANIFEST_DIR"));
         if let Ok(text) = std::fs::read_to_string(path) {
             return text.into();

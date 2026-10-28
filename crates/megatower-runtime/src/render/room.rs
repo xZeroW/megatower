@@ -321,7 +321,7 @@ fn drive_room_camera(
     }
 }
 
-/// Files watched by `MEGALOOT_HOT_ROOMS=1`: the baked rooms and their
+/// Files watched in dev builds (`MEGALOOT_HOT_ROOMS=0` turns it off): the baked rooms and their
 /// sidecar JSON. Editing and re-exporting a room shows in the running game.
 #[derive(Default)]
 struct HotReload {
@@ -353,7 +353,8 @@ fn hot_reload_rooms(
 ) {
     if !state.started {
         state.started = true;
-        state.enabled = std::env::var_os("MEGALOOT_HOT_ROOMS").is_some();
+        state.enabled = megatower_assets::room_materials::hot_reload_enabled()
+            && std::path::Path::new(ROOMS_DIR).is_dir();
         if !state.enabled {
             return;
         }
