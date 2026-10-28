@@ -15,9 +15,17 @@ pub fn contains(rect: R, x: f32, y: f32) -> bool {
     x >= rect[0] && y >= rect[1] && x < rect[0] + rect[2] && y < rect[1] + rect[3]
 }
 
+/// The three tab buttons at the top of the left column.
+pub fn is_tab_button(path: &str) -> bool {
+    ["MainTabButton", "StatsButton", "BattleLogButton"]
+        .iter()
+        .any(|name| path.contains(&format!("TopHBoxContainer/{name}")))
+}
+
 /// Paths of the controls that belong to the HUD's hover-reactive buttons.
 pub fn is_hud_button(path: &str) -> bool {
-    path.contains("MarketRefreshButton")
+    is_tab_button(path)
+        || path.contains("MarketRefreshButton")
         || path.contains("/MarketButton")
         || path.contains("MainMarginContainer/Control/OptionsButton")
 }

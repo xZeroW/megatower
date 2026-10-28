@@ -2294,6 +2294,47 @@ fn enemy_visuals(
 }
 
 /// Everything above the static scaffold.
+/// `TabButton`: the dark `BackPanel` always, the grey `PressedPanel` over it on
+/// the tabs that are not the current one, and a dark `HoverPanel` on such a
+/// tab under the pointer. The icon is dark on grey and grey on dark.
+fn draw_tabs(ui: &UiState, rects: &Rects, out: &mut Vec<Draw>) {
+    let current = match ui.tab {
+        Tab::Profile => 0,
+        Tab::Stats => 1,
+        Tab::Log => 2,
+    };
+    let names = ["MainTabButton", "StatsButton", "BattleLogButton"];
+    for (i, name) in names.iter().enumerate() {
+        let part = |suffix: &str| {
+            rects
+                .buttons
+                .iter()
+                .find(|v| v.path.ends_with(&format!("{name}/{suffix}")))
+        };
+        let (Some(back), Some(icon)) = (part("BackPanel"), part("IconTextureRect")) else {
+            continue;
+        };
+        let pressed = i != current;
+        let (hovered, _) = super::screens::pointer_over(back.rect);
+        out.push(nine_patch(back.rect, back, palette(1)));
+        if pressed {
+            out.push(nine_patch(back.rect, back, palette(2)));
+            if hovered {
+                out.push(nine_patch(back.rect, back, palette(1)));
+            }
+        }
+        let flipped = pressed && !hovered;
+        out.push(Draw::Image {
+            rect: icon.rect,
+            path: trim(icon.texture.as_deref().unwrap_or_default()),
+            region: icon.region,
+            tint: palette(if flipped { 1 } else { 2 }),
+            slice: None,
+            flip_x: false,
+        });
+    }
+}
+
 pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     use megatower_core::game_mode::Room;
     let mut out: Vec<Draw> = Vec::new();
@@ -2304,7 +2345,11 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     let busy = ui.timeline.busy();
 
     // The market, market refresh and options buttons.
-    for v in &rects.buttons {
+    for v in rects
+        .buttons
+        .iter()
+        .filter(|v| !super::model::is_tab_button(&v.path))
+    {
         if v.kind == "ColorRect" {
             if v.palette.is_some() {
                 out.push(Draw::Fill {
@@ -2322,6 +2367,8 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
             &[],
         ));
     }
+
+    draw_tabs(ui, rects, &mut out);
 
     // ---- left: profile ----
     let profile_tab = ui.tab == Tab::Profile;
@@ -2458,12 +2505,13 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     } else {
         format!("{} |{}", game.memory.floor_number + 1, last)
     };
-    out.push(text(rects.floor_label, floor_text, palette(8), Align::Left));
+    // The labels use the border colour, like the icons beside them.
+    out.push(text(rects.floor_label, floor_text, palette(2), Align::Left));
     let total = game.script().room_count(game.memory.floor_number);
     out.push(text(
         rects.rooms_label,
         format!("{}", total - game.memory.room_idx.max(0)),
-        palette(8),
+        palette(2),
         Align::Left,
     ));
 
@@ -2626,7 +2674,6 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         }
         Tab::Profile => {}
     }
-    super::panels::draw_tab_bar(ui, rects, &mut out);
     // Loot stash count.
     let stash = game
         .world

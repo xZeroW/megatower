@@ -144,19 +144,6 @@ fn rects_texture(rects: &Rects) -> String {
         .to_owned()
 }
 
-pub fn draw_tab_bar(ui: &UiState, rects: &Rects, out: &mut Vec<Draw>) {
-    let active = match ui.tab {
-        Tab::Profile => 0,
-        Tab::Stats => 1,
-        Tab::Log => 2,
-    };
-    let r = rects.tabs[active];
-    out.push(Draw::Fill {
-        rect: [r[0], r[1] + r[3] - 2.0, r[2], 2.0],
-        color: palette(8),
-    });
-}
-
 pub fn draw_stash(game: &Game, ui: &UiState, rects: &Rects, out: &mut Vec<Draw>) {
     if !ui.stash_open {
         return;
