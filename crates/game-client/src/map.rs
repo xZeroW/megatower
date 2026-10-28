@@ -1,9 +1,10 @@
 //! The map screen: the floor grid on the left, the room panel on the right.
-//! Rebuilt from [`Run`] whenever it changes.
 
 use crate::run::{Run, room_name};
+use crate::ui::{ACCENT, TEXT, TEXT_DIM, panel, text};
 use bevy::picking::events::PointerClick;
 use bevy::prelude::*;
+use game_sim::content;
 use game_sim::labyrinth::{Dir, Floor, Pos, RoomKind, Visibility};
 
 const CELL: f32 = 64.0;
@@ -14,34 +15,6 @@ const HIDDEN: Color = Color::srgb(0.09, 0.09, 0.11);
 const SEEN: Color = Color::srgb(0.2, 0.2, 0.24);
 const DOOR_COLOR: Color = Color::srgb(0.55, 0.5, 0.42);
 const CURRENT_BORDER: Color = Color::WHITE;
-const EXIT_BORDER: Color = Color::srgb(0.95, 0.8, 0.3);
-const TEXT: Color = Color::srgb(0.92, 0.9, 0.85);
-const TEXT_DIM: Color = Color::srgb(0.6, 0.58, 0.55);
-
-pub struct MapPlugin;
-
-impl Plugin for MapPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup)
-            .add_systems(Update, redraw.run_if(resource_changed::<Run>));
-    }
-}
-
-#[derive(Component)]
-struct ScreenRoot;
-
-fn setup(mut commands: Commands) {
-    commands.spawn(Camera2d);
-    commands.spawn((
-        ScreenRoot,
-        Node {
-            width: Val::Percent(100.0),
-            height: Val::Percent(100.0),
-            flex_direction: FlexDirection::Row,
-            ..default()
-        },
-    ));
-}
 
 fn kind_color(kind: RoomKind) -> Color {
     match kind {
@@ -74,21 +47,9 @@ fn label_color(fill: Color) -> Color {
     }
 }
 
-fn text(value: impl Into<String>, size: f32, color: Color) -> impl Bundle {
-    (
-        Text::new(value),
-        TextFont {
-            font_size: FontSize::Px(size),
-            ..default()
-        },
-        TextColor(color),
-    )
-}
-
-fn redraw(mut commands: Commands, run: Res<Run>, root: Single<Entity, With<ScreenRoot>>) {
-    let root = *root;
-    commands.entity(root).despawn_related::<Children>();
-    let map = spawn_map(&mut commands, &run.floor);
+/// The grid on the left, the room panel on the right.
+pub fn spawn(commands: &mut Commands, run: &Run) -> Vec<Entity> {
+    let map = spawn_map(commands, &run.floor);
     let map_area = commands
         .spawn(Node {
             flex_grow: 1.0,
@@ -98,8 +59,7 @@ fn redraw(mut commands: Commands, run: Res<Run>, root: Single<Entity, With<Scree
         })
         .add_child(map)
         .id();
-    let panel = spawn_panel(&mut commands, &run);
-    commands.entity(root).add_children(&[map_area, panel]);
+    vec![map_area, spawn_panel(commands, run)]
 }
 
 fn offset(i: u8) -> f32 {
@@ -175,7 +135,7 @@ fn spawn_map(commands: &mut Commands, floor: &Floor) -> Entity {
         let border = if pos == floor.current {
             Some(CURRENT_BORDER)
         } else if current_cleared && exits.contains(&pos) {
-            Some(EXIT_BORDER)
+            Some(ACCENT)
         } else {
             None
         };
@@ -211,49 +171,51 @@ fn spawn_panel(commands: &mut Commands, run: &Run) -> Entity {
     } else {
         "unresolved"
     };
+    let hero = &run.hero;
     let mut lines = vec![
-        text(format!("Floor {}", floor.number), 28.0, TEXT),
-        text(
+        (format!("Floor {}", floor.number), 28.0, TEXT),
+        (
             format!("{} room ({status})", room_name(room.kind)),
             18.0,
             TEXT,
         ),
-        text(run.message.clone(), 16.0, EXIT_BORDER),
+        (
+            format!(
+                "Life {:.0}/{:.0}   Mana {:.0}/{:.0}",
+                hero.life, hero.max_life, hero.mana, hero.max_mana
+            ),
+            16.0,
+            TEXT,
+        ),
+        (gem_line(run), 16.0, TEXT_DIM),
+        (run.message.clone(), 16.0, ACCENT),
     ];
     if let RoomKind::GemAltar { uses_left } = room.kind {
-        lines.push(text(format!("Altar uses left: {uses_left}"), 16.0, TEXT));
+        lines.push((format!("Altar uses left: {uses_left}"), 16.0, TEXT));
     }
-    let hints = [
-        "Arrows / WASD or click: move",
-        "Space: resolve room",
-        "Enter: descend (on resolved stairs)",
-    ];
-    let panel = commands
-        .spawn((
-            Node {
-                width: Val::Px(360.0),
-                padding: UiRect::all(Val::Px(24.0)),
-                flex_direction: FlexDirection::Column,
-                row_gap: Val::Px(12.0),
-                ..default()
-            },
-            BackgroundColor(Color::srgb(0.1, 0.1, 0.13)),
-        ))
-        .id();
-    for line in lines {
-        let child = commands.spawn(line).id();
-        commands.entity(panel).add_child(child);
-    }
-    let spacer = commands
-        .spawn(Node {
-            flex_grow: 1.0,
-            ..default()
+    panel(
+        commands,
+        lines,
+        &[
+            "Arrows / WASD or click: move",
+            "Space: resolve room",
+            "Enter: descend (on resolved stairs)",
+        ],
+    )
+}
+
+fn gem_line(run: &Run) -> String {
+    let gems = &content::get().gems;
+    let names: Vec<&str> = run
+        .weapon
+        .gems
+        .iter()
+        .map(|g| {
+            gems.active(&g.id)
+                .map(|d| d.name.as_str())
+                .or_else(|| gems.support(&g.id).map(|d| d.name.as_str()))
+                .unwrap_or(&g.id)
         })
-        .id();
-    commands.entity(panel).add_child(spacer);
-    for hint in hints {
-        let child = commands.spawn(text(hint, 14.0, TEXT_DIM)).id();
-        commands.entity(panel).add_child(child);
-    }
-    panel
+        .collect();
+    format!("Weapon ({} links): {}", run.weapon.links, names.join(" + "))
 }

@@ -1,10 +1,13 @@
-//! The new game's client. For now: walk a labyrinth floor (phase 2 of
-//! `design/GAME-DESIGN.md`). Rooms resolve with a key press until combat,
-//! shops and events exist.
+//! The new game's client: pick a starting gem, explore labyrinth floors and
+//! fight what the rooms hold (`design/GAME-DESIGN.md`). Rooms without a fight
+//! resolve with a key press until shops, shrines and events exist.
 
+mod combat;
 mod dev;
 mod map;
+mod menus;
 mod run;
+mod ui;
 
 use bevy::prelude::*;
 
@@ -26,7 +29,7 @@ fn main() {
                     ..default()
                 }),
             run::RunPlugin,
-            map::MapPlugin,
+            ui::UiPlugin,
             dev::DevPlugin,
         ))
         .run();

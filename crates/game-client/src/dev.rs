@@ -1,9 +1,10 @@
 //! Scripted runs for QA (`tools/game-shot.sh`):
 //!
 //! - `GAME_SEED`, `GAME_FLOOR`: which floor to generate (see `run.rs`).
-//! - `GAME_MOVES`: commands applied at startup: `N`/`E`/`S`/`W` move,
-//!   `.` resolves the room, `>` descends, `*` walks to the stairs resolving
-//!   every room on the way.
+//! - `GAME_MOVES`: commands applied at startup: `1`-`4` pick a starter gem
+//!   or use a skill, `N`/`E`/`S`/`W` move, `.` resolves the room, `>`
+//!   descends, `_` passes a combat turn, `*` walks to the stairs without
+//!   fighting and enters them.
 //! - `GAME_CAPTURE=<path>`: save a screenshot there once the UI has settled,
 //!   then exit.
 
@@ -34,6 +35,15 @@ fn apply_moves(mut run: ResMut<Run>) {
             'S' => run.step(Dir::South),
             'W' => run.step(Dir::West),
             '.' => run.resolve(),
+            '_' => run.combat_act(game_sim::combat::HeroAction::Pass),
+            d @ '1'..='4' => {
+                let i = d as usize - '1' as usize;
+                if run.mode == crate::run::Mode::Combat {
+                    run.use_skill(i);
+                } else {
+                    run.pick_starter(i);
+                }
+            }
             '>' => run.descend(),
             '*' => run.walk_to_stairs(),
             _ => {}
