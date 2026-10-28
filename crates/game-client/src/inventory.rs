@@ -3,17 +3,13 @@
 
 use crate::describe::{gem_color, item_color, mod_lines};
 use crate::run::{Run, Selection, gem_name};
-use crate::ui::{ACCENT, CARD, PANEL, TEXT, TEXT_DIM, text};
-use bevy::picking::events::PointerClick;
+use crate::ui::{ACCENT, PANEL, TEXT, TEXT_DIM, button, text};
 use bevy::prelude::*;
 use game_sim::character::{EquipSlot, INVENTORY_SIZE, Loot};
 use game_sim::content;
 use game_sim::gems::{Gem, Targeting};
 use game_sim::items::{Item, Slot};
 use game_sim::tags::Tag;
-
-const SELECTED: Color = ACCENT;
-const UNSELECTED: Color = Color::srgb(0.25, 0.25, 0.3);
 
 pub fn spawn(commands: &mut Commands, run: &Run) -> Vec<Entity> {
     vec![
@@ -46,36 +42,6 @@ fn column(commands: &mut Commands, title: String) -> Entity {
             ..default()
         })
         .add_child(title)
-        .id()
-}
-
-/// A clickable box; `on_click` runs against the run.
-fn button(
-    commands: &mut Commands,
-    width: Val,
-    selected: bool,
-    lines: Vec<(String, f32, Color)>,
-    on_click: impl Fn(&mut Run) + Send + Sync + 'static,
-) -> Entity {
-    let children: Vec<Entity> = lines
-        .into_iter()
-        .map(|(value, size, color)| commands.spawn(text(value, size, color)).id())
-        .collect();
-    commands
-        .spawn((
-            Node {
-                width,
-                padding: UiRect::axes(Val::Px(10.0), Val::Px(6.0)),
-                border: UiRect::all(Val::Px(2.0)),
-                flex_direction: FlexDirection::Column,
-                row_gap: Val::Px(2.0),
-                ..default()
-            },
-            BackgroundColor(CARD),
-            BorderColor::all(if selected { SELECTED } else { UNSELECTED }),
-        ))
-        .add_children(&children)
-        .observe(move |_: On<PointerClick>, mut run: ResMut<Run>| on_click(&mut run))
         .id()
 }
 

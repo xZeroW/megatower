@@ -1,13 +1,16 @@
 //! The run in progress and the player's commands on it.
 
 use bevy::prelude::*;
-use game_sim::character::{Character, EquipSlot, GearError, Loot};
+use game_sim::character::{Character, EquipSlot, GearError, GemSpot, Loot};
 use game_sim::combat::{Battle, HeroAction, Outcome, encounter};
 use game_sim::content;
 use game_sim::labyrinth::{self, Dir, Floor, MoveError, Pos, RoomKind};
 use game_sim::loot::{room_loot, starting_character};
+use game_sim::merchant::{Shop, ShopError, sell as sell_gem};
 use game_sim::passives::{PassiveError, enemy_xp};
 use game_sim::rng::Rng;
+use game_sim::rooms::{battle_gold, resolve_event, shrine_offers, treasure_gold};
+use std::collections::HashMap;
 
 pub struct RunPlugin;
 
@@ -43,6 +46,15 @@ pub enum Mode {
     Combat,
     Inventory,
     Tree,
+    Shop,
+    /// Boon ids on offer.
+    Shrine(Vec<String>),
+    /// The event, and what happened once a choice is made.
+    Event {
+        id: String,
+        outcome: Option<Vec<String>>,
+    },
+    Altar,
     Dead,
 }
 
@@ -64,6 +76,8 @@ pub struct Run {
     pub selection: Option<Selection>,
     /// Node picked on the passive tree screen.
     pub tree_selection: Option<String>,
+    /// Merchant stock per room on this floor.
+    pub shops: HashMap<Pos, Shop>,
     pub battle: Option<Battle>,
     /// The enemy the hero's next skill aims at.
     pub target: usize,
@@ -104,6 +118,7 @@ fn gear_error(e: GearError) -> &'static str {
         GearError::NoFreeSocket => "No free linked socket.",
         GearError::TwoActives => "A linked group takes one skill gem.",
         GearError::InventoryFull => "The bag is full.",
+        GearError::MaxRarity => "It is already Epic.",
     }
 }
 
@@ -142,6 +157,7 @@ impl Run {
             character: Character::new([]),
             selection: None,
             tree_selection: None,
+            shops: HashMap::new(),
             battle: None,
             target: 0,
         }
@@ -176,11 +192,18 @@ impl Run {
         }
         match self.floor.move_to(dir) {
             Ok(entered) if !self.floor.current_room().cleared => {
-                self.message = format!("You enter a {} room.", room_name(entered.kind));
+                let name = room_name(entered.kind);
+                let article = if name.starts_with(['A', 'E', 'I', 'O', 'U']) {
+                    "an"
+                } else {
+                    "a"
+                };
+                self.message = format!("You enter {article} {name} room.");
                 self.enter_room(entered.kind);
             }
             Ok(entered) => {
                 self.message = format!("Back in the {} room.", room_name(entered.kind));
+                self.revisit(entered.kind);
             }
             Err(MoveError::NoDoor) => self.message = "No door that way.".into(),
             Err(MoveError::RoomUnresolved) => {
@@ -203,8 +226,55 @@ impl Run {
 
     /// Starts the room's fight, if it has one.
     fn enter_room(&mut self, kind: RoomKind) {
-        let defs = &content::get().enemies;
-        let Some(enemies) = encounter(kind, self.floor.number, defs, &mut self.rng) else {
+        let c = content::get();
+        let floor = self.floor.number;
+        match kind {
+            RoomKind::Merchant => {
+                self.floor.resolve_current();
+                self.open_shop();
+                return;
+            }
+            RoomKind::GemAltar { .. } => {
+                self.floor.resolve_current();
+                self.mode = Mode::Altar;
+                return;
+            }
+            RoomKind::Shrine => {
+                let offers = shrine_offers(c, &self.character, &mut self.rng);
+                self.mode = Mode::Shrine(offers);
+                return;
+            }
+            RoomKind::Event => {
+                let event = self.rng.pick(&c.events).expect("event content");
+                self.mode = Mode::Event {
+                    id: event.id.clone(),
+                    outcome: None,
+                };
+                return;
+            }
+            RoomKind::Rest => {
+                self.floor.resolve_current();
+                self.character.heal_full();
+                self.message = "You rest and recover fully.".into();
+                return;
+            }
+            RoomKind::Treasure => {
+                self.floor.resolve_current();
+                let gold = treasure_gold(floor);
+                self.character.gold += gold;
+                self.message = self.take_loot(kind, &format!("The chest holds {gold} gold."));
+                return;
+            }
+            RoomKind::Stairs { boss: false } => {
+                self.floor.resolve_current();
+                self.message = "Stairs lead down. Press Enter to descend.".into();
+                return;
+            }
+            _ => {}
+        }
+        let defs = &c.enemies;
+        let Some(enemies) = encounter(kind, floor, defs, &mut self.rng) else {
+            self.floor.resolve_current();
             return;
         };
         let skills = self.character.skills(&content::get().gems);
@@ -215,7 +285,161 @@ impl Run {
         self.mode = Mode::Combat;
     }
 
-    /// Non-combat rooms until shops, shrines and events exist.
+    /// Rooms that can be used again when walking back into them.
+    fn revisit(&mut self, kind: RoomKind) {
+        match kind {
+            RoomKind::Merchant => self.open_shop(),
+            RoomKind::GemAltar { uses_left } if uses_left > 0 => self.mode = Mode::Altar,
+            _ => {}
+        }
+    }
+
+    fn open_shop(&mut self) {
+        let pos = self.floor.current;
+        let floor = self.floor.number;
+        let rng = &mut self.rng;
+        self.shops
+            .entry(pos)
+            .or_insert_with(|| Shop::new(floor, &content::get().gems, rng));
+        self.mode = Mode::Shop;
+    }
+
+    pub fn shop(&self) -> Option<&Shop> {
+        self.shops.get(&self.floor.current)
+    }
+
+    fn shop_result<T>(&mut self, result: Result<T, ShopError>, done: impl FnOnce(T) -> String) {
+        self.message = match result {
+            Ok(v) => done(v),
+            Err(ShopError::Empty) => "Nothing there.".into(),
+            Err(ShopError::NotEnoughGold) => "Not enough gold.".into(),
+            Err(ShopError::BagFull) => "The bag is full.".into(),
+            Err(ShopError::NotAGem) => "The merchant only trades in gems.".into(),
+        };
+    }
+
+    pub fn buy(&mut self, index: usize) {
+        let gems = &content::get().gems;
+        let Some(shop) = self.shops.get_mut(&self.floor.current) else {
+            return;
+        };
+        let result = shop.buy(index, &mut self.character, gems);
+        self.shop_result(result, |g| format!("Bought {}.", gem_name(&g.id)));
+    }
+
+    pub fn toggle_lock(&mut self, index: usize) {
+        if let Some(shop) = self.shops.get_mut(&self.floor.current) {
+            shop.toggle_lock(index);
+        }
+    }
+
+    pub fn refresh_shop(&mut self) {
+        let gems = &content::get().gems;
+        let Some(shop) = self.shops.get_mut(&self.floor.current) else {
+            return;
+        };
+        let result = shop.refresh(&mut self.character, gems, &mut self.rng);
+        self.shop_result(result, |()| "New stock.".into());
+    }
+
+    pub fn sell(&mut self, bag_index: usize) {
+        let gems = &content::get().gems;
+        let name = match self.character.inventory.get(bag_index) {
+            Some(loot) => loot_name(loot),
+            None => return,
+        };
+        let result = sell_gem(&mut self.character, bag_index, gems);
+        self.shop_result(result, |gold| format!("Sold {name} for {gold} gold."));
+    }
+
+    pub fn take_boon(&mut self, index: usize) {
+        let Mode::Shrine(offers) = &self.mode else {
+            return;
+        };
+        let Some(id) = offers.get(index).cloned() else {
+            return;
+        };
+        let name = content::get()
+            .boons
+            .iter()
+            .find(|b| b.id == id)
+            .map_or(id.clone(), |b| b.name.clone());
+        self.character.boons.push(id);
+        self.floor.resolve_current();
+        self.mode = Mode::Map;
+        self.message = format!("{name} received.");
+    }
+
+    pub fn choose(&mut self, index: usize) {
+        let Mode::Event { id, outcome: None } = &self.mode else {
+            return;
+        };
+        let c = content::get();
+        let Some(choice) = c
+            .events
+            .iter()
+            .find(|e| &e.id == id)
+            .and_then(|e| e.choices.get(index))
+        else {
+            return;
+        };
+        let id = id.clone();
+        let lines = resolve_event(
+            choice,
+            &mut self.character,
+            self.floor.number,
+            c,
+            &mut self.rng,
+        );
+        self.message.clear();
+        self.floor.resolve_current();
+        self.mode = Mode::Event {
+            id,
+            outcome: Some(lines),
+        };
+    }
+
+    pub fn upgrade_at_altar(&mut self, spot: GemSpot) {
+        let RoomKind::GemAltar { uses_left } = self.floor.current_room().kind else {
+            return;
+        };
+        if uses_left == 0 {
+            self.message = "The altar is spent.".into();
+            return;
+        }
+        let name = self
+            .character
+            .gem(spot)
+            .map(|g| gem_name(&g.id))
+            .unwrap_or_default();
+        match self.character.upgrade_gem(spot) {
+            Ok(rarity) => {
+                self.floor.use_altar();
+                self.message = format!("{name} is now {rarity:?}.");
+            }
+            Err(GearError::MaxRarity) => self.message = format!("{name} is already Epic."),
+            Err(e) => self.message = gear_error(e).into(),
+        }
+    }
+
+    /// Back to the map from a room screen; a shrine left without a boon is
+    /// still done with.
+    pub fn leave_room(&mut self) {
+        match &self.mode {
+            Mode::Shop | Mode::Altar => {}
+            Mode::Shrine(_) => {
+                self.floor.resolve_current();
+                self.message = "You leave the shrine untouched.".into();
+            }
+            Mode::Event {
+                outcome: Some(_), ..
+            } => {}
+            _ => return,
+        }
+        self.mode = Mode::Map;
+    }
+
+    /// Kept for rooms that still need a key press (none at the moment).
     pub fn resolve(&mut self) {
         if self.mode != Mode::Map {
             return;
@@ -247,6 +471,7 @@ impl Run {
         }
         let number = self.floor.number + 1;
         self.floor = labyrinth::generate(number, &mut self.rng);
+        self.shops.clear();
         self.message = format!("Floor {number}. Find the stairs.");
     }
 
@@ -303,11 +528,13 @@ impl Run {
                     .iter()
                     .map(|e| enemy_xp(floor, e.elite, e.boss))
                     .sum();
+                let gold = battle_gold(&battle.enemies, floor, &mut self.rng);
                 self.character.life = battle.into_hero().life;
+                self.character.gold += gold;
                 self.floor.resolve_current();
                 self.mode = Mode::Map;
                 let gained = self.character.progress.gain_xp(xp);
-                let mut intro = format!("Victory, +{xp} XP.");
+                let mut intro = format!("Victory, +{xp} XP, +{gold} gold.");
                 if gained > 0 {
                     intro.push_str(&format!(
                         " Level {}! Press P to spend passive points.",
@@ -453,7 +680,23 @@ impl Run {
 
     /// QA: walks to the stairs without fighting, then enters them for real.
     pub fn walk_to_stairs(&mut self) {
-        let path = self.floor.path(self.floor.current, self.floor.stairs());
+        let stairs = self.floor.stairs();
+        self.walk_to(stairs);
+    }
+
+    /// QA: walks to the first room of a kind without fighting, then enters it.
+    pub fn walk_to_kind(&mut self, matches: impl Fn(RoomKind) -> bool) {
+        let target = self
+            .floor
+            .positions()
+            .find(|&p| matches(self.floor.room(p).kind));
+        if let Some(pos) = target {
+            self.walk_to(pos);
+        }
+    }
+
+    fn walk_to(&mut self, to: Pos) {
+        let path = self.floor.path(self.floor.current, to);
         let Some((&last, steps)) = path[1..].split_last() else {
             return;
         };
@@ -537,6 +780,28 @@ fn keyboard(keys: Res<ButtonInput<KeyCode>>, mut run: ResMut<Run>) {
             }
         }
         Mode::Inventory => {}
+        Mode::Shop | Mode::Altar => {
+            if keys.just_pressed(KeyCode::Escape) {
+                run.leave_room();
+            }
+        }
+        Mode::Shrine(_) => {
+            if let Some(i) = number {
+                run.take_boon(i);
+            } else if keys.just_pressed(KeyCode::Escape) {
+                run.leave_room();
+            }
+        }
+        Mode::Event { outcome: None, .. } => {
+            if let Some(i) = number {
+                run.choose(i);
+            }
+        }
+        Mode::Event { .. } => {
+            if keys.any_just_pressed([KeyCode::Escape, KeyCode::Enter, KeyCode::Space]) {
+                run.leave_room();
+            }
+        }
         Mode::Tree => {
             if keys.just_pressed(KeyCode::Enter) {
                 run.allocate_selected();

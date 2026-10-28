@@ -2,7 +2,8 @@
 //! changes, with the screen chosen by the run's mode.
 
 use crate::run::{Mode, Run};
-use crate::{combat, inventory, map, menus, tree};
+use crate::{combat, inventory, map, menus, rooms, tree};
+use bevy::picking::events::PointerClick;
 use bevy::prelude::*;
 
 pub const TEXT: Color = Color::srgb(0.92, 0.9, 0.85);
@@ -45,6 +46,10 @@ fn redraw(mut commands: Commands, run: Res<Run>, root: Single<Entity, With<Scree
         Mode::Combat => combat::spawn(&mut commands, &run),
         Mode::Inventory => inventory::spawn(&mut commands, &run),
         Mode::Tree => tree::spawn(&mut commands, &run),
+        Mode::Shop => rooms::spawn_shop(&mut commands, &run),
+        Mode::Shrine(_) => rooms::spawn_shrine(&mut commands, &run),
+        Mode::Event { .. } => rooms::spawn_event(&mut commands, &run),
+        Mode::Altar => rooms::spawn_altar(&mut commands, &run),
         Mode::Dead => menus::spawn_dead(&mut commands, &run),
     };
     commands.entity(root).add_children(&children);
@@ -131,5 +136,45 @@ pub fn bar(commands: &mut Commands, fraction: f32, color: Color) -> Entity {
             BackgroundColor(Color::srgb(0.06, 0.06, 0.08)),
         ))
         .add_child(fill)
+        .id()
+}
+
+/// A clickable box; `on_click` runs against the run.
+pub fn button(
+    commands: &mut Commands,
+    width: Val,
+    selected: bool,
+    lines: Vec<(String, f32, Color)>,
+    on_click: impl Fn(&mut Run) + Send + Sync + 'static,
+) -> Entity {
+    let children: Vec<Entity> = lines
+        .into_iter()
+        .map(|(value, size, color)| commands.spawn(text(value, size, color)).id())
+        .collect();
+    commands
+        .spawn((
+            Node {
+                width,
+                padding: UiRect::axes(Val::Px(10.0), Val::Px(6.0)),
+                border: UiRect::all(Val::Px(2.0)),
+                // Auto-width buttons hug their label instead of stretching.
+                align_self: if width == Val::Auto {
+                    AlignSelf::FlexStart
+                } else {
+                    AlignSelf::Auto
+                },
+                flex_direction: FlexDirection::Column,
+                row_gap: Val::Px(2.0),
+                ..default()
+            },
+            BackgroundColor(CARD),
+            BorderColor::all(if selected {
+                ACCENT
+            } else {
+                Color::srgb(0.25, 0.25, 0.3)
+            }),
+        ))
+        .add_children(&children)
+        .observe(move |_: On<PointerClick>, mut run: ResMut<Run>| on_click(&mut run))
         .id()
 }

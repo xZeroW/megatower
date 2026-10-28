@@ -7,14 +7,15 @@
 //!   fighting and enters them, `i` toggles the inventory, `$` adds a
 //!   treasure room's loot, `b` selects the first bag slot, `w` the weapon,
 //!   `p` toggles the passive tree, `+` grants a level, `^` allocates the
-//!   first node the tree allows.
+//!   first node the tree allows, `M` / `H` / `V` / `A` walk to the merchant,
+//!   shrine, event or Gem Altar and enter it, `g` grants 100 gold.
 //! - `GAME_CAPTURE=<path>`: save a screenshot there once the UI has settled,
 //!   then exit.
 
 use crate::run::Run;
 use bevy::prelude::*;
 use bevy::render::view::screenshot::{Screenshot, save_to_disk};
-use game_sim::labyrinth::Dir;
+use game_sim::labyrinth::{Dir, RoomKind};
 
 pub struct DevPlugin;
 
@@ -40,6 +41,11 @@ fn apply_moves(mut run: ResMut<Run>) {
             '.' => run.resolve(),
             'i' => run.toggle_inventory(),
             'p' => run.toggle_tree(),
+            'M' => run.walk_to_kind(|k| k == RoomKind::Merchant),
+            'H' => run.walk_to_kind(|k| k == RoomKind::Shrine),
+            'V' => run.walk_to_kind(|k| k == RoomKind::Event),
+            'A' => run.walk_to_kind(|k| matches!(k, RoomKind::GemAltar { .. })),
+            'g' => run.character.gold += 100,
             '^' => {
                 // Allocate the first node the tree allows.
                 let tree = &game_sim::content::get().tree;
@@ -68,10 +74,11 @@ fn apply_moves(mut run: ResMut<Run>) {
             '_' => run.combat_act(game_sim::combat::HeroAction::Pass),
             d @ '1'..='4' => {
                 let i = d as usize - '1' as usize;
-                if run.mode == crate::run::Mode::Combat {
-                    run.use_skill(i);
-                } else {
-                    run.pick_starter(i);
+                match run.mode {
+                    crate::run::Mode::Combat => run.use_skill(i),
+                    crate::run::Mode::Shrine(_) => run.take_boon(i),
+                    crate::run::Mode::Event { .. } => run.choose(i),
+                    _ => run.pick_starter(i),
                 }
             }
             '>' => run.descend(),

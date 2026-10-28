@@ -75,6 +75,15 @@ pub enum GearError {
     /// A socket group takes one active gem.
     TwoActives,
     InventoryFull,
+    /// The gem is already Epic.
+    MaxRarity,
+}
+
+/// Where a gem sits: loose in the bag or in an equipped item's sockets.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum GemSpot {
+    Bag(usize),
+    Socket(EquipSlot, usize),
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -85,6 +94,9 @@ pub struct Character {
     pub life: f64,
     /// Level, experience and the passive tree.
     pub progress: Progress,
+    pub gold: u32,
+    /// Shrine boon ids taken this run.
+    pub boons: Vec<String>,
 }
 
 impl Character {
@@ -94,6 +106,8 @@ impl Character {
             inventory: Vec::new(),
             life: 0.0,
             progress: Progress::default(),
+            gold: 0,
+            boons: Vec::new(),
         };
         for (slot, item) in equipment {
             c.equipment[slot.index()] = Some(item);
@@ -108,7 +122,15 @@ impl Character {
 
     /// Gear, passives and level together.
     pub fn mods(&self) -> ModSet {
-        let mut mods = self.progress.mods(&crate::content::get().tree);
+        let content = crate::content::get();
+        let mut mods = self.progress.mods(&content.tree);
+        for boon in self
+            .boons
+            .iter()
+            .filter_map(|id| content.boons.iter().find(|b| &b.id == id))
+        {
+            mods.extend(boon.mods.iter().copied());
+        }
         for item in self.equipment.iter().flatten() {
             mods.extend(item.mods().iter());
         }
@@ -241,6 +263,55 @@ impl Character {
         Ok(())
     }
 
+    pub fn gem(&self, spot: GemSpot) -> Option<&Gem> {
+        match spot {
+            GemSpot::Bag(i) => match self.inventory.get(i)? {
+                Loot::Gem(g) => Some(g),
+                Loot::Item(_) => None,
+            },
+            GemSpot::Socket(slot, i) => self.equipped(slot)?.sockets.as_ref()?.gems.get(i),
+        }
+    }
+
+    /// Every gem the hero has, socketed ones first.
+    pub fn gem_spots(&self) -> Vec<GemSpot> {
+        let mut spots: Vec<GemSpot> = EquipSlot::SOCKETED
+            .iter()
+            .flat_map(|&slot| {
+                let count = self
+                    .equipped(slot)
+                    .and_then(|i| i.sockets.as_ref())
+                    .map_or(0, |s| s.gems.len());
+                (0..count).map(move |i| GemSpot::Socket(slot, i))
+            })
+            .collect();
+        spots.extend(
+            (0..self.inventory.len())
+                .filter(|&i| matches!(self.inventory[i], Loot::Gem(_)))
+                .map(GemSpot::Bag),
+        );
+        spots
+    }
+
+    /// Raises a gem's rarity by one tier (the Gem Altar).
+    pub fn upgrade_gem(&mut self, spot: GemSpot) -> Result<crate::gems::GemRarity, GearError> {
+        let gem = match spot {
+            GemSpot::Bag(i) => match self.inventory.get_mut(i) {
+                Some(Loot::Gem(g)) => g,
+                Some(Loot::Item(_)) => return Err(GearError::NotAGem),
+                None => return Err(GearError::Empty),
+            },
+            GemSpot::Socket(slot, i) => self.equipment[slot.index()]
+                .as_mut()
+                .and_then(|item| item.sockets.as_mut())
+                .and_then(|s| s.gems.get_mut(i))
+                .ok_or(GearError::Empty)?,
+        };
+        let next = gem.rarity.upgraded().ok_or(GearError::MaxRarity)?;
+        gem.rarity = next;
+        Ok(next)
+    }
+
     /// Takes the `gem`-th gem out of the item in `slot` into the bag.
     pub fn unsocket(&mut self, slot: EquipSlot, gem: usize) -> Result<(), GearError> {
         if !self.has_room() {
@@ -353,6 +424,26 @@ mod tests {
         assert!(c.skills(gems()).is_empty());
         c.equip(0, None).unwrap();
         assert_eq!(c.skills(gems())[0].name, "Arc");
+    }
+
+    #[test]
+    fn altar_upgrades_bag_and_socketed_gems() {
+        let mut c = Character::new([(EquipSlot::Weapon, item("gnarled_wand"))]);
+        c.add_loot(gem("fireball")).unwrap();
+        c.socket(0, EquipSlot::Weapon, gems()).unwrap();
+        c.add_loot(gem("echo")).unwrap();
+        let spots = c.gem_spots();
+        assert_eq!(
+            spots,
+            vec![GemSpot::Socket(EquipSlot::Weapon, 0), GemSpot::Bag(0)]
+        );
+        assert_eq!(c.upgrade_gem(spots[0]), Ok(GemRarity::Uncommon));
+        assert_eq!(c.gem(spots[0]).unwrap().rarity, GemRarity::Uncommon);
+        for _ in 0..3 {
+            let _ = c.upgrade_gem(GemSpot::Bag(0));
+        }
+        assert_eq!(c.upgrade_gem(GemSpot::Bag(0)), Err(GearError::MaxRarity));
+        assert_eq!(c.upgrade_gem(GemSpot::Bag(5)), Err(GearError::Empty));
     }
 
     #[test]

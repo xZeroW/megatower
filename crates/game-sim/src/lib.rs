@@ -9,6 +9,8 @@
 //! - [`items`]: gear bases, affixes, rarity and uniques.
 //! - [`character`]: equipment, the bag and socketing.
 //! - [`passives`]: the passive tree, experience and levels.
+//! - [`merchant`]: the gem shop, prices, refreshes and selling.
+//! - [`rooms`]: shrine boons, events and gold rewards.
 //! - [`loot`]: room drops and the starting gear.
 //! - [`combat`]: the turn loop, enemy intents and encounters.
 //! - [`content`]: gem and enemy data from `assets/data/game/`.
@@ -24,7 +26,9 @@ pub mod gems;
 pub mod items;
 pub mod labyrinth;
 pub mod loot;
+pub mod merchant;
 pub mod modifier;
 pub mod passives;
 pub mod rng;
+pub mod rooms;
 pub mod tags;

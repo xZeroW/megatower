@@ -117,6 +117,17 @@ a mix of actives and supports from a floor-gated pool, gem level scaling with de
 sockets must be removed first. Inventory is limited (a fixed grid of slots for unsocketed
 gems and items), so selling is the main way to free room and get gold from extra gems.
 
+### Current room implementation
+- Gold: 3 + 2·floor (+0–2) per enemy (elites ×3, bosses ×10); treasure chests hold
+  15 + 8·floor plus their loot. Merchant prices: 30 (skills) / 40 (supports) gold, +35%
+  per gem level, ×1.6 / ×2.5 / ×4 for Uncommon / Rare / Epic; refresh costs
+  (4 + 2·floor) × (refreshes + 1). Stock stays per merchant room while on the floor.
+- Shrines offer 3 of 8 boons (`boons.ron`), or can be left without one.
+- Events (`events.ron`): 4 scenes with 2–3 choices and weighted outcomes (heal, hurt,
+  gold, gem, item, boon, XP).
+- Rest, Treasure and plain Stairs resolve on entering; Merchant and Gem Altar resolve on
+  entering but can be reopened by walking back in (the altar while it has uses).
+
 ### Loot
 - Rarity: Normal (0 affixes), Magic (1–2), Rare (3–6), Unique (fixed mods).
 - Affixes are prefixes/suffixes with tiers gated by item level (= floor depth).

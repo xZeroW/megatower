@@ -203,6 +203,7 @@ fn spawn_panel(commands: &mut Commands, run: &Run) -> Entity {
             16.0,
             TEXT,
         ),
+        (format!("Gold: {}", run.character.gold), 16.0, TEXT),
         (format!("Skills: {}", skills.join(", ")), 16.0, TEXT_DIM),
         (
             format!("Bag: {}/{}", run.character.inventory.len(), INVENTORY_SIZE),
@@ -226,7 +227,6 @@ fn spawn_panel(commands: &mut Commands, run: &Run) -> Entity {
         lines,
         &[
             "Arrows / WASD or click: move",
-            "Space: resolve room",
             "Enter: descend (on resolved stairs)",
             "I / Tab: inventory",
             "P: passive tree",

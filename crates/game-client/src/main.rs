@@ -8,6 +8,7 @@ mod dev;
 mod inventory;
 mod map;
 mod menus;
+mod rooms;
 mod run;
 mod tree;
 mod ui;
