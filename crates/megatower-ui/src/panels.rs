@@ -271,13 +271,26 @@ pub fn draw_dismantle_slot(game: &Game, ui: &UiState, out: &mut Vec<Draw>) {
 }
 
 /// Stat row under the cursor on the stats tab (same grid as `draw_stats_tab`).
+/// Stats list geometry: two columns of 17 rows, 142px wide and 6px apart.
+const STATS_ROWS: usize = 17;
+const STATS_COL_W: f32 = 142.0;
+const STATS_ROW_H: f32 = 14.5;
+
+fn stats_cell(i: usize) -> R {
+    let (col, row) = (i / STATS_ROWS, i % STATS_ROWS);
+    [
+        AREA[0] + 2.0 + col as f32 * (STATS_COL_W + 6.0),
+        AREA[1] + 4.0 + row as f32 * STATS_ROW_H,
+        STATS_COL_W,
+        STATS_ROW_H,
+    ]
+}
+
 pub fn stat_row_at(game: &Game, x: f32, y: f32) -> Option<megatower_core::stats::StatId> {
     let order = game.rules.stats.groups.get("display")?;
     order.iter().enumerate().find_map(|(i, stat)| {
-        let (col, row) = (i / 17, i % 17);
-        let rx = AREA[0] + 4.0 + col as f32 * 146.0;
-        let ry = AREA[1] + 4.0 + row as f32 * 14.5;
-        (x >= rx && x < rx + 146.0 && y >= ry && y < ry + 14.5).then_some(*stat)
+        let [rx, ry, w, h] = stats_cell(i);
+        (x >= rx && x < rx + w && y >= ry && y < ry + h).then_some(*stat)
     })
 }
 
@@ -295,20 +308,13 @@ pub fn draw_stats_tab(game: &Game, out: &mut Vec<Draw>) {
         .cloned()
         .unwrap_or_default();
     for (i, stat) in order.iter().enumerate() {
-        let (col, row) = (i / 17, i % 17);
-        let x = AREA[0] + 4.0 + col as f32 * 146.0;
-        let y = AREA[1] + 4.0 + row as f32 * 14.5;
+        let [x, y, w, _] = stats_cell(i);
         let def = game.rules.stats.get(*stat);
         let [final_amount, base, modifier] = game.stat(local, *stat);
+        // The 16px icon's glyph sits centred on the text line.
         if let Some(icon) = &def.icon {
-            out.push(tinted([x, y, 12.0, 12.0], icon, WHITE));
+            out.push(tinted([x - 2.0, y - 1.5, 16.0, 16.0], icon, WHITE));
         }
-        out.push(text(
-            [x + 14.0, y, 80.0, 13.0],
-            translation::t(&def.name, "Stat Name"),
-            def.color,
-            Align::Left,
-        ));
         let suffix = if def.is_percentage { "%" } else { "" };
         let mut value = format!(
             "{}{}",
@@ -322,7 +328,25 @@ pub fn draw_stats_tab(game: &Game, out: &mut Vec<Draw>) {
                 megatower_core::run::characters::format_number(modifier)
             );
         }
-        out.push(text([x + 80.0, y, 66.0, 13.0], value, WHITE, Align::Right));
+        // The name gets what the icon and the value leave, cut with a dot.
+        let char_w = 6.0;
+        let value_w = value.chars().count() as f32 * char_w;
+        let room = ((w - 14.0 - value_w - 3.0) / char_w).floor().max(1.0) as usize;
+        let mut name = translation::t(&def.name, "Stat Name");
+        if name.chars().count() > room {
+            name = name
+                .chars()
+                .take(room.saturating_sub(1))
+                .collect::<String>()
+                + ".";
+        }
+        out.push(text(
+            [x + 14.0, y, w - 14.0, 13.0],
+            name,
+            def.color,
+            Align::Left,
+        ));
+        out.push(text([x, y, w, 13.0], value, WHITE, Align::Right));
     }
 }
 
