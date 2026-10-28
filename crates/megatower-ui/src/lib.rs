@@ -304,4 +304,56 @@ mod tests {
         }
         assert_eq!(ui.presented_room, None);
     }
+
+    /// A bar whose enemy is at full health fills within a second; it never
+    /// stays empty.
+    #[test]
+    fn waves_start_with_full_bars() {
+        let mut game = Game::new(NewRun::default_for("Fren", 7));
+        game.battle_speed = 1.0;
+        let mut ui = UiState::default();
+        ui.screen = Screen::Playing;
+        let mut empty = [0u32; 3];
+        let mut waves = 0;
+        frame::run_action(&mut game, &mut ui, |g| g.primary_action());
+        for step in 0..600 {
+            for fx in ui.timeline.advance(0.05) {
+                frame::apply_event(&mut ui, &mut game, fx);
+            }
+            bar_motion::track(&mut ui, 0.05);
+            if !ui.timeline.busy() && step % 4 == 0 {
+                frame::run_action(&mut game, &mut ui, |g| g.primary_action());
+            }
+            let Some(frame) = ui.timeline.frame.clone() else {
+                continue;
+            };
+            for (idx, slot) in frame.enemies.iter().enumerate().take(3) {
+                let Some(view) = slot else {
+                    empty[idx] = 0;
+                    continue;
+                };
+                let v = &view.vitals;
+                let (main, _) = bar_motion::fractions(
+                    &ui,
+                    model::BarKey::EnemyHealth(idx),
+                    v.health,
+                    v.max_health,
+                );
+                if v.health >= v.max_health && main < 0.01 {
+                    empty[idx] += 1;
+                    assert!(
+                        empty[idx] < 30,
+                        "step {step} slot {idx} {} {}/{} stays empty",
+                        view.name,
+                        v.health,
+                        v.max_health
+                    );
+                } else {
+                    empty[idx] = 0;
+                }
+                waves += 1;
+            }
+        }
+        assert!(waves > 50, "the run reached battles");
+    }
 }

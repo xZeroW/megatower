@@ -77,7 +77,13 @@ pub fn track(ui: &mut UiState, dt: f64) {
 pub fn fractions(ui: &UiState, key: BarKey, value: f64, max: f64) -> (f32, Option<f32>) {
     let plain = (value / max.max(1.0)) as f32;
     match ui.bars.get(&key) {
-        Some(bar) if bar.state.max > 0.0 => {
+        // A bar that has not caught up with the frame being drawn (the frame
+        // changed after this frame's tracking) is drawn plain.
+        Some(bar)
+            if bar.state.max > 0.0
+                && bar.state.max == max
+                && (bar.state.target - value).abs() < 1e-6 =>
+        {
             let s = &bar.state;
             (
                 (s.main / s.max) as f32,

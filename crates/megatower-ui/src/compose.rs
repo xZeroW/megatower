@@ -184,10 +184,10 @@ fn pill_bar(rect: R, frac: f32, under: Option<(f32, Rgba)>, color: Rgba, out: &m
         slice: Some([4.0; 4]),
         flip_x: false,
     });
-    // `ProgressBarUnder` is the trailing fill, drawn beneath the main one.
-    if let Some((under, under_color)) = under {
-        pill_fill(rect, under, under_color, out);
-    }
+    // `ProgressBarUnder` is the trailing fill, drawn beneath the main one. It
+    // is always pushed (empty when idle) so the draw list keeps its length.
+    let (under, under_color) = under.unwrap_or((0.0, color));
+    pill_fill(rect, under, under_color, out);
     pill_fill(rect, frac, color, out);
 }
 
@@ -202,7 +202,7 @@ fn pill_fill(rect: R, frac: f32, color: Rgba, out: &mut Vec<Draw>) {
             slice: Some([4.0; 4]),
             flip_x: false,
         });
-    } else if w > 0.0 {
+    } else {
         out.push(Draw::Fill {
             rect: [rect[0], rect[1] + 1.0, w, rect[3] - 2.0],
             color,
