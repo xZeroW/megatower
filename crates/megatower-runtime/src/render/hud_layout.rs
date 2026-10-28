@@ -187,18 +187,29 @@ fn fit_logical_viewport(
     window: Single<&Window>,
     mut camera: Single<&mut Camera, With<Camera2d>>,
     mut scale: ResMut<UiScale>,
+    mut settled: Local<(UVec2, u32)>,
 ) {
     let fit = (window.width() / 640.0).min(window.height() / 360.0);
     scale.0 = fit;
+    let window_size = UVec2::new(window.physical_width(), window.physical_height());
+    // The surface can lag a resize (Wayland fullscreen), and a viewport
+    // larger than it is a validation error that quits the app: draw to the
+    // whole target until the window size has held still for a few frames.
+    if settled.0 != window_size {
+        *settled = (window_size, 0);
+        camera.viewport = None;
+        return;
+    }
+    settled.1 = settled.1.saturating_add(1);
+    if settled.1 < 5 {
+        return;
+    }
     let factor = window.scale_factor();
     let size = UVec2::new(
-        (640.0 * fit * factor).round() as u32,
-        (360.0 * fit * factor).round() as u32,
+        ((640.0 * fit * factor).round() as u32).min(window_size.x),
+        ((360.0 * fit * factor).round() as u32).min(window_size.y),
     );
-    let position = UVec2::new(
-        window.physical_width().saturating_sub(size.x) / 2,
-        window.physical_height().saturating_sub(size.y) / 2,
-    );
+    let position = (window_size - size) / 2;
     let viewport = camera.viewport.get_or_insert_with(default);
     if viewport.physical_size != size || viewport.physical_position != position {
         viewport.physical_size = size;
