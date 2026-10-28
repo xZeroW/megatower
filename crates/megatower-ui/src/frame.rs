@@ -129,6 +129,11 @@ fn update_screens(
                 bar_motion::track(ui, f64::from(time.delta_secs()));
                 let busy = ui.timeline.busy();
                 let died = game.char_state(game.local()).died;
+                if died && ui.death_at.is_none() && !busy {
+                    // A run that is already over without a `GameEnded` event
+                    // on the timeline (nothing left to wait for).
+                    ui.death_at = Some(ui.time - 3.0);
+                }
                 if !busy {
                     game.tick(time.delta_secs() as f64);
                     // The death screen's confirm button starts over at adventurer select.

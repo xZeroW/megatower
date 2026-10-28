@@ -1972,7 +1972,9 @@ fn preview_sparkles(ox: f32, oy: f32, color: Rgba, time: f64, seed: usize, out: 
 /// `death_screen.tscn` `show`: after a second the wipe grows to 0.8 over
 /// two seconds; the screen's content is revealed under it.
 pub fn death_wipe_progress(ui: &UiState) -> f32 {
-    let age = ui.death_at.map_or(f64::MAX, |at| ui.time - at);
+    // The wipe starts when `Fx::GameEnded` arrives on the timeline: the game
+    // state is already dead before that, and shows nothing yet.
+    let age = ui.death_at.map_or(0.0, |at| ui.time - at);
     (((age - 1.0) / 2.0 * 0.8).clamp(0.0, 0.8)) as f32
 }
 
