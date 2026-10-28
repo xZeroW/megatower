@@ -97,6 +97,15 @@ impl Tags {
         self.0 & required.0 == required.0
     }
 
+    /// At least one tag in common.
+    pub const fn intersects(self, other: Tags) -> bool {
+        self.0 & other.0 != 0
+    }
+
+    pub const fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+
     /// The set with its damage type tags removed. A fire skill's physical
     /// damage is not fire damage, so damage modifiers see a packet's own types
     /// instead of the skill's.

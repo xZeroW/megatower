@@ -6,6 +6,7 @@
 //! "Increased" values add up with each other, "more" values multiply. Negative
 //! values are "reduced" and "less".
 
+use crate::ailment::Ailment;
 use crate::tags::{DamageType, Tags};
 use serde::{Deserialize, Serialize};
 
@@ -35,6 +36,12 @@ pub enum Stat {
     /// Percent of the target's resistance ignored by hits.
     Penetration(DamageType),
     ManaCost,
+    /// Percent chance per hit.
+    AilmentChance(Ailment),
+    /// Mana regained at the end of each turn.
+    ManaRegen,
+    /// Percent of hit damage dealt gained as life.
+    LifeLeech,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -99,6 +106,26 @@ impl ModSet {
 
     pub fn extend(&mut self, mods: impl IntoIterator<Item = Modifier>) {
         self.mods.extend(mods);
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item = Modifier> + '_ {
+        self.mods.iter().copied()
+    }
+
+    /// Both sets together, e.g. the hero's modifiers plus a skill's.
+    pub fn merged(&self, other: &ModSet) -> ModSet {
+        self.mods.iter().chain(&other.mods).copied().collect()
+    }
+
+    /// Every modifier with its value multiplied by `factor`.
+    pub fn scaled(&self, factor: f64) -> ModSet {
+        self.mods
+            .iter()
+            .map(|m| Modifier {
+                value: m.value * factor,
+                ..*m
+            })
+            .collect()
     }
 
     fn matching(&self, stat: Stat, kind: ModKind, ctx: Tags) -> impl Iterator<Item = f64> + '_ {

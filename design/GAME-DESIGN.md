@@ -39,6 +39,17 @@ builds), exploring hidden labyrinth floors.
 - Resources: Life, Mana (skill costs, regenerates per turn), optional Energy Shield.
 - Turn-based reading of ARPG mechanics: "cast speed" → chance to act twice / repeat,
   durations measured in turns, damage over time ticks at turn end.
+- Current implementation (`game-sim/src/combat`, data in `assets/data/game/`):
+  - Hero starts at 100 life, 40 mana, 6 mana regen per turn. Enemies repeat their
+    intents (Attack / Guard / Heal) in order; guard lasts until their next action.
+  - Fights hold 1 enemy on floor 1, up to 3 deeper; elite rooms add an Elite (×2 life,
+    30% more damage) and maybe a normal; boss stairs hold the boss. Enemies get 30%
+    more life and 20% more damage per floor.
+  - Evasion dodges attacks only, capped at 75%. Damage over time ignores mitigation.
+  - Ailment numbers are in `game-sim/src/ailment.rs`.
+  - `cargo test -p game-sim --test balance -- --ignored --nocapture` prints how each
+    unsupported starter gem does per room type. Baseline: floor-1 fights are won, the
+    floor-3 boss is not, so progression (supports, items, passives) must carry it.
 
 ## Builds
 

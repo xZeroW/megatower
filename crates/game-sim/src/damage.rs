@@ -73,9 +73,15 @@ pub struct HitSpec {
     pub tags: Tags,
     pub base: Vec<(DamageType, DamageRange)>,
     /// Percent of the attacker's added damage this skill uses (100 = all).
+    #[serde(default = "full_effectiveness")]
     pub added_effectiveness: f64,
     /// Crit chance in percent before modifiers.
+    #[serde(default)]
     pub base_crit: f64,
+}
+
+fn full_effectiveness() -> f64 {
+    100.0
 }
 
 /// The target side of a hit, with resistances not yet capped.
