@@ -1751,7 +1751,7 @@ fn button(
     }
     if !label.is_empty() {
         out.push(text(
-            [rect[0], rect[1] + 8.0, rect[2], 13.0],
+            [rect[0], rect[1] + 5.0, rect[2], 13.0],
             label,
             if enabled { palette(1) } else { palette(4) },
             Align::Center,
@@ -3026,7 +3026,7 @@ pub fn action_buttons(game: &mut Game, rects: &Rects) -> Vec<(R, Action, String,
         }
         other => {
             let label = match other {
-                Room::Entrance => translation::t("enter the tower", "button").to_uppercase(),
+                Room::Entrance => translation::t("enter", "button").to_uppercase(),
                 Room::Chest => "OPEN CHEST".to_owned(),
                 Room::Merchant | Room::MysticTrader => "LEAVE".to_owned(),
                 Room::Dismantle => "LEAVE".to_owned(),
@@ -3039,7 +3039,10 @@ pub fn action_buttons(game: &mut Game, rects: &Rects) -> Vec<(R, Action, String,
                 rects.learned[1][0] + rects.learned[1][2] - rects.stance[0],
                 rects.stance[3],
             ];
-            buttons.push((wide, Action::Primary, label, true));
+            // `InteractButton`: minimum 100 wide, centred in the container.
+            let width = (label.chars().count() as f32 * CHAR_W + 16.0).max(100.0);
+            let single = [wide[0] + (wide[2] - width) / 2.0, wide[1], width, wide[3]];
+            buttons.push((single, Action::Primary, label, true));
             if matches!(other, Room::Final | Room::EndlessMonolith) {
                 let half = [wide[0], wide[1], wide[2] / 2.0 - 2.0, wide[3]];
                 let second = [
