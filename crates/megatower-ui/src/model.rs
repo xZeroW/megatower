@@ -322,6 +322,8 @@ pub struct UiState {
     pub popups: Vec<LivePopup>,
     pub vfx: Vec<LiveVfx>,
     pub transition: Option<Transition>,
+    /// The layout button under the pointer last frame (for the hover sound).
+    pub hovered_button: Option<String>,
     /// When the run ended; the death screen's wipe starts from it.
     pub death_at: Option<f64>,
     pub timeline: Timeline,
@@ -369,6 +371,7 @@ impl Default for UiState {
             popups: Vec::new(),
             vfx: Vec::new(),
             transition: None,
+            hovered_button: None,
             death_at: None,
             timeline: Timeline::default(),
             time: 0.0,

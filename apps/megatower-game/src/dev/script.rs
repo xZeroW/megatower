@@ -202,6 +202,9 @@ fn run_menu_script(
         injected.pending_text.push_str(&text.replace('_', " "));
     } else if step == "backspace" {
         injected.pending_backspace = true;
+    } else if let Some(xy) = step.strip_prefix("cursor:") {
+        let mut parts = xy.split(':').filter_map(|v| v.parse::<f32>().ok());
+        ui.cursor_override = Some([parts.next().unwrap_or(0.0), parts.next().unwrap_or(0.0)]);
     }
     if log_input() {
         info!(

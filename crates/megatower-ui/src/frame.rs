@@ -26,6 +26,10 @@ fn update_screens(
     let ui = &mut ui.0;
     let rects = &rects.0;
     let (click, alt_click) = (input.click, input.alt_click);
+    screens::set_button_fx(screens::ButtonFx {
+        cursor: ui.cursor,
+        down: input.held,
+    });
     let catalog = megatower_core::adventurers::AdventurerCatalog::recovered();
     let overlay = if ui.profile_open {
         profile_frame(ui, &keys, click, alt_click)
@@ -155,6 +159,20 @@ fn update_screens(
         }
     };
     draw_state.next = Some(draws);
+    // `AudioManager.process_tone_events`: a tick when the pointer enters a
+    // button and a press sound when one is clicked.
+    let hovered = screens::hovered_button();
+    if hovered != ui.hovered_button {
+        if hovered.is_some() {
+            let (path, db, ..) = megatower_core::managers_rules::BUTTON_HOVER;
+            ui.audio.push((path.to_owned(), db));
+        }
+        ui.hovered_button = hovered.clone();
+    }
+    if click && hovered.is_some() {
+        let (path, db, ..) = megatower_core::managers_rules::BUTTON_PRESS;
+        ui.audio.push((path.to_owned(), db));
+    }
 }
 
 pub(super) fn adventurer_cells(count: usize) -> Vec<R> {

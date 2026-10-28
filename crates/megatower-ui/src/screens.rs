@@ -10,6 +10,50 @@ fn trim(path: &str) -> String {
 
 /// Draw every resolved control in scene order: nine-patch panels/buttons,
 /// textures and labels (centered, since every label here sits in a button).
+/// What the pointer is doing this frame, for `GenericButton`'s hover and press
+/// looks. Set by the frame system before it composes a screen.
+#[derive(Clone, Copy, Default)]
+pub struct ButtonFx {
+    pub cursor: Option<[f32; 2]>,
+    pub down: bool,
+}
+
+thread_local! {
+    static BUTTON_FX: std::cell::Cell<ButtonFx> = const { std::cell::Cell::new(ButtonFx { cursor: None, down: false }) };
+    static HOVERED: std::cell::RefCell<Option<String>> = const { std::cell::RefCell::new(None) };
+}
+
+pub fn set_button_fx(fx: ButtonFx) {
+    BUTTON_FX.with(|f| f.set(fx));
+    HOVERED.with(|h| *h.borrow_mut() = None);
+}
+
+/// The button under the pointer in the screen composed since [`set_button_fx`].
+pub fn hovered_button() -> Option<String> {
+    HOVERED.with(|h| h.borrow().clone())
+}
+
+/// `GenericButton.update_visuals`: the hover frame (second of the atlas) and
+/// +25% brightness while hovered; the default frame while the button is held.
+fn button_look(v: &Visual, disabled: bool) -> (Option<[f32; 4]>, f32) {
+    let is_button = v.kind == "NinePatchRect" && v.path.ends_with("Button/NinePatchRect");
+    if !is_button || disabled {
+        return (v.region, 1.0);
+    }
+    let fx = BUTTON_FX.with(|f| f.get());
+    let hovered = fx.cursor.is_some_and(|[x, y]| {
+        x >= v.rect[0] && x < v.rect[0] + v.rect[2] && y >= v.rect[1] && y < v.rect[1] + v.rect[3]
+    });
+    if !hovered {
+        return (v.region, 1.0);
+    }
+    HOVERED.with(|h| *h.borrow_mut() = Some(v.path.clone()));
+    if fx.down {
+        return (v.region, 1.0);
+    }
+    (v.region.map(|[x, y, w, h]| [x + w, y, w, h]), 1.25)
+}
+
 pub fn layout_draws(layout: &Layout, disabled: &[&str]) -> Vec<Draw> {
     let mut out = vec![Draw::Fill {
         rect: [0.0, 0.0, layout.viewport[0], layout.viewport[1]],
@@ -31,10 +75,17 @@ pub fn layout_visuals(layout: &Layout, disabled: &[&str]) -> Vec<Draw> {
                 if dim {
                     tint = [tint[0] * 0.5, tint[1] * 0.5, tint[2] * 0.5, tint[3]];
                 }
+                let (region, brightness) = button_look(v, dim);
+                tint = [
+                    (tint[0] * brightness).min(1.0),
+                    (tint[1] * brightness).min(1.0),
+                    (tint[2] * brightness).min(1.0),
+                    tint[3],
+                ];
                 out.push(Draw::Image {
                     rect: v.rect,
                     path: trim(texture),
-                    region: v.region,
+                    region,
                     tint,
                     slice: v.margins,
                     flip_x: false,
