@@ -1887,6 +1887,7 @@ fn enemy_stats(
 
 /// `AbilityPreviewParticles`: four 9px stars per layer drifting up at 15px/s
 /// over 1.75s, faded in over the first 27% of their life and out after.
+/// Positions are not snapped to the canvas grid, so they glide.
 fn preview_sparkles(ox: f32, oy: f32, color: Rgba, time: f64, seed: usize, out: &mut Vec<Draw>) {
     const LIFE: f64 = 1.75;
     for i in 0..4usize {
@@ -1908,7 +1909,7 @@ fn preview_sparkles(ox: f32, oy: f32, color: Rgba, time: f64, seed: usize, out: 
         let x = ox + 38.0 + (hash(1) * 40.0 - 20.0);
         let y = oy + 60.0 + (hash(2) * 40.0 - 20.0) - age * LIFE as f32 * 15.0;
         out.push(tinted(
-            [x.round() - 4.0, y.round() - 4.0, 9.0, 9.0],
+            [x - 4.0, y - 4.0, 9.0, 9.0],
             "assets/textures/particles/star.png",
             [color[0], color[1], color[2], alpha],
         ));
