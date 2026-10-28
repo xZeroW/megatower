@@ -313,7 +313,7 @@ pub fn draw_stats_tab(game: &Game, out: &mut Vec<Draw>) {
         let [final_amount, base, modifier] = game.stat(local, *stat);
         // The 16px icon's glyph sits centred on the text line.
         if let Some(icon) = &def.icon {
-            out.push(tinted([x - 2.0, y - 1.5, 16.0, 16.0], icon, WHITE));
+            out.push(tinted([x - 2.0, y - 0.5, 16.0, 16.0], icon, WHITE));
         }
         let suffix = if def.is_percentage { "%" } else { "" };
         let mut value = format!(
@@ -341,12 +341,12 @@ pub fn draw_stats_tab(game: &Game, out: &mut Vec<Draw>) {
                 + ".";
         }
         out.push(text(
-            [x + 14.0, y, w - 14.0, 13.0],
+            [x + 14.0, y - 3.0, w - 14.0, 13.0],
             name,
             def.color,
             Align::Left,
         ));
-        out.push(text([x, y, w, 13.0], value, WHITE, Align::Right));
+        out.push(text([x, y - 3.0, w, 13.0], value, WHITE, Align::Right));
     }
 }
 
