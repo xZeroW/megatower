@@ -43,6 +43,7 @@ fn redraw(
     run: Res<Run>,
     root: Single<Entity, With<ScreenRoot>>,
     room: Option<Res<RoomRenderTarget>>,
+    assets: Res<AssetServer>,
 ) {
     let root = *root;
     commands.entity(root).despawn_related::<Children>();
@@ -52,7 +53,7 @@ fn redraw(
         (Some(Overlay::Map), _) => map::spawn_full(&mut commands, &run),
         (None, Mode::Starter(_)) => menus::spawn_starter(&mut commands, &run),
         (None, Mode::Map) => room_view::spawn_explore(&mut commands, &run, room.as_deref()),
-        (None, Mode::Combat) => combat::spawn(&mut commands, &run, room.as_deref()),
+        (None, Mode::Combat) => combat::spawn(&mut commands, &assets, &run, room.as_deref()),
         (None, Mode::Shop) => rooms::spawn_shop(&mut commands, &run),
         (None, Mode::Shrine(_)) => rooms::spawn_shrine(&mut commands, &run),
         (None, Mode::Event { .. }) => rooms::spawn_event(&mut commands, &run),

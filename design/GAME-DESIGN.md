@@ -39,12 +39,15 @@ builds), exploring hidden labyrinth floors.
   then the hero moves. The corner minimap and the full map (M) are for looking only.
   Scenes: treasure `chest_room`, merchant `mystic_trader`, Gem Altar `altar_room`,
   shrine `monolith_room`, everything else `room_normal`.
-- Fights happen in the same room view (`game-client/src/fighters.rs`): each enemy
-  stands in the room as a placeholder figure (shape and colour per enemy, elites 25%
-  larger, the boss further back), the target drawn brighter and the dead lying on the
-  floor. Enemy cards (life, next intent, guard, ailments) follow their figures on
-  screen; clicking a figure or its card targets it. Hero, skills and the log sit in
-  the side panel. Real enemy art replaces the figures later.
+- Fights happen in the same room view, drawn the way megatower draws enemies
+  (`game-client/src/fighters.rs`, ported from `megatower-ui` `compose.rs`
+  `enemy_widget`): each enemy's sprite (`enemies.ron` `sprite`) over the room with its
+  oval shadow, the stats panel from `enemy-container-layout.ron` (pill health bar and
+  value label; guard shows as the armor bar), ailment icons above, the selection arrow
+  under the target and the next intent beneath. Hits squash and shake the sprite,
+  enemy actions lunge it, dodges sidestep it, with megatower's keyframes. Clicking a
+  sprite targets it; the target's name, the hero, skills and the log sit in the side
+  panel.
 - Later options: scouting items that reveal room types, a danger clock that makes fights
   harder the longer you wander.
 
