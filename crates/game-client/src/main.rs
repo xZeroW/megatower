@@ -5,6 +5,7 @@
 mod combat;
 mod describe;
 mod dev;
+mod fighters;
 mod inventory;
 mod map;
 mod menus;
@@ -36,6 +37,7 @@ fn main() {
             run::RunPlugin,
             ui::UiPlugin,
             room_view::RoomViewPlugin,
+            fighters::FightersPlugin,
             dev::DevPlugin,
         ))
         .run();

@@ -41,6 +41,7 @@ impl Plugin for RoomViewPlugin {
                     sync_scene,
                     hide_middle_pillars,
                     sync_doors,
+                    show_doors,
                     hover_doors,
                     click_doors,
                     walk,
@@ -106,7 +107,7 @@ struct DoorPart;
 
 /// The room view's image node.
 #[derive(Component)]
-struct RoomImage;
+pub struct RoomImage;
 
 fn door_materials(
     mut commands: Commands,
@@ -268,8 +269,20 @@ fn sync_doors(
     }
 }
 
+/// Doors only show while exploring, not during a fight in the same room.
+fn show_doors(run: Res<Run>, mut parts: Query<&mut Visibility, With<DoorPart>>) {
+    let want = if run.mode == Mode::Map {
+        Visibility::Inherited
+    } else {
+        Visibility::Hidden
+    };
+    for mut v in &mut parts {
+        v.set_if_neq(want);
+    }
+}
+
 /// The room-view position under the cursor as a ray from the room camera.
-fn cursor_ray(
+pub fn cursor_ray(
     image: &RelativeCursorPosition,
     camera: (&Camera, &GlobalTransform),
 ) -> Option<Ray3d> {
@@ -385,14 +398,14 @@ fn turn_key(turn: Turn) -> &'static str {
     }
 }
 
-/// The exploring screen: the room view with the minimap, door labels under
-/// it, and the room panel on the right.
-pub fn spawn_explore(
-    commands: &mut Commands,
-    run: &Run,
-    target: Option<&RoomRenderTarget>,
-) -> Vec<Entity> {
-    let size = Vec2::new(ROOM_VIEWPORT_SIZE[0] as f32, ROOM_VIEWPORT_SIZE[1] as f32) * VIEW_SCALE;
+/// On-screen size of the room view.
+pub fn view_size() -> Vec2 {
+    Vec2::new(ROOM_VIEWPORT_SIZE[0] as f32, ROOM_VIEWPORT_SIZE[1] as f32) * VIEW_SCALE
+}
+
+/// The room view's image node; the cursor over it is read for doors and enemies.
+pub fn room_image(commands: &mut Commands, target: Option<&RoomRenderTarget>) -> Entity {
+    let size = view_size();
     let view = commands
         .spawn((
             Node {
@@ -409,6 +422,18 @@ pub fn spawn_explore(
             .entity(view)
             .insert(ImageNode::new(target.0.clone()));
     }
+    view
+}
+
+/// The exploring screen: the room view with the minimap, door labels under
+/// it, and the room panel on the right.
+pub fn spawn_explore(
+    commands: &mut Commands,
+    run: &Run,
+    target: Option<&RoomRenderTarget>,
+) -> Vec<Entity> {
+    let size = view_size();
+    let view = room_image(commands, target);
     let minimap = spawn_minimap(commands, &run.floor);
     commands.entity(minimap).insert(Node {
         position_type: PositionType::Absolute,

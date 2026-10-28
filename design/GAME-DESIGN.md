@@ -39,6 +39,12 @@ builds), exploring hidden labyrinth floors.
   then the hero moves. The corner minimap and the full map (M) are for looking only.
   Scenes: treasure `chest_room`, merchant `mystic_trader`, Gem Altar `altar_room`,
   shrine `monolith_room`, everything else `room_normal`.
+- Fights happen in the same room view (`game-client/src/fighters.rs`): each enemy
+  stands in the room as a placeholder figure (shape and colour per enemy, elites 25%
+  larger, the boss further back), the target drawn brighter and the dead lying on the
+  floor. Enemy cards (life, next intent, guard, ailments) follow their figures on
+  screen; clicking a figure or its card targets it. Hero, skills and the log sit in
+  the side panel. Real enemy art replaces the figures later.
 - Later options: scouting items that reveal room types, a danger clock that makes fights
   harder the longer you wander.
 
