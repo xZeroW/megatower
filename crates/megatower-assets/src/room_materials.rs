@@ -15,6 +15,18 @@ pub struct MeshMaterial {
     pub uv_scale: Option<f32>,
 }
 
+/// A JSON file of `artifacts/`: the copy compiled in, or, with
+/// `MEGALOOT_HOT_ROOMS` set, the file on disk so edits show without a rebuild.
+pub fn artifact_json(name: &str, embedded: &'static str) -> std::borrow::Cow<'static, str> {
+    if std::env::var_os("MEGALOOT_HOT_ROOMS").is_some() {
+        let path = format!("{}/../../artifacts/{name}", env!("CARGO_MANIFEST_DIR"));
+        if let Ok(text) = std::fs::read_to_string(path) {
+            return text.into();
+        }
+    }
+    embedded.into()
+}
+
 fn source_path(path: &str) -> String {
     path.strip_prefix("res://").unwrap_or(path).to_owned()
 }
@@ -22,7 +34,11 @@ fn source_path(path: &str) -> String {
 /// Material of every mesh node of `room`'s `.glb`, by node name.
 pub fn room_materials(room: &str) -> HashMap<String, MeshMaterial> {
     let all: HashMap<String, HashMap<String, serde_json::Value>> =
-        serde_json::from_str(include_str!("../../../artifacts/room-materials.json")).unwrap();
+        serde_json::from_str(&artifact_json(
+            "room-materials.json",
+            include_str!("../../../artifacts/room-materials.json"),
+        ))
+        .unwrap();
     let Some(nodes) = all.get(room) else {
         return HashMap::new();
     };

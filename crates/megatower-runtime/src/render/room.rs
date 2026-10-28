@@ -191,6 +191,12 @@ pub fn setup_room(
     }
 }
 
+/// Rooms whose `.glb` was replaced by `MEGALOOT_HOT_ROOMS`: the asset path of
+/// the newest copy. Each edit gets a new path, so nothing stale is cached.
+static HOT_ROOM_PATHS: std::sync::LazyLock<
+    std::sync::Mutex<std::collections::HashMap<String, String>>,
+> = std::sync::LazyLock::new(Default::default);
+
 /// Spawns a room's baked `.glb`; the meshes get their materials in
 /// [`texture_room`] once the instance is ready.
 fn spawn_room_scene(
@@ -198,7 +204,12 @@ fn spawn_room_scene(
     assets: &AssetServer,
     scene_name: &'static str,
 ) -> Handle<WorldAsset> {
-    let glb = format!("embedded://megatower_runtime/render/rooms/{scene_name}.glb");
+    let hot = HOT_ROOM_PATHS
+        .lock()
+        .ok()
+        .and_then(|paths| paths.get(scene_name).cloned());
+    let glb = hot
+        .unwrap_or_else(|| format!("embedded://megatower_runtime/render/rooms/{scene_name}.glb"));
     let handle = assets.load(GltfAssetLabel::Scene(0).from_asset(glb));
     commands
         .spawn((
@@ -307,5 +318,106 @@ fn drive_room_camera(
     };
     for mut transform in &mut camera {
         transform.translation = rest.lerp(end, eased);
+    }
+}
+
+/// Files watched by `MEGALOOT_HOT_ROOMS=1`: the baked rooms and their
+/// sidecar JSON. Editing and re-exporting a room shows in the running game.
+#[derive(Default)]
+struct HotReload {
+    started: bool,
+    enabled: bool,
+    version: u32,
+    files: Vec<(std::path::PathBuf, Option<std::time::SystemTime>)>,
+    next_poll: f32,
+}
+
+const ROOMS_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/render/rooms");
+
+fn modified(path: &std::path::Path) -> Option<std::time::SystemTime> {
+    std::fs::metadata(path).and_then(|m| m.modified()).ok()
+}
+
+/// Dev hot reload: when a room's `.glb` or the sidecar JSON changes on disk,
+/// the new bytes are added under a fresh embedded path and the room is
+/// spawned again from it (the JSON is read from disk on every spawn).
+#[auto_add_system(plugin = RoomRenderPlugin, schedule = Update)]
+fn hot_reload_rooms(
+    time: Res<Time<Real>>,
+    registry: Res<bevy::asset::io::embedded::EmbeddedAssetRegistry>,
+    assets: Res<AssetServer>,
+    mut commands: Commands,
+    shown: Res<ShownRoom>,
+    old: Query<Entity, With<RoomPart>>,
+    mut state: Local<HotReload>,
+) {
+    if !state.started {
+        state.started = true;
+        state.enabled = std::env::var_os("MEGALOOT_HOT_ROOMS").is_some();
+        if !state.enabled {
+            return;
+        }
+        let mut files: Vec<std::path::PathBuf> = std::fs::read_dir(ROOMS_DIR)
+            .into_iter()
+            .flatten()
+            .flatten()
+            .map(|e| e.path())
+            .filter(|p| p.extension().is_some_and(|e| e == "glb"))
+            .collect();
+        for json in ["room-materials.json", "room-scenes.json"] {
+            files.push(format!("{}/../../artifacts/{json}", env!("CARGO_MANIFEST_DIR")).into());
+        }
+        state.files = files
+            .into_iter()
+            .map(|path| {
+                let at = modified(&path);
+                (path, at)
+            })
+            .collect();
+        info!("room hot reload watching {} files", state.files.len());
+    }
+    let now = time.elapsed_secs();
+    if !state.enabled || now < state.next_poll {
+        return;
+    }
+    state.next_poll = now + 0.5;
+    let state = &mut *state;
+    let mut respawn = false;
+    for (path, seen) in &mut state.files {
+        let at = modified(path);
+        if at == *seen {
+            continue;
+        }
+        *seen = at;
+        let name = path
+            .file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or_default()
+            .to_owned();
+        info!("room hot reload: {name} changed");
+        if path.extension().is_some_and(|e| e == "glb") {
+            let Ok(bytes) = std::fs::read(&*path) else {
+                continue;
+            };
+            let stem = name.trim_end_matches(".glb").to_owned();
+            state.version += 1;
+            let asset = format!(
+                "megatower_runtime/render/rooms/hot/{stem}-{}.glb",
+                state.version
+            );
+            registry.insert_asset(path.clone(), std::path::Path::new(&asset), bytes);
+            if let Ok(mut paths) = HOT_ROOM_PATHS.lock() {
+                paths.insert(stem.clone(), format!("embedded://{asset}"));
+            }
+            respawn |= stem == shown.0;
+        } else {
+            respawn = true;
+        }
+    }
+    if respawn {
+        for entity in &old {
+            commands.entity(entity).despawn();
+        }
+        spawn_room_scene(&mut commands, &assets, shown.0);
     }
 }

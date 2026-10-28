@@ -209,7 +209,11 @@ pub fn scene_for(room: megatower_core::game_mode::Room) -> &'static str {
 
 pub fn scene(name: &str) -> RoomScene {
     let mut all: std::collections::HashMap<String, RoomScene> =
-        serde_json::from_str(include_str!("../../../artifacts/room-scenes.json")).unwrap();
+        serde_json::from_str(&crate::room_materials::artifact_json(
+            "room-scenes.json",
+            include_str!("../../../artifacts/room-scenes.json"),
+        ))
+        .unwrap();
     all.remove(name).unwrap_or(RoomScene {
         parts: vec![],
         lights: vec![],
