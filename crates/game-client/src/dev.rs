@@ -1,8 +1,8 @@
 //! Scripted runs for QA (`tools/game-shot.sh`):
 //!
 //! - `GAME_SEED`, `GAME_FLOOR`: which floor to generate (see `run.rs`).
-//! - `GAME_MOVES`: commands applied at startup: `1`-`4` pick a starter gem
-//!   or use a skill, `N`/`E`/`S`/`W` move, `.` resolves the room, `>`
+//! - `GAME_MOVES`: commands applied at startup: `1`-`4` pick a starter gem,
+//!   use a skill, take a boon or make an event choice, `N`/`E`/`S`/`W` move, `>`
 //!   descends, `_` passes a combat turn, `*` walks to the stairs without
 //!   fighting and enters them, `i` toggles the inventory, `$` adds a
 //!   treasure room's loot, `b` selects the first bag slot, `w` the weapon,
@@ -38,13 +38,12 @@ fn apply_moves(mut run: ResMut<Run>) {
             'E' | 'e' => run.step(Dir::East),
             'S' | 's' => run.step(Dir::South),
             'W' => run.step(Dir::West),
-            '.' => run.resolve(),
-            'i' => run.toggle_inventory(),
-            'p' => run.toggle_tree(),
-            'M' => run.walk_to_kind(|k| k == RoomKind::Merchant),
-            'H' => run.walk_to_kind(|k| k == RoomKind::Shrine),
-            'V' => run.walk_to_kind(|k| k == RoomKind::Event),
-            'A' => run.walk_to_kind(|k| matches!(k, RoomKind::GemAltar { .. })),
+            'i' => run.toggle(crate::run::Overlay::Inventory),
+            'p' => run.toggle(crate::run::Overlay::Tree),
+            'M' => run.debug_walk_to_kind(|k| k == RoomKind::Merchant),
+            'H' => run.debug_walk_to_kind(|k| k == RoomKind::Shrine),
+            'V' => run.debug_walk_to_kind(|k| k == RoomKind::Event),
+            'A' => run.debug_walk_to_kind(|k| matches!(k, RoomKind::GemAltar { .. })),
             'g' => run.character.gold += 100,
             '^' => {
                 // Allocate the first node the tree allows.
@@ -66,12 +65,12 @@ fn apply_moves(mut run: ResMut<Run>) {
                     .progress
                     .gain_xp(game_sim::passives::xp_to_next(level));
             }
-            '$' => run.dev_loot(),
+            '$' => run.debug_loot(),
             'b' => run.select(crate::run::Selection::Bag(0)),
             'w' => run.select(crate::run::Selection::Worn(
                 game_sim::character::EquipSlot::Weapon,
             )),
-            '_' => run.combat_act(game_sim::combat::HeroAction::Pass),
+            '_' => run.act(game_sim::combat::HeroAction::Pass),
             d @ '1'..='4' => {
                 let i = d as usize - '1' as usize;
                 match run.mode {
@@ -82,7 +81,7 @@ fn apply_moves(mut run: ResMut<Run>) {
                 }
             }
             '>' => run.descend(),
-            '*' => run.walk_to_stairs(),
+            '*' => run.debug_walk_to_stairs(),
             _ => {}
         }
     }

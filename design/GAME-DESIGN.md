@@ -43,13 +43,44 @@ builds), exploring hidden labyrinth floors.
   - Hero starts at 100 life, 40 mana, 6 mana regen per turn. Enemies repeat their
     intents (Attack / Guard / Heal) in order; guard lasts until their next action.
   - Fights hold 1 enemy on floor 1, up to 3 deeper; elite rooms add an Elite (×2 life,
-    30% more damage) and maybe a normal; boss stairs hold the boss. Enemies get 30%
-    more life and 20% more damage per floor.
+    30% more damage) and maybe a normal; boss stairs hold the boss. Enemies get 60%
+    more life and 35% more damage per floor. Winning a fight restores 15% of life.
   - Evasion dodges attacks only, capped at 75%. Damage over time ignores mitigation.
   - Ailment numbers are in `game-sim/src/ailment.rs`.
   - `cargo test -p game-sim --test balance -- --ignored --nocapture` prints how each
-    unsupported starter gem does per room type. Baseline: floor-1 fights are won, the
-    floor-3 boss is not, so progression (supports, items, passives) must carry it.
+    unsupported level-1 starter gem does in single fights.
+
+## Balance
+
+The run logic lives in `game-sim/src/run.rs`, so `game-sim/src/bot.rs` can play whole
+runs through the same commands as the screens: it explores every room, hits the weakest
+enemy with its best affordable skill, wears whatever scores higher, sockets fitting
+supports, buys supports, takes the best-looking non-keystone passives, the first shrine
+boon and the first event choice.
+
+```bash
+cargo run -p game-sim --example bot --release -- 300 9
+```
+
+prints, per starter gem over 300 seeds, how often the bot dies on floor 1, beats the
+floor 3 / 6 / 9 bosses, and its average depth and level. Baseline after the first pass
+(300 runs, stop after floor 9):
+
+| Starter | dies f1 | f3 boss | f6 boss | f9 boss | avg level |
+| --- | --- | --- | --- | --- | --- |
+| Heavy Strike | 1% | 89% | 83% | 77% | 20.3 |
+| Split Shot | 3% | 82% | 73% | 67% | 19.0 |
+| Fireball | 1% | 85% | 79% | 77% | 19.7 |
+| Frost Nova | 2% | 80% | 71% | 70% | 18.7 |
+| Arc | 1% | 86% | 80% | 79% | 20.0 |
+| Venom Dart | 0% | 85% | 76% | 70% | 19.5 |
+
+The bot full-clears every floor, so it out-levels a player who skips rooms; most of its
+deaths come at the floor-3 boss. Changes in this pass: 15% life back after a win (floor-1
+deaths were up to 50%), enemy scaling from +30% life / +20% damage per floor to +60% /
++35% (almost nothing died after floor 3), Split Shot, Frost Nova, Arc and Venom Dart
+buffed and Heavy Strike trimmed to bring the starters within ~10 points, and shrines
+with no blessings left now resolve instead of soft-locking.
 
 ## Builds
 

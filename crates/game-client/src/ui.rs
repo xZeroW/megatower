@@ -1,7 +1,7 @@
 //! Shared screen plumbing: one root node rebuilt from [`Run`] whenever it
 //! changes, with the screen chosen by the run's mode.
 
-use crate::run::{Mode, Run};
+use crate::run::{Mode, Overlay, Run};
 use crate::{combat, inventory, map, menus, rooms, tree};
 use bevy::picking::events::PointerClick;
 use bevy::prelude::*;
@@ -40,17 +40,17 @@ fn setup(mut commands: Commands) {
 fn redraw(mut commands: Commands, run: Res<Run>, root: Single<Entity, With<ScreenRoot>>) {
     let root = *root;
     commands.entity(root).despawn_related::<Children>();
-    let children = match run.mode {
-        Mode::Starter(_) => menus::spawn_starter(&mut commands, &run),
-        Mode::Map => map::spawn(&mut commands, &run),
-        Mode::Combat => combat::spawn(&mut commands, &run),
-        Mode::Inventory => inventory::spawn(&mut commands, &run),
-        Mode::Tree => tree::spawn(&mut commands, &run),
-        Mode::Shop => rooms::spawn_shop(&mut commands, &run),
-        Mode::Shrine(_) => rooms::spawn_shrine(&mut commands, &run),
-        Mode::Event { .. } => rooms::spawn_event(&mut commands, &run),
-        Mode::Altar => rooms::spawn_altar(&mut commands, &run),
-        Mode::Dead => menus::spawn_dead(&mut commands, &run),
+    let children = match (run.overlay, &run.mode) {
+        (Some(Overlay::Inventory), _) => inventory::spawn(&mut commands, &run),
+        (Some(Overlay::Tree), _) => tree::spawn(&mut commands, &run),
+        (None, Mode::Starter(_)) => menus::spawn_starter(&mut commands, &run),
+        (None, Mode::Map) => map::spawn(&mut commands, &run),
+        (None, Mode::Combat) => combat::spawn(&mut commands, &run),
+        (None, Mode::Shop) => rooms::spawn_shop(&mut commands, &run),
+        (None, Mode::Shrine(_)) => rooms::spawn_shrine(&mut commands, &run),
+        (None, Mode::Event { .. }) => rooms::spawn_event(&mut commands, &run),
+        (None, Mode::Altar) => rooms::spawn_altar(&mut commands, &run),
+        (None, Mode::Dead) => menus::spawn_dead(&mut commands, &run),
     };
     commands.entity(root).add_children(&children);
 }

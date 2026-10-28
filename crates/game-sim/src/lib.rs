@@ -15,9 +15,12 @@
 //! - [`combat`]: the turn loop, enemy intents and encounters.
 //! - [`content`]: gem and enemy data from `assets/data/game/`.
 //! - [`labyrinth`]: floors of hidden rooms, their generation and movement.
+//! - [`run`]: a whole run: rooms, fights, rewards and the commands on them.
+//! - [`bot`]: a heuristic player for balance reports.
 //! - [`rng`]: the seeded random stream every roll goes through.
 
 pub mod ailment;
+pub mod bot;
 pub mod character;
 pub mod combat;
 pub mod content;
@@ -31,4 +34,5 @@ pub mod modifier;
 pub mod passives;
 pub mod rng;
 pub mod rooms;
+pub mod run;
 pub mod tags;

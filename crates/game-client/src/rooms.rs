@@ -123,7 +123,7 @@ pub fn spawn_shop(commands: &mut Commands, run: &Run) -> Vec<Entity> {
                 );
                 lines.push((format!("Buy: {} gold", gem_price(gems, gem)), 14.0, ACCENT));
                 button(commands, Val::Px(200.0), locked, lines, move |run| {
-                    run.buy(i)
+                    run.buy(i);
                 })
             }
             None => button(
@@ -153,7 +153,9 @@ pub fn spawn_shop(commands: &mut Commands, run: &Run) -> Vec<Entity> {
     let refresh = small_button(
         commands,
         format!("Refresh unlocked gems ({} gold)", shop.refresh_cost()),
-        |run| run.refresh_shop(),
+        |run| {
+            run.refresh_shop();
+        },
     );
 
     let sell_title = commands
@@ -167,7 +169,7 @@ pub fn spawn_shop(commands: &mut Commands, run: &Run) -> Vec<Entity> {
                 (format!("Sell for {}", sell_price(gems, gem)), 12.0, ACCENT),
             ];
             sells.push(button(commands, Val::Px(160.0), false, lines, move |run| {
-                run.sell(i)
+                run.sell(i);
             }));
         }
     }
@@ -307,7 +309,7 @@ pub fn spawn_altar(commands: &mut Commands, run: &Run) -> Vec<Entity> {
             (next, 13.0, if uses > 0 { ACCENT } else { TEXT_DIM }),
         ];
         cards.push(button(commands, Val::Px(180.0), false, lines, move |run| {
-            run.upgrade_at_altar(spot)
+            run.upgrade_at_altar(spot);
         }));
     }
     let gems = row(commands, &cards);

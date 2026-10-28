@@ -45,9 +45,9 @@ pub struct EnemyDef {
 }
 
 /// Percent more life per floor below the first.
-pub const LIFE_PER_FLOOR: f64 = 30.0;
+pub const LIFE_PER_FLOOR: f64 = 60.0;
 /// Percent more damage per floor below the first.
-pub const DAMAGE_PER_FLOOR: f64 = 20.0;
+pub const DAMAGE_PER_FLOOR: f64 = 35.0;
 pub const ELITE_LIFE: f64 = 2.0;
 /// Percent more damage for elites.
 pub const ELITE_DAMAGE: f64 = 30.0;
