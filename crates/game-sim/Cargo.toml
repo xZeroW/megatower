@@ -1,0 +1,11 @@
+[package]
+name = "game-sim"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "game_sim"
+path = "src/lib.rs"
+
+[dependencies]
+serde.workspace = true
