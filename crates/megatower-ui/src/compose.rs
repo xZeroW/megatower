@@ -555,6 +555,20 @@ pub fn market_container(game: &Game) -> Option<Entity> {
 }
 
 pub(crate) fn item_draws(game: &Game, item: Entity, rect: R, locked: bool, out: &mut Vec<Draw>) {
+    item_draws_with(game, item, rect, locked, None, out);
+}
+
+/// `ItemTextureRect.process_rarity_glow`: with a merge preview, the border
+/// and fill pulse toward `next_rarity` while the icon greys out and the merge
+/// arrow fades in, all at `ratio` (`|sin(item_time * 4.5)|`).
+fn item_draws_with(
+    game: &Game,
+    item: Entity,
+    rect: R,
+    locked: bool,
+    glow: Option<(i32, f32)>,
+    out: &mut Vec<Draw>,
+) {
     let Some(value) = game.world.get::<Item>(item) else {
         return;
     };
@@ -578,9 +592,41 @@ pub(crate) fn item_draws(game: &Game, item: Entity, rect: R, locked: bool, out: 
     if value.is_banish {
         out.push(image(rect, "assets/textures/ui/banish_slot.png"));
     } else {
-        // `default_rarity_color` is white: the border texture carries its own fill.
-        out.push(image([rect[0], rect[1], 34.0, 34.0], &border));
-        out.push(image(inner, &icon));
+        let outer = [rect[0], rect[1], 34.0, 34.0];
+        match glow {
+            Some((next, ratio)) => {
+                let c = ItemRarity::font_color(next).to_srgba();
+                let lerp = |a: f32, b: f32| a + (b - a) * ratio;
+                out.push(tinted(outer, &border, [1.0, 1.0, 1.0, 1.0 - ratio]));
+                out.push(tinted(
+                    outer,
+                    ItemRarity::texture(next),
+                    [
+                        lerp(1.0, c.red),
+                        lerp(1.0, c.green),
+                        lerp(1.0, c.blue),
+                        ratio,
+                    ],
+                ));
+                let grey = lerp(1.0, 0.4);
+                out.push(tinted(inner, &icon, [grey, grey, grey, 1.0]));
+                let arrow = if value.is_reforge {
+                    "assets/textures/ui/reforge_merge_icon.png"
+                } else {
+                    "assets/textures/ui/merge_icon.png"
+                };
+                out.push(tinted(
+                    [rect[0] + 1.0, rect[1] + 1.0, 32.0, 32.0],
+                    arrow,
+                    [1.0, 1.0, 1.0, ratio * 0.75],
+                ));
+            }
+            None => {
+                // `default_rarity_color` is white: the border texture carries its own fill.
+                out.push(image(outer, &border));
+                out.push(image(inner, &icon));
+            }
+        }
     }
     if value.reforge_level > 0 && !value.is_banish {
         out.push(Draw::Image {
@@ -607,6 +653,70 @@ pub(crate) fn item_draws(game: &Game, item: Entity, rect: R, locked: bool, out: 
     if locked {
         draw_lock(rect, out);
     }
+}
+
+/// `update_upgrade_item_texture_rect`: while an item is hovered or dragged,
+/// the items it could merge with (and the item itself) glow toward the next
+/// rarity. Keyed by container and index.
+fn merge_glows(
+    game: &Game,
+    ui: &UiState,
+    rects: &Rects,
+) -> std::collections::HashMap<(Entity, i32), i32> {
+    let mut glows = std::collections::HashMap::new();
+    let target = ui
+        .dragged
+        .or_else(|| ui.cursor.and_then(|[x, y]| hit_slot(game, ui, rects, x, y)));
+    let Some(target) = target else {
+        return glows;
+    };
+    let (Some(tc), Some(target_entity)) = (target.container, target.get_item(&game.world)) else {
+        return glows;
+    };
+    let Some(target_item) = game.world.get::<Item>(target_entity) else {
+        return glows;
+    };
+    let local = game.local();
+    let state = game.state(local);
+    if Some(tc) == state.equipment {
+        return glows;
+    }
+    let player = game.player(local);
+    let containers = [
+        state.equipment,
+        Some(state.inventory),
+        Some(player.merchant),
+        Some(player.mystic_trader),
+    ];
+    for container in containers.into_iter().flatten() {
+        for (index, other) in container_items(game, container).into_iter().enumerate() {
+            let Some(other) = other else { continue };
+            if other == target_entity {
+                continue;
+            }
+            let Some(other_item) = game.world.get::<Item>(other) else {
+                continue;
+            };
+            let mut skip_main = false;
+            if !Item::is_compatible(Some(other_item), Some(target_item)) {
+                skip_main = true;
+                if !Item::is_compatible(Some(target_item), Some(other_item)) {
+                    continue;
+                }
+            }
+            let rarity = target_item.rarity() as i32;
+            let next = if other_item.is_reforge {
+                rarity
+            } else {
+                (rarity + 1).min(8)
+            };
+            if !skip_main {
+                glows.insert((tc, target.index), next);
+            }
+            glows.insert((container, index as i32), next);
+        }
+    }
+    glows
 }
 
 /// `update_upgrade_mark_visuals`: an item that could merge with another one
@@ -655,19 +765,30 @@ fn upgrade_mark(game: &Game, slot: Slot, item: Entity, rect: R, out: &mut Vec<Dr
         let c = outline.to_srgba();
         [c.red, c.green, c.blue, 1.0]
     };
-    let mark = [rect[0] + 26.0, rect[1] - 1.0, 7.0, 7.0];
-    for (dx, dy) in [(-1.0, 0.0), (1.0, 0.0), (0.0, -1.0), (0.0, 1.0)] {
-        out.push(tinted(
-            [mark[0] + dx, mark[1] + dy, mark[2], mark[3]],
-            "assets/textures/ui/upgrade_mark.png",
-            outline,
-        ));
+    // `upgrade_mark.png` is red where the main colour goes and white where
+    // the outline colour goes (its shader swaps them), so it is drawn by pixel.
+    const SHAPE: [&str; 7] = [
+        "...O...", "..OMO..", ".OMMMO.", "OMMMMMO", "OOOMOOO", "..OMO..", "..OOO..",
+    ];
+    let main = [main.red, main.green, main.blue, 1.0];
+    for (row, line) in SHAPE.iter().enumerate() {
+        for (col, c) in line.chars().enumerate() {
+            let color = match c {
+                'M' => main,
+                'O' => outline,
+                _ => continue,
+            };
+            out.push(Draw::Fill {
+                rect: [
+                    rect[0] + 26.0 + col as f32,
+                    rect[1] - 1.0 + row as f32,
+                    1.0,
+                    1.0,
+                ],
+                color,
+            });
+        }
     }
-    out.push(tinted(
-        mark,
-        "assets/textures/ui/upgrade_mark.png",
-        [main.red, main.green, main.blue, 1.0],
-    ));
 }
 
 /// `ItemTextureRect.LockTextureRect`: `lock_icon.png` 14x15 below the slot's
@@ -2374,6 +2495,8 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         // The market row stays; the merchant's stock is in the action strip.
         shops.push((player.market, &rects.market));
     }
+    let glows = merge_glows(game, ui, rects);
+    let ratio = (ui.time * 4.5).sin().abs() as f32;
     for (container, list) in lists.into_iter().chain(shops) {
         let items = container_items(game, container);
         let (locked, challenge) = game
@@ -2413,7 +2536,26 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
                 let in_shop =
                     [player.market, player.merchant, player.mystic_trader].contains(&container);
                 let dim = in_shop && !game.can_buy_item(container, index as i32);
-                item_draws(game, *item, *rect, is_locked && !dim, &mut out);
+                let glow = glows
+                    .get(&(container, index as i32))
+                    .map(|next| (*next, ratio));
+                item_draws_with(game, *item, *rect, is_locked && !dim, glow, &mut out);
+                // `OutlineTextureRect`: a white (orange when discounted)
+                // outline on the hovered slot.
+                if ui.dragged.is_none() && ui.cursor.is_some_and(|[x, y]| contains(*rect, x, y)) {
+                    let discounted = game
+                        .world
+                        .get::<Item>(*item)
+                        .is_some_and(|i| i.discount > 0.0);
+                    out.push(Draw::Image {
+                        rect: [rect[0] - 1.0, rect[1] - 1.0, 36.0, 36.0],
+                        path: trim("assets/textures/ui/item_slot_outline.png"),
+                        region: Some([if discounted { 36.0 } else { 0.0 }, 0.0, 36.0, 36.0]),
+                        tint: WHITE,
+                        slice: None,
+                        flip_x: false,
+                    });
+                }
                 if in_shop {
                     if dim {
                         // The item's group is drawn at 20% opacity: the same
