@@ -6,6 +6,7 @@
 //! battle log. Coordinates are room-image pixels (352x304), drawn at the
 //! room view's scale.
 
+use crate::bars::{BarKey, HEALTH_TRAIL, PillFill};
 use crate::room_view::RoomImage;
 use crate::room_view::view_size;
 use crate::run::{Mode, Run};
@@ -713,14 +714,16 @@ impl Kit<'_> {
             self.text(commands, [cx - w / 2.0, y, w, 13.0], value, color),
         ]
     }
-
     /// `pill_bar`: the `minimal_bar` outline around a `minimal_bar_fill` pill.
+    /// With `tracked` (key, value, max) the fills are driven by
+    /// `bars.rs` every frame, with the orange trail under the main fill.
     fn pill_bar(
         &self,
         commands: &mut Commands,
         rect: [f32; 4],
         frac: f32,
         color: Color,
+        tracked: Option<(BarKey, f64, f64)>,
     ) -> Vec<Entity> {
         let mut out = vec![self.sliced(
             commands,
@@ -729,15 +732,41 @@ impl Kit<'_> {
             4.0,
             color,
         )];
-        let w = (rect[2] * frac.clamp(0.0, 1.0)).round();
-        if w >= 1.0 {
-            out.push(self.sliced(
+        let fill = |commands: &mut Commands, w: f32, tint: Color| {
+            self.sliced(
                 commands,
                 [rect[0], rect[1], w, rect[3]],
                 "assets/textures/ui/minimal_bar_fill.png",
-                (w / 2.0).min(3.0),
-                color,
-            ));
+                (w / 2.0).clamp(1.0, 4.0),
+                tint,
+            )
+        };
+        match tracked {
+            Some((key, value, max)) => {
+                for (trail, tint) in [(true, HEALTH_TRAIL), (false, color)] {
+                    let w = if trail {
+                        0.0
+                    } else {
+                        (rect[2] * frac.clamp(0.0, 1.0)).round().max(1.0)
+                    };
+                    let e = fill(commands, w, tint);
+                    commands.entity(e).insert(PillFill {
+                        key,
+                        trail,
+                        rect,
+                        value,
+                        max,
+                        scale: scale(),
+                    });
+                    out.push(e);
+                }
+            }
+            None => {
+                let w = (rect[2] * frac.clamp(0.0, 1.0)).round();
+                if w >= 1.0 {
+                    out.push(fill(commands, w, color));
+                }
+            }
         }
         out
     }
@@ -880,7 +909,7 @@ pub fn spawn_enemies(
         let center = ox + l.size[0] / 2.0;
         if guard > 0.0 {
             let main = r("ArmorBar/HBoxContainer/MarginContainer/MainBarContainer/ProgressBarMain");
-            parts.extend(kit.pill_bar(commands, main, 1.0, hex(ARMOR)));
+            parts.extend(kit.pill_bar(commands, main, 1.0, hex(ARMOR), None));
             let back = r("ArmorBar/HBoxContainer/MarginContainer/BackPanel");
             parts.extend(kit.label_panel(
                 commands,
@@ -897,7 +926,13 @@ pub fn spawn_enemies(
             r("HealthBar/HBoxContainer/MarginContainer/MainBarContainer/ProgressBarMain");
         main[2] += wide;
         let f = &enemy.fighter;
-        parts.extend(kit.pill_bar(commands, main, (f.life / f.max_life) as f32, hex(HEALTH)));
+        parts.extend(kit.pill_bar(
+            commands,
+            main,
+            (f.life / f.max_life) as f32,
+            hex(HEALTH),
+            Some((BarKey::Enemy(i), f.life, f.max_life)),
+        ));
         let back = r("HealthBar/HBoxContainer/MarginContainer/BackPanel");
         parts.extend(kit.label_panel(
             commands,

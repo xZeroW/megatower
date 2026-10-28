@@ -2,6 +2,7 @@
 //! fight what the rooms hold (`design/GAME-DESIGN.md`). Rooms without a fight
 //! resolve with a key press until shops, shrines and events exist.
 
+mod bars;
 mod combat;
 mod describe;
 mod dev;
@@ -38,6 +39,7 @@ fn main() {
             ui::UiPlugin,
             room_view::RoomViewPlugin,
             fighters::FightersPlugin,
+            bars::BarsPlugin,
             dev::DevPlugin,
         ))
         .run();

@@ -48,6 +48,9 @@ builds), exploring hidden labyrinth floors.
   enemy actions lunge it, dodges sidestep it, with megatower's keyframes. Clicking a
   sprite targets it; the target's name, the hero, skills and the log sit in the side
   panel.
+  Life bars animate like megatower's (`game-client/src/bars.rs`, from `resource_bar.rs`):
+  a hit drops the main fill at once while an orange trail keeps the old value, waits
+  0.25s, then drains at 2.5x the maximum per second; the hero's life bar does the same.
 - Later options: scouting items that reveal room types, a danger clock that makes fights
   harder the longer you wander.
 

@@ -2,6 +2,7 @@
 //! megatower draws them (`fighters.rs`), and the hero, skills and battle log fill the
 //! side panel.
 
+use crate::bars::{BarKey, HEALTH_TRAIL, flat_bar};
 use crate::fighters::spawn_enemies;
 use crate::room_view::room_image;
 use crate::run::Run;
@@ -72,7 +73,14 @@ fn side_panel(commands: &mut Commands, run: &Run, battle: &Battle) -> Entity {
                 ACCENT,
             ))
             .id(),
-        bar(commands, (hero.life / hero.max_life) as f32, LIFE),
+        flat_bar(
+            commands,
+            BarKey::Hero,
+            hero.life,
+            hero.max_life,
+            LIFE,
+            HEALTH_TRAIL,
+        ),
         commands
             .spawn(text(
                 format!("Life {:.0} / {:.0}", hero.life, hero.max_life),

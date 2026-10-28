@@ -12,6 +12,8 @@
 //!   room screen, `g` grants 100 gold, `f` / `a`
 //!   / `d` / `z` walk ahead / left / right / back through the room view, `m`
 //!   toggles the full map.
+//! - `GAME_LATE_MOVES`: more commands, played a second in.
+//! - `GAME_HOLD_BARS=1`: stop bar trails from draining, for screenshots.
 //! - `GAME_HOLD_POPUPS=1`: freeze combat text mid-rise so a screenshot has it.
 //! - `GAME_CAPTURE=<path>`: save a screenshot there once the UI has settled,
 //!   then exit.
@@ -25,7 +27,8 @@ pub struct DevPlugin;
 
 impl Plugin for DevPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(PostStartup, apply_moves);
+        app.add_systems(PostStartup, apply_moves)
+            .add_systems(Update, late_moves);
         if std::env::var_os("GAME_CAPTURE").is_some() {
             app.add_systems(Update, capture);
         }
@@ -36,6 +39,28 @@ fn apply_moves(mut run: ResMut<Run>, mut walk: ResMut<crate::room_view::Walk>) {
     let Ok(moves) = std::env::var("GAME_MOVES") else {
         return;
     };
+    play(&moves, &mut run, &mut walk);
+}
+
+/// `GAME_LATE_MOVES`: the same commands, played once a second in, so effects
+/// that need the screen to have seen the earlier state (bar trails, combat
+/// text) are in flight when the screenshot is taken.
+fn late_moves(
+    time: Res<Time>,
+    mut run: ResMut<Run>,
+    mut walk: ResMut<crate::room_view::Walk>,
+    mut done: Local<bool>,
+) {
+    if *done || time.elapsed_secs() < 1.0 {
+        return;
+    }
+    *done = true;
+    if let Ok(moves) = std::env::var("GAME_LATE_MOVES") {
+        play(&moves, &mut run, &mut walk);
+    }
+}
+
+fn play(moves: &str, run: &mut Run, walk: &mut crate::room_view::Walk) {
     for c in moves.chars() {
         match c {
             'N' | 'n' => run.step(Dir::North),
@@ -46,10 +71,10 @@ fn apply_moves(mut run: ResMut<Run>, mut walk: ResMut<crate::room_view::Walk>) {
             'p' => run.toggle(crate::run::Overlay::Tree),
             'm' => run.toggle(crate::run::Overlay::Map),
             // Walks played by the room view (only the last one runs).
-            'f' => walk.start(Turn::Ahead, &mut run),
-            'a' => walk.start(Turn::Left, &mut run),
-            'd' => walk.start(Turn::Right, &mut run),
-            'z' => walk.start(Turn::Back, &mut run),
+            'f' => walk.start(Turn::Ahead, run),
+            'a' => walk.start(Turn::Left, run),
+            'd' => walk.start(Turn::Right, run),
+            'z' => walk.start(Turn::Back, run),
             'M' => run.debug_walk_to_kind(|k| k == RoomKind::Merchant),
             'H' => run.debug_walk_to_kind(|k| k == RoomKind::Shrine),
             'V' => run.debug_walk_to_kind(|k| k == RoomKind::Event),
