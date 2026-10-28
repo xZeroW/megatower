@@ -59,3 +59,9 @@ Release builds use the embedded copies; `MEGALOOT_HOT_ROOMS=0` turns it off in d
 ## Data files
 
 Everything under `assets/data/` (`layouts/`, `content/`, `rooms/`) is RON, compiled into the binary and parsed with `megatower_core::ron_data::from_str`. The recovery scripts in `tools/` (`export_*.py`, `resolve_godot_ui.py`, …) predate that and still write JSON to those paths; the `.ron` files are now the source of truth, so a regenerated JSON has to be converted before it replaces one.
+
+## Runtime assets
+
+The game loads fonts, textures, and audio from the workspace `assets/` folder,
+not from the recovered Godot project. The recovered source remains optional
+for export and parity tools, and is not needed at runtime.
