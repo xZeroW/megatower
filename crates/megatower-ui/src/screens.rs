@@ -86,6 +86,10 @@ pub fn layout_visuals(layout: &Layout, disabled: &[&str]) -> Vec<Draw> {
                 let Some(texture) = &v.texture else { continue };
                 let dim = disabled.iter().any(|d| v.path.contains(&format!("/{d}/")));
                 let mut tint = v.palette.map_or([1.0; 4], palette);
+                // The market button's `ShaderMaterial` modulates its icon.
+                if v.path.ends_with("MarketButton/NinePatchRect") {
+                    tint = [0.341_176, 0.270_588, 0.192_157, 1.0];
+                }
                 if dim {
                     tint = [tint[0] * 0.5, tint[1] * 0.5, tint[2] * 0.5, tint[3]];
                 }

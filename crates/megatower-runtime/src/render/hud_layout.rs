@@ -20,7 +20,12 @@ pub struct HudLayoutPlugin;
 /// Controls whose content is live game state; the dynamic HUD draws them.
 /// Editor-default labels, partner portraits and status icons never show.
 fn is_dynamic(visual: &Visual) -> bool {
-    visual.kind == "Label"
+    visual.path.contains("MarketRefreshButton")
+        || visual.path.contains("/MarketButton")
+        || visual
+            .path
+            .contains("MainMarginContainer/Control/OptionsButton")
+        || visual.kind == "Label"
         || visual.path.contains("PartnerContainerHolder")
         || visual.path.contains("AdventurerPortrait")
         || visual.path.contains("EffectContainerHolder")

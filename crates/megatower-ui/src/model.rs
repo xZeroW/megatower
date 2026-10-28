@@ -15,8 +15,18 @@ pub fn contains(rect: R, x: f32, y: f32) -> bool {
     x >= rect[0] && y >= rect[1] && x < rect[0] + rect[2] && y < rect[1] + rect[3]
 }
 
+/// Paths of the controls that belong to the HUD's hover-reactive buttons.
+pub fn is_hud_button(path: &str) -> bool {
+    path.contains("MarketRefreshButton")
+        || path.contains("/MarketButton")
+        || path.contains("MainMarginContainer/Control/OptionsButton")
+}
+
 #[derive(Clone, Debug)]
 pub struct Rects {
+    /// Controls of the HUD's static buttons (market, market refresh, options
+    /// gear): drawn by `compose` so they can react to the pointer.
+    pub buttons: Vec<megatower_assets::godot_layout::Visual>,
     pub equipment: Vec<R>,
     pub inventory: Vec<R>,
     pub market: Vec<R>,
@@ -117,7 +127,14 @@ impl Rects {
             .map(|v| v.rect)
             .collect();
         let mana = find(&|v| v.kind == "ProgressBar" && v.path.contains("ManaBar")).rect;
+        let buttons = layout
+            .visuals
+            .iter()
+            .filter(|v| is_hud_button(&v.path) && v.rect[2] > 0.0 && v.rect[3] > 0.0)
+            .cloned()
+            .collect();
         Self {
+            buttons,
             equipment,
             inventory,
             market,

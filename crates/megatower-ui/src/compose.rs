@@ -2186,6 +2186,26 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     let state_died = game.char_state(local).died;
     let busy = ui.timeline.busy();
 
+    // The market, market refresh and options buttons.
+    for v in &rects.buttons {
+        if v.kind == "ColorRect" {
+            if v.palette.is_some() {
+                out.push(Draw::Fill {
+                    rect: v.rect,
+                    color: palette(v.palette.unwrap_or(1)),
+                });
+            }
+            continue;
+        }
+        out.extend(super::screens::layout_visuals(
+            &megatower_assets::godot_layout::Layout {
+                viewport: [640.0, 360.0],
+                visuals: vec![v.clone()],
+            },
+            &[],
+        ));
+    }
+
     // ---- left: profile ----
     let profile_tab = ui.tab == Tab::Profile;
     if profile_tab {
