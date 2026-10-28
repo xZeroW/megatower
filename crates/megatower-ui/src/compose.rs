@@ -554,16 +554,6 @@ pub fn market_container(game: &Game) -> Option<Entity> {
     })
 }
 
-/// Multiplies the opacity of every draw in `draws`.
-fn fade(draws: &mut [Draw], alpha: f32) {
-    for draw in draws {
-        match draw {
-            Draw::Fill { color, .. } | Draw::Text { color, .. } => color[3] *= alpha,
-            Draw::Image { tint, .. } => tint[3] *= alpha,
-        }
-    }
-}
-
 pub(crate) fn item_draws(game: &Game, item: Entity, rect: R, locked: bool, out: &mut Vec<Draw>) {
     let Some(value) = game.world.get::<Item>(item) else {
         return;
@@ -608,27 +598,90 @@ pub(crate) fn item_draws(game: &Game, item: Entity, rect: R, locked: bool, out: 
         });
     }
     if value.discount > 0.0 {
-        out.push(text(
-            [rect[0] + 1.0, rect[1] + 20.0, 33.0, 13.0],
-            format!("-{}%", (value.discount * 100.0).round()),
-            hex(0x6abe30),
-            Align::Left,
+        // `DiscountTextureRect`: the badge hangs off the slot's top-left.
+        out.push(image(
+            [rect[0] - 5.0, rect[1] - 5.0, 21.0, 21.0],
+            "assets/textures/icons/discount_icon.png",
         ));
     }
     if locked {
-        // `ItemTextureRect.LockTextureRect`: `lock_icon.png` 14x15 below the
-        // slot's centre, in the primary colour.
-        let lock = [rect[0] + 10.0, rect[1] + 25.0, 14.0, 15.0];
-        // The material outlines the icon in the background colour.
-        for (dx, dy) in [(-1.0, 0.0), (1.0, 0.0), (0.0, -1.0), (0.0, 1.0)] {
-            out.push(tinted(
-                [lock[0] + dx, lock[1] + dy, lock[2], lock[3]],
-                "assets/textures/ui/lock_icon.png",
-                palette(1),
-            ));
-        }
-        out.push(tinted(lock, "assets/textures/ui/lock_icon.png", palette(4)));
+        draw_lock(rect, out);
     }
+}
+
+/// `update_upgrade_mark_visuals`: an item that could merge with another one
+/// the player holds (or can buy) gets an arrow in the next rarity's colour.
+fn upgrade_mark(game: &Game, slot: Slot, item: Entity, rect: R, out: &mut Vec<Draw>) {
+    let Some(value) = game.world.get::<Item>(item) else {
+        return;
+    };
+    if value.is_reforge {
+        return;
+    }
+    let local = game.local();
+    let player = game.player(local);
+    let state = game.state(local);
+    let containers = [
+        state.equipment,
+        Some(state.inventory),
+        Some(player.market),
+        Some(player.merchant),
+        Some(player.mystic_trader),
+    ];
+    let mergeable = containers.into_iter().flatten().any(|container| {
+        container_items(game, container)
+            .into_iter()
+            .enumerate()
+            .any(|(index, other)| {
+                let Some(other) = other else { return false };
+                let test = entity_slot(container, index);
+                test != slot
+                    && game
+                        .world
+                        .get::<Item>(other)
+                        .is_some_and(|i| !i.is_tinker_kit)
+                    && megatower_core::inventory::interactions::can_merge(&game.world, &test, &slot)
+            })
+    });
+    if !mergeable {
+        return;
+    }
+    let next = (value.rarity() as i32 + 1).min(8);
+    let main = ItemRarity::font_color(next).to_srgba();
+    let outline = ItemRarity::outline_color(next);
+    let outline = if outline == bevy::color::Color::NONE {
+        hex(0x0b0f17)
+    } else {
+        let c = outline.to_srgba();
+        [c.red, c.green, c.blue, 1.0]
+    };
+    let mark = [rect[0] + 26.0, rect[1] - 1.0, 7.0, 7.0];
+    for (dx, dy) in [(-1.0, 0.0), (1.0, 0.0), (0.0, -1.0), (0.0, 1.0)] {
+        out.push(tinted(
+            [mark[0] + dx, mark[1] + dy, mark[2], mark[3]],
+            "assets/textures/ui/upgrade_mark.png",
+            outline,
+        ));
+    }
+    out.push(tinted(
+        mark,
+        "assets/textures/ui/upgrade_mark.png",
+        [main.red, main.green, main.blue, 1.0],
+    ));
+}
+
+/// `ItemTextureRect.LockTextureRect`: `lock_icon.png` 14x15 below the slot's
+/// centre, in the primary colour with a background-colour outline.
+fn draw_lock(rect: R, out: &mut Vec<Draw>) {
+    let lock = [rect[0] + 10.0, rect[1] + 25.0, 14.0, 15.0];
+    for (dx, dy) in [(-1.0, 0.0), (1.0, 0.0), (0.0, -1.0), (0.0, 1.0)] {
+        out.push(tinted(
+            [lock[0] + dx, lock[1] + dy, lock[2], lock[3]],
+            "assets/textures/ui/lock_icon.png",
+            palette(1),
+        ));
+    }
+    out.push(tinted(lock, "assets/textures/ui/lock_icon.png", palette(4)));
 }
 
 /// One drawable piece of a tooltip row.
@@ -2325,13 +2378,68 @@ pub fn compose(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
             if let Some(Some(item)) = items.get(index) {
                 let is_locked =
                     locked.contains(&(index as i64)) || challenge.contains(&(index as i64));
-                let start = out.len();
-                item_draws(game, *item, *rect, is_locked, &mut out);
-                // Shop items you cannot buy are drawn at about 20% opacity.
-                let shops = [player.market, player.merchant, player.mystic_trader];
-                if shops.contains(&container) && !game.can_buy_item(container, index as i32) {
-                    fade(&mut out[start..], 0.19);
+                let in_shop =
+                    [player.market, player.merchant, player.mystic_trader].contains(&container);
+                let dim = in_shop && !game.can_buy_item(container, index as i32);
+                item_draws(game, *item, *rect, is_locked && !dim, &mut out);
+                if in_shop {
+                    if dim {
+                        // The item's group is drawn at 20% opacity: the same
+                        // as the background colour laid over it at 80%.
+                        let veil = [palette(1)[0], palette(1)[1], palette(1)[2], 0.8];
+                        out.push(Draw::Fill {
+                            rect: [rect[0], rect[1], 34.0, 34.0],
+                            color: veil,
+                        });
+                        // The discount badge hangs outside the slot.
+                        if game
+                            .world
+                            .get::<Item>(*item)
+                            .is_some_and(|i| i.discount > 0.0)
+                        {
+                            for r in [
+                                [rect[0] - 5.0, rect[1] - 5.0, 21.0, 5.0],
+                                [rect[0] - 5.0, rect[1], 5.0, 16.0],
+                            ] {
+                                out.push(Draw::Fill {
+                                    rect: r,
+                                    color: veil,
+                                });
+                            }
+                        }
+                        if is_locked {
+                            draw_lock(*rect, &mut out);
+                        }
+                    }
+                    // `HighlightTextureRect`: a dot under shop items whose
+                    // definition the player already owns.
+                    let id = game
+                        .world
+                        .get::<Item>(*item)
+                        .and_then(|i| i.resource.as_ref().map(|r| r.id.clone()));
+                    let state = game.state(game.local());
+                    let owned = id.is_some_and(|id| {
+                        [state.equipment, Some(state.inventory)]
+                            .into_iter()
+                            .flatten()
+                            .flat_map(|c| container_items(game, c))
+                            .flatten()
+                            .any(|owned| {
+                                game.world
+                                    .get::<Item>(owned)
+                                    .and_then(|i| i.resource.as_ref())
+                                    .is_some_and(|r| r.id == id)
+                            })
+                    });
+                    if owned {
+                        out.push(tinted(
+                            [rect[0] + 14.0, rect[1] + 35.5, 6.0, 7.0],
+                            "assets/textures/icons/p_dot.png",
+                            hex(0x2a2a35),
+                        ));
+                    }
                 }
+                upgrade_mark(game, slot, *item, *rect, &mut out);
             }
         }
     }
