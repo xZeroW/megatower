@@ -82,7 +82,10 @@ mod tests {
     fn every_enemy_has_a_sprite_on_disk() {
         let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
         for e in &get().enemies {
-            let sprite = e.sprite.as_ref().unwrap_or_else(|| panic!("{} has no sprite", e.id));
+            let sprite = e
+                .sprite
+                .as_ref()
+                .unwrap_or_else(|| panic!("{} has no sprite", e.id));
             assert!(root.join(sprite).is_file(), "{}: {sprite}", e.id);
         }
     }

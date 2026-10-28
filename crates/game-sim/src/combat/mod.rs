@@ -16,7 +16,7 @@ use crate::damage::{Defence, HitSpec, resolve_hit};
 use crate::gems::{Skill, Targeting};
 use crate::modifier::{ModSet, Stat};
 use crate::rng::Rng;
-use crate::tags::{Tag, Tags};
+use crate::tags::{DamageType, Tag, Tags};
 
 pub const HERO_LIFE: f64 = 100.0;
 pub const HERO_MANA: f64 = 40.0;
@@ -121,6 +121,8 @@ pub enum CombatEvent {
         target: Actor,
         damage: f64,
         crit: bool,
+        /// The type that dealt most of it.
+        kind: DamageType,
     },
     Dodge {
         target: Actor,
@@ -212,10 +214,16 @@ impl Strike<'_> {
             hit.damage[t] *= multiplier;
         }
         let total = hit.damage.total();
+        let kind = hit
+            .damage
+            .iter()
+            .max_by(|a, b| a.1.total_cmp(&b.1))
+            .map_or(DamageType::Physical, |(t, _)| t);
         log.push(CombatEvent::Hit {
             target: actor,
             damage: total,
             crit: hit.crit,
+            kind,
         });
         let died = target.take(total);
         if !self.no_ailments && target.alive() {

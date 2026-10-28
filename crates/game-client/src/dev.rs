@@ -12,6 +12,7 @@
 //!   room screen, `g` grants 100 gold, `f` / `a`
 //!   / `d` / `z` walk ahead / left / right / back through the room view, `m`
 //!   toggles the full map.
+//! - `GAME_HOLD_POPUPS=1`: freeze combat text mid-rise so a screenshot has it.
 //! - `GAME_CAPTURE=<path>`: save a screenshot there once the UI has settled,
 //!   then exit.
 

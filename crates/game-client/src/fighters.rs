@@ -6,8 +6,9 @@
 //! battle log. Coordinates are room-image pixels (352x304), drawn at the
 //! room view's scale.
 
+use crate::room_view::RoomImage;
 use crate::room_view::view_size;
-use crate::run::Run;
+use crate::run::{Mode, Run};
 use bevy::image::{ImageLoaderSettings, ImageSampler};
 use bevy::picking::events::PointerClick;
 use bevy::prelude::*;
@@ -16,6 +17,7 @@ use game_sim::ailment::Ailment;
 use game_sim::combat::{Actor, Battle, CombatEvent, Enemy, IntentKind};
 use game_sim::content;
 use game_sim::modifier::Stat;
+use game_sim::tags::DamageType;
 use megatower_assets::godot_layout::enemy_container_layout;
 use megatower_assets::palette::palette;
 use megatower_assets::room_screen::ROOM_VIEWPORT_SIZE;
@@ -27,7 +29,18 @@ pub struct FightersPlugin;
 impl Plugin for FightersPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<Animations>()
-            .add_systems(Update, (track_events, animate_sprites).chain());
+            .init_resource::<PendingPopups>()
+            .add_systems(
+                Update,
+                (
+                    clean_enemy_sprites,
+                    track_events,
+                    spawn_popups,
+                    animate_sprites,
+                    animate_popups,
+                )
+                    .chain(),
+            );
     }
 }
 
@@ -124,7 +137,9 @@ fn sheet_info(path: &str) -> &'static SheetInfo {
             let (mut min_x, mut max_x) = (w, 0);
             for y in 0..h {
                 for x in 0..w {
-                    if data.get((y * w + x) * 4 + 3).is_some_and(|&a| a > 0) {
+                    let px = &data[((y * w + x) * 4).min(data.len().saturating_sub(4))..];
+                    let marker = px.len() >= 4 && px[0] == 255 && px[1] == 0 && px[2] == 0;
+                    if px.len() >= 4 && px[3] > 0 && !marker {
                         min_x = min_x.min(x);
                         max_x = max_x.max(x);
                     }
@@ -152,6 +167,44 @@ fn sheet_info(path: &str) -> &'static SheetInfo {
     info
 }
 
+/// `enemy_container.gdshader` discards pure-red marker pixels
+/// (`texture(...).rgb == vec3(1, 0, 0)`) on enemy sprites: they mark the feet
+/// in the source art. Godot's importer also clears the colour of fully
+/// transparent pixels, which keeps stray colour from bleeding in.
+fn clean_enemy_sprites(
+    mut events: MessageReader<AssetEvent<Image>>,
+    mut images: ResMut<Assets<Image>>,
+    assets: Res<AssetServer>,
+) {
+    for event in events.read() {
+        let AssetEvent::LoadedWithDependencies { id } = event else {
+            continue;
+        };
+        let is_enemy = assets.get_path(*id).is_some_and(|path| {
+            let path = path.to_string();
+            path.contains("textures/enemies/") || path.contains("textures/special_enemies/")
+        });
+        let Some(mut image) = images.get_mut(*id) else {
+            continue;
+        };
+        if image.texture_descriptor.format.block_copy_size(None) != Some(4) {
+            continue;
+        }
+        if let Some(data) = image.data.as_mut() {
+            for pixel in data.as_chunks_mut::<4>().0 {
+                if is_enemy && pixel[0] == 255 && pixel[1] == 0 && pixel[2] == 0 {
+                    pixel[3] = 0;
+                }
+                if pixel[3] == 0 {
+                    pixel[0] = 0;
+                    pixel[1] = 0;
+                    pixel[2] = 0;
+                }
+            }
+        }
+    }
+}
+
 /// When each enemy was last hit, attacked and dodged (seconds), from the log.
 #[derive(Resource, Default)]
 struct Animations {
@@ -161,7 +214,12 @@ struct Animations {
     dodge: HashMap<usize, f64>,
 }
 
-fn track_events(time: Res<Time>, run: Res<Run>, mut anims: ResMut<Animations>) {
+fn track_events(
+    time: Res<Time>,
+    run: Res<Run>,
+    mut anims: ResMut<Animations>,
+    mut pending: ResMut<PendingPopups>,
+) {
     let Some(battle) = run.battle.as_ref() else {
         anims.seen = 0;
         return;
@@ -170,7 +228,19 @@ fn track_events(time: Res<Time>, run: Res<Run>, mut anims: ResMut<Animations>) {
         *anims = Animations::default();
     }
     let now = time.elapsed_secs_f64();
+    let mut queued = 0u32;
     for event in &battle.log[anims.seen..] {
+        if let Some((actor, text, color, size, icon)) = popup_for(event, battle) {
+            pending.0.push(Popup {
+                text,
+                color,
+                size,
+                icon,
+                origin: popup_origin(actor, battle.enemies.len(), anims.seen as u32 + queued),
+                at: now + f64::from(queued) * POPUP_GAP,
+            });
+            queued += 1;
+        }
         match *event {
             CombatEvent::Hit {
                 target: Actor::Enemy(i),
@@ -195,12 +265,248 @@ fn track_events(time: Res<Time>, run: Res<Run>, mut anims: ResMut<Animations>) {
     anims.seen = battle.log.len();
 }
 
+/// A piece of combat text waiting for its moment.
+struct Popup {
+    text: String,
+    color: Color,
+    /// 1.0 normal, 2.0 for crits (`crit_font_size` 32).
+    size: f32,
+    icon: Option<&'static str>,
+    /// Room-pixel position of the text's centre.
+    origin: Vec2,
+    /// Seconds (elapsed time) when it appears.
+    at: f64,
+}
+
+#[derive(Resource, Default)]
+struct PendingPopups(Vec<Popup>);
+
+/// Seconds between popups of one turn, so each can be read.
+const POPUP_GAP: f64 = 0.22;
+/// `EnemyPopupLabel` rises 10px over 0.6s and fades after 0.3s.
+const POPUP_RISE_SECS: f32 = 0.6;
+const POPUP_FADE_START: f32 = 0.3;
+const POPUP_FADE_SECS: f32 = 0.5;
+const POPUP_LIFE: f32 = POPUP_FADE_START + POPUP_FADE_SECS;
+
+fn damage_look(kind: DamageType) -> (Color, &'static str) {
+    match kind {
+        DamageType::Physical => (hex(0xe8e6e0), "assets/textures/icons/attack_icon.png"),
+        DamageType::Fire => (hex(0xff8a30), "assets/textures/icons/magma_icon.png"),
+        DamageType::Cold => (hex(0x8fd6ff), "assets/textures/icons/magic_damage_icon.png"),
+        DamageType::Lightning => (hex(0xffe14d), "assets/textures/icons/electro_charge.png"),
+        DamageType::Chaos => (hex(0xb06cf0), "assets/textures/icons/toxicity_icon.png"),
+    }
+}
+
+/// Where combat text starts: over an enemy (`frame.rs`: x at the enemy,
+/// y 186.5 on the canvas, plus a little jitter) or over the hero's side.
+fn popup_origin(actor: Actor, enemies: usize, n: u32) -> Vec2 {
+    let jitter = ((n as usize * 7) % 30) as f32 - 15.0;
+    match actor {
+        Actor::Enemy(i) => {
+            let cx = ROW_CENTER + (i as f32 - (enemies as f32 - 1.0) / 2.0) * ROW_STEP;
+            Vec2::new(cx + jitter, 196.5 + jitter / 2.0)
+        }
+        Actor::Hero => Vec2::new(ROW_CENTER + jitter, 120.0 + (n % 3) as f32 * 14.0),
+    }
+}
+
+/// Pairs a battle event with the text it shows, if any.
+fn popup_for(
+    event: &CombatEvent,
+    battle: &Battle,
+) -> Option<(Actor, String, Color, f32, Option<&'static str>)> {
+    match *event {
+        CombatEvent::Hit {
+            target,
+            damage,
+            crit,
+            kind,
+        } => {
+            let (color, icon) = damage_look(kind);
+            Some((
+                target,
+                number(damage),
+                color,
+                if crit { 2.0 } else { 1.0 },
+                Some(icon),
+            ))
+        }
+        CombatEvent::Dodge { target } => Some((target, "DODGE".into(), hex(0x8fd6ff), 1.0, None)),
+        CombatEvent::Dot {
+            target,
+            ailment,
+            damage,
+        } => {
+            let (icon, color) = ailment_look(ailment);
+            Some((target, number(damage), color, 1.0, Some(icon)))
+        }
+        CombatEvent::Heal { actor, amount } if amount >= 0.5 => Some((
+            actor,
+            format!("+{}", number(amount)),
+            hex(0x7ccf3b),
+            1.0,
+            None,
+        )),
+        CombatEvent::Frozen { actor } => Some((actor, "FROZEN".into(), hex(0x5aa6ff), 1.0, None)),
+        CombatEvent::Repeat => Some((Actor::Hero, "REPEAT".into(), hex(0xffe14d), 1.0, None)),
+        _ => {
+            let _ = battle;
+            None
+        }
+    }
+}
+
 /// A drawn enemy sprite and its resting frame rect (room pixels).
 #[derive(Component)]
 struct EnemySprite {
     index: usize,
     rest: [f32; 4],
     frames: u32,
+}
+
+/// Combat text on screen; spawned as roots so a redraw of the screen (every
+/// action changes the run) does not wipe it.
+#[derive(Component)]
+struct PopupNode {
+    at: f64,
+    origin: Vec2,
+}
+
+/// The room image's top-left corner and scale in logical window pixels.
+fn view_origin(view: &ComputedNode, transform: &UiGlobalTransform) -> Vec2 {
+    let size = view.size() * view.inverse_scale_factor();
+    let center = transform.translation * view.inverse_scale_factor();
+    center - size / 2.0
+}
+
+fn spawn_popups(
+    mut commands: Commands,
+    time: Res<Time>,
+    assets: Res<AssetServer>,
+    mut pending: ResMut<PendingPopups>,
+    run: Res<Run>,
+) {
+    let now = time.elapsed_secs_f64();
+    if run.mode != Mode::Combat {
+        pending.0.clear();
+        return;
+    }
+    let font: Handle<Font> = assets.load(FONT);
+    let (ready, waiting): (Vec<Popup>, Vec<Popup>) = std::mem::take(&mut pending.0)
+        .into_iter()
+        .partition(|p| p.at <= now);
+    pending.0 = waiting;
+    for p in ready {
+        let size = 16.0 * p.size * scale();
+        let mut children = Vec::new();
+        if let Some(icon) = p.icon {
+            children.push(
+                commands
+                    .spawn((
+                        Node {
+                            width: Val::Px(9.0 * p.size.min(1.0) * scale()),
+                            height: Val::Px(9.0 * p.size.min(1.0) * scale()),
+                            margin: UiRect::right(Val::Px(3.0 * scale())),
+                            ..default()
+                        },
+                        ImageNode {
+                            image: pixel_image(&assets, icon),
+                            color: p.color,
+                            ..default()
+                        },
+                    ))
+                    .id(),
+            );
+        }
+        children.push(
+            commands
+                .spawn((
+                    Text::new(p.text),
+                    TextFont {
+                        font: font.clone().into(),
+                        font_size: FontSize::Px(size),
+                        ..default()
+                    },
+                    TextColor(p.color),
+                    TextLayout {
+                        justify: Justify::Left,
+                        linebreak: bevy::text::LineBreak::NoWrap,
+                    },
+                ))
+                .id(),
+        );
+        commands
+            .spawn((
+                Node {
+                    position_type: PositionType::Absolute,
+                    align_items: AlignItems::Center,
+                    ..default()
+                },
+                // Hidden until placed over the room image next frame.
+                Visibility::Hidden,
+                GlobalZIndex(100),
+                PopupNode {
+                    at: now,
+                    origin: p.origin,
+                },
+            ))
+            .add_children(&children);
+    }
+}
+
+fn animate_popups(
+    mut commands: Commands,
+    time: Res<Time>,
+    view: Query<(&ComputedNode, &UiGlobalTransform), With<RoomImage>>,
+    mut popups: Query<(
+        Entity,
+        &PopupNode,
+        &ComputedNode,
+        &mut Node,
+        &mut Visibility,
+        &Children,
+    )>,
+    mut colors: Query<&mut TextColor>,
+    mut icons: Query<&mut ImageNode>,
+) {
+    let now = time.elapsed_secs_f64();
+    let ease_out = |t: f32| 1.0 - (1.0 - t.clamp(0.0, 1.0)).powi(3);
+    // QA: `GAME_HOLD_POPUPS=1` freezes combat text mid-rise for screenshots.
+    let hold = std::env::var_os("GAME_HOLD_POPUPS").is_some();
+    let origin = view.single().ok().map(|(c, t)| view_origin(c, t));
+    let s = scale();
+    for (entity, popup, computed, mut node, mut visibility, children) in &mut popups {
+        let age = if hold { 0.3 } else { (now - popup.at) as f32 };
+        if age > POPUP_LIFE {
+            commands.entity(entity).despawn();
+            continue;
+        }
+        let Some(origin) = origin else {
+            *visibility = Visibility::Hidden;
+            continue;
+        };
+        let size = computed.size() * computed.inverse_scale_factor();
+        let rise = ease_out(age / POPUP_RISE_SECS) * 10.0;
+        node.left = Val::Px(origin.x + popup.origin.x * s - size.x / 2.0);
+        node.top = Val::Px(origin.y + (popup.origin.y - rise) * s - size.y / 2.0);
+        let alpha = 1.0 - ease_out((age - POPUP_FADE_START) / POPUP_FADE_SECS);
+        for child in children.iter() {
+            if let Ok(mut color) = colors.get_mut(child) {
+                color.0 = color.0.with_alpha(alpha);
+            }
+            if let Ok(mut image) = icons.get_mut(child) {
+                image.color = image.color.with_alpha(alpha);
+            }
+        }
+        // The first frame has no size yet; show once measured.
+        *visibility = if size.x > 0.0 {
+            Visibility::Inherited
+        } else {
+            Visibility::Hidden
+        };
+    }
 }
 
 /// Linear keyframes, as `compose.rs` `enemy_visuals` reads its animations.
@@ -656,6 +962,42 @@ mod tests {
         assert_eq!((sx, sy), (1.25, 0.75));
         let (_, _, _, bob) = motion(f32::MAX, 0.025, f32::MAX);
         assert_eq!(bob, -15.0);
+    }
+
+    #[test]
+    fn red_marker_pixels_do_not_widen_the_sprite() {
+        // Every enemy sheet's measured width must be narrower than the
+        // sheet when it has feet markers at the edges of its art.
+        let rat = sheet_info("assets/textures/enemies/rat.png");
+        assert!(rat.max_x > rat.min_x);
+    }
+
+    #[test]
+    fn combat_text_follows_the_log() {
+        let battle = Battle::new(
+            game_sim::combat::Fighter::hero(Default::default()),
+            vec![],
+            vec![],
+            game_sim::rng::Rng::seeded(1),
+        );
+        let hit = CombatEvent::Hit {
+            target: Actor::Enemy(0),
+            damage: 12.4,
+            crit: true,
+            kind: DamageType::Fire,
+        };
+        let (actor, text, _, size, icon) = popup_for(&hit, &battle).unwrap();
+        assert_eq!((actor, text.as_str(), size), (Actor::Enemy(0), "13", 2.0));
+        assert!(icon.unwrap().contains("magma"));
+        assert!(popup_for(&CombatEvent::Death { actor: Actor::Hero }, &battle).is_none());
+        let dodge = popup_for(
+            &CombatEvent::Dodge {
+                target: Actor::Hero,
+            },
+            &battle,
+        )
+        .unwrap();
+        assert_eq!(dodge.1, "DODGE");
     }
 
     #[test]

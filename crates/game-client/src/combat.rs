@@ -195,6 +195,7 @@ fn describe(event: &CombatEvent, battle: &Battle) -> String {
             target,
             damage,
             crit,
+            ..
         } => format!(
             "{} {damage:.0}{}",
             says(*target, "take"),
