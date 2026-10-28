@@ -606,10 +606,12 @@ pub(crate) fn item_draws(game: &Game, item: Entity, rect: R, locked: bool, out: 
         ));
     }
     if locked {
+        // `ItemTextureRect.LockTextureRect`: `lock_icon.png` 14x15 below the
+        // slot's centre, in the primary colour.
         out.push(tinted(
-            [rect[0] + 22.0, rect[1] + 2.0, 10.0, 10.0],
-            "assets/textures/ui/lock.png",
-            palette(8),
+            [rect[0] + 10.0, rect[1] + 25.0, 14.0, 15.0],
+            "assets/textures/ui/lock_icon.png",
+            palette(4),
         ));
     }
 }
