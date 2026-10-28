@@ -48,20 +48,43 @@ impl ProfileStore {
     }
 
     pub fn load(floor_one_items: impl FnOnce() -> Vec<String>) -> Self {
-        std::fs::read_to_string(path())
-            .ok()
-            .and_then(|text| serde_json::from_str(&text).ok())
-            .unwrap_or_else(|| Self::new(floor_one_items()))
+        let path = path();
+        match std::fs::read(&path) {
+            Ok(bytes) => match serde_json::from_slice(&bytes) {
+                Ok(profile) => return profile,
+                Err(err) => eprintln!("Invalid profile at {}: {err}", path.display()),
+            },
+            Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
+            Err(err) => eprintln!("Cannot read profile at {}: {err}", path.display()),
+        }
+        let backup = path.with_extension("json.bak");
+        if let Ok(bytes) = std::fs::read(&backup) {
+            if let Ok(profile) = serde_json::from_slice(&bytes) {
+                eprintln!("Restored profile from {}", backup.display());
+                return profile;
+            }
+            eprintln!("Profile backup at {} is invalid", backup.display());
+        }
+        Self::new(floor_one_items())
     }
 
+    /// Preserve the last valid profile before replacing it. Errors are reported
+    /// rather than silently discarding player progress.
     pub fn save(&self) {
+        if let Err(err) = self.try_save() {
+            eprintln!("Failed to save profile at {}: {err}", path().display());
+        }
+    }
+
+    pub fn try_save(&self) -> std::io::Result<()> {
         let path = path();
-        if let Some(dir) = path.parent() {
-            let _ = std::fs::create_dir_all(dir);
+        if let Ok(previous) = std::fs::read(&path) {
+            if serde_json::from_slice::<Self>(&previous).is_ok() {
+                crate::save_system::write_atomic(&path.with_extension("json.bak"), &previous)?;
+            }
         }
-        if let Ok(json) = serde_json::to_string_pretty(self) {
-            let _ = std::fs::write(path, json);
-        }
+        let bytes = serde_json::to_vec_pretty(self)?;
+        crate::save_system::write_atomic(&path, &bytes)
     }
 
     /// `encounter_item`; true when it was new.
@@ -219,6 +242,25 @@ mod tests {
         p.set_floor_record("Fren", 4);
         let back: ProfileStore = serde_json::from_str(&serde_json::to_string(&p).unwrap()).unwrap();
         assert_eq!(back, p);
+    }
+
+    #[test]
+    fn profile_backup_retains_previous_valid_version() {
+        // Exercise the same serialization and backup replacement used by try_save,
+        // without changing the process-wide MEGALOOT_USER_DIR.
+        let dir = std::env::temp_dir().join(format!("megatower-profile-backup-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let main = dir.join("profile.json");
+        let backup = main.with_extension("json.bak");
+        let old = ProfileStore::new(vec!["old".into()]);
+        let new = ProfileStore::new(vec!["new".into()]);
+        crate::save_system::write_atomic(&main, &serde_json::to_vec(&old).unwrap()).unwrap();
+        let previous = std::fs::read(&main).unwrap();
+        crate::save_system::write_atomic(&backup, &previous).unwrap();
+        crate::save_system::write_atomic(&main, &serde_json::to_vec(&new).unwrap()).unwrap();
+        assert_eq!(serde_json::from_slice::<ProfileStore>(&std::fs::read(backup).unwrap()).unwrap(), old);
+        assert_eq!(serde_json::from_slice::<ProfileStore>(&std::fs::read(main).unwrap()).unwrap(), new);
+        std::fs::remove_dir_all(dir).unwrap();
     }
 
     #[test]
