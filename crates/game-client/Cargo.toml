@@ -1,0 +1,12 @@
+[package]
+name = "game-client"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "game"
+path = "src/main.rs"
+
+[dependencies]
+bevy.workspace = true
+game-sim = { path = "../../crates/game-sim" }

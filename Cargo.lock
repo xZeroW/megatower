@@ -3067,6 +3067,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "game-client"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "game-sim",
+]
+
+[[package]]
 name = "game-sim"
 version = "0.1.0"
 dependencies = [
