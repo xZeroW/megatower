@@ -4,6 +4,7 @@ use crate::run::{Run, room_name};
 use crate::ui::{ACCENT, TEXT, TEXT_DIM, panel, text};
 use bevy::picking::events::PointerClick;
 use bevy::prelude::*;
+use game_sim::character::INVENTORY_SIZE;
 use game_sim::content;
 use game_sim::labyrinth::{Dir, Floor, Pos, RoomKind, Visibility};
 
@@ -171,7 +172,13 @@ fn spawn_panel(commands: &mut Commands, run: &Run) -> Entity {
     } else {
         "unresolved"
     };
-    let hero = &run.hero;
+    let hero = run.character.fighter();
+    let skills: Vec<String> = run
+        .character
+        .skills(&content::get().gems)
+        .into_iter()
+        .map(|s| s.name)
+        .collect();
     let mut lines = vec![
         (format!("Floor {}", floor.number), 28.0, TEXT),
         (
@@ -180,14 +187,16 @@ fn spawn_panel(commands: &mut Commands, run: &Run) -> Entity {
             TEXT,
         ),
         (
-            format!(
-                "Life {:.0}/{:.0}   Mana {:.0}/{:.0}",
-                hero.life, hero.max_life, hero.mana, hero.max_mana
-            ),
+            format!("Life {:.0}/{:.0}", hero.life, hero.max_life),
             16.0,
             TEXT,
         ),
-        (gem_line(run), 16.0, TEXT_DIM),
+        (format!("Skills: {}", skills.join(", ")), 16.0, TEXT_DIM),
+        (
+            format!("Bag: {}/{}", run.character.inventory.len(), INVENTORY_SIZE),
+            16.0,
+            TEXT_DIM,
+        ),
         (run.message.clone(), 16.0, ACCENT),
     ];
     if let RoomKind::GemAltar { uses_left } = room.kind {
@@ -200,22 +209,7 @@ fn spawn_panel(commands: &mut Commands, run: &Run) -> Entity {
             "Arrows / WASD or click: move",
             "Space: resolve room",
             "Enter: descend (on resolved stairs)",
+            "I / Tab: inventory",
         ],
     )
-}
-
-fn gem_line(run: &Run) -> String {
-    let gems = &content::get().gems;
-    let names: Vec<&str> = run
-        .weapon
-        .gems
-        .iter()
-        .map(|g| {
-            gems.active(&g.id)
-                .map(|d| d.name.as_str())
-                .or_else(|| gems.support(&g.id).map(|d| d.name.as_str()))
-                .unwrap_or(&g.id)
-        })
-        .collect();
-    format!("Weapon ({} links): {}", run.weapon.links, names.join(" + "))
 }

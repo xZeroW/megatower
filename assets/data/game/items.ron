@@ -1,0 +1,234 @@
+// Gear bases, affixes and uniques. Loaded by game-sim (`content.rs`); the
+// shape is `ItemDb` in crates/game-sim/src/items.rs. `level` is the lowest
+// item level (floor) a base or an affix tier rolls at.
+(
+    bases: [
+        // Weapons: attack weapons add physical damage to attacks, spell
+        // weapons raise spell damage.
+        (id: "worn_blade", name: "Worn Blade", slot: Weapon, max_links: 4, implicit: [
+            (stat: AddedMin(Physical), kind: Flat, value: 3.0, requires: [Attack]),
+            (stat: AddedMax(Physical), kind: Flat, value: 6.0, requires: [Attack]),
+        ]),
+        (id: "gnarled_wand", name: "Gnarled Wand", slot: Weapon, max_links: 4, implicit: [
+            (stat: Damage, kind: Increased, value: 20.0, requires: [Spell]),
+        ]),
+        (id: "war_axe", name: "War Axe", slot: Weapon, level: 4, max_links: 4, implicit: [
+            (stat: AddedMin(Physical), kind: Flat, value: 6.0, requires: [Attack]),
+            (stat: AddedMax(Physical), kind: Flat, value: 12.0, requires: [Attack]),
+        ]),
+        (id: "crystal_staff", name: "Crystal Staff", slot: Weapon, level: 4, max_links: 4, implicit: [
+            (stat: Damage, kind: Increased, value: 40.0, requires: [Spell]),
+        ]),
+        (id: "leather_vest", name: "Leather Vest", slot: Body, max_links: 4, implicit: [
+            (stat: Evasion, kind: Flat, value: 8.0),
+        ]),
+        (id: "chainmail", name: "Chainmail", slot: Body, max_links: 4, implicit: [
+            (stat: Armour, kind: Flat, value: 40.0),
+        ]),
+        (id: "silk_robe", name: "Silk Robe", slot: Body, max_links: 4, implicit: [
+            (stat: Mana, kind: Flat, value: 15.0),
+        ]),
+        (id: "leather_cap", name: "Leather Cap", slot: Helm, max_links: 2, implicit: [
+            (stat: Life, kind: Flat, value: 10.0),
+        ]),
+        (id: "iron_helm", name: "Iron Helm", slot: Helm, level: 3, max_links: 2, implicit: [
+            (stat: Armour, kind: Flat, value: 25.0),
+        ]),
+        (id: "cloth_wraps", name: "Cloth Wraps", slot: Gloves, implicit: [
+            (stat: Evasion, kind: Flat, value: 4.0),
+        ]),
+        (id: "iron_gauntlets", name: "Iron Gauntlets", slot: Gloves, implicit: [
+            (stat: Armour, kind: Flat, value: 15.0),
+        ]),
+        (id: "sandals", name: "Sandals", slot: Boots, implicit: [
+            (stat: ManaRegen, kind: Flat, value: 1.0),
+        ]),
+        (id: "greaves", name: "Greaves", slot: Boots, implicit: [
+            (stat: Armour, kind: Flat, value: 15.0),
+        ]),
+        (id: "iron_ring", name: "Iron Ring", slot: Ring, implicit: [
+            (stat: Life, kind: Flat, value: 8.0),
+        ]),
+        (id: "ruby_ring", name: "Ruby Ring", slot: Ring, implicit: [
+            (stat: Resistance(Fire), kind: Flat, value: 15.0),
+        ]),
+        (id: "sapphire_ring", name: "Sapphire Ring", slot: Ring, implicit: [
+            (stat: Resistance(Cold), kind: Flat, value: 15.0),
+        ]),
+        (id: "topaz_ring", name: "Topaz Ring", slot: Ring, implicit: [
+            (stat: Resistance(Lightning), kind: Flat, value: 15.0),
+        ]),
+        (id: "bone_amulet", name: "Bone Amulet", slot: Amulet, implicit: [
+            (stat: Life, kind: Flat, value: 15.0),
+        ]),
+        (id: "jade_amulet", name: "Jade Amulet", slot: Amulet, level: 3, implicit: [
+            (stat: CritMultiplier, kind: Flat, value: 15.0),
+        ]),
+    ],
+    affixes: [
+        // Prefixes
+        (id: "life", name: "Sturdy", kind: Prefix,
+            slots: [Body, Helm, Gloves, Boots, Ring, Amulet],
+            tiers: [
+                (level: 1, mods: [(stat: Life, min: 8.0, max: 15.0)]),
+                (level: 3, mods: [(stat: Life, min: 16.0, max: 25.0)]),
+                (level: 6, mods: [(stat: Life, min: 26.0, max: 40.0)]),
+            ]),
+        (id: "mana", name: "Azure", kind: Prefix,
+            slots: [Body, Helm, Boots, Ring, Amulet],
+            tiers: [
+                (level: 1, mods: [(stat: Mana, min: 6.0, max: 10.0)]),
+                (level: 4, mods: [(stat: Mana, min: 11.0, max: 18.0)]),
+            ]),
+        (id: "armour", name: "Plated", kind: Prefix,
+            slots: [Body, Helm, Gloves, Boots],
+            tiers: [
+                (level: 1, mods: [(stat: Armour, min: 15.0, max: 30.0)]),
+                (level: 4, mods: [(stat: Armour, min: 31.0, max: 60.0)]),
+                (level: 7, mods: [(stat: Armour, min: 61.0, max: 100.0)]),
+            ]),
+        (id: "evasion", name: "Shadowed", kind: Prefix,
+            slots: [Body, Helm, Gloves, Boots],
+            tiers: [
+                (level: 1, mods: [(stat: Evasion, min: 3.0, max: 5.0)]),
+                (level: 4, mods: [(stat: Evasion, min: 6.0, max: 9.0)]),
+            ]),
+        (id: "added_physical", name: "Jagged", kind: Prefix,
+            slots: [Weapon, Gloves, Ring, Amulet],
+            tiers: [
+                (level: 1, mods: [
+                    (stat: AddedMin(Physical), min: 1.0, max: 2.0, requires: [Attack]),
+                    (stat: AddedMax(Physical), min: 3.0, max: 4.0, requires: [Attack]),
+                ]),
+                (level: 4, mods: [
+                    (stat: AddedMin(Physical), min: 3.0, max: 4.0, requires: [Attack]),
+                    (stat: AddedMax(Physical), min: 6.0, max: 8.0, requires: [Attack]),
+                ]),
+            ]),
+        (id: "added_fire", name: "Smouldering", kind: Prefix,
+            slots: [Weapon, Gloves, Ring, Amulet],
+            tiers: [
+                (level: 1, mods: [
+                    (stat: AddedMin(Fire), min: 1.0, max: 2.0),
+                    (stat: AddedMax(Fire), min: 3.0, max: 5.0),
+                ]),
+                (level: 5, mods: [
+                    (stat: AddedMin(Fire), min: 3.0, max: 5.0),
+                    (stat: AddedMax(Fire), min: 6.0, max: 9.0),
+                ]),
+            ]),
+        (id: "added_cold", name: "Frosted", kind: Prefix,
+            slots: [Weapon, Gloves, Ring, Amulet],
+            tiers: [
+                (level: 1, mods: [
+                    (stat: AddedMin(Cold), min: 1.0, max: 2.0),
+                    (stat: AddedMax(Cold), min: 3.0, max: 4.0),
+                ]),
+                (level: 5, mods: [
+                    (stat: AddedMin(Cold), min: 3.0, max: 4.0),
+                    (stat: AddedMax(Cold), min: 5.0, max: 8.0),
+                ]),
+            ]),
+        (id: "added_lightning", name: "Humming", kind: Prefix,
+            slots: [Weapon, Gloves, Ring, Amulet],
+            tiers: [
+                (level: 1, mods: [
+                    (stat: AddedMin(Lightning), min: 1.0, max: 1.0),
+                    (stat: AddedMax(Lightning), min: 4.0, max: 6.0),
+                ]),
+                (level: 5, mods: [
+                    (stat: AddedMin(Lightning), min: 1.0, max: 2.0),
+                    (stat: AddedMax(Lightning), min: 9.0, max: 13.0),
+                ]),
+            ]),
+        (id: "spell_damage", name: "Arcane", kind: Prefix,
+            slots: [Weapon, Amulet],
+            tiers: [
+                (level: 1, mods: [(stat: Damage, kind: Increased, min: 10.0, max: 19.0, requires: [Spell])]),
+                (level: 4, mods: [(stat: Damage, kind: Increased, min: 20.0, max: 34.0, requires: [Spell])]),
+                (level: 7, mods: [(stat: Damage, kind: Increased, min: 35.0, max: 50.0, requires: [Spell])]),
+            ]),
+        (id: "physical_damage", name: "Heavy", kind: Prefix,
+            slots: [Weapon, Amulet],
+            tiers: [
+                (level: 1, mods: [(stat: Damage, kind: Increased, min: 10.0, max: 19.0, requires: [Physical])]),
+                (level: 4, mods: [(stat: Damage, kind: Increased, min: 20.0, max: 34.0, requires: [Physical])]),
+                (level: 7, mods: [(stat: Damage, kind: Increased, min: 35.0, max: 50.0, requires: [Physical])]),
+            ]),
+        // Suffixes
+        (id: "fire_resistance", name: "of the Salamander", kind: Suffix,
+            slots: [Body, Helm, Gloves, Boots, Ring, Amulet],
+            tiers: [
+                (level: 1, mods: [(stat: Resistance(Fire), min: 6.0, max: 12.0)]),
+                (level: 3, mods: [(stat: Resistance(Fire), min: 13.0, max: 20.0)]),
+                (level: 6, mods: [(stat: Resistance(Fire), min: 21.0, max: 30.0)]),
+            ]),
+        (id: "cold_resistance", name: "of the Seal", kind: Suffix,
+            slots: [Body, Helm, Gloves, Boots, Ring, Amulet],
+            tiers: [
+                (level: 1, mods: [(stat: Resistance(Cold), min: 6.0, max: 12.0)]),
+                (level: 3, mods: [(stat: Resistance(Cold), min: 13.0, max: 20.0)]),
+                (level: 6, mods: [(stat: Resistance(Cold), min: 21.0, max: 30.0)]),
+            ]),
+        (id: "lightning_resistance", name: "of the Cloud", kind: Suffix,
+            slots: [Body, Helm, Gloves, Boots, Ring, Amulet],
+            tiers: [
+                (level: 1, mods: [(stat: Resistance(Lightning), min: 6.0, max: 12.0)]),
+                (level: 3, mods: [(stat: Resistance(Lightning), min: 13.0, max: 20.0)]),
+                (level: 6, mods: [(stat: Resistance(Lightning), min: 21.0, max: 30.0)]),
+            ]),
+        (id: "chaos_resistance", name: "of the Lost", kind: Suffix,
+            slots: [Body, Helm, Gloves, Boots, Ring, Amulet],
+            tiers: [
+                (level: 3, mods: [(stat: Resistance(Chaos), min: 5.0, max: 10.0)]),
+                (level: 6, mods: [(stat: Resistance(Chaos), min: 11.0, max: 18.0)]),
+            ]),
+        (id: "crit_chance", name: "of Precision", kind: Suffix,
+            slots: [Weapon, Helm, Ring, Amulet],
+            tiers: [
+                (level: 1, mods: [(stat: CritChance, kind: Increased, min: 10.0, max: 20.0)]),
+                (level: 4, mods: [(stat: CritChance, kind: Increased, min: 21.0, max: 35.0)]),
+            ]),
+        (id: "crit_multiplier", name: "of Ruin", kind: Suffix,
+            slots: [Weapon, Amulet],
+            tiers: [
+                (level: 2, mods: [(stat: CritMultiplier, min: 10.0, max: 20.0)]),
+                (level: 5, mods: [(stat: CritMultiplier, min: 21.0, max: 35.0)]),
+            ]),
+        (id: "mana_regen", name: "of Focus", kind: Suffix,
+            slots: [Helm, Boots, Ring, Amulet],
+            tiers: [
+                (level: 1, mods: [(stat: ManaRegen, min: 1.0, max: 2.0)]),
+                (level: 4, mods: [(stat: ManaRegen, min: 3.0, max: 4.0)]),
+            ]),
+        (id: "life_leech", name: "of the Leech", kind: Suffix,
+            slots: [Weapon, Gloves, Ring],
+            tiers: [
+                (level: 3, mods: [(stat: LifeLeech, min: 1.0, max: 2.0)]),
+                (level: 6, mods: [(stat: LifeLeech, min: 3.0, max: 4.0)]),
+            ]),
+        (id: "physical_to_fire", name: "of the Pyre", kind: Suffix,
+            slots: [Weapon],
+            tiers: [
+                (level: 4, mods: [(stat: Convert(Physical, Fire), min: 20.0, max: 30.0)]),
+                (level: 8, mods: [(stat: Convert(Physical, Fire), min: 31.0, max: 50.0)]),
+            ]),
+        (id: "fire_penetration", name: "of Searing", kind: Suffix,
+            slots: [Weapon, Amulet],
+            tiers: [
+                (level: 5, mods: [(stat: Penetration(Fire), min: 5.0, max: 10.0)]),
+            ]),
+    ],
+    uniques: [
+        (id: "emberheart", name: "Emberheart", base: "silk_robe", mods: [
+            (stat: Convert(Physical, Fire), kind: Flat, value: 50.0),
+            (stat: Resistance(Fire), kind: Flat, value: 30.0),
+            (stat: Life, kind: Flat, value: 20.0),
+        ]),
+        (id: "tempest_loop", name: "Tempest Loop", base: "topaz_ring", mods: [
+            (stat: AddedMin(Lightning), kind: Flat, value: 1.0),
+            (stat: AddedMax(Lightning), kind: Flat, value: 12.0),
+            (stat: AilmentChance(Shock), kind: Flat, value: 15.0),
+        ]),
+    ],
+)

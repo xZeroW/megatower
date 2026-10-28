@@ -1,11 +1,11 @@
 //! The run in progress and the player's commands on it.
 
 use bevy::prelude::*;
-use game_sim::combat::{Battle, Fighter, HeroAction, Outcome, encounter};
+use game_sim::character::{Character, EquipSlot, GearError, Loot};
+use game_sim::combat::{Battle, HeroAction, Outcome, encounter};
 use game_sim::content;
-use game_sim::gems::{Gem, GemRarity, SocketGroup};
 use game_sim::labyrinth::{self, Dir, Floor, MoveError, Pos, RoomKind};
-use game_sim::modifier::ModSet;
+use game_sim::loot::{room_loot, starting_character};
 use game_sim::rng::Rng;
 
 pub struct RunPlugin;
@@ -33,8 +33,6 @@ fn clock_seed() -> u64 {
 
 /// Starter gems offered at the start of a run.
 pub const STARTER_OFFERS: usize = 3;
-/// Links on the starting weapon.
-pub const STARTING_LINKS: u8 = 2;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Mode {
@@ -42,7 +40,15 @@ pub enum Mode {
     Starter(Vec<String>),
     Map,
     Combat,
+    Inventory,
     Dead,
+}
+
+/// What the inventory screen has selected.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Selection {
+    Bag(usize),
+    Worn(EquipSlot),
 }
 
 #[derive(Resource)]
@@ -52,11 +58,38 @@ pub struct Run {
     rng: Rng,
     /// Feedback for the last command.
     pub message: String,
-    pub hero: Fighter,
-    pub weapon: SocketGroup,
+    pub character: Character,
+    pub selection: Option<Selection>,
     pub battle: Option<Battle>,
     /// The enemy the hero's next skill aims at.
     pub target: usize,
+}
+
+pub fn loot_name(loot: &Loot) -> String {
+    match loot {
+        Loot::Item(item) => item.name.clone(),
+        Loot::Gem(gem) => format!("{} gem", gem_name(&gem.id)),
+    }
+}
+
+pub fn gem_name(id: &str) -> String {
+    let gems = &content::get().gems;
+    gems.active(id)
+        .map(|g| g.name.clone())
+        .or_else(|| gems.support(id).map(|g| g.name.clone()))
+        .unwrap_or_else(|| id.to_string())
+}
+
+fn gear_error(e: GearError) -> &'static str {
+    match e {
+        GearError::Empty => "Nothing there.",
+        GearError::NotAnItem => "That is a gem, not gear.",
+        GearError::NotAGem => "Only gems go in sockets.",
+        GearError::WrongSlot => "It does not fit there.",
+        GearError::NoFreeSocket => "No free linked socket.",
+        GearError::TwoActives => "A linked group takes one skill gem.",
+        GearError::InventoryFull => "The bag is full.",
+    }
 }
 
 pub fn room_name(kind: RoomKind) -> &'static str {
@@ -91,11 +124,8 @@ impl Run {
             floor,
             rng,
             message: "Choose your first skill gem.".into(),
-            hero: Fighter::hero(ModSet::new()),
-            weapon: SocketGroup {
-                links: STARTING_LINKS,
-                gems: Vec::new(),
-            },
+            character: Character::new([]),
+            selection: None,
             battle: None,
             target: 0,
         }
@@ -116,7 +146,7 @@ impl Run {
             .gems
             .active(&id)
             .map_or(id.clone(), |g| g.name.clone());
-        self.weapon.gems = vec![Gem::new(id, 1, GemRarity::Common)];
+        self.character = starting_character(&id, content::get(), &mut self.rng);
         self.mode = Mode::Map;
         self.message = format!(
             "{name} socketed. Floor {}: find the stairs.",
@@ -161,16 +191,10 @@ impl Run {
         let Some(enemies) = encounter(kind, self.floor.number, defs, &mut self.rng) else {
             return;
         };
-        let skills = match self.weapon.skill(&content::get().gems) {
-            Ok(skill) => skill.into_iter().collect(),
-            Err(e) => {
-                self.message = format!("Your gems do not fit together: {e:?}");
-                Vec::new()
-            }
-        };
+        let skills = self.character.skills(&content::get().gems);
         let rng =
             Rng::seeded(u64::from(self.rng.next_u32()) << 32 | u64::from(self.rng.next_u32()));
-        self.battle = Some(Battle::new(self.hero.clone(), skills, enemies, rng));
+        self.battle = Some(Battle::new(self.character.fighter(), skills, enemies, rng));
         self.target = 0;
         self.mode = Mode::Combat;
     }
@@ -187,12 +211,13 @@ impl Run {
         }
         let kind = room.kind;
         self.floor.resolve_current();
-        self.message = if kind == RoomKind::Rest {
-            self.hero.life = self.hero.max_life;
-            self.hero.mana = self.hero.max_mana;
-            "You rest and recover fully.".into()
-        } else {
-            format!("{} room resolved.", room_name(kind))
+        self.message = match kind {
+            RoomKind::Rest => {
+                self.character.heal_full();
+                "You rest and recover fully.".into()
+            }
+            RoomKind::Treasure => self.take_loot(kind, "You open the chest."),
+            _ => format!("{} room resolved.", room_name(kind)),
         };
     }
 
@@ -253,11 +278,11 @@ impl Run {
             }
             Outcome::Won => {
                 let battle = self.battle.take().expect("checked above");
-                self.hero = battle.into_hero();
-                self.hero.mana = self.hero.max_mana;
+                self.character.life = battle.into_hero().life;
                 self.floor.resolve_current();
                 self.mode = Mode::Map;
-                self.message = "Victory. Choose a door.".into();
+                let kind = self.floor.current_room().kind;
+                self.message = self.take_loot(kind, "Victory.");
             }
             Outcome::Lost => self.mode = Mode::Dead,
         }
@@ -266,6 +291,104 @@ impl Run {
     pub fn use_skill(&mut self, index: usize) {
         let target = self.target;
         self.combat_act(HeroAction::Skill { index, target });
+    }
+
+    /// Rolls the room's loot into the bag; returns the message to show.
+    fn take_loot(&mut self, kind: RoomKind, intro: &str) -> String {
+        let loot = room_loot(kind, self.floor.number, content::get(), &mut self.rng);
+        if loot.is_empty() {
+            return format!("{intro} Choose a door.");
+        }
+        let mut found = Vec::new();
+        let mut left = Vec::new();
+        for item in loot {
+            let name = loot_name(&item);
+            match self.character.add_loot(item) {
+                Ok(()) => found.push(name),
+                Err(_) => left.push(name),
+            }
+        }
+        let mut message = format!("{intro} Found: {}.", found.join(", "));
+        if !left.is_empty() {
+            message.push_str(&format!(" Bag full, left behind: {}.", left.join(", ")));
+        }
+        message
+    }
+
+    pub fn toggle_inventory(&mut self) {
+        self.mode = match self.mode {
+            Mode::Map => Mode::Inventory,
+            Mode::Inventory => Mode::Map,
+            _ => return,
+        };
+        self.selection = None;
+    }
+
+    pub fn select(&mut self, selection: Selection) {
+        self.selection = Some(selection);
+    }
+
+    fn gear_result(&mut self, result: Result<(), GearError>, done: &str) {
+        self.message = match result {
+            Ok(()) => done.to_string(),
+            Err(e) => gear_error(e).to_string(),
+        };
+    }
+
+    pub fn equip_selected(&mut self, slot: Option<EquipSlot>) {
+        let Some(Selection::Bag(i)) = self.selection else {
+            return;
+        };
+        match self.character.equip(i, slot) {
+            Ok(slot) => {
+                self.message = "Equipped.".into();
+                self.selection = Some(Selection::Worn(slot));
+            }
+            Err(e) => self.message = gear_error(e).into(),
+        }
+    }
+
+    pub fn unequip_selected(&mut self) {
+        let Some(Selection::Worn(slot)) = self.selection else {
+            return;
+        };
+        let result = self.character.unequip(slot);
+        self.gear_result(result, "Moved to the bag.");
+        if self.message == "Moved to the bag." {
+            self.selection = Some(Selection::Bag(self.character.inventory.len() - 1));
+        }
+    }
+
+    pub fn socket_selected(&mut self, slot: EquipSlot) {
+        let Some(Selection::Bag(i)) = self.selection else {
+            return;
+        };
+        let result = self.character.socket(i, slot, &content::get().gems);
+        let ok = result.is_ok();
+        self.gear_result(result, "Gem socketed.");
+        if ok {
+            self.selection = Some(Selection::Worn(slot));
+        }
+    }
+
+    pub fn unsocket(&mut self, slot: EquipSlot, gem: usize) {
+        let result = self.character.unsocket(slot, gem);
+        self.gear_result(result, "Gem moved to the bag.");
+    }
+
+    pub fn discard_selected(&mut self) {
+        let Some(Selection::Bag(i)) = self.selection else {
+            return;
+        };
+        if let Ok(loot) = self.character.discard(i) {
+            self.message = format!("Dropped {}.", loot_name(&loot));
+        }
+        self.selection = None;
+    }
+
+    /// QA: a treasure room's loot straight into the bag.
+    pub fn dev_loot(&mut self) {
+        self.message = self.take_loot(RoomKind::Treasure, "Granted.");
     }
 
     /// QA: walks to the stairs without fighting, then enters them for real.
@@ -297,6 +420,13 @@ fn keyboard(keys: Res<ButtonInput<KeyCode>>, mut run: ResMut<Run>) {
         KeyCode::Digit4,
     ];
     let number = NUMBERS.iter().position(|&k| keys.just_pressed(k));
+    if matches!(run.mode, Mode::Map | Mode::Inventory)
+        && keys.any_just_pressed([KeyCode::KeyI, KeyCode::Tab])
+        || run.mode == Mode::Inventory && keys.just_pressed(KeyCode::Escape)
+    {
+        run.toggle_inventory();
+        return;
+    }
     match run.mode {
         Mode::Starter(_) => {
             if let Some(i) = number {
@@ -334,6 +464,7 @@ fn keyboard(keys: Res<ButtonInput<KeyCode>>, mut run: ResMut<Run>) {
                 run.combat_act(HeroAction::Pass);
             }
         }
+        Mode::Inventory => {}
         Mode::Dead => {
             if keys.just_pressed(KeyCode::Enter) {
                 run.restart();

@@ -113,6 +113,14 @@ gems and items), so selling is the main way to free room and get gold from extra
 - Rarity: Normal (0 affixes), Magic (1–2), Rare (3–6), Unique (fixed mods).
 - Affixes are prefixes/suffixes with tiers gated by item level (= floor depth).
 - 4 crafting orbs: reroll affixes, add an affix, upgrade rarity, reroll sockets/links.
+- Current implementation (`game-sim/src/items.rs`, `character.rs`, `loot.rs`, data in
+  `assets/data/game/items.ron`): 19 bases, 20 affixes with level-gated tiers, 2 uniques.
+  Magic items hold at most 1 prefix + 1 suffix, rares 3–6 affixes (3 + 3 max). New items
+  roll 1 link, each extra link at 45%. Bag holds 20 items/gems; gems stay socketed when
+  gear is swapped. Drops: fights 40% item / 30% gem, elites 1 magic+ item / 60% gem,
+  bosses and treasure 2 items + 1 gem; 70% of gem drops are supports, gem level up to
+  1 + floor / 2. Runs start with a 2-link Worn Blade (attack starters) or Gnarled Wand
+  (spells) and a Leather Vest. Crafting orbs are not in yet.
 
 ## Architecture
 

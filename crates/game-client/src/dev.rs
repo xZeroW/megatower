@@ -4,7 +4,8 @@
 //! - `GAME_MOVES`: commands applied at startup: `1`-`4` pick a starter gem
 //!   or use a skill, `N`/`E`/`S`/`W` move, `.` resolves the room, `>`
 //!   descends, `_` passes a combat turn, `*` walks to the stairs without
-//!   fighting and enters them.
+//!   fighting and enters them, `i` toggles the inventory, `$` adds a
+//!   treasure room's loot, `b` selects the first bag slot, `w` the weapon.
 //! - `GAME_CAPTURE=<path>`: save a screenshot there once the UI has settled,
 //!   then exit.
 
@@ -29,12 +30,18 @@ fn apply_moves(mut run: ResMut<Run>) {
         return;
     };
     for c in moves.chars() {
-        match c.to_ascii_uppercase() {
-            'N' => run.step(Dir::North),
-            'E' => run.step(Dir::East),
-            'S' => run.step(Dir::South),
+        match c {
+            'N' | 'n' => run.step(Dir::North),
+            'E' | 'e' => run.step(Dir::East),
+            'S' | 's' => run.step(Dir::South),
             'W' => run.step(Dir::West),
             '.' => run.resolve(),
+            'i' => run.toggle_inventory(),
+            '$' => run.dev_loot(),
+            'b' => run.select(crate::run::Selection::Bag(0)),
+            'w' => run.select(crate::run::Selection::Worn(
+                game_sim::character::EquipSlot::Weapon,
+            )),
             '_' => run.combat_act(game_sim::combat::HeroAction::Pass),
             d @ '1'..='4' => {
                 let i = d as usize - '1' as usize;

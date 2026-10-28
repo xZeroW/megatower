@@ -3,7 +3,9 @@
 //! resolve with a key press until shops, shrines and events exist.
 
 mod combat;
+mod describe;
 mod dev;
+mod inventory;
 mod map;
 mod menus;
 mod run;
