@@ -179,40 +179,26 @@ fn spawn_hud_layout(
     });
 }
 
-/// The game is laid out on a 640x360 canvas scaled to fit the window; the
-/// camera's viewport is that 16:9 area centred in the window, so ultrawide
-/// and portrait windows get bars instead of a canvas stuck to one side.
+/// The game is laid out on a 640x360 canvas scaled to fit the window, and
+/// every root node is shifted so that canvas sits centred: ultrawide and
+/// portrait windows get bars instead of a canvas stuck to one side. (A camera
+/// viewport would do the same, but a viewport larger than a lagging surface
+/// is a validation error that quits the app.)
 #[auto_add_system(plugin = HudLayoutPlugin, schedule = Update)]
 fn fit_logical_viewport(
     window: Single<&Window>,
-    mut camera: Single<&mut Camera, With<Camera2d>>,
     mut scale: ResMut<UiScale>,
-    mut settled: Local<(UVec2, u32)>,
+    mut roots: Query<&mut UiTransform, (With<Node>, Without<ChildOf>)>,
 ) {
     let fit = (window.width() / 640.0).min(window.height() / 360.0);
     scale.0 = fit;
-    let window_size = UVec2::new(window.physical_width(), window.physical_height());
-    // The surface can lag a resize (Wayland fullscreen), and a viewport
-    // larger than it is a validation error that quits the app: draw to the
-    // whole target until the window size has held still for a few frames.
-    if settled.0 != window_size {
-        *settled = (window_size, 0);
-        camera.viewport = None;
-        return;
-    }
-    settled.1 = settled.1.saturating_add(1);
-    if settled.1 < 5 {
-        return;
-    }
-    let factor = window.scale_factor();
-    let size = UVec2::new(
-        ((640.0 * fit * factor).round() as u32).min(window_size.x),
-        ((360.0 * fit * factor).round() as u32).min(window_size.y),
+    let offset = Val2::px(
+        (window.width() / fit - 640.0) / 2.0,
+        (window.height() / fit - 360.0) / 2.0,
     );
-    let position = (window_size - size) / 2;
-    let viewport = camera.viewport.get_or_insert_with(default);
-    if viewport.physical_size != size || viewport.physical_position != position {
-        viewport.physical_size = size;
-        viewport.physical_position = position;
+    for mut transform in &mut roots {
+        if transform.translation != offset {
+            transform.translation = offset;
+        }
     }
 }
