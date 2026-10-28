@@ -33,6 +33,20 @@ pub fn hovered_button() -> Option<String> {
     HOVERED.with(|h| h.borrow().clone())
 }
 
+/// Whether the pointer is over `rect` and whether the mouse button is held;
+/// the button counts as hovered for the hover sound. For buttons that are
+/// drawn by code rather than from a resolved layout.
+pub fn pointer_over(rect: [f32; 4]) -> (bool, bool) {
+    let fx = BUTTON_FX.with(|f| f.get());
+    let over = fx.cursor.is_some_and(|[x, y]| {
+        x >= rect[0] && x < rect[0] + rect[2] && y >= rect[1] && y < rect[1] + rect[3]
+    });
+    if over {
+        HOVERED.with(|h| *h.borrow_mut() = Some(format!("button@{rect:?}")));
+    }
+    (over, over && fx.down)
+}
+
 /// `GenericButton.update_visuals`: the hover frame (second of the atlas) and
 /// +25% brightness while hovered; the default frame while the button is held.
 fn button_look(v: &Visual, disabled: bool) -> (Option<[f32; 4]>, f32) {

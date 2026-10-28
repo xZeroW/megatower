@@ -1591,11 +1591,23 @@ fn button(
     tint_idx: u8,
     out: &mut Vec<Draw>,
 ) {
-    let tint = if enabled {
+    let mut tint = if enabled {
         palette(tint_idx)
     } else {
         [0.15, 0.16, 0.2, 1.0]
     };
+    // `GenericButton`: +25% brightness while hovered, none while held.
+    if enabled {
+        let (hovered, held) = super::screens::pointer_over(rect);
+        if hovered && !held {
+            tint = [
+                (tint[0] * 1.25).min(1.0),
+                (tint[1] * 1.25).min(1.0),
+                (tint[2] * 1.25).min(1.0),
+                tint[3],
+            ];
+        }
+    }
     out.push(nine_patch(rect, &rects.flat_button, tint));
     if let Some(icon) = icon {
         out.push(tinted(
