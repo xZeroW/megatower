@@ -828,10 +828,22 @@ pub(crate) struct TipView {
 
 const STEEL: Rgba = [0.690_196_1, 0.768_627_5, 0.870_588_2, 1.0];
 
+/// Where an icon of a tooltip row goes: the 16px cell starts at `x`, its
+/// glyph centred on the text line; the `<.>` bullet is a 6x7 dot.
+fn seg_icon_rect(path: &str, x: f32, y: f32) -> R {
+    if path.ends_with("p_dot.png") {
+        [x, y + 5.5, 6.0, 7.0]
+    } else {
+        [x, y + 2.0, 16.0, 16.0]
+    }
+}
+
 fn seg_width(seg: &Seg) -> f32 {
     match seg {
         Seg::Text(t, _) => t.chars().count() as f32 * CHAR_W,
-        Seg::Icon(..) => 12.0,
+        // `<.>` is `p_dot.png` (6px); other icons take their 16px cell.
+        Seg::Icon(path, _) if path.ends_with("p_dot.png") => 6.0,
+        Seg::Icon(..) => 16.0,
     }
 }
 
@@ -859,10 +871,18 @@ fn rows_from_tip(game: &Game, tip: &crate::info_builders::Tip) -> Vec<TipRow> {
             if i > 0 {
                 rows.push(vec![]);
             }
-            if !part.is_empty() {
-                rows.last_mut()
-                    .expect("row")
-                    .push(Seg::Text(part.to_owned(), col));
+            // `<.>` is the bullet: `BBContainer` shows `p_dot.png` for it.
+            for (j, chunk) in part.split("<.>").enumerate() {
+                if j > 0 {
+                    rows.last_mut()
+                        .expect("row")
+                        .push(Seg::Icon("assets/textures/icons/p_dot.png".to_owned(), col));
+                }
+                if !chunk.is_empty() {
+                    rows.last_mut()
+                        .expect("row")
+                        .push(Seg::Text(chunk.to_owned(), col));
+                }
             }
         }
     };
@@ -1312,7 +1332,9 @@ pub(crate) fn draw_tip_at(out: &mut Vec<Draw>, anchor: TipAnchor, tip: TipView) 
     let mut rows = tip.rows.into_iter();
     let name_row = rows.next().unwrap_or_default();
     let body = wrap_rows(rows.collect(), TIP_MAX_WIDTH);
-    let icons_w = tip.icons.len() as f32 * 12.0 + if tip.icons.is_empty() { 0.0 } else { 6.0 };
+    let icon_sizes: Vec<(f32, f32)> = tip.icons.iter().map(|(p, _)| texture_size(p)).collect();
+    let icons_w = icon_sizes.iter().map(|(w, _)| *w).sum::<f32>()
+        + if tip.icons.is_empty() { 0.0 } else { 6.0 };
     let name_w = icons_w + name_row.iter().map(seg_width).sum::<f32>();
     let cost_w = tip
         .price
@@ -1371,19 +1393,17 @@ pub(crate) fn draw_tip_at(out: &mut Vec<Draw>, anchor: TipAnchor, tip: TipView) 
     });
     // Top row: the set icons start 3px inside the margin, 6px before the name.
     let ty = y + PAD_Y + 1.0;
-    for (i, (icon, color)) in tip.icons.iter().enumerate() {
-        out.push(tinted(
-            [x + PAD_X - 3.0 + i as f32 * 12.0, ty + 1.0, 12.0, 12.0],
-            icon,
-            *color,
-        ));
+    let mut ix = x + PAD_X - 3.0;
+    for ((icon, color), (w, h)) in tip.icons.iter().zip(&icon_sizes) {
+        out.push(tinted([ix, ty + 10.0 - h / 2.0, *w, *h], icon, *color));
+        ix += w;
     }
     let mut cx = x + PAD_X - 3.0 + icons_w;
     for seg in name_row {
         let width = seg_width(&seg);
         match seg {
             Seg::Text(t, c) => out.push(text([cx, ty, width + 2.0, 13.0], t, c, Align::Left)),
-            Seg::Icon(path, c) => out.push(tinted([cx - 2.0, ty - 1.5, 16.0, 16.0], &path, c)),
+            Seg::Icon(path, c) => out.push(tinted(seg_icon_rect(&path, cx, ty), &path, c)),
         }
         cx += width;
     }
@@ -1397,7 +1417,7 @@ pub(crate) fn draw_tip_at(out: &mut Vec<Draw>, anchor: TipAnchor, tip: TipView) 
         ));
         if let Some(icon) = &price.icon {
             let ix = px + price.amount.chars().count() as f32 * CHAR_W + 2.0;
-            out.push(tinted([ix, ty + 2.0, 9.0, 9.0], icon, price.color));
+            out.push(tinted([ix, ty + 5.0, 9.0, 9.0], icon, price.color));
         }
     }
     // Description, straight on the panel.
@@ -1411,9 +1431,7 @@ pub(crate) fn draw_tip_at(out: &mut Vec<Draw>, anchor: TipAnchor, tip: TipView) 
                     Seg::Text(t, c) => {
                         out.push(text([cx, ry, width + 2.0, 13.0], t, c, Align::Left))
                     }
-                    Seg::Icon(path, c) => {
-                        out.push(tinted([cx - 2.0, ry - 1.5, 16.0, 16.0], &path, c))
-                    }
+                    Seg::Icon(path, c) => out.push(tinted(seg_icon_rect(&path, cx, ry), &path, c)),
                 }
                 cx += width;
             }
@@ -1426,7 +1444,7 @@ pub(crate) fn draw_tip_at(out: &mut Vec<Draw>, anchor: TipAnchor, tip: TipView) 
             color: [0.035_294_1, 0.015_686_3, 0.015_686_3, 1.0],
         });
         out.push(tinted(
-            [x + PAD_X - 3.0, by + 6.0, 11.0, 11.0],
+            [x + PAD_X - 5.0, by + 6.5, 16.0, 16.0],
             icon,
             hex(0x8a8a8a),
         ));
@@ -1595,8 +1613,8 @@ pub(crate) fn stat_tip(game: &Game, id: StatId) -> Option<TipView> {
         hint: None,
     };
     // The tooltip header uses the stat's icon and color.
-    if let (Some(icon), Some(first)) = (&def.icon, view.rows.first_mut()) {
-        first.insert(0, Seg::Icon(trim(icon), def.color));
+    if let Some(icon) = &def.icon {
+        view.icons.push((trim(icon), def.color));
     }
     Some(view)
 }
@@ -1636,10 +1654,8 @@ pub(crate) fn ability_tip(game: &Game, slot: usize) -> Option<TipView> {
         price: None,
         hint: None,
     };
-    if let Some(icon) = &def.icon
-        && let Some(first) = view.rows.first_mut()
-    {
-        first.insert(0, Seg::Icon(trim(icon), hex(0xa9a9a9)));
+    if let Some(icon) = &def.icon {
+        view.icons.push((trim(icon), hex(0xa9a9a9)));
     }
     if let Some(hint) = result.top_hint {
         view.rows.insert(1, vec![Seg::Text(hint, hex(0xa9a9a9))]);
