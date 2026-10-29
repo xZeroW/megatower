@@ -81,6 +81,8 @@ pub fn spawn_starter(commands: &mut Commands, run: &Run) -> Vec<Entity> {
         let Some(gem) = gems.active(id) else { continue };
         let card = commands
             .spawn(card(230.0, ACCENT))
+            .observe(crate::audio::button_hover)
+            .observe(crate::audio::button_press)
             .observe(move |_: On<PointerClick>, mut run: ResMut<Run>| run.pick_starter(i))
             .id();
         let mut lines = vec![
@@ -120,6 +122,8 @@ pub fn spawn_dead(commands: &mut Commands, run: &Run) -> Vec<Entity> {
     commands
         .entity(column)
         .add_children(&children)
+        .observe(crate::audio::button_hover)
+        .observe(crate::audio::button_press)
         .observe(|_: On<PointerClick>, mut run: ResMut<Run>| run.restart());
     vec![column]
 }

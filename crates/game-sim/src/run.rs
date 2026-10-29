@@ -3,7 +3,7 @@
 //! command leaves a line for the player in [`Run::message`].
 
 use crate::character::{Character, GearError, GemSpot, Loot};
-use crate::combat::{ActionError, Battle, HeroAction, Outcome, encounter};
+use crate::combat::{ActionError, Battle, CombatEvent, HeroAction, Outcome, encounter};
 use crate::content;
 use crate::labyrinth::{self, Dir, Floor, MoveError, Pos, RoomKind, Turn};
 use crate::loot::{room_loot, starting_character};
@@ -436,7 +436,17 @@ impl Run {
     /// One combat turn; `None` when the action was refused (the reason is in
     /// the message) or there is no fight.
     pub fn combat_act(&mut self, action: HeroAction) -> Option<Outcome> {
+        self.combat_act_observed(action, |_| {})
+    }
+
+    /// Reports this action's events before victory consumes the battle.
+    pub fn combat_act_observed(
+        &mut self,
+        action: HeroAction,
+        observe: impl FnOnce(&[CombatEvent]),
+    ) -> Option<Outcome> {
         let battle = self.battle.as_mut()?;
+        let seen = battle.log.len();
         let outcome = match battle.act(action) {
             Ok(outcome) => outcome,
             Err(e) => {
@@ -448,6 +458,7 @@ impl Run {
                 return None;
             }
         };
+        observe(&battle.log[seen..]);
         self.message.clear();
         match outcome {
             Outcome::Ongoing => {}
@@ -625,7 +636,18 @@ mod tests {
                 } else {
                     HeroAction::Pass
                 };
-                run.combat_act(action);
+                let mut events = Vec::new();
+                let outcome = run.combat_act_observed(action, |new| events.extend_from_slice(new));
+                if outcome == Some(Outcome::Won) {
+                    // The battle is consumed, but clients still receive the killing blow.
+                    assert!(run.battle.is_none());
+                    assert!(events.iter().any(|event| matches!(
+                        event,
+                        CombatEvent::Death {
+                            actor: crate::combat::Actor::Enemy(_)
+                        }
+                    )));
+                }
             }
             if run.mode == Mode::Map {
                 assert!(run.character.gold > gold);

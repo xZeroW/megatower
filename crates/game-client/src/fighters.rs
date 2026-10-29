@@ -882,6 +882,7 @@ pub fn spawn_enemies(
                     frames: ((sheet.height / 64.0).floor() as u32).max(1),
                 },
             ))
+            .observe(crate::audio::button_press)
             .observe(move |_: On<PointerClick>, mut run: ResMut<Run>| run.set_target(i))
             .id();
         parts.push(sprite);

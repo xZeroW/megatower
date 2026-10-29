@@ -183,6 +183,8 @@ pub fn button(
             }),
         ))
         .add_children(&children)
+        .observe(crate::audio::button_hover)
+        .observe(crate::audio::button_press)
         .observe(move |_: On<PointerClick>, mut run: ResMut<Run>| on_click(&mut run))
         .id()
 }

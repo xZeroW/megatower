@@ -4,7 +4,7 @@
 use crate::room_view::Walk;
 use bevy::prelude::*;
 use game_sim::character::EquipSlot;
-use game_sim::combat::{HeroAction, Outcome};
+use game_sim::combat::{CombatEvent, HeroAction, Outcome};
 use game_sim::content;
 use game_sim::labyrinth::Turn;
 use game_sim::run::{gear_error, loot_name};
@@ -58,6 +58,9 @@ pub struct Run {
     pub tree_selection: Option<String>,
     /// The enemy the hero's next skill aims at.
     pub target: usize,
+    /// Audio consumes these once, including the final blow of a won battle.
+    pub audio_events: Vec<CombatEvent>,
+    pub audio_cues: Vec<(&'static str, f32)>,
 }
 
 impl Deref for Run {
@@ -81,6 +84,8 @@ impl Run {
             selection: None,
             tree_selection: None,
             target: 0,
+            audio_events: Vec::new(),
+            audio_cues: Vec::new(),
         }
     }
 
@@ -111,7 +116,10 @@ impl Run {
 
     /// A combat turn; keeps the target on a living enemy.
     pub fn act(&mut self, action: HeroAction) {
-        match self.game.combat_act(action) {
+        let outcome = self.game.combat_act_observed(action, |events| {
+            self.audio_events.extend_from_slice(events);
+        });
+        match outcome {
             Some(Outcome::Ongoing) => {
                 let dead = self
                     .battle
@@ -167,6 +175,7 @@ impl Run {
             Ok(slot) => {
                 self.message = "Equipped.".into();
                 self.selection = Some(Selection::Worn(slot));
+                self.audio_cues.push(("item_equip", 0.0));
             }
             Err(e) => self.message = gear_error(e).into(),
         }
@@ -180,6 +189,7 @@ impl Run {
             Ok(()) => {
                 self.message = "Moved to the bag.".into();
                 self.selection = Some(Selection::Bag(self.character.inventory.len() - 1));
+                self.audio_cues.push(("item_equip", 0.0));
             }
             Err(e) => self.message = gear_error(e).into(),
         }
@@ -193,6 +203,7 @@ impl Run {
             Ok(()) => {
                 self.message = "Gem socketed.".into();
                 self.selection = Some(Selection::Worn(slot));
+                self.audio_cues.push(("ui/rune_select", 5.0));
             }
             Err(e) => self.message = gear_error(e).into(),
         }

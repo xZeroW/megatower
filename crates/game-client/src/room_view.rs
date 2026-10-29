@@ -83,6 +83,7 @@ impl Walk {
         self.turn = Some(turn);
         self.t = 0.0;
         self.revealing = false;
+        run.audio_cues.push(("transition", 0.0));
     }
 }
 
@@ -489,6 +490,8 @@ pub fn spawn_explore(
                 BorderColor::all(ACCENT),
             ))
             .add_child(label)
+            .observe(crate::audio::button_hover)
+            .observe(crate::audio::button_press)
             .observe(
                 |_: On<PointerClick>, mut walk: ResMut<Walk>, mut run: ResMut<Run>| {
                     walk.start(Turn::Back, &mut run);

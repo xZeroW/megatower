@@ -2,6 +2,7 @@
 //! fight what the rooms hold (`design/GAME-DESIGN.md`). Rooms without a fight
 //! resolve with a key press until shops, shrines and events exist.
 
+mod audio;
 mod bars;
 mod combat;
 mod describe;
@@ -27,6 +28,7 @@ fn main() {
                     file_path: "../..".into(),
                     ..default()
                 })
+                .disable::<bevy::audio::AudioPlugin>()
                 .set(WindowPlugin {
                     primary_window: Some(Window {
                         title: "Labyrinth".into(),
@@ -36,6 +38,7 @@ fn main() {
                     ..default()
                 }),
             run::RunPlugin,
+            audio::AudioPlugin,
             ui::UiPlugin,
             room_view::RoomViewPlugin,
             fighters::FightersPlugin,

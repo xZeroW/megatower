@@ -131,6 +131,8 @@ fn side_panel(commands: &mut Commands, run: &Run, battle: &Battle) -> Entity {
                     Color::srgb(0.3, 0.3, 0.35)
                 }),
             ))
+            .observe(crate::audio::button_hover)
+            .observe(crate::audio::button_press)
             .observe(move |_: On<PointerClick>, mut run: ResMut<Run>| run.use_skill(i))
             .id();
         let texts: Vec<Entity> = lines

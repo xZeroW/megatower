@@ -123,6 +123,8 @@ pub fn spawn(commands: &mut Commands, run: &Run) -> Vec<Entity> {
                 BackgroundColor(background),
                 BorderColor::all(border),
             ))
+            .observe(crate::audio::button_hover)
+            .observe(crate::audio::button_press)
             .observe(move |_: On<PointerClick>, mut run: ResMut<Run>| {
                 if run.tree_selection.as_deref() == Some(id.as_str()) {
                     run.allocate_selected();
@@ -208,6 +210,8 @@ fn panel(commands: &mut Commands, run: &Run) -> Entity {
                 BorderColor::all(ACCENT),
             ))
             .add_child(label)
+            .observe(crate::audio::button_hover)
+            .observe(crate::audio::button_press)
             .observe(|_: On<PointerClick>, mut run: ResMut<Run>| run.allocate_selected())
             .id();
         children.push(button);
