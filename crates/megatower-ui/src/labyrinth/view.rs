@@ -256,7 +256,6 @@ fn tip_lines(loot: &Loot) -> Vec<String> {
                 lines.push(format!("{} linked sockets", s.links));
                 lines.extend(s.gems.iter().map(|g| game_sim::run::gem_name(&g.id)));
             }
-            lines.push("Right-click to equip / unequip".into());
             lines
         }
         Loot::Gem(g) => {
@@ -279,7 +278,6 @@ fn tip_lines(loot: &Loot) -> Vec<String> {
                         .map(|m| format!("{:+.0} {:?}", m.value, m.stat)),
                 );
             }
-            lines.push("Select, then click socketed equipment".into());
             lines
         }
     }
@@ -471,7 +469,7 @@ impl Labyrinth {
                                 game_sim::run::gem_name(&g.id),
                             );
                             c.tip = tip_lines(&Loot::Gem(g.clone()));
-                            c.tip.push(format!("{price} gold / Right-click to lock"));
+                            c.tip.push(format!("{price} gold"));
                             c.enabled = game.character.gold >= price;
                             out.push(c);
                         }
@@ -941,10 +939,7 @@ impl Labyrinth {
                 && let Some(id) = self.tree_hit(cursor[0], cursor[1])
                 && let Some(node) = content::get().tree.nodes.iter().find(|n| n.id == id)
             {
-                let mut lines = vec![
-                    node.name.clone(),
-                    "Click to allocate / Right-click to refund".into(),
-                ];
+                let mut lines = vec![node.name.clone()];
                 lines.extend(
                     node.mods
                         .iter()
@@ -977,8 +972,7 @@ impl Labyrinth {
                         .and_then(|it| it.sockets.as_ref())
                         .and_then(|s| s.gems.get(i))
                 {
-                    let mut lines = tip_lines(&Loot::Gem(g.clone()));
-                    lines.push("Right-click to unsocket".into());
+                    let lines = tip_lines(&Loot::Gem(g.clone()));
                     tooltip(&mut out, rects, cursor, lines);
                 }
             }
