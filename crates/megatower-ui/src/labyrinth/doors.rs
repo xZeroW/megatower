@@ -1,6 +1,6 @@
 //! Map-driven exits for Megatower's room viewport. The front wall already has
 //! an arch; side exits copy that arch onto the side walls, and a blocked front
-//! is bricked up with the side wall's own stone.
+//! is bricked up with stone cut from the front wall's own blocks.
 use super::*;
 use bevy::camera::{primitives::Aabb, visibility::RenderLayers};
 use megatower_runtime::render::room::{ROOM_LAYER, RoomMaterial};
@@ -268,7 +268,9 @@ fn sync(
             .unwrap()
     };
     if !open(Turn::Ahead) {
-        let block = stone_of(Turn::Left);
+        // Stone cut from the front wall's own blocks: the side walls' stone
+        // renders black when turned to face the front.
+        let block = found.iter().find(|f| f.piece == Piece::Arch).unwrap();
         spawn(
             &mut commands,
             block,
