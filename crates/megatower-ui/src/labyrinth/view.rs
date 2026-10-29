@@ -328,13 +328,6 @@ impl Labyrinth {
                         "Descend",
                         "Enter the next floor",
                     ));
-                } else {
-                    out.push(icon(
-                        [583.0, 313.0, 29.0, 29.0],
-                        Action::Map,
-                        "assets/textures/icons/floor_icon.png",
-                        "Floor map [M]",
-                    ));
                 }
             }
             Mode::Combat => {
@@ -840,7 +833,10 @@ impl Labyrinth {
                 .iter()
                 .find(|c| contains(c.rect, cursor[0], cursor[1]))
             {
-                tooltip(&mut out, rects, cursor, c.tip.clone());
+                // The movement, pass and skill buttons explain themselves.
+                if !matches!(c.action, Action::Walk(_) | Action::Pass | Action::Skill(_)) {
+                    tooltip(&mut out, rects, cursor, c.tip.clone());
+                }
             } else if let Some(i) = compose::hit_enemy(&frame, cursor[0], cursor[1])
                 && let Some(e) = game.battle.as_ref().and_then(|b| b.enemies.get(i))
             {
@@ -1488,6 +1484,79 @@ mod tests {
                 .any(|draw| matches!(draw,Draw::Text {text,rect,size,..}
             if text.contains("linked sockets") && *size==12.0 && rect[1]+rect[3]<first_slot_y))
         );
+    }
+
+    #[test]
+    fn there_is_one_map_button() {
+        let (mut session, _, rects) = fixture();
+        for kind in [
+            RoomKind::Start,
+            RoomKind::Fight,
+            RoomKind::Stairs { boss: false },
+        ] {
+            session.game_mut().debug_walk_to_kind(|k| {
+                std::mem::discriminant(&k) == std::mem::discriminant(&kind)
+            });
+            if session.game().mode != Mode::Map {
+                continue;
+            }
+            let maps = session
+                .choices(&rects)
+                .iter()
+                .filter(|c| matches!(c.action, Action::Map))
+                .count();
+            assert_eq!(maps, 1, "{kind:?}");
+        }
+    }
+
+    #[test]
+    fn movement_pass_and_skill_buttons_have_no_tooltip() {
+        let shown = |session: &Labyrinth, ui: &mut UiState, rects: &Rects, at: [f32; 2]| {
+            ui.cursor = Some(at);
+            session
+                .draw(ui, rects)
+                .into_iter()
+                .filter_map(|d| match d {
+                    Draw::Text { text, .. } => Some(text),
+                    _ => None,
+                })
+                .collect::<Vec<_>>()
+        };
+        let (mut session, mut ui, rects) = fixture();
+        // The floor-map button keeps its tooltip, as a control.
+        let button = rects.refresh;
+        let map = shown(
+            &session,
+            &mut ui,
+            &rects,
+            [button[0] + button[2] / 2.0, button[1] + button[3] / 2.0],
+        );
+        assert!(map.iter().any(|t| t.contains("Floor map")), "{map:?}");
+        // Directions: nothing pops up over the walk buttons.
+        for i in 0..4 {
+            let at = [325.0 + i as f32 * 44.0 + 10.0, 320.0];
+            let text = shown(&session, &mut ui, &rects, at);
+            assert!(
+                !text
+                    .iter()
+                    .any(|t| t.contains("room") || t.contains("Unexplored")),
+                "{text:?}"
+            );
+        }
+        // In a fight, pass and the skill buttons are silent too.
+        session
+            .game_mut()
+            .debug_walk_to_kind(|k| k == RoomKind::Fight);
+        assert_eq!(session.game().mode, Mode::Combat);
+        for at in [[335.0, 320.0], [390.0, 320.0]] {
+            let text = shown(&session, &mut ui, &rects, at);
+            assert!(
+                !text
+                    .iter()
+                    .any(|t| t.contains("Pass turn") || t.contains("mana")),
+                "{text:?}"
+            );
+        }
     }
 
     #[test]
