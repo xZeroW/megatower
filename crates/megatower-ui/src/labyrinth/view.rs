@@ -245,13 +245,14 @@ fn tip_lines(loot: &Loot) -> Vec<String> {
                 item.name.clone(),
                 format!("{:?}  /  Level {}", item.slot, item.level),
             ];
-            lines.extend(
-                item.implicit
-                    .iter()
-                    .chain(item.affixes.iter().flat_map(|a| a.mods.iter()))
-                    .chain(item.fixed.iter())
-                    .map(|m| format!("{:+.0} {:?} ({:?})", m.value, m.stat, m.kind)),
-            );
+            let mods: Vec<_> = item
+                .implicit
+                .iter()
+                .chain(item.affixes.iter().flat_map(|a| a.mods.iter()))
+                .chain(item.fixed.iter())
+                .copied()
+                .collect();
+            lines.extend(game_sim::describe::mod_lines(&mods));
             if let Some(s) = &item.sockets {
                 lines.push(format!("{} linked sockets", s.links));
                 lines.extend(s.gems.iter().map(|g| game_sim::run::gem_name(&g.id)));
@@ -272,11 +273,7 @@ fn tip_lines(loot: &Loot) -> Vec<String> {
                 );
             } else if let Some(def) = content::get().gems.support(&g.id) {
                 lines.push("Support gem".into());
-                lines.extend(
-                    def.mods
-                        .iter()
-                        .map(|m| format!("{:+.0} {:?}", m.value, m.stat)),
-                );
+                lines.extend(game_sim::describe::mod_lines(&def.mods));
             }
             lines
         }
@@ -940,11 +937,7 @@ impl Labyrinth {
                 && let Some(node) = content::get().tree.nodes.iter().find(|n| n.id == id)
             {
                 let mut lines = vec![node.name.clone()];
-                lines.extend(
-                    node.mods
-                        .iter()
-                        .map(|m| format!("{:+.0} {:?}", m.value, m.stat)),
-                );
+                lines.extend(game_sim::describe::mod_lines(&node.mods));
                 tooltip(&mut out, rects, cursor, lines);
             } else if self.view == View::Profile && ui.tab == Tab::Profile {
                 let loot = rects

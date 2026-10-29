@@ -25,6 +25,7 @@ pub mod character;
 pub mod combat;
 pub mod content;
 pub mod damage;
+pub mod describe;
 pub mod gems;
 pub mod items;
 pub mod labyrinth;
