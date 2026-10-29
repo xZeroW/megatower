@@ -10,7 +10,7 @@ use game_sim::content;
 use game_sim::labyrinth::RoomKind;
 use game_sim::merchant::{gem_price, sell_price};
 
-/// A full-height column with a title and the run message at the bottom.
+/// A full-height column with a title, the body and the key hints.
 fn screen(
     commands: &mut Commands,
     title: &str,
@@ -22,7 +22,6 @@ fn screen(
     let gold = commands
         .spawn(text(format!("Gold: {}", run.character.gold), 16.0, ACCENT))
         .id();
-    let message = commands.spawn(text(run.message.clone(), 15.0, ACCENT)).id();
     let spacer = commands
         .spawn(Node {
             flex_grow: 1.0,
@@ -31,7 +30,7 @@ fn screen(
         .id();
     let mut children = vec![title, gold];
     children.extend(body);
-    children.extend([message, spacer]);
+    children.push(spacer);
     for hint in hints {
         children.push(commands.spawn(text(*hint, 14.0, TEXT_DIM)).id());
     }

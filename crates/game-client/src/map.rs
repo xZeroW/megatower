@@ -220,7 +220,7 @@ pub fn spawn_full(commands: &mut Commands, run: &Run) -> Vec<Entity> {
     vec![area, side]
 }
 
-/// Stats and messages beside the room view.
+/// Stats beside the room view.
 pub fn spawn_panel(commands: &mut Commands, run: &Run) -> Entity {
     let floor = &run.floor;
     let room = floor.current_room();
@@ -266,7 +266,6 @@ pub fn spawn_panel(commands: &mut Commands, run: &Run) -> Entity {
             16.0,
             TEXT_DIM,
         ),
-        (run.message.clone(), 16.0, ACCENT),
     ];
     if progress.points > 0 {
         lines.push((

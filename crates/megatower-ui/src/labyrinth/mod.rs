@@ -780,14 +780,12 @@ impl Labyrinth {
                 self.game_mut().allocate(&id);
             }
             Action::Refund(id) => {
-                if let Err(error) = self
+                // A refund that would cut off other nodes is simply refused.
+                let _ = self
                     .game_mut()
                     .character
                     .progress
-                    .refund(&content::get().tree, &id)
-                {
-                    self.game_mut().message = game_sim::run::passive_error(error).into();
-                }
+                    .refund(&content::get().tree, &id);
             }
         }
     }
@@ -974,8 +972,8 @@ impl Labyrinth {
         let mut end = at + 0.3;
         let won = self.game().battle.is_none() && self.game().mode != Mode::Dead;
         if won {
-            // The win's rewards float up like combat text instead of a
-            // message line: gold, experience, a level-up, and what dropped.
+            // The win's rewards float up like combat text: gold, experience,
+            // a level-up, and what dropped.
             let mut when = at + 0.25;
             for popup in win_popups(&before, &self.game().character) {
                 timed.push(Timed {
@@ -985,7 +983,6 @@ impl Labyrinth {
                 when += 0.25;
             }
             end = end.max(when);
-            self.game_mut().message.clear();
         }
         ui.timeline.push(timed, end);
         for fx in ui.timeline.advance(0.0) {
@@ -1089,10 +1086,6 @@ mod tests {
         assert_eq!(
             popups[0].text,
             (session.game().character.gold - before.gold).to_string()
-        );
-        assert!(
-            session.game().message.is_empty(),
-            "no victory message line is left behind"
         );
     }
 

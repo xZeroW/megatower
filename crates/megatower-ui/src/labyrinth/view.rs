@@ -611,9 +611,8 @@ impl Labyrinth {
                         } else {
                             self.game_mut().character.equip(bag, Some(slot)).map(|_| ())
                         };
-                    match result {
-                        Ok(()) => ui.audio.push(("assets/sfx/ui/rune_select.wav".into(), 5.0)),
-                        Err(e) => self.game_mut().message = game_sim::run::gear_error(e).into(),
+                    if result.is_ok() {
+                        ui.audio.push(("assets/sfx/ui/rune_select.wav".into(), 5.0));
                     }
                 }
             }
@@ -824,20 +823,6 @@ impl Labyrinth {
                     Align::Right,
                 ));
             }
-        }
-        if !game.message.is_empty() && game.mode != Mode::Combat {
-            let message: String = game.message.chars().take(50).collect();
-            out.push(compose::nine_patch(
-                [318.0, 273.0, 280.0, 16.0],
-                &rects.small_panel,
-                palette(1),
-            ));
-            out.push(text(
-                [322.0, 272.0, 272.0, 16.0],
-                message,
-                palette(8),
-                Align::Center,
-            ));
         }
         if let Mode::Event { id, outcome } = &game.mode
             && let Some(event) = content::get().events.iter().find(|e| e.id == *id)

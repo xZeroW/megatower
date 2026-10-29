@@ -139,9 +139,6 @@ fn side_panel(commands: &mut Commands, run: &Run, battle: &Battle) -> Entity {
         vec![("Pass turn [Space]".into(), 18.0, TEXT_DIM)],
         |run| run.act(game_sim::combat::HeroAction::Pass),
     ));
-    if !run.message.is_empty() {
-        children.push(commands.spawn(text(run.message.clone(), 14.0, ACCENT)).id());
-    }
     let start = battle.log.len().saturating_sub(LOG_LINES);
     for event in &battle.log[start..] {
         children.push(

@@ -72,12 +72,7 @@ impl Walk {
         if self.active() || run.mode != Mode::Map || run.overlay.is_some() {
             return;
         }
-        if !run.floor.current_room().cleared {
-            run.message = "Resolve this room before leaving.".into();
-            return;
-        }
-        if !run.floor.turns().iter().any(|(t, _)| *t == turn) {
-            run.message = "No door that way.".into();
+        if !run.floor.current_room().cleared || !run.floor.turns().iter().any(|(t, _)| *t == turn) {
             return;
         }
         self.turn = Some(turn);

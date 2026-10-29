@@ -178,9 +178,6 @@ fn panel(commands: &mut Commands, run: &Run) -> Entity {
     } else {
         lines.push(("Click a node to see it.".into(), 15.0, TEXT_DIM));
     }
-    if !run.message.is_empty() {
-        lines.push((run.message.clone(), 15.0, ACCENT));
-    }
     let panel = commands
         .spawn((
             Node {

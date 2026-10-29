@@ -7,7 +7,6 @@ use game_sim::character::EquipSlot;
 use game_sim::combat::{CombatEvent, HeroAction, Outcome};
 use game_sim::content;
 use game_sim::labyrinth::Turn;
-use game_sim::run::{gear_error, loot_name};
 use std::ops::{Deref, DerefMut};
 
 pub use game_sim::run::{Mode, gem_name, room_name};
@@ -171,13 +170,9 @@ impl Run {
         let Some(Selection::Bag(i)) = self.selection else {
             return;
         };
-        match self.game.character.equip(i, slot) {
-            Ok(slot) => {
-                self.message = "Equipped.".into();
-                self.selection = Some(Selection::Worn(slot));
-                self.audio_cues.push(("item_equip", 0.0));
-            }
-            Err(e) => self.message = gear_error(e).into(),
+        if let Ok(slot) = self.game.character.equip(i, slot) {
+            self.selection = Some(Selection::Worn(slot));
+            self.audio_cues.push(("item_equip", 0.0));
         }
     }
 
@@ -185,13 +180,9 @@ impl Run {
         let Some(Selection::Worn(slot)) = self.selection else {
             return;
         };
-        match self.game.character.unequip(slot) {
-            Ok(()) => {
-                self.message = "Moved to the bag.".into();
-                self.selection = Some(Selection::Bag(self.character.inventory.len() - 1));
-                self.audio_cues.push(("item_equip", 0.0));
-            }
-            Err(e) => self.message = gear_error(e).into(),
+        if self.game.character.unequip(slot).is_ok() {
+            self.selection = Some(Selection::Bag(self.character.inventory.len() - 1));
+            self.audio_cues.push(("item_equip", 0.0));
         }
     }
 
@@ -199,30 +190,26 @@ impl Run {
         let Some(Selection::Bag(i)) = self.selection else {
             return;
         };
-        match self.game.character.socket(i, slot, &content::get().gems) {
-            Ok(()) => {
-                self.message = "Gem socketed.".into();
-                self.selection = Some(Selection::Worn(slot));
-                self.audio_cues.push(("ui/rune_select", 5.0));
-            }
-            Err(e) => self.message = gear_error(e).into(),
+        if self
+            .game
+            .character
+            .socket(i, slot, &content::get().gems)
+            .is_ok()
+        {
+            self.selection = Some(Selection::Worn(slot));
+            self.audio_cues.push(("ui/rune_select", 5.0));
         }
     }
 
     pub fn unsocket(&mut self, slot: EquipSlot, gem: usize) {
-        self.message = match self.game.character.unsocket(slot, gem) {
-            Ok(()) => "Gem moved to the bag.".into(),
-            Err(e) => gear_error(e).into(),
-        };
+        let _ = self.game.character.unsocket(slot, gem);
     }
 
     pub fn discard_selected(&mut self) {
         let Some(Selection::Bag(i)) = self.selection else {
             return;
         };
-        if let Ok(loot) = self.game.character.discard(i) {
-            self.message = format!("Dropped {}.", loot_name(&loot));
-        }
+        let _ = self.game.character.discard(i);
         self.selection = None;
     }
 }

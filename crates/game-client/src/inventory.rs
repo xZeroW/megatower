@@ -373,7 +373,6 @@ fn detail_panel(commands: &mut Commands, run: &Run) -> Entity {
         .add_children(&actions)
         .id();
     children.push(action_row);
-    children.push(commands.spawn(text(run.message.clone(), 15.0, ACCENT)).id());
     let spacer = commands
         .spawn(Node {
             flex_grow: 1.0,
