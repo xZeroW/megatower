@@ -31,6 +31,9 @@ struct Door {
 }
 #[derive(Component)]
 struct Part;
+/// The wall block that bricks up the front opening.
+#[derive(Component)]
+struct FrontFill;
 type Key = (u32, (u8, u8), Vec<Turn>);
 /// The dark pickable quad that fills an exit's hole.
 const SIZE: Vec2 = Vec2::new(3.0, 2.9);
@@ -168,7 +171,7 @@ fn sync(
     ui: Res<crate::UiRes>,
     materials: Res<Materials>,
     mut meshes: ResMut<Assets<Mesh>>,
-    mut parts: Query<(Entity, &mut Visibility), With<Part>>,
+    mut parts: Query<(Entity, &mut Visibility, Has<FrontFill>), With<Part>>,
     mut sources: Query<Source, Without<Part>>,
     mut state: Local<(Option<Key>, bool)>,
 ) {
@@ -181,8 +184,20 @@ fn sync(
     } else {
         Visibility::Hidden
     };
-    for (_, mut v) in parts.iter_mut() {
-        v.set_if_neq(want);
+    // Walking shows the exits that exist; every other room keeps all its
+    // walls closed, and so does a front that cannot be walked through.
+    let ahead_open = run.is_some_and(|r| r.floor.turns().iter().any(|(t, _)| *t == Turn::Ahead));
+    let front_closed = !ahead_open || want != Visibility::Inherited;
+    for (_, mut v, fill) in parts.iter_mut() {
+        v.set_if_neq(if fill {
+            if front_closed {
+                Visibility::Inherited
+            } else {
+                Visibility::Hidden
+            }
+        } else {
+            want
+        });
     }
     let Some(run) = run else {
         return;
@@ -210,7 +225,7 @@ fn sync(
         }
         // A blocked front loses its arch too: the wall is flat there.
         if piece == Piece::Arch {
-            visibility.set_if_neq(if !open(Turn::Ahead) && want == Visibility::Inherited {
+            visibility.set_if_neq(if front_closed {
                 Visibility::Hidden
             } else {
                 Visibility::Inherited
@@ -234,7 +249,7 @@ fn sync(
     if rebuild {
         *shown = Some(key);
         *built = false;
-        for (e, _) in parts.iter() {
+        for (e, ..) in parts.iter() {
             commands.entity(e).despawn();
         }
         let opening = meshes.add(Rectangle::from_size(SIZE));
@@ -279,7 +294,7 @@ fn sync(
             .or_else(|| found.iter().find(|f| matches!(f.piece, Piece::SideWall(_))))
             .unwrap()
     };
-    if !open(Turn::Ahead) {
+    {
         // Stone cut from the front wall's own blocks: the side walls' stone
         // renders black when turned to face the front.
         let block = found
@@ -287,15 +302,23 @@ fn sync(
             .find(|f| f.piece == Piece::Wall)
             .or_else(|| found.iter().find(|f| f.piece == Piece::Arch))
             .unwrap();
-        spawn(
-            &mut commands,
-            block,
+        commands.spawn((
+            Mesh3d(block.mesh.clone()),
+            MeshMaterial3d(block.material.clone()),
             stone(
                 block,
                 Vec3::new(-FRONT_HALF, FLOOR, FRONT_FACE - 0.6),
                 Vec3::new(FRONT_HALF, HOLE_TOP, FRONT_FACE),
             ),
-        );
+            RenderLayers::layer(ROOM_LAYER),
+            Part,
+            FrontFill,
+            if front_closed {
+                Visibility::Inherited
+            } else {
+                Visibility::Hidden
+            },
+        ));
     }
     for turn in [Turn::Left, Turn::Right].into_iter().filter(|t| open(*t)) {
         let block = stone_of(turn);
