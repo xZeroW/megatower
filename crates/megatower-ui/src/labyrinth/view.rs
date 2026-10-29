@@ -1,6 +1,7 @@
 //! Populate Megatower's existing 640x360 HUD, not a second UI layout.
 use super::*;
 use crate::compose::{self, Align, Draw, Seg, TipView, WHITE, hex, image, palette, text, tinted};
+use game_sim::labyrinth::Dir;
 use game_sim::passives::NodeKind;
 use game_sim::{
     gems::{Gem, GemRarity},
@@ -187,6 +188,33 @@ fn tree_node_icon(node: &game_sim::passives::NodeDef) -> &'static str {
         Stat::LifeLeech => "assets/textures/icons/omni_vamp.png",
         _ => "assets/textures/icons/fury_icon.png",
     }
+}
+
+/// Size of the map arrow pointing north (width, height), in canvas pixels.
+const ARROW_SIZE: (f32, f32) = (7.0, 10.0);
+
+/// The rectangles of an arrow pointing `facing`, relative to its own top-left
+/// corner. North is a four-row head over a stem; the others are the same
+/// arrow turned, so the box is 7x10 or 10x7.
+fn arrow_rects(facing: game_sim::labyrinth::Dir) -> Vec<R> {
+    use game_sim::labyrinth::Dir;
+    let (w, h) = ARROW_SIZE;
+    // Head rows 1, 3, 5, 7 wide, then a 3-wide stem.
+    let mut up: Vec<R> = (0..4)
+        .map(|i| {
+            let width = 1.0 + 2.0 * i as f32;
+            [(w - width) / 2.0, i as f32, width, 1.0]
+        })
+        .collect();
+    up.push([2.0, 4.0, 3.0, h - 4.0]);
+    up.into_iter()
+        .map(|[x, y, rw, rh]| match facing {
+            Dir::North => [x, y, rw, rh],
+            Dir::South => [x, h - y - rh, rw, rh],
+            Dir::East => [h - y - rh, x, rh, rw],
+            Dir::West => [y, w - x - rw, rh, rw],
+        })
+        .collect()
 }
 
 /// The experience bar under the portrait (canvas pixels).
@@ -1234,28 +1262,26 @@ impl Labyrinth {
                 RoomKind::Shrine => "+",
                 _ => "",
             });
-            out.push(text(
-                [x, y + 2.0, cell, 16.0],
-                mark,
-                if p == floor.current {
-                    palette(1)
-                } else {
-                    WHITE
-                },
-                Align::Center,
-            ));
             if p == floor.current {
-                use game_sim::labyrinth::Dir;
-                let notch = match floor.facing {
-                    Dir::North => [x + cell * 0.3, y, cell * 0.4, 2.0],
-                    Dir::South => [x + cell * 0.3, y + cell - 2.0, cell * 0.4, 2.0],
-                    Dir::West => [x, y + cell * 0.3, 2.0, cell * 0.4],
-                    Dir::East => [x + cell - 2.0, y + cell * 0.3, 2.0, cell * 0.4],
+                // An arrow in the room you stand in, pointing the way you face.
+                let (w, h) = ARROW_SIZE;
+                let (w, h) = if matches!(floor.facing, Dir::East | Dir::West) {
+                    (h, w)
+                } else {
+                    (w, h)
                 };
-                out.push(Draw::Fill {
-                    rect: notch,
-                    color: palette(1),
-                });
+                let origin = [
+                    (x + (cell - w) / 2.0).round(),
+                    (y + (cell - h) / 2.0).round(),
+                ];
+                for r in arrow_rects(floor.facing) {
+                    out.push(Draw::Fill {
+                        rect: [origin[0] + r[0], origin[1] + r[1], r[2], r[3]],
+                        color: palette(1),
+                    });
+                }
+            } else {
+                out.push(text([x, y + 2.0, cell, 16.0], mark, WHITE, Align::Center));
             }
         }
     }
@@ -1484,6 +1510,26 @@ mod tests {
                 .any(|draw| matches!(draw,Draw::Text {text,rect,size,..}
             if text.contains("linked sockets") && *size==12.0 && rect[1]+rect[3]<first_slot_y))
         );
+    }
+
+    #[test]
+    fn the_map_arrow_points_where_you_face() {
+        use game_sim::labyrinth::Dir;
+        let tip = |dir| {
+            // The thinnest end of the head: the one 1x1 rectangle.
+            arrow_rects(dir)
+                .into_iter()
+                .find(|r| r[2] == 1.0 && r[3] == 1.0)
+                .unwrap()
+        };
+        assert_eq!(tip(Dir::North), [3.0, 0.0, 1.0, 1.0]);
+        assert_eq!(tip(Dir::South), [3.0, 9.0, 1.0, 1.0]);
+        assert_eq!(tip(Dir::East), [9.0, 3.0, 1.0, 1.0]);
+        assert_eq!(tip(Dir::West), [0.0, 3.0, 1.0, 1.0]);
+        for dir in Dir::ALL {
+            let area: f32 = arrow_rects(dir).iter().map(|r| r[2] * r[3]).sum();
+            assert_eq!(area, 1.0 + 3.0 + 5.0 + 7.0 + 3.0 * 6.0, "{dir:?}");
+        }
     }
 
     #[test]
