@@ -548,8 +548,9 @@ impl Labyrinth {
                 "assets/textures/icons/wisdom_icon.png",
                 "Passive tree [P]",
             ));
+            // At the left of the action area, where combat keeps its pass button.
             out.push(icon(
-                rects.refresh,
+                centred(322.0, 44.0, 34.0),
                 Action::Map,
                 "assets/textures/icons/floor_icon.png",
                 "Floor map [M]",
@@ -1591,8 +1592,8 @@ mod tests {
                 std::mem::discriminant(&k) == std::mem::discriminant(&kind)
             });
             for c in session.choices(&rects) {
-                // The tree and map buttons live in the left panel.
-                if matches!(c.action, Action::Tree | Action::Map) {
+                // The tree button lives in the left panel.
+                if matches!(c.action, Action::Tree) {
                     continue;
                 }
                 let [x, y, w, h] = c.rect;
@@ -1660,7 +1661,12 @@ mod tests {
         };
         let (mut session, mut ui, rects) = fixture();
         // The floor-map button keeps its tooltip, as a control.
-        let button = rects.refresh;
+        let button = session
+            .choices(&rects)
+            .into_iter()
+            .find(|c| matches!(c.action, Action::Map))
+            .unwrap()
+            .rect;
         let map = shown(
             &session,
             &mut ui,
