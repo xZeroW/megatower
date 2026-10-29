@@ -2,6 +2,7 @@
 //! game-sim to the existing HUD, widgets, timeline, audio and room renderer;
 //! it never creates or advances a Megatower `Game`.
 mod doors;
+mod stats;
 mod view;
 
 use crate::{FrameInput, model::*, screens};

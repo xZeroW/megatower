@@ -1218,26 +1218,15 @@ impl Labyrinth {
     }
 
     fn information(&self, out: &mut Vec<Draw>, ui: &UiState, _rects: &Rects) {
+        if ui.tab != Tab::Log {
+            super::stats::draw(&self.game().character, out);
+            return;
+        }
         out.push(Draw::Fill {
             rect: [7.0, 28.0, 295.0, 262.0],
             color: palette(1),
         });
-        let game = self.game();
-        let lines = if ui.tab == Tab::Log {
-            self.log.iter().rev().take(14).cloned().collect::<Vec<_>>()
-        } else {
-            let f = game.character.fighter();
-            vec![
-                format!("Level {}", game.character.progress.level),
-                format!("Life {:.0} / {:.0}", f.life, f.max_life),
-                format!("Mana {:.0}", f.max_mana),
-                format!("Armour {:.0}", f.defence().armour),
-                format!("Evasion {:.0}%", f.evasion()),
-                format!("{} passive points [P]", game.character.progress.points),
-                "Map [M] / Equipment [I]".into(),
-            ]
-        };
-        for (i, line) in lines.iter().enumerate() {
+        for (i, line) in self.log.iter().rev().take(14).enumerate() {
             out.push(text(
                 [16.0, 38.0 + i as f32 * 17.0, 275.0, 16.0],
                 line,
