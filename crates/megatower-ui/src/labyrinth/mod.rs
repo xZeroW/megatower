@@ -26,6 +26,9 @@ impl Plugin for LabyrinthPlugin {
                 "MarketSlotContainer",
             ],
         ))
+        .insert_resource(megatower_runtime::render::hud_layout::ActionAreaGrowth(
+            view::ACTION_GROWTH,
+        ))
         .init_resource::<Labyrinth>()
         .add_plugins(doors::DoorsPlugin)
         .add_systems(Startup, autostart)

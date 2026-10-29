@@ -229,7 +229,14 @@ fn point(
         && ui.0.transition.is_none();
     let ray =
         ui.0.cursor
-            .filter(|[x, y]| active && contains([308.0, 0.0, 332.0, 295.0], *x, *y))
+            .filter(|[x, y]| {
+                active
+                    && contains(
+                        [308.0, 0.0, 332.0, 295.0 - super::view::ACTION_GROWTH],
+                        *x,
+                        *y,
+                    )
+            })
             .and_then(|[x, y]| {
                 camera
                     .viewport_to_world(global, Vec2::new(x - 298.0, y + 10.0))

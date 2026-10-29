@@ -1787,16 +1787,24 @@ pub(super) fn button(
         }
     }
     out.push(nine_patch(rect, &rects.flat_button, tint));
+    // The original buttons are 29px tall; taller ones keep the icon and label
+    // centred.
+    let extra = ((rect[3] - 29.0) / 2.0).floor().max(0.0);
     if let Some(icon) = icon {
         out.push(tinted(
-            [rect[0] + (rect[2] - 16.0) / 2.0, rect[1] + 7.0, 16.0, 16.0],
+            [
+                rect[0] + (rect[2] - 16.0) / 2.0,
+                rect[1] + 7.0 + extra,
+                16.0,
+                16.0,
+            ],
             icon,
             if enabled { palette(1) } else { palette(4) },
         ));
     }
     if !label.is_empty() {
         out.push(text(
-            [rect[0], rect[1] + 5.0, rect[2], 13.0],
+            [rect[0], rect[1] + 5.0 + extra, rect[2], 13.0],
             label,
             if enabled { palette(1) } else { palette(4) },
             Align::Center,

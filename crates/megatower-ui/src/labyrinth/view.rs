@@ -302,6 +302,47 @@ fn tooltip(out: &mut Vec<Draw>, rects: &Rects, cursor: [f32; 2], lines: Vec<Stri
     );
 }
 
+/// Extra height of the action panel at the bottom right, taken from the room
+/// frame (the panel is 63 px tall in the recovered layout).
+pub(super) const ACTION_GROWTH: f32 = 36.0;
+
+/// The action panel, canvas pixels.
+pub(super) const ACTION_AREA: R = [310.0, 295.0 - ACTION_GROWTH, 328.0, 63.0 + ACTION_GROWTH];
+
+/// Buttons laid out for the original 63 px panel sit this much higher, to stay
+/// centred in the taller one.
+const ACTION_SHIFT: f32 = -ACTION_GROWTH / 2.0;
+
+/// A rect of the original panel moved to the centre of the taller one.
+fn in_action_area(r: R) -> R {
+    [r[0], r[1] + ACTION_SHIFT, r[2], r[3]]
+}
+
+/// The movement keys as an inverted T, W above S: ahead on top, then left,
+/// back and right.
+fn walk_button(turn: Turn) -> (R, &'static str) {
+    const W: f32 = 44.0;
+    const H: f32 = 36.0;
+    const GAP: f32 = 4.0;
+    let centre = ACTION_AREA[0] + ACTION_AREA[2] / 2.0;
+    let top = ACTION_AREA[1] + (ACTION_AREA[3] - (2.0 * H + GAP)) / 2.0;
+    let (col, row, icon) = match turn {
+        Turn::Ahead => (0.0, 0.0, "assets/textures/ui/move_ahead.png"),
+        Turn::Left => (-1.0, 1.0, "assets/textures/ui/move_left.png"),
+        Turn::Back => (0.0, 1.0, "assets/textures/ui/move_back.png"),
+        Turn::Right => (1.0, 1.0, "assets/textures/ui/move_right.png"),
+    };
+    (
+        [
+            (centre - W / 2.0 + col * (W + GAP)).round(),
+            (top + row * (H + GAP)).round(),
+            W,
+            H,
+        ],
+        icon,
+    )
+}
+
 impl Labyrinth {
     fn choices(&self, rects: &Rects) -> Vec<Choice> {
         let game = self.game();
@@ -326,24 +367,18 @@ impl Labyrinth {
                 }
             }
             Mode::Map => {
-                for (i, turn) in [Turn::Left, Turn::Ahead, Turn::Right, Turn::Back]
-                    .into_iter()
-                    .enumerate()
-                {
+                for turn in [Turn::Ahead, Turn::Left, Turn::Back, Turn::Right] {
                     let exit = game.floor.turns().into_iter().find(|(t, _)| *t == turn);
+                    let (rect, arrow) = walk_button(turn);
                     let mut c = choice(
-                        [325.0 + i as f32 * 44.0, 313.0, 36.0, 29.0],
+                        rect,
                         Action::Walk(turn),
-                        match turn {
-                            Turn::Left => "A",
-                            Turn::Ahead => "W",
-                            Turn::Right => "D",
-                            Turn::Back => "S",
-                        },
+                        "",
                         exit.as_ref()
                             .and_then(|(_, e)| e.known)
                             .map_or("Unexplored room", game_sim::run::room_name),
                     );
+                    c.icon = Some(arrow);
                     c.enabled = exit.is_some()
                         && game.floor.current_room().cleared
                         && matches!(self.view, View::Profile | View::Map);
@@ -351,7 +386,7 @@ impl Labyrinth {
                 }
                 if matches!(game.floor.current_room().kind, RoomKind::Stairs { .. }) {
                     out.push(choice(
-                        [507.0, 313.0, 113.0, 29.0],
+                        [554.0, 291.0, 76.0, 36.0],
                         Action::Descend,
                         "Descend",
                         "Enter the next floor",
@@ -360,7 +395,7 @@ impl Labyrinth {
             }
             Mode::Combat => {
                 out.push(icon(
-                    [325.0, 313.0, 29.0, 29.0],
+                    [322.0, 290.0, 44.0, 38.0],
                     Action::Pass,
                     "assets/textures/icons/timeout_icon.png",
                     "Pass turn [Space]",
@@ -374,7 +409,7 @@ impl Labyrinth {
                             "mana"
                         };
                         let mut c = choice(
-                            [365.0 + i as f32 * 64.0, 313.0, 56.0, 29.0],
+                            [380.0 + i as f32 * 86.0, 290.0, 78.0, 38.0],
                             Action::Skill(i),
                             format!("{}", i + 1),
                             skill.name.clone(),
@@ -398,13 +433,13 @@ impl Labyrinth {
             }
             Mode::Shop => {
                 out.push(icon(
-                    rects.merchant_leave,
+                    in_action_area(rects.merchant_leave),
                     Action::Leave,
                     "assets/textures/ui/leave_icon.png",
                     "Leave merchant [Esc]",
                 ));
                 let mut refresh = icon(
-                    rects.merchant_refresh,
+                    in_action_area(rects.merchant_refresh),
                     Action::Refresh,
                     "assets/textures/icons/refresh_icon.png",
                     "Refresh unlocked gems",
@@ -415,8 +450,12 @@ impl Labyrinth {
                     for (i, (rect, gem)) in rects.merchant.iter().zip(&shop.stock).enumerate() {
                         if let Some(g) = gem {
                             let price = game_sim::merchant::gem_price(&content::get().gems, g);
-                            let mut c =
-                                choice(*rect, Action::Buy(i), "", game_sim::run::gem_name(&g.id));
+                            let mut c = choice(
+                                in_action_area(*rect),
+                                Action::Buy(i),
+                                "",
+                                game_sim::run::gem_name(&g.id),
+                            );
                             c.tip = tip_lines(&Loot::Gem(g.clone()));
                             c.tip.push(format!("{price} gold / Right-click to lock"));
                             c.enabled = game.character.gold >= price;
@@ -428,7 +467,7 @@ impl Labyrinth {
             }
             Mode::Shrine(offers) => {
                 out.push(icon(
-                    rects.merchant_leave,
+                    in_action_area(rects.merchant_leave),
                     Action::Leave,
                     "assets/textures/ui/leave_icon.png",
                     "Leave shrine [Esc]",
@@ -440,7 +479,7 @@ impl Labyrinth {
                         .find(|b| b.id == *id)
                         .map_or(id.as_str(), |b| b.name.as_str());
                     out.push(choice(
-                        [380.0 + i as f32 * 76.0, 313.0, 68.0, 29.0],
+                        in_action_area([380.0 + i as f32 * 76.0, 313.0, 68.0, 29.0]),
                         Action::Boon(i),
                         format!("{}", i + 1),
                         name,
@@ -450,7 +489,7 @@ impl Labyrinth {
             Mode::Event { id, outcome } => {
                 if outcome.is_some() {
                     out.push(choice(
-                        [425.0, 313.0, 100.0, 29.0],
+                        in_action_area([425.0, 313.0, 100.0, 29.0]),
                         Action::Leave,
                         "Continue",
                         "Leave event",
@@ -458,7 +497,7 @@ impl Labyrinth {
                 } else if let Some(event) = content::get().events.iter().find(|e| e.id == *id) {
                     for (i, c) in event.choices.iter().enumerate() {
                         out.push(choice(
-                            [365.0 + i as f32 * 80.0, 313.0, 72.0, 29.0],
+                            in_action_area([365.0 + i as f32 * 80.0, 313.0, 72.0, 29.0]),
                             Action::Event(i),
                             format!("{}", i + 1),
                             c.label.clone(),
@@ -468,7 +507,7 @@ impl Labyrinth {
             }
             Mode::Altar => {
                 out.push(icon(
-                    rects.merchant_leave,
+                    in_action_area(rects.merchant_leave),
                     Action::Leave,
                     "assets/textures/ui/leave_icon.png",
                     "Leave gem altar [Esc]",
@@ -479,7 +518,7 @@ impl Labyrinth {
                     && matches!(game.character.inventory.get(i), Some(Loot::Gem(_)))
                 {
                     out.push(choice(
-                        [420.0, 313.0, 125.0, 29.0],
+                        in_action_area([420.0, 313.0, 125.0, 29.0]),
                         Action::Upgrade(GemSpot::Bag(i)),
                         "Upgrade gem",
                         "Spend one altar use",
@@ -777,6 +816,7 @@ impl Labyrinth {
             && let Some(shop) = game.shop()
         {
             for (i, (rect, gem)) in rects.merchant.iter().zip(&shop.stock).enumerate() {
+                let rect = &in_action_area(*rect);
                 if let Some(g) = gem {
                     loot_draw(&mut out, *rect, &Loot::Gem(g.clone()));
                     out.push(text(
@@ -814,7 +854,9 @@ impl Labyrinth {
                 out.push(text(
                     [
                         c.rect[0] + c.rect[2] / 2.0 - 22.0,
-                        c.rect[1] + (c.rect[3] - 13.0) / 2.0,
+                        // The glyph sits low in its 13px box: level its middle with
+                        // the icon's.
+                        c.rect[1] + 7.0 + ((c.rect[3] - 29.0) / 2.0).floor().max(0.0) + 8.0 - 10.5,
                         14.0,
                         13.0,
                     ],
@@ -1518,6 +1560,55 @@ mod tests {
     }
 
     #[test]
+    fn every_room_button_sits_inside_the_taller_action_area() {
+        let (mut session, _, rects) = fixture();
+        let [ax, ay, aw, ah] = ACTION_AREA;
+        assert!(ay + ah <= 360.0 && ay > 200.0);
+        for kind in [
+            RoomKind::Start,
+            RoomKind::Fight,
+            RoomKind::Merchant,
+            RoomKind::Shrine,
+            RoomKind::Event,
+            RoomKind::GemAltar { uses_left: 1 },
+            RoomKind::Stairs { boss: false },
+        ] {
+            session.game_mut().debug_walk_to_kind(|k| {
+                std::mem::discriminant(&k) == std::mem::discriminant(&kind)
+            });
+            for c in session.choices(&rects) {
+                // The tree and map buttons live in the left panel.
+                if matches!(c.action, Action::Tree | Action::Map) {
+                    continue;
+                }
+                let [x, y, w, h] = c.rect;
+                assert!(
+                    x >= ax && y >= ay && x + w <= ax + aw && y + h <= ay + ah,
+                    "{kind:?} {:?} at {:?} leaves {ACTION_AREA:?}",
+                    c.action,
+                    c.rect
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn movement_is_an_inverted_t_with_ahead_over_back() {
+        let (w, _) = walk_button(Turn::Ahead);
+        let (a, _) = walk_button(Turn::Left);
+        let (s, _) = walk_button(Turn::Back);
+        let (d, _) = walk_button(Turn::Right);
+        assert_eq!(w[0], s[0], "W sits right above S");
+        assert!(w[1] + w[3] < s[1], "W is above the bottom row");
+        assert_eq!(a[1], s[1]);
+        assert_eq!(d[1], s[1]);
+        assert!(
+            a[0] + a[2] <= s[0] && s[0] + s[2] <= d[0],
+            "A, S, D in a row"
+        );
+    }
+
+    #[test]
     fn there_is_one_map_button() {
         let (mut session, _, rects) = fixture();
         for kind in [
@@ -1664,7 +1755,7 @@ mod tests {
             .game_mut()
             .debug_walk_to_kind(|k| k == RoomKind::Merchant);
         session.game_mut().character.gold = 1000;
-        let rect = rects.merchant[0];
+        let rect = in_action_area(rects.merchant[0]);
         ui.cursor = Some([rect[0] + 17.0, rect[1] + 17.0]);
         session.pointer(
             &mut ui,
