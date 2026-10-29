@@ -218,7 +218,7 @@ fn point(
     });
     transform.rotation = Quat::from_rotation_y(yaw) * rest;
     let active = run.mode == Mode::Map
-        && session.view == View::Profile
+        && matches!(session.view, View::Profile | View::Map)
         && ui.0.screen == Screen::Playing
         && !ui.0.esc_open
         && !ui.0.options_open

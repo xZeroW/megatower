@@ -1,6 +1,7 @@
 //! Populate Megatower's existing 640x360 HUD, not a second UI layout.
 use super::*;
 use crate::compose::{self, Align, Draw, Seg, TipView, WHITE, hex, image, palette, text, tinted};
+use game_sim::passives::NodeKind;
 use game_sim::{
     gems::{Gem, GemRarity},
     items::{Item, ItemRarity, Slot},
@@ -120,6 +121,74 @@ fn selection_outline(rect: R) -> Draw {
 /// What an enemy's next move does, in a few characters: "8-12" for an attack
 /// (with its damage modifiers and chill applied), "+100" for a guard, "20%"
 /// for a heal.
+/// Width of the hero's mana bar next to the health bar (canvas pixels).
+const MANA_BAR_WIDTH: f32 = 40.0;
+
+/// Side of a passive node's square on the tree panel (canvas pixels).
+fn tree_node_size(id: &str) -> f32 {
+    match content::get().tree.node(id).map(|n| n.kind) {
+        Some(NodeKind::Small) | None => 7.0,
+        Some(NodeKind::Start) => 11.0,
+        Some(NodeKind::Notable) => 10.0,
+        Some(NodeKind::Keystone) => 18.0,
+    }
+}
+
+/// Both ends allocated: the connection is part of the character's path.
+fn progress_lit(game: &Run, a: &str, b: &str) -> bool {
+    game.character.progress.is_allocated(a) && game.character.progress.is_allocated(b)
+}
+
+/// The picture a notable or keystone carries: its own keystone art, or the
+/// icon of the first thing it changes.
+fn tree_node_icon(node: &game_sim::passives::NodeDef) -> &'static str {
+    use game_sim::ailment::Ailment as A;
+    use game_sim::modifier::Stat;
+    use game_sim::tags::Tag;
+    const ICONS: &str = "assets/textures/icons/";
+    let keystone = match node.id.as_str() {
+        "glass_cannon" => Some("frailty_keystone"),
+        "blood_pact" => Some("resentment_keystone"),
+        "spellweaver" => Some("prodigality_keystone"),
+        "steady_hand" => Some("preservation_keystone"),
+        _ => None,
+    };
+    if let Some(name) = keystone {
+        return match name {
+            "frailty_keystone" => "assets/textures/icons/frailty_keystone.png",
+            "resentment_keystone" => "assets/textures/icons/resentment_keystone.png",
+            "prodigality_keystone" => "assets/textures/icons/prodigality_keystone.png",
+            _ => "assets/textures/icons/preservation_keystone.png",
+        };
+    }
+    let _ = ICONS;
+    let Some(m) = node.mods.first() else {
+        return "assets/textures/icons/wisdom_icon.png";
+    };
+    match m.stat {
+        Stat::Life | Stat::EnergyShield => "assets/textures/icons/max_health_icon.png",
+        Stat::Mana | Stat::ManaRegen | Stat::ManaCost => "assets/textures/icons/mana_icon.png",
+        Stat::Armour => "assets/textures/icons/guard_icon.png",
+        Stat::Evasion => "assets/textures/icons/elusive_icon.png",
+        Stat::Damage if m.requires.has(Tag::Spell) => "assets/textures/icons/magic_damage_icon.png",
+        Stat::Damage | Stat::AddedMin(_) | Stat::AddedMax(_) => {
+            "assets/textures/icons/attack_icon.png"
+        }
+        Stat::Convert(..) => "assets/textures/icons/power_icon.png",
+        Stat::CritChance | Stat::CritMultiplier => "assets/textures/icons/execution_icon.png",
+        Stat::Resistance(_) => "assets/textures/icons/magic_shield_icon.png",
+        Stat::Penetration(_) => "assets/textures/icons/magic_shield_break_icon.png",
+        Stat::AilmentChance(A::Ignite) => "assets/textures/icons/magma_icon.png",
+        Stat::AilmentChance(A::Bleed) => "assets/textures/icons/bleed.png",
+        Stat::AilmentChance(A::Poison) => "assets/textures/icons/toxicity_icon.png",
+        Stat::AilmentChance(A::Shock) => "assets/textures/icons/electro_charge.png",
+        Stat::AilmentChance(A::Chill) => "assets/textures/icons/slowness_icon.png",
+        Stat::AilmentChance(A::Freeze) => "assets/textures/icons/freeze_icon.png",
+        Stat::LifeLeech => "assets/textures/icons/omni_vamp.png",
+        _ => "assets/textures/icons/fury_icon.png",
+    }
+}
+
 /// The experience bar under the portrait (canvas pixels).
 const XP_BAR: R = [16.0, 87.0, 36.0, 5.0];
 
@@ -141,14 +210,6 @@ fn intent_amount(enemy: &game_sim::combat::Enemy) -> String {
     }
 }
 
-fn intent_rect(cx: f32) -> R {
-    let layout = megatower_assets::godot_layout::enemy_container_layout();
-    // The source draws ailment icons 14px above this row. Put intent above
-    // those, never at a hard-coded Y inside the health/armour panel.
-    let statuses_y =
-        compose::ENEMY_TOP + layout.rect("MarginContainer3/EffectContainerHolder")[1] - 14.0;
-    [cx - 8.0, statuses_y - 20.0, 16.0, 16.0]
-}
 fn tip_lines(loot: &Loot) -> Vec<String> {
     match loot {
         Loot::Item(item) => {
@@ -257,7 +318,7 @@ impl Labyrinth {
                     );
                     c.enabled = exit.is_some()
                         && game.floor.current_room().cleared
-                        && self.view == View::Profile;
+                        && matches!(self.view, View::Profile | View::Map);
                     out.push(c);
                 }
                 if matches!(game.floor.current_room().kind, RoomKind::Stairs { .. }) {
@@ -683,27 +744,6 @@ impl Labyrinth {
             if let Some(policies) = &self.policies {
                 compose::enemy_widget(rects, policies, &enemy, cx, ui, i, &mut out);
             }
-            if let Some(e) = game.battle.as_ref().and_then(|b| b.enemies.get(i)) {
-                let path = match e.intent().kind {
-                    game_sim::combat::IntentKind::Attack(_) => {
-                        "assets/textures/icons/attack_icon.png"
-                    }
-                    game_sim::combat::IntentKind::Guard { .. } => {
-                        "assets/textures/icons/guard_icon.png"
-                    }
-                    game_sim::combat::IntentKind::Heal { .. } => {
-                        "assets/textures/icons/max_health_icon.png"
-                    }
-                };
-                let rect = intent_rect(cx);
-                out.push(tinted(rect, path, palette(8)));
-                out.push(text(
-                    [rect[0] + 18.0, rect[1] + 2.0, 40.0, 13.0],
-                    intent_amount(e),
-                    palette(8),
-                    Align::Left,
-                ));
-            }
         }
         if frame.turn > 0 {
             out.push(text(
@@ -750,15 +790,21 @@ impl Labyrinth {
                 &mut out,
             );
             if let Action::Skill(i) = c.action {
+                // Just left of the centred icon, level with it.
                 out.push(text(
-                    [c.rect[0] + 3.0, c.rect[1], 12.0, 13.0],
+                    [
+                        c.rect[0] + c.rect[2] / 2.0 - 22.0,
+                        c.rect[1] + (c.rect[3] - 13.0) / 2.0,
+                        14.0,
+                        13.0,
+                    ],
                     (i + 1).to_string(),
                     palette(1),
-                    Align::Left,
+                    Align::Right,
                 ));
             }
         }
-        if !game.message.is_empty() {
+        if !game.message.is_empty() && game.mode != Mode::Combat {
             let message: String = game.message.chars().take(50).collect();
             out.push(compose::nine_patch(
                 [318.0, 273.0, 280.0, 16.0],
@@ -795,20 +841,8 @@ impl Labyrinth {
                 .find(|c| contains(c.rect, cursor[0], cursor[1]))
             {
                 tooltip(&mut out, rects, cursor, c.tip.clone());
-            } else if let Some(i) = compose::hit_enemy(&frame, cursor[0], cursor[1]).or_else(|| {
-                frame.enemies.iter().enumerate().find_map(|(i, e)| {
-                    e.as_ref()
-                        .filter(|e| !e.out_of_combat)
-                        .filter(|_| {
-                            contains(
-                                intent_rect(crate::frame::enemy_cx(&frame, i)),
-                                cursor[0],
-                                cursor[1],
-                            )
-                        })
-                        .map(|_| i)
-                })
-            }) && let Some(e) = game.battle.as_ref().and_then(|b| b.enemies.get(i))
+            } else if let Some(i) = compose::hit_enemy(&frame, cursor[0], cursor[1])
+                && let Some(e) = game.battle.as_ref().and_then(|b| b.enemies.get(i))
             {
                 let mut lines = vec![
                     e.fighter.name.clone(),
@@ -955,7 +989,7 @@ impl Labyrinth {
             health[1] = ((rects.bar_top[1] + rects.bar_second[1]) / 2.0).round();
         }
         health[2] = if v.max_mana > 0 {
-            rects.bar_top[2] - compose::mana_width(v.max_mana) - 4.0
+            rects.bar_top[2] - MANA_BAR_WIDTH - 4.0
         } else {
             rects.bar_top[2]
         };
@@ -980,12 +1014,21 @@ impl Labyrinth {
             out,
         );
         if v.max_mana > 0 {
+            // The mana pool is large here (costs of 4-7 out of ~50), so it is
+            // a plain pill bar like health rather than megaloot's pips.
             let right = rects.mana[0] + rects.mana[2] + 2.0;
-            let width = compose::mana_pip(right, health[1] - 1.0, v.max_mana, v.mana, out);
+            let blue = hex(0x285cc4);
+            let rect = [right - MANA_BAR_WIDTH, health[1], MANA_BAR_WIDTH, health[3]];
+            compose::bar(
+                rect,
+                (v.mana as f32 / v.max_mana.max(1) as f32, None),
+                blue,
+                out,
+            );
             compose::label_panel(
                 rects,
-                right - width / 2.0,
-                health[1] - 9.0,
+                rect[0] + rect[2] / 2.0,
+                rect[1] - 9.0,
                 &format!("{} / {}", v.mana, v.max_mana),
                 hex(0x5b8def),
                 out,
@@ -1227,13 +1270,16 @@ impl Labyrinth {
         let maxx = nodes.iter().map(|n| n.x).fold(f32::NEG_INFINITY, f32::max);
         let miny = nodes.iter().map(|n| n.y).fold(f32::INFINITY, f32::min);
         let maxy = nodes.iter().map(|n| n.y).fold(f32::NEG_INFINITY, f32::max);
-        let scale = (250.0 / (maxx - minx).max(1.0)).min(205.0 / (maxy - miny).max(1.0));
+        // The panel is wider than tall: spread the tree more horizontally so
+        // neighbouring nodes keep their gaps.
+        let sx = 250.0 / (maxx - minx).max(1.0);
+        let sy = 205.0 / (maxy - miny).max(1.0);
         nodes
             .iter()
             .map(|n| {
                 (
                     n.id.clone(),
-                    [28.0 + (n.x - minx) * scale, 65.0 + (n.y - miny) * scale],
+                    [28.0 + (n.x - minx) * sx, 65.0 + (n.y - miny) * sy],
                 )
             })
             .collect()
@@ -1241,7 +1287,10 @@ impl Labyrinth {
     fn tree_hit(&self, x: f32, y: f32) -> Option<String> {
         self.tree_positions()
             .into_iter()
-            .find(|(_, p)| (x - p[0]).abs() < 6.0 && (y - p[1]).abs() < 6.0)
+            .find(|(id, p)| {
+                let half = tree_node_size(id) / 2.0 + 1.0;
+                (x - p[0]).abs() < half && (y - p[1]).abs() < half
+            })
             .map(|(id, _)| id)
     }
     fn draw_tree(&self, out: &mut Vec<Draw>) {
@@ -1273,20 +1322,78 @@ impl Labyrinth {
                         2.0,
                         2.0,
                     ],
-                    color: palette(2),
+                    color: if progress_lit(self.game(), &a.id, &b.id) {
+                        palette(8)
+                    } else {
+                        palette(2)
+                    },
                 });
             }
         }
+        let progress = &self.game().character.progress;
         for (id, p) in points {
-            let allocated = self.game().character.progress.is_allocated(&id);
-            out.push(Draw::Image {
-                rect: [p[0] - 6.0, p[1] - 6.0, 12.0, 12.0],
-                path: "assets/textures/ui/small_tree_node.png".into(),
-                region: Some([if allocated { 13.0 } else { 0.0 }, 0.0, 13.0, 13.0]),
-                tint: if allocated { palette(8) } else { palette(4) },
-                slice: None,
-                flip_x: false,
+            let Some(node) = tree.node(&id) else { continue };
+            let allocated = progress.is_allocated(&id);
+            let reachable = !allocated && progress.can_allocate(tree, &id).is_ok();
+            let selected = self.tree_selection.as_deref() == Some(id.as_str());
+            let size = tree_node_size(&id);
+            let rect = [
+                (p[0] - size / 2.0).round(),
+                (p[1] - size / 2.0).round(),
+                size,
+                size,
+            ];
+            let border = if selected {
+                WHITE
+            } else if allocated {
+                palette(8)
+            } else if reachable {
+                hex(0xf2c94c)
+            } else {
+                palette(4)
+            };
+            let fill = if allocated { palette(2) } else { palette(1) };
+            let icon_tint = if allocated {
+                palette(8)
+            } else if reachable {
+                hex(0xf2c94c)
+            } else {
+                palette(3)
+            };
+            out.push(Draw::Fill {
+                rect,
+                color: border,
             });
+            out.push(Draw::Fill {
+                rect: [rect[0] + 1.0, rect[1] + 1.0, size - 2.0, size - 2.0],
+                color: fill,
+            });
+            match node.kind {
+                NodeKind::Small => out.push(Draw::Fill {
+                    rect: [rect[0] + 2.0, rect[1] + 2.0, size - 4.0, size - 4.0],
+                    color: if allocated {
+                        palette(8)
+                    } else if reachable {
+                        hex(0xf2c94c)
+                    } else {
+                        palette(2)
+                    },
+                }),
+                NodeKind::Start => out.push(Draw::Fill {
+                    rect: [rect[0] + 3.0, rect[1] + 3.0, size - 6.0, size - 6.0],
+                    color: icon_tint,
+                }),
+                NodeKind::Notable => out.push(tinted(
+                    [rect[0] + 1.0, rect[1] + 1.0, 8.0, 8.0],
+                    tree_node_icon(node),
+                    icon_tint,
+                )),
+                NodeKind::Keystone => out.push(tinted(
+                    [rect[0] + 1.0, rect[1] + 1.0, 16.0, 16.0],
+                    tree_node_icon(node),
+                    icon_tint,
+                )),
+            }
         }
     }
 }
@@ -1381,17 +1488,6 @@ mod tests {
                 .any(|draw| matches!(draw,Draw::Text {text,rect,size,..}
             if text.contains("linked sockets") && *size==12.0 && rect[1]+rect[3]<first_slot_y))
         );
-    }
-
-    #[test]
-    fn enemy_intent_clears_both_status_icons_and_the_tallest_stats_panel() {
-        let layout = megatower_assets::godot_layout::enemy_container_layout();
-        let intent = intent_rect(474.0);
-        let status_top =
-            compose::ENEMY_TOP + layout.rect("MarginContainer3/EffectContainerHolder")[1] - 14.0;
-        let panel_top = compose::ENEMY_TOP + layout.rect("MarginContainer2/Panel/ColorRect")[1];
-        assert!(intent[1] + intent[3] < status_top);
-        assert!(intent[1] + intent[3] < panel_top);
     }
 
     #[test]

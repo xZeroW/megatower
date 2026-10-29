@@ -570,9 +570,6 @@ impl Labyrinth {
                 }
                 return;
             }
-            if self.view == View::Map {
-                return;
-            }
             let turn = if keys.any_just_pressed([KeyCode::KeyW, KeyCode::ArrowUp]) {
                 Some(Turn::Ahead)
             } else if keys.any_just_pressed([KeyCode::KeyA, KeyCode::ArrowLeft]) {
@@ -984,6 +981,26 @@ mod tests {
             &names,
         );
         assert_eq!(unknown, "Enemy 3 dodged");
+    }
+
+    #[test]
+    fn walking_keys_work_with_the_map_open() {
+        let mut session = fixture(1, 1);
+        let mut ui = UiState::default();
+        session.play(&mut ui, "3");
+        let (turn, _) = session.game().floor.turns().into_iter().next().unwrap();
+        let key = match turn {
+            Turn::Ahead => KeyCode::KeyW,
+            Turn::Left => KeyCode::KeyA,
+            Turn::Right => KeyCode::KeyD,
+            Turn::Back => KeyCode::KeyS,
+        };
+        session.view = View::Map;
+        let mut keys = ButtonInput::<KeyCode>::default();
+        keys.press(key);
+        session.keyboard(&mut ui, &keys);
+        assert!(session.walk.is_some(), "the walk starts under the open map");
+        assert_eq!(session.view, View::Map, "the map stays open");
     }
 
     #[test]
