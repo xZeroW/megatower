@@ -241,10 +241,8 @@ fn intent_amount(enemy: &game_sim::combat::Enemy) -> String {
 fn tip_lines(loot: &Loot) -> Vec<String> {
     match loot {
         Loot::Item(item) => {
-            let mut lines = vec![
-                item.name.clone(),
-                format!("{:?}  /  Level {}", item.slot, item.level),
-            ];
+            // The slot is told by the item's look, so only its level is listed.
+            let mut lines = vec![item.name.clone(), format!("Level {}", item.level)];
             let mods: Vec<_> = item
                 .implicit
                 .iter()
@@ -260,10 +258,7 @@ fn tip_lines(loot: &Loot) -> Vec<String> {
             lines
         }
         Loot::Gem(g) => {
-            let mut lines = vec![
-                game_sim::run::gem_name(&g.id),
-                format!("{:?} gem / Level {}", g.rarity, g.level),
-            ];
+            let mut lines = vec![game_sim::run::gem_name(&g.id), format!("Level {}", g.level)];
             if let Some(def) = content::get().gems.active(&g.id) {
                 lines.push(format!("{:.0} mana / {:?}", def.cost, def.targeting));
                 lines.extend(
@@ -272,7 +267,6 @@ fn tip_lines(loot: &Loot) -> Vec<String> {
                         .map(|(kind, r)| format!("{:.0}-{:.0} {kind:?}", r.min, r.max)),
                 );
             } else if let Some(def) = content::get().gems.support(&g.id) {
-                lines.push("Support gem".into());
                 lines.extend(game_sim::describe::mod_lines(&def.mods));
             }
             lines
