@@ -17,6 +17,17 @@ const FONT: &str = "assets/fonts/monogram-extended.ttf";
 #[auto_plugin(impl_plugin_trait)]
 pub struct HudLayoutPlugin;
 
+/// Subtrees whose visuals are supplied by the active gameplay HUD. Keep the
+/// recovered panel geometry, but do not also spawn its editor-state controls.
+#[derive(Resource, Default)]
+pub struct DynamicHudBranches(pub &'static [&'static str]);
+
+impl DynamicHudBranches {
+    fn owns(&self, visual: &Visual) -> bool {
+        visual.path.split('/').any(|part| self.0.contains(&part))
+    }
+}
+
 /// Controls whose content is live game state; the dynamic HUD draws them.
 /// Editor-default labels, partner portraits and status icons never show.
 fn is_dynamic(visual: &Visual) -> bool {
@@ -135,6 +146,7 @@ fn spawn_hud_layout(
     assets: Res<AssetServer>,
     target: Res<RoomRenderTarget>,
     mut capture: Option<ResMut<CaptureReadiness>>,
+    dynamic: Option<Res<DynamicHudBranches>>,
 ) {
     commands.spawn(Camera2d);
     let layout = recovered_layout();
@@ -157,6 +169,7 @@ fn spawn_hud_layout(
     let visuals: Vec<Box<dyn Scene>> = layout
         .visuals
         .iter()
+        .filter(|visual| !dynamic.as_ref().is_some_and(|owner| owner.owns(visual)))
         .filter_map(|visual| layout_visual(&assets, &mut capture, visual))
         .collect();
     commands.queue_spawn_scene(bsn! {
@@ -177,6 +190,60 @@ fn spawn_hud_layout(
             {visuals}
         ]
     });
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn dynamic_action_ownership_excludes_all_editor_buttons_but_keeps_the_frames() {
+        let layout = recovered_layout();
+        let owner = DynamicHudBranches(&[
+            "RoomActionContainerHolder",
+            "BattleSpeedContainer",
+            "MarketSlotContainer",
+        ]);
+        let actions: Vec<_> = layout
+            .visuals
+            .iter()
+            .filter(|v| v.path.contains("/RoomActionContainerHolder/") && v.texture.is_some())
+            .collect();
+        assert!(!actions.is_empty());
+        assert!(actions.iter().all(|v| owner.owns(v)));
+        assert!(
+            layout
+                .visuals
+                .iter()
+                .filter(|v| v.path.contains("/BattleSpeedContainer/"))
+                .all(|v| owner.owns(v))
+        );
+        assert!(
+            layout.visuals.iter().any(|v| v
+                .path
+                .ends_with("BackgroundMarginContainer/GenericPanel")
+                && !owner.owns(v))
+        );
+        assert!(
+            layout
+                .visuals
+                .iter()
+                .any(|v| v.path.ends_with("MarketSlot/ItemSlot") && owner.owns(v))
+        );
+        assert!(
+            layout
+                .visuals
+                .iter()
+                .any(|v| v.path.ends_with("ContentsContainer/InventorySlot") && !owner.owns(v))
+        );
+        // The original client still uses the recovered scaffold by default.
+        assert!(
+            layout
+                .visuals
+                .iter()
+                .all(|v| !DynamicHudBranches::default().owns(v))
+        );
+    }
 }
 
 /// The game is laid out on a 640x360 canvas scaled to fit the window, and

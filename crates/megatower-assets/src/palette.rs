@@ -1,7 +1,7 @@
 //! `global_colors.gdshader get_color()` / `project.godot [shader_globals]`.
 
 // Source: global_colors.gdshader get_color() / project.godot [shader_globals].
-pub fn palette(index: u8) -> [f32; 4] {
+pub const fn palette(index: u8) -> [f32; 4] {
     let rgb = match index {
         1 => [0.0431373, 0.0588235, 0.0901961],
         2 => [0.196078, 0.2, 0.239216],

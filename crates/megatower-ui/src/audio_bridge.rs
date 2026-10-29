@@ -37,8 +37,12 @@ fn publish_audio(
     mut cue: ResMut<MusicCue>,
     mut sfx: ResMut<SfxQueue>,
     mut volumes: ResMut<AudioVolumes>,
+    labyrinth: Option<Res<crate::labyrinth::Labyrinth>>,
 ) {
-    let want = cue_for(&ui.0, &slot);
+    let want = labyrinth
+        .as_ref()
+        .and_then(|l| l.music(&ui.0))
+        .unwrap_or_else(|| cue_for(&ui.0, &slot));
     if *cue != want {
         *cue = want;
     }
@@ -87,6 +91,7 @@ fn publish_room_scene(
     slot: Res<GameSlot>,
     ui: Res<super::UiRes>,
     mut request: ResMut<megatower_runtime::render::room::RoomSceneRequest>,
+    labyrinth: Option<Res<crate::labyrinth::Labyrinth>>,
 ) {
     // The old room stays until the wipe has covered it.
     if ui
@@ -96,10 +101,13 @@ fn publish_room_scene(
     {
         return;
     }
-    let want = slot
-        .0
-        .as_ref()
-        .map(|game| megatower_assets::room_scene::scene_for(game.memory.room_type));
+    let want = if let Some(labyrinth) = labyrinth.as_ref().filter(|l| l.run.is_some()) {
+        labyrinth.scene()
+    } else {
+        slot.0
+            .as_ref()
+            .map(|game| megatower_assets::room_scene::scene_for(game.memory.room_type))
+    };
     if request.0 != want {
         request.0 = want;
     }

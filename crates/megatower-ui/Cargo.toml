@@ -8,6 +8,7 @@ name = "megatower_ui"
 path = "src/lib.rs"
 
 [dependencies]
+game-sim = { path = "../game-sim" }
 megatower-runtime = { path = "../megatower-runtime" }
 megatower-core = { path = "../megatower-core" }
 megatower-assets = { path = "../megatower-assets" }

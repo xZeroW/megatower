@@ -4132,6 +4132,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy_auto_plugin",
+ "game-sim",
  "image",
  "leafwing-input-manager",
  "megatower-assets",

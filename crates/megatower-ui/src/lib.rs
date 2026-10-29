@@ -26,6 +26,7 @@ pub mod hover_manager;
 pub mod hover_rules;
 pub mod hud_rules;
 pub mod item_visual;
+pub mod labyrinth;
 pub mod library;
 pub mod library_planner;
 pub mod library_state;

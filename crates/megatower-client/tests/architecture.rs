@@ -24,7 +24,12 @@ const ALLOWED: &[(&str, &[&str])] = &[
     ("megatower-runtime", &["megatower-core", "megatower-assets"]),
     (
         "megatower-ui",
-        &["megatower-core", "megatower-assets", "megatower-runtime"],
+        &[
+            "game-sim",
+            "megatower-core",
+            "megatower-assets",
+            "megatower-runtime",
+        ],
     ),
     (
         "megatower-client",

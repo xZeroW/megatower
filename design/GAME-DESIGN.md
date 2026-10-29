@@ -3,6 +3,12 @@
 Working title TBD. Turn-based, one hero, build-driven (deep but simplified ARPG-style
 builds), exploring hidden labyrinth floors.
 
+> **Presentation status:** the screens described below (`game-client`, the prototype)
+> are superseded by megatower's HUD driven by `game-sim`
+> (`crates/megatower-ui/src/labyrinth/`, see the README). The rules and numbers here
+> still hold; room view, doors, enemy drawing, bars and combat text now come from
+> megatower's own presentation code.
+
 ## Run loop
 
 1. Start a run: pick a starting class archetype (Str / Dex / Int start point on the tree)
