@@ -1,6 +1,6 @@
 //! Map-driven exits for Megatower's room viewport. The front wall already has
 //! an arch; side exits copy that arch onto the side walls, and a blocked front
-//! is bricked up with stone cut from the front wall's own blocks.
+//! is bricked up, arch and all, with stone cut from the front wall's own blocks.
 use super::*;
 use bevy::camera::{primitives::Aabb, visibility::RenderLayers};
 use megatower_runtime::render::room::{ROOM_LAYER, RoomMaterial};
@@ -46,7 +46,7 @@ const FRONT_FACE: f32 = -9.27;
 const FLOOR: f32 = -1.5;
 /// Height of the front wall's opening.
 const HOLE_TOP: f32 = 1.42;
-const FRONT_HALF: f32 = 1.5;
+const FRONT_HALF: f32 = 1.6;
 /// Half the width the side walls are cut to: the arch's inner opening, so the
 /// pillars hide the cut.
 const HOLE_HALF: f32 = 0.8;
@@ -97,6 +97,8 @@ enum Piece {
     SideWall(Turn),
     /// Pillars and arch stones around the front opening.
     Arch,
+    /// A plain block of the front wall beside the opening.
+    Wall,
 }
 fn identify(c: Vec3) -> Option<Piece> {
     let near = |p: [f32; 3]| Vec3::from(p).distance(c) < 0.15;
@@ -104,6 +106,8 @@ fn identify(c: Vec3) -> Option<Piece> {
         Some(Piece::SideWall(Turn::Left))
     } else if near([4.11, 1.47, -6.43]) {
         Some(Piece::SideWall(Turn::Right))
+    } else if near([-2.15, 1.44, -9.76]) || near([2.18, 1.44, -9.76]) {
+        Some(Piece::Wall)
     } else if [
         [-1.32, -0.17, -9.44],
         [1.32, -0.17, -9.44],
@@ -204,6 +208,14 @@ fn sync(
                 Visibility::Inherited
             });
         }
+        // A blocked front loses its arch too: the wall is flat there.
+        if piece == Piece::Arch {
+            visibility.set_if_neq(if !open(Turn::Ahead) && want == Visibility::Inherited {
+                Visibility::Hidden
+            } else {
+                Visibility::Inherited
+            });
+        }
         found.push(Found {
             piece,
             global: *global,
@@ -270,7 +282,11 @@ fn sync(
     if !open(Turn::Ahead) {
         // Stone cut from the front wall's own blocks: the side walls' stone
         // renders black when turned to face the front.
-        let block = found.iter().find(|f| f.piece == Piece::Arch).unwrap();
+        let block = found
+            .iter()
+            .find(|f| f.piece == Piece::Wall)
+            .or_else(|| found.iter().find(|f| f.piece == Piece::Arch))
+            .unwrap();
         spawn(
             &mut commands,
             block,
