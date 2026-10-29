@@ -916,7 +916,10 @@ impl Labyrinth {
                         .map(|a| format!("{a:?}")),
                 );
                 tooltip(&mut out, rects, cursor, lines);
-            } else if contains(XP_BAR, cursor[0], cursor[1]) {
+            } else if self.view == View::Profile
+                && ui.tab == Tab::Profile
+                && contains(XP_BAR, cursor[0], cursor[1])
+            {
                 let progress = &game.character.progress;
                 tooltip(
                     &mut out,
