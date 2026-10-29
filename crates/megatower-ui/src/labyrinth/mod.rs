@@ -168,6 +168,88 @@ fn event_line(event: &CombatEvent, names: &[String]) -> String {
     }
 }
 
+/// What a character had before a fight, to tell what it won.
+struct Gains {
+    gold: u32,
+    level: u32,
+    xp: u32,
+    bag: usize,
+}
+
+impl Gains {
+    fn of(character: &game_sim::character::Character) -> Self {
+        Self {
+            gold: character.gold,
+            level: character.progress.level,
+            xp: character.progress.xp,
+            bag: character.inventory.len(),
+        }
+    }
+}
+
+/// Experience gained between two (level, xp) states, counting every level
+/// crossed.
+fn xp_gained(before: &Gains, level: u32, xp: u32) -> u32 {
+    let crossed: u32 = (before.level..level)
+        .map(game_sim::passives::xp_to_next)
+        .sum();
+    (xp + crossed).saturating_sub(before.xp)
+}
+
+fn item_color(rarity: game_sim::items::ItemRarity) -> u32 {
+    use game_sim::items::ItemRarity as R;
+    match rarity {
+        R::Normal => 0xd9d9d9,
+        R::Magic => 0x80a6ff,
+        R::Rare => 0xf2d95a,
+        R::Unique => 0xe6802e,
+    }
+}
+
+fn gem_color(rarity: game_sim::gems::GemRarity) -> u32 {
+    use game_sim::gems::GemRarity as R;
+    match rarity {
+        R::Common => 0xd0d8d0,
+        R::Uncommon => 0x66d973,
+        R::Rare => 0x66a6ff,
+        R::Epic => 0xbf73f2,
+    }
+}
+
+/// The floating text for a won fight, like the original's gold popup: the
+/// amount with its icon at the end. At most two drops are named.
+fn win_popups(before: &Gains, character: &game_sim::character::Character) -> Vec<Popup> {
+    let hex = crate::compose::hex;
+    let mut popups = Vec::new();
+    if character.gold > before.gold {
+        let mut popup = Popup::new((character.gold - before.gold).to_string(), hex(0xffaa00));
+        popup.right_icon = Some("assets/textures/icons/gold_coins_icon.png".into());
+        popups.push(popup);
+    }
+    let xp = xp_gained(before, character.progress.level, character.progress.xp);
+    if xp > 0 {
+        let mut popup = Popup::new(xp.to_string(), hex(0x4d9fff));
+        popup.right_icon = Some("assets/textures/icons/trial_level_icon.png".into());
+        popups.push(popup);
+    }
+    if character.progress.level > before.level {
+        let mut popup = Popup::new(
+            format!("Level {}", character.progress.level),
+            crate::compose::palette(8),
+        );
+        popup.size = 1.5;
+        popups.push(popup);
+    }
+    for loot in character.inventory.iter().skip(before.bag).take(2) {
+        let color = match loot {
+            Loot::Item(item) => item_color(item.rarity),
+            Loot::Gem(gem) => gem_color(gem.rarity),
+        };
+        popups.push(Popup::new(game_sim::run::loot_name(loot), hex(color)));
+    }
+    popups
+}
+
 /// QA scripting for the new rules (`GAME_AUTOSTART=1` starts a run):
 ///
 /// - `GAME_MOVES`: commands played as soon as the run exists. `1`-`4` pick a
@@ -768,6 +850,7 @@ impl Labyrinth {
     fn combat(&mut self, ui: &mut UiState, action: HeroAction) {
         let mut frame = self.snapshot();
         let names = enemy_names(self.game());
+        let before = Gains::of(&self.game().character);
         let mut events = Vec::new();
         let outcome = self
             .game_mut()
@@ -888,7 +971,23 @@ impl Labyrinth {
             at: at + 0.2,
             fx: Fx::Frame(Box::new(self.snapshot())),
         });
-        ui.timeline.push(timed, at + 0.3);
+        let mut end = at + 0.3;
+        let won = self.game().battle.is_none() && self.game().mode != Mode::Dead;
+        if won {
+            // The win's rewards float up like combat text instead of a
+            // message line: gold, experience, a level-up, and what dropped.
+            let mut when = at + 0.25;
+            for popup in win_popups(&before, &self.game().character) {
+                timed.push(Timed {
+                    at: when,
+                    fx: Fx::Popup(popup),
+                });
+                when += 0.25;
+            }
+            end = end.max(when);
+            self.game_mut().message.clear();
+        }
+        ui.timeline.push(timed, end);
         for fx in ui.timeline.advance(0.0) {
             self.effect(ui, fx);
         }
@@ -962,6 +1061,52 @@ mod tests {
             assert!(popup_for(&silent).is_none());
         }
         assert!(popup_for(&CombatEvent::Repeat).is_some());
+    }
+
+    #[test]
+    fn a_won_fight_floats_its_rewards() {
+        let mut session = fixture(1, 1);
+        let mut ui = UiState::default();
+        session.play(&mut ui, "3f");
+        let before = Gains::of(&session.game().character);
+        for _ in 0..30 {
+            if session.game().battle.is_none() {
+                break;
+            }
+            let action = HeroAction::Skill {
+                index: 0,
+                target: session.target,
+            };
+            session.combat(&mut ui, action);
+        }
+        assert_eq!(session.game().mode, Mode::Map, "the fight was won");
+        let popups = win_popups(&before, &session.game().character);
+        assert!(popups.len() >= 2, "gold and experience at least");
+        assert_eq!(
+            popups[0].right_icon.as_deref(),
+            Some("assets/textures/icons/gold_coins_icon.png")
+        );
+        assert_eq!(
+            popups[0].text,
+            (session.game().character.gold - before.gold).to_string()
+        );
+        assert!(
+            session.game().message.is_empty(),
+            "no victory message line is left behind"
+        );
+    }
+
+    #[test]
+    fn experience_counts_every_level_crossed() {
+        let before = Gains {
+            gold: 0,
+            level: 1,
+            xp: 10,
+            bag: 0,
+        };
+        let need = game_sim::passives::xp_to_next(1);
+        assert_eq!(xp_gained(&before, 1, 25), 15);
+        assert_eq!(xp_gained(&before, 2, 5), need - 10 + 5);
     }
 
     #[test]
