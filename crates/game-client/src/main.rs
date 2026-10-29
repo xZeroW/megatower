@@ -1,6 +1,5 @@
-//! The new game's client: pick a starting gem, explore labyrinth floors and
-//! fight what the rooms hold (`design/GAME-DESIGN.md`). Rooms without a fight
-//! resolve with a key press until shops, shrines and events exist.
+//! The new game's rules (`game-sim`) with Megatower's presentation baseline:
+//! pick a starting gem, explore labyrinth floors and resolve their rooms.
 
 mod audio;
 mod bars;
@@ -11,6 +10,7 @@ mod fighters;
 mod inventory;
 mod map;
 mod menus;
+mod presentation;
 mod room_view;
 mod rooms;
 mod run;
@@ -21,13 +21,14 @@ use bevy::prelude::*;
 
 fn main() {
     App::new()
-        .insert_resource(ClearColor(Color::srgb(0.06, 0.06, 0.08)))
+        .insert_resource(ClearColor(presentation::color(1)))
         .add_plugins((
             DefaultPlugins
                 .set(AssetPlugin {
                     file_path: "../..".into(),
                     ..default()
                 })
+                .set(ImagePlugin::default_nearest())
                 .disable::<bevy::audio::AudioPlugin>()
                 .set(WindowPlugin {
                     primary_window: Some(Window {
@@ -38,6 +39,7 @@ fn main() {
                     ..default()
                 }),
             run::RunPlugin,
+            presentation::PresentationPlugin,
             audio::AudioPlugin,
             ui::UiPlugin,
             room_view::RoomViewPlugin,

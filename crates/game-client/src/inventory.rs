@@ -11,10 +11,10 @@ use game_sim::gems::{Gem, Targeting};
 use game_sim::items::{Item, Slot};
 use game_sim::tags::Tag;
 
-pub fn spawn(commands: &mut Commands, run: &Run) -> Vec<Entity> {
+pub fn spawn(commands: &mut Commands, assets: &AssetServer, run: &Run) -> Vec<Entity> {
     vec![
-        equipment_column(commands, run),
-        bag_column(commands, run),
+        equipment_column(commands, assets, run),
+        bag_column(commands, assets, run),
         detail_panel(commands, run),
     ]
 }
@@ -35,12 +35,17 @@ fn slot_name(slot: EquipSlot) -> &'static str {
 fn column(commands: &mut Commands, title: String) -> Entity {
     let title = commands.spawn(text(title, 22.0, TEXT)).id();
     commands
-        .spawn(Node {
-            flex_direction: FlexDirection::Column,
-            padding: UiRect::all(Val::Px(20.0)),
-            row_gap: Val::Px(8.0),
-            ..default()
-        })
+        .spawn((
+            Node {
+                flex_direction: FlexDirection::Column,
+                padding: UiRect::all(Val::Px(20.0)),
+                row_gap: Val::Px(8.0),
+                overflow: Overflow::scroll_y(),
+                ..default()
+            },
+            crate::presentation::Surface::Panel,
+            crate::presentation::Scrollable,
+        ))
         .add_child(title)
         .id()
 }
@@ -60,7 +65,7 @@ fn socket_summary(item: &Item) -> Option<String> {
     ))
 }
 
-fn equipment_column(commands: &mut Commands, run: &Run) -> Entity {
+fn equipment_column(commands: &mut Commands, assets: &AssetServer, run: &Run) -> Entity {
     let col = column(commands, "Equipment".into());
     for slot in EquipSlot::ALL {
         let mut lines = vec![(slot_name(slot).to_string(), 12.0, TEXT_DIM)];
@@ -77,12 +82,24 @@ fn equipment_column(commands: &mut Commands, run: &Run) -> Entity {
         let b = button(commands, Val::Px(280.0), selected, lines, move |run| {
             run.select(Selection::Worn(slot));
         });
+        commands
+            .entity(b)
+            .insert(crate::presentation::Surface::Slot);
+        if let Some(item) = run.character.equipped(slot) {
+            crate::ui::button_icon(
+                commands,
+                assets,
+                b,
+                crate::presentation::item_art(item),
+                Color::WHITE,
+            );
+        }
         commands.entity(col).add_child(b);
     }
     col
 }
 
-fn bag_column(commands: &mut Commands, run: &Run) -> Entity {
+fn bag_column(commands: &mut Commands, assets: &AssetServer, run: &Run) -> Entity {
     let bag = &run.character.inventory;
     let col = column(commands, format!("Bag {}/{INVENTORY_SIZE}", bag.len()));
     let grid = commands
@@ -109,6 +126,14 @@ fn bag_column(commands: &mut Commands, run: &Run) -> Entity {
         let b = button(commands, Val::Px(158.0), selected, lines, move |run| {
             run.select(Selection::Bag(i));
         });
+        commands
+            .entity(b)
+            .insert(crate::presentation::Surface::Slot);
+        let (art, tint) = match loot {
+            Loot::Item(item) => (crate::presentation::item_art(item), Color::WHITE),
+            Loot::Gem(gem) => (crate::presentation::GEM_ART, gem_color(gem.rarity)),
+        };
+        crate::ui::button_icon(commands, assets, b, art, tint);
         commands.entity(grid).add_child(b);
     }
     if bag.is_empty() {
@@ -236,9 +261,12 @@ fn detail_panel(commands: &mut Commands, run: &Run) -> Entity {
                 padding: UiRect::all(Val::Px(20.0)),
                 flex_direction: FlexDirection::Column,
                 row_gap: Val::Px(6.0),
+                overflow: Overflow::scroll_y(),
                 ..default()
             },
             BackgroundColor(PANEL),
+            crate::presentation::Surface::Panel,
+            crate::presentation::Scrollable,
         ))
         .id();
     let mut lines = Vec::new();

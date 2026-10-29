@@ -81,6 +81,7 @@ pub fn spawn_starter(commands: &mut Commands, run: &Run) -> Vec<Entity> {
         let Some(gem) = gems.active(id) else { continue };
         let card = commands
             .spawn(card(230.0, ACCENT))
+            .insert(crate::presentation::Surface::Button)
             .observe(crate::audio::button_hover)
             .observe(crate::audio::button_press)
             .observe(move |_: On<PointerClick>, mut run: ResMut<Run>| run.pick_starter(i))

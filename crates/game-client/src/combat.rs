@@ -6,15 +6,14 @@ use crate::bars::{BarKey, HEALTH_TRAIL, flat_bar};
 use crate::fighters::spawn_enemies;
 use crate::room_view::room_image;
 use crate::run::Run;
-use crate::ui::{ACCENT, CARD, PANEL, TEXT, TEXT_DIM, bar, text};
-use bevy::picking::events::PointerClick;
+use crate::ui::{ACCENT, PANEL, TEXT, TEXT_DIM, bar, button, text};
 use bevy::prelude::*;
 use game_sim::ailment::{Afflictions, Ailment};
 use game_sim::combat::{Actor, Battle, CombatEvent};
 use megatower_runtime::render::room::RoomRenderTarget;
 
-const LIFE: Color = Color::srgb(0.75, 0.2, 0.2);
-const MANA: Color = Color::srgb(0.25, 0.4, 0.85);
+const LIFE: Color = Color::srgb_u8(0x99, 0x0f, 0x35);
+const MANA: Color = crate::presentation::color(5);
 /// Battle log lines shown.
 const LOG_LINES: usize = 9;
 
@@ -43,7 +42,7 @@ pub fn spawn(
         })
         .add_children(&[view, hint])
         .id();
-    vec![column, side_panel(commands, run, battle)]
+    vec![side_panel(commands, run, battle), column]
 }
 
 fn ailment_names(afflictions: &Afflictions) -> String {
@@ -116,38 +115,30 @@ fn side_panel(commands: &mut Commands, run: &Run, battle: &Battle) -> Entity {
         if !skill.supports.is_empty() {
             lines.push((skill.supports.join(", "), 12.0, TEXT_DIM));
         }
-        let card = commands
-            .spawn((
-                Node {
-                    padding: UiRect::axes(Val::Px(10.0), Val::Px(6.0)),
-                    border: UiRect::all(Val::Px(2.0)),
-                    flex_direction: FlexDirection::Column,
-                    ..default()
-                },
-                BackgroundColor(CARD),
-                BorderColor::all(if affordable {
-                    ACCENT
-                } else {
-                    Color::srgb(0.3, 0.3, 0.35)
-                }),
-            ))
-            .observe(crate::audio::button_hover)
-            .observe(crate::audio::button_press)
-            .observe(move |_: On<PointerClick>, mut run: ResMut<Run>| run.use_skill(i))
-            .id();
-        let texts: Vec<Entity> = lines
-            .into_iter()
-            .map(|(v, size, color)| {
-                let color = if affordable { color } else { TEXT_DIM };
-                commands.spawn(text(v, size, color)).id()
-            })
-            .collect();
-        commands.entity(card).add_children(&texts);
+        if !affordable {
+            for (_, _, color) in &mut lines {
+                *color = TEXT_DIM;
+            }
+        }
+        let card = button(
+            commands,
+            Val::Percent(100.0),
+            affordable,
+            lines,
+            move |run| run.use_skill(i),
+        );
         children.push(card);
     }
     if battle.skills.is_empty() {
         children.push(commands.spawn(text("No usable skill", 14.0, TEXT_DIM)).id());
     }
+    children.push(button(
+        commands,
+        Val::Auto,
+        false,
+        vec![("Pass turn [Space]".into(), 18.0, TEXT_DIM)],
+        |run| run.act(game_sim::combat::HeroAction::Pass),
+    ));
     if !run.message.is_empty() {
         children.push(commands.spawn(text(run.message.clone(), 14.0, ACCENT)).id());
     }
@@ -177,13 +168,17 @@ fn side_panel(commands: &mut Commands, run: &Run, battle: &Battle) -> Entity {
     commands
         .spawn((
             Node {
-                width: Val::Px(360.0),
+                width: Val::Px(crate::presentation::PANEL_WIDTH),
+                flex_shrink: 0.0,
                 padding: UiRect::all(Val::Px(20.0)),
                 flex_direction: FlexDirection::Column,
                 row_gap: Val::Px(6.0),
+                overflow: Overflow::scroll_y(),
                 ..default()
             },
             BackgroundColor(PANEL),
+            crate::presentation::Surface::Panel,
+            crate::presentation::Scrollable,
         ))
         .add_children(&children)
         .id()

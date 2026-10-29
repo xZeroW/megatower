@@ -38,13 +38,17 @@ fn screen(
     let column = commands
         .spawn((
             Node {
-                width: Val::Percent(100.0),
+                width: Val::Px(crate::presentation::PANEL_WIDTH),
+                flex_shrink: 0.0,
+                overflow: Overflow::scroll_y(),
                 padding: UiRect::all(Val::Px(28.0)),
                 flex_direction: FlexDirection::Column,
                 row_gap: Val::Px(12.0),
                 ..default()
             },
             BackgroundColor(PANEL),
+            crate::presentation::Surface::Panel,
+            crate::presentation::Scrollable,
         ))
         .add_children(&children)
         .id();

@@ -370,14 +370,10 @@ fn walk(
     mut dolly: ResMut<RoomCameraDolly>,
     mut camera: Query<&mut Transform, With<Camera3d>>,
     mut wipe: ResMut<ScreenWipe>,
-    windows: Query<&Window, With<bevy::window::PrimaryWindow>>,
 ) {
     let rest = Transform::default().looking_to(LOOK, Vec3::Y).rotation;
     let Some(turn) = walk.turn else { return };
-    if let Ok(window) = windows.single() {
-        // The room column, leaving the 360px information panel visible.
-        wipe.region = [0.0, 0.0, (window.width() - 360.0).max(0.0), window.height()];
-    }
+    wipe.region = crate::presentation::ROOM_REGION;
     walk.t = (walk.t + time.delta_secs() / WALK_SECS).min(1.0);
     let t = walk.t;
     wipe.progress = if walk.revealing { 1.0 + t } else { t };
@@ -487,6 +483,7 @@ pub fn spawn_explore(
                     ..default()
                 },
                 BackgroundColor(crate::ui::CARD),
+                crate::presentation::Surface::Button,
                 BorderColor::all(ACCENT),
             ))
             .add_child(label)
@@ -539,12 +536,52 @@ pub fn spawn_explore(
         })
         .add_children(&[view, label_row])
         .id();
-    vec![column, spawn_panel(commands, run)]
+    vec![spawn_panel(commands, run), column]
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn rendered_doors_follow_the_labyrinth_instead_of_a_fixed_room_layout() {
+        let mut app = App::new();
+        let mut run = Run::new(2, 8);
+        run.pick_starter(0);
+        let positions: Vec<_> = run.floor.positions().collect();
+        app.insert_resource(run)
+            .init_resource::<Assets<Mesh>>()
+            .insert_resource(DoorMaterials {
+                opening: default(),
+                hovered: default(),
+                frame: default(),
+                plug: default(),
+            })
+            .add_systems(Update, sync_doors);
+        let mut counts = std::collections::BTreeSet::new();
+        for position in positions {
+            app.world_mut().resource_mut::<Run>().floor.current = position;
+            let expected: Vec<_> = app
+                .world()
+                .resource::<Run>()
+                .floor
+                .turns()
+                .into_iter()
+                .map(|(turn, _)| turn)
+                .filter(|turn| *turn != Turn::Back)
+                .collect();
+            app.world_mut().run_schedule(Update);
+            let mut query = app.world_mut().query::<&Door>();
+            let rendered: Vec<_> = query.iter(app.world()).map(|door| door.turn).collect();
+            assert_eq!(rendered.len(), expected.len());
+            assert!(expected.iter().all(|turn| rendered.contains(turn)));
+            counts.insert(rendered.len());
+        }
+        assert!(
+            counts.len() > 1,
+            "the fixture must exercise different door counts"
+        );
+    }
 
     #[test]
     fn room_changes_only_under_cover_and_movement_waits_for_reveal() {
@@ -571,6 +608,10 @@ mod tests {
         tick(&mut app, WALK_SECS * 0.5);
         assert_eq!(app.world().resource::<Run>().floor.current, origin);
         assert!(app.world().resource::<RoomCameraDolly>().0 > 0.0);
+        assert_eq!(
+            app.world().resource::<ScreenWipe>().region,
+            crate::presentation::ROOM_REGION
+        );
         tick(&mut app, WALK_SECS);
         let destination = app.world().resource::<Run>().floor.current;
         assert_ne!(destination, origin);
