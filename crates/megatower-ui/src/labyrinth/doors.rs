@@ -1,10 +1,9 @@
-//! Map-driven exits added to Megatower's unchanged room viewport.
+//! Map-driven exits for Megatower's room viewport. The front wall already has
+//! an arch; side exits copy that arch onto the side walls, and a blocked front
+//! is bricked up with the side wall's own stone.
 use super::*;
-use bevy::{
-    camera::{primitives::Aabb, visibility::RenderLayers},
-    image::{ImageAddressMode, ImageLoaderSettings, ImageSampler, ImageSamplerDescriptor},
-};
-use megatower_runtime::render::room::ROOM_LAYER;
+use bevy::camera::{primitives::Aabb, visibility::RenderLayers};
+use megatower_runtime::render::room::{ROOM_LAYER, RoomMaterial};
 use std::f32::consts::{FRAC_PI_2, PI};
 
 pub(super) struct DoorsPlugin;
@@ -23,8 +22,6 @@ impl Plugin for DoorsPlugin {
 struct Materials {
     opening: Handle<StandardMaterial>,
     hovered: Handle<StandardMaterial>,
-    frame: Handle<StandardMaterial>,
-    wall: Handle<StandardMaterial>,
 }
 #[derive(Component)]
 struct Door {
@@ -35,7 +32,8 @@ struct Door {
 #[derive(Component)]
 struct Part;
 type Key = (u32, (u8, u8), Vec<Turn>);
-const SIZE: Vec2 = Vec2::new(1.6, 2.1);
+/// The dark pickable quad that fills an exit's hole.
+const SIZE: Vec2 = Vec2::new(3.0, 2.9);
 const LOOK: Vec3 = Vec3::new(0.0, -0.182236, -0.983255);
 type NewMesh = (
     &'static Aabb,
@@ -43,35 +41,34 @@ type NewMesh = (
     &'static mut Visibility,
 );
 
+/// Inner face of the front wall, where the arch sits.
+const FRONT_FACE: f32 = -9.27;
+const FLOOR: f32 = -1.5;
+/// Height of the front wall's opening.
+const HOLE_TOP: f32 = 1.42;
+const FRONT_HALF: f32 = 1.5;
+/// Half the width the side walls are cut to: the arch's inner opening, so the
+/// pillars hide the cut.
+const HOLE_HALF: f32 = 0.8;
+/// Where along the side walls the copied arch is centred.
+const SIDE_AT: f32 = -6.9;
+
 fn place(turn: Turn) -> Option<(Vec3, Quat)> {
+    let y = (FLOOR + HOLE_TOP) / 2.0;
     match turn {
-        Turn::Ahead => Some((Vec3::new(0.0, -0.45, -8.63), Quat::IDENTITY)),
+        Turn::Ahead => Some((Vec3::new(0.0, y, -9.8), Quat::IDENTITY)),
         Turn::Left => Some((
-            Vec3::new(-3.36, -0.45, -6.75),
+            Vec3::new(-4.3, y, SIDE_AT),
             Quat::from_rotation_y(FRAC_PI_2),
         )),
         Turn::Right => Some((
-            Vec3::new(3.28, -0.45, -6.75),
+            Vec3::new(4.2, y, SIDE_AT),
             Quat::from_rotation_y(-FRAC_PI_2),
         )),
         Turn::Back => None,
     }
 }
-fn materials(
-    mut commands: Commands,
-    assets: Res<AssetServer>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-) {
-    let wall = assets
-        .load_builder()
-        .with_settings(|s: &mut ImageLoaderSettings| {
-            s.sampler = ImageSampler::Descriptor(ImageSamplerDescriptor {
-                address_mode_u: ImageAddressMode::Repeat,
-                address_mode_v: ImageAddressMode::Repeat,
-                ..ImageSamplerDescriptor::nearest()
-            });
-        })
-        .load("assets/textures/3d/dungeon_wall.png");
+fn materials(mut commands: Commands, mut materials: ResMut<Assets<StandardMaterial>>) {
     let flat = |c| StandardMaterial {
         base_color: c,
         unlit: true,
@@ -80,14 +77,6 @@ fn materials(
     commands.insert_resource(Materials {
         opening: materials.add(flat(Color::srgb(0.02, 0.02, 0.03))),
         hovered: materials.add(flat(Color::srgb(0.35, 0.27, 0.1))),
-        frame: materials.add(flat(Color::srgb(0.24, 0.2, 0.17))),
-        wall: materials.add(StandardMaterial {
-            base_color: Color::srgb(0.42, 0.42, 0.5),
-            base_color_texture: Some(wall),
-            unlit: true,
-            uv_transform: bevy::math::Affine2::from_scale(Vec2::new(2.0, 2.6)),
-            ..default()
-        }),
     });
 }
 fn hide_pillars(session: Res<Labyrinth>, mut meshes: Query<NewMesh, (With<Mesh3d>, Added<Aabb>)>) {
@@ -101,6 +90,74 @@ fn hide_pillars(session: Res<Labyrinth>, mut meshes: Query<NewMesh, (With<Mesh3d
         }
     }
 }
+
+/// The room's own meshes that exits are built from, found by where they sit.
+#[derive(Clone, Copy, PartialEq)]
+enum Piece {
+    SideWall(Turn),
+    /// Pillars and arch stones around the front opening.
+    Arch,
+}
+fn identify(c: Vec3) -> Option<Piece> {
+    let near = |p: [f32; 3]| Vec3::from(p).distance(c) < 0.15;
+    if near([-4.19, 1.47, -6.55]) {
+        Some(Piece::SideWall(Turn::Left))
+    } else if near([4.11, 1.47, -6.43]) {
+        Some(Piece::SideWall(Turn::Right))
+    } else if [
+        [-1.32, -0.17, -9.44],
+        [1.32, -0.17, -9.44],
+        [0.01, 1.59, -9.44],
+        [-0.99, 1.27, -9.44],
+        [1.0, 1.27, -9.44],
+    ]
+    .into_iter()
+    .any(near)
+    {
+        Some(Piece::Arch)
+    } else {
+        None
+    }
+}
+type Source = (
+    &'static GlobalTransform,
+    &'static Aabb,
+    &'static Mesh3d,
+    &'static MeshMaterial3d<RoomMaterial>,
+    &'static mut Visibility,
+);
+struct Found {
+    piece: Piece,
+    global: GlobalTransform,
+    aabb: Aabb,
+    mesh: Handle<Mesh>,
+    material: Handle<RoomMaterial>,
+}
+
+/// A copy of a wall block stretched to fill `min..max`; the room shader maps
+/// stone by world position, so any size matches the walls around it.
+fn stone(found: &Found, min: Vec3, max: Vec3) -> Transform {
+    let scale = (max - min) / (Vec3::from(found.aabb.half_extents) * 2.0).max(Vec3::splat(1e-4));
+    let center = (min + max) / 2.0;
+    Transform::from_translation(center - scale * Vec3::from(found.aabb.center)).with_scale(scale)
+}
+
+/// Where the front arch's copy goes on a side wall: rotated a quarter turn
+/// about the front opening, onto the wall's inner face.
+fn arch_copy(found: &Found, turn: Turn, face: f32) -> Transform {
+    let (angle, x) = if turn == Turn::Left {
+        (FRAC_PI_2, face)
+    } else {
+        (-FRAC_PI_2, face)
+    };
+    let m = Mat4::from_translation(Vec3::new(x, 0.0, SIDE_AT))
+        * Mat4::from_quat(Quat::from_rotation_y(angle))
+        * Mat4::from_translation(Vec3::new(0.0, 0.0, -FRONT_FACE))
+        * found.global.to_matrix();
+    Transform::from_matrix(m)
+}
+
+#[allow(clippy::too_many_arguments)]
 fn sync(
     mut commands: Commands,
     session: Res<Labyrinth>,
@@ -108,7 +165,8 @@ fn sync(
     materials: Res<Materials>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut parts: Query<(Entity, &mut Visibility), With<Part>>,
-    mut shown: Local<Option<Key>>,
+    mut sources: Query<Source, Without<Part>>,
+    mut state: Local<(Option<Key>, bool)>,
 ) {
     let run = session.run.as_ref();
     let want = if run.is_some_and(|r| r.mode == Mode::Map)
@@ -119,7 +177,7 @@ fn sync(
     } else {
         Visibility::Hidden
     };
-    for (_, mut v) in &mut parts {
+    for (_, mut v) in parts.iter_mut() {
         v.set_if_neq(want);
     }
     let Some(run) = run else {
@@ -131,29 +189,48 @@ fn sync(
         (run.floor.current.x, run.floor.current.y),
         turns.clone(),
     );
-    if shown.as_ref() == Some(&key) {
+    let open = |turn| turns.contains(&turn);
+    // The room's own side walls give way to the copied arches, which only
+    // show while walking, so fights and shops keep the whole wall.
+    let mut found = Vec::new();
+    for (global, aabb, mesh, material, mut visibility) in &mut sources {
+        let Some(piece) = identify(global.transform_point(Vec3::from(aabb.center))) else {
+            continue;
+        };
+        if let Piece::SideWall(turn) = piece {
+            visibility.set_if_neq(if open(turn) && want == Visibility::Inherited {
+                Visibility::Hidden
+            } else {
+                Visibility::Inherited
+            });
+        }
+        found.push(Found {
+            piece,
+            global: *global,
+            aabb: *aabb,
+            mesh: mesh.0.clone(),
+            material: material.0.clone(),
+        });
+    }
+    let (shown, built) = &mut *state;
+    let ready = found.iter().any(|f| f.piece == Piece::Arch)
+        && found.iter().any(|f| matches!(f.piece, Piece::SideWall(_)));
+    if shown.as_ref() == Some(&key) && (*built || !ready) {
         return;
     }
-    *shown = Some(key);
-    for (e, _) in &parts {
-        commands.entity(e).despawn();
-    }
-    let opening = meshes.add(Rectangle::from_size(SIZE));
-    let frame = meshes.add(Rectangle::from_size(SIZE + Vec2::splat(0.3)));
-    for turn in [Turn::Ahead, Turn::Left, Turn::Right] {
-        let (center, rotation) = place(turn).unwrap();
-        let normal = rotation * Vec3::Z;
-        if turns.contains(&turn) {
-            if turn != Turn::Ahead {
-                commands.spawn((
-                    Mesh3d(frame.clone()),
-                    MeshMaterial3d(materials.frame.clone()),
-                    Transform::from_translation(center - normal * 0.01).with_rotation(rotation),
-                    RenderLayers::layer(ROOM_LAYER),
-                    Part,
-                    want,
-                ));
+    let rebuild = shown.as_ref() != Some(&key);
+    if rebuild {
+        *shown = Some(key);
+        *built = false;
+        for (e, _) in parts.iter() {
+            commands.entity(e).despawn();
+        }
+        let opening = meshes.add(Rectangle::from_size(SIZE));
+        for turn in [Turn::Ahead, Turn::Left, Turn::Right] {
+            if !open(turn) {
+                continue;
             }
+            let (center, rotation) = place(turn).unwrap();
             commands.spawn((
                 Mesh3d(opening.clone()),
                 MeshMaterial3d(materials.opening.clone()),
@@ -167,15 +244,67 @@ fn sync(
                 Part,
                 want,
             ));
-        } else if turn == Turn::Ahead {
-            commands.spawn((
-                Mesh3d(meshes.add(Rectangle::new(1.7, 2.3))),
-                MeshMaterial3d(materials.wall.clone()),
-                Transform::from_translation(center + Vec3::new(0.0, 0.05, 0.02)),
-                RenderLayers::layer(ROOM_LAYER),
-                Part,
-                want,
-            ));
+        }
+    }
+    if !ready || *built {
+        return;
+    }
+    *built = true;
+    let spawn = |commands: &mut Commands, f: &Found, transform: Transform| {
+        commands.spawn((
+            Mesh3d(f.mesh.clone()),
+            MeshMaterial3d(f.material.clone()),
+            transform,
+            RenderLayers::layer(ROOM_LAYER),
+            Part,
+            want,
+        ));
+    };
+    let stone_of = |turn| {
+        found
+            .iter()
+            .find(|f| f.piece == Piece::SideWall(turn))
+            .or_else(|| found.iter().find(|f| matches!(f.piece, Piece::SideWall(_))))
+            .unwrap()
+    };
+    if !open(Turn::Ahead) {
+        let block = stone_of(Turn::Left);
+        spawn(
+            &mut commands,
+            block,
+            stone(
+                block,
+                Vec3::new(-FRONT_HALF, FLOOR, FRONT_FACE - 0.6),
+                Vec3::new(FRONT_HALF, HOLE_TOP, FRONT_FACE),
+            ),
+        );
+    }
+    for turn in [Turn::Left, Turn::Right].into_iter().filter(|t| open(*t)) {
+        let block = stone_of(turn);
+        let [lo, hi] = [-1.0, 1.0].map(|s| {
+            block.global.transform_point(Vec3::from(block.aabb.center))
+                + s * Vec3::from(block.aabb.half_extents)
+        });
+        let (outer, face) = if turn == Turn::Left {
+            (lo.x, hi.x)
+        } else {
+            (hi.x, lo.x)
+        };
+        let (floor, top) = (lo.y, hi.y);
+        let (back, near) = (lo.z, hi.z);
+        let (a, b) = (outer.min(face), outer.max(face));
+        let mut slab = |z0: f32, z1: f32, y0: f32, y1: f32| {
+            spawn(
+                &mut commands,
+                block,
+                stone(block, Vec3::new(a, y0, z0), Vec3::new(b, y1, z1)),
+            );
+        };
+        slab(SIDE_AT + HOLE_HALF, near, floor, top);
+        slab(back, SIDE_AT - HOLE_HALF, floor, top);
+        slab(SIDE_AT - HOLE_HALF, SIDE_AT + HOLE_HALF, HOLE_TOP, top);
+        for arch in found.iter().filter(|f| f.piece == Piece::Arch) {
+            spawn(&mut commands, arch, arch_copy(arch, turn, face));
         }
     }
 }
@@ -280,8 +409,6 @@ mod tests {
         .insert_resource(Materials {
             opening: default(),
             hovered: default(),
-            frame: default(),
-            wall: default(),
         })
         .init_resource::<Assets<Mesh>>()
         .add_systems(Update, sync);
