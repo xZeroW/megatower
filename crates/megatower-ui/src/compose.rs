@@ -1794,7 +1794,7 @@ pub(super) fn button(
         out.push(tinted(
             [
                 rect[0] + (rect[2] - 16.0) / 2.0,
-                rect[1] + 7.0 + extra,
+                rect[1] + ((rect[3] - 16.0) / 2.0).ceil(),
                 16.0,
                 16.0,
             ],

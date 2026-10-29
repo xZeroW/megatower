@@ -25,41 +25,42 @@ def rect(g, x0, y0, x1, y1):
 
 
 def head_up(g, cx, y):
-    """Arrow head pointing up with its tip at (cx, y): rows 1, 3, 5, 7 wide."""
+    """Arrow head pointing up with its tip at row y, centred between columns
+    cx-1 and cx: rows 2, 4, 6, 8 wide."""
     for i in range(4):
-        rect(g, cx - i, y + i, cx + i, y + i)
+        rect(g, cx - 1 - i, y + i, cx + i, y + i)
 
 
 def head_left(g, x, cy):
+    """Head pointing left, tip at column x, centred between rows cy-1 and cy."""
     for i in range(4):
-        rect(g, x + i, cy - i, x + i, cy + i)
-
-
-def head_right(g, x, cy):
-    for i in range(4):
-        rect(g, x - i, cy - i, x - i, cy + i)
+        rect(g, x + i, cy - 1 - i, x + i, cy + i)
 
 
 def head_down(g, cx, y):
+    """Head pointing down with its tip at row y, centred between cx-1 and cx."""
     for i in range(4):
-        rect(g, cx - i, y - i, cx + i, y - i)
+        rect(g, cx - 1 - i, y - i, cx + i, y - i)
+
+
+# Every arrow's bounding box is an even number of pixels each way and centred
+# on the 16x16 canvas, so it sits dead centre in a button.
 
 
 def ahead():
     g = blank()
-    head_up(g, 7, 1)
-    rect(g, 6, 5, 8, 14)
+    head_up(g, 8, 2)  # rows 2-5, columns 4-11
+    rect(g, 6, 6, 9, 13)  # a 4-wide shaft
     return g
 
 
 def left():
-    # Up from the bottom, then bending left: a quarter turn.
     g = blank()
-    rect(g, 10, 9, 12, 14)
-    # quarter arc from (11, 9) round to (6, 4), three wide
-    for x, y in [(11, 8), (11, 7), (10, 6), (9, 5), (8, 5), (7, 5)]:
-        rect(g, x - 1, y - 1, x + 1, y + 1)
-    head_left(g, 2, 5)
+    # bar y 4-7 from the head to the corner, then 4 wide down the right side
+    rect(g, 6, 4, 13, 7)
+    rect(g, 10, 8, 13, 13)
+    g[4][13] = 0  # round the corner
+    head_left(g, 2, 6)  # tip column 2, base column 5, rows 2-9
     return g
 
 
@@ -69,13 +70,13 @@ def right():
 
 
 def back():
-    # Up the right side, over the top and down the left with the head down.
     g = blank()
-    rect(g, 11, 6, 13, 14)
-    for x, y in [(12, 5), (11, 4), (10, 3), (8, 3), (6, 3), (5, 4), (4, 5)]:
-        rect(g, x - 1, y - 1, x + 1, y + 1)
-    rect(g, 3, 5, 5, 10)
-    head_down(g, 4, 14)
+    rect(g, 3, 2, 14, 5)  # over the top
+    rect(g, 11, 6, 14, 13)  # up the right side
+    rect(g, 3, 6, 6, 9)  # down the left side
+    g[2][14] = 0  # round the outer corners
+    g[2][3] = 0
+    head_down(g, 5, 13)  # rows 10-13, columns 1-8 at its base
     return g
 
 

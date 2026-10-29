@@ -303,8 +303,9 @@ fn tooltip(out: &mut Vec<Draw>, rects: &Rects, cursor: [f32; 2], lines: Vec<Stri
 }
 
 /// Extra height of the action panel at the bottom right, taken from the room
-/// frame (the panel is 63 px tall in the recovered layout).
-pub(super) const ACTION_GROWTH: f32 = 36.0;
+/// frame. The panel is 63 px tall in the recovered layout, level with the left
+/// one; a positive value makes it taller.
+pub(super) const ACTION_GROWTH: f32 = 0.0;
 
 /// The action panel, canvas pixels.
 pub(super) const ACTION_AREA: R = [310.0, 295.0 - ACTION_GROWTH, 328.0, 63.0 + ACTION_GROWTH];
@@ -318,14 +319,27 @@ fn in_action_area(r: R) -> R {
     [r[0], r[1] + ACTION_SHIFT, r[2], r[3]]
 }
 
+/// A button of the given size centred vertically in the action area.
+fn centred(x: f32, w: f32, h: f32) -> R {
+    [
+        x,
+        (ACTION_AREA[1] + (ACTION_AREA[3] - h) / 2.0).round(),
+        w,
+        h,
+    ]
+}
+
 /// The movement keys as an inverted T, W above S: ahead on top, then left,
 /// back and right.
 fn walk_button(turn: Turn) -> (R, &'static str) {
-    const W: f32 = 44.0;
-    const H: f32 = 36.0;
-    const GAP: f32 = 4.0;
+    // Two rows fit the 63 px panel's 57 px of inside; 26 px leaves the 16 px
+    // arrow exactly centred.
+    const W: f32 = 40.0;
+    const H: f32 = 26.0;
+    const GAP_X: f32 = 4.0;
+    const GAP_Y: f32 = 2.0;
     let centre = ACTION_AREA[0] + ACTION_AREA[2] / 2.0;
-    let top = ACTION_AREA[1] + (ACTION_AREA[3] - (2.0 * H + GAP)) / 2.0;
+    let top = ACTION_AREA[1] + (ACTION_AREA[3] - (2.0 * H + GAP_Y)) / 2.0;
     let (col, row, icon) = match turn {
         Turn::Ahead => (0.0, 0.0, "assets/textures/ui/move_ahead.png"),
         Turn::Left => (-1.0, 1.0, "assets/textures/ui/move_left.png"),
@@ -334,8 +348,8 @@ fn walk_button(turn: Turn) -> (R, &'static str) {
     };
     (
         [
-            (centre - W / 2.0 + col * (W + GAP)).round(),
-            (top + row * (H + GAP)).round(),
+            (centre - W / 2.0 + col * (W + GAP_X)).round(),
+            (top + row * (H + GAP_Y)).round(),
             W,
             H,
         ],
@@ -386,7 +400,7 @@ impl Labyrinth {
                 }
                 if matches!(game.floor.current_room().kind, RoomKind::Stairs { .. }) {
                     out.push(choice(
-                        [554.0, 291.0, 76.0, 36.0],
+                        centred(554.0, 76.0, 34.0),
                         Action::Descend,
                         "Descend",
                         "Enter the next floor",
@@ -395,7 +409,7 @@ impl Labyrinth {
             }
             Mode::Combat => {
                 out.push(icon(
-                    [322.0, 290.0, 44.0, 38.0],
+                    centred(322.0, 44.0, 34.0),
                     Action::Pass,
                     "assets/textures/icons/timeout_icon.png",
                     "Pass turn [Space]",
@@ -409,7 +423,7 @@ impl Labyrinth {
                             "mana"
                         };
                         let mut c = choice(
-                            [380.0 + i as f32 * 86.0, 290.0, 78.0, 38.0],
+                            centred(380.0 + i as f32 * 86.0, 78.0, 34.0),
                             Action::Skill(i),
                             format!("{}", i + 1),
                             skill.name.clone(),
@@ -856,7 +870,7 @@ impl Labyrinth {
                         c.rect[0] + c.rect[2] / 2.0 - 22.0,
                         // The glyph sits low in its 13px box: level its middle with
                         // the icon's.
-                        c.rect[1] + 7.0 + ((c.rect[3] - 29.0) / 2.0).floor().max(0.0) + 8.0 - 10.5,
+                        c.rect[1] + ((c.rect[3] - 16.0) / 2.0).ceil() + 8.0 - 10.5,
                         14.0,
                         13.0,
                     ],
