@@ -15,6 +15,17 @@ pub struct ScreenWipe {
     pub progress: f32,
 }
 
+/// Diamond pattern spacing in logical pixels.
+#[derive(Resource)]
+#[auto_init_resource(plugin = RoomRenderPlugin)]
+pub struct WipeCellSize(pub f32);
+
+impl Default for WipeCellSize {
+    fn default() -> Self {
+        Self(10.0)
+    }
+}
+
 #[derive(AsBindGroup, Asset, TypePath, Debug, Clone)]
 pub struct WipeMaterial {
     #[uniform(0)]
@@ -55,6 +66,7 @@ fn spawn_wipe(mut commands: Commands, mut materials: ResMut<Assets<WipeMaterial>
 #[auto_add_system(plugin = RoomRenderPlugin, schedule = Update)]
 fn apply_wipe(
     wipe: Res<ScreenWipe>,
+    cell_size: Res<WipeCellSize>,
     mut materials: ResMut<Assets<WipeMaterial>>,
     mut nodes: Query<(&mut Node, &mut Visibility, &MaterialNode<WipeMaterial>), With<WipeNode>>,
 ) {
@@ -79,7 +91,7 @@ fn apply_wipe(
     node.width = Val::Px(w);
     node.height = Val::Px(h);
     if let Some(mut material) = materials.get_mut(&handle.0) {
-        material.params = Vec4::new(wipe.progress, x, y, 0.0);
+        material.params = Vec4::new(wipe.progress, x, y, cell_size.0.max(1.0));
         material.region = Vec4::new(w, h, 0.0, 0.0);
     }
 }

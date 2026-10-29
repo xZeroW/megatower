@@ -217,6 +217,9 @@ impl Run {
 }
 
 fn keyboard(keys: Res<ButtonInput<KeyCode>>, mut run: ResMut<Run>, mut walk: ResMut<Walk>) {
+    if walk.active() {
+        return;
+    }
     const NUMBERS: [KeyCode; 4] = [
         KeyCode::Digit1,
         KeyCode::Digit2,

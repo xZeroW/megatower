@@ -17,12 +17,13 @@ use megatower_assets::room_screen::ROOM_VIEWPORT_SIZE;
 use megatower_runtime::render::room::{
     ROOM_LAYER, RoomCameraDolly, RoomRenderPlugin, RoomRenderTarget, RoomSceneRequest,
 };
+use megatower_runtime::render::wipe::{ScreenWipe, WipeCellSize};
 use std::f32::consts::{FRAC_PI_2, PI};
 
 /// On-screen size of the room view (the render target scaled ×2).
 const VIEW_SCALE: f32 = 2.0;
 /// Seconds a walk through a door takes.
-const WALK_SECS: f32 = 0.45;
+const WALK_SECS: f32 = 0.7;
 /// The room camera's resting direction (`room.rs`).
 const LOOK: Vec3 = Vec3::new(0.0, -0.182236, -0.983255);
 const WALL_TEXTURE: &str = "assets/textures/3d/dungeon_wall.png";
@@ -32,9 +33,12 @@ pub struct RoomViewPlugin;
 impl Plugin for RoomViewPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(RoomRenderPlugin)
+            .insert_resource(WipeCellSize(40.0))
             .init_resource::<Walk>()
             .init_resource::<HoveredDoor>()
             .add_systems(Startup, door_materials)
+            // Publish before the renderer's Update systems consume the dolly/wipe.
+            .add_systems(PreUpdate, walk)
             .add_systems(
                 Update,
                 (
@@ -44,7 +48,6 @@ impl Plugin for RoomViewPlugin {
                     show_doors,
                     hover_doors,
                     click_doors,
-                    walk,
                 )
                     .chain(),
             );
@@ -56,6 +59,7 @@ impl Plugin for RoomViewPlugin {
 pub struct Walk {
     turn: Option<Turn>,
     t: f32,
+    revealing: bool,
 }
 
 impl Walk {
@@ -78,6 +82,7 @@ impl Walk {
         }
         self.turn = Some(turn);
         self.t = 0.0;
+        self.revealing = false;
     }
 }
 
@@ -356,36 +361,59 @@ fn click_doors(
     }
 }
 
-/// Plays the walk (a dolly ahead, a turn to the side or around), then moves.
+/// Megatower's cover/dolly, room swap under cover, then diamond reveal.
 fn walk(
     time: Res<Time>,
     mut walk: ResMut<Walk>,
     mut run: ResMut<Run>,
     mut dolly: ResMut<RoomCameraDolly>,
     mut camera: Query<&mut Transform, With<Camera3d>>,
+    mut wipe: ResMut<ScreenWipe>,
+    windows: Query<&Window, With<bevy::window::PrimaryWindow>>,
 ) {
     let rest = Transform::default().looking_to(LOOK, Vec3::Y).rotation;
     let Some(turn) = walk.turn else { return };
+    if let Ok(window) = windows.single() {
+        // The room column, leaving the 360px information panel visible.
+        wipe.region = [0.0, 0.0, (window.width() - 360.0).max(0.0), window.height()];
+    }
     walk.t = (walk.t + time.delta_secs() / WALK_SECS).min(1.0);
     let t = walk.t;
-    let eased = t * t * (3.0 - 2.0 * t);
-    let (yaw, push) = match turn {
-        Turn::Ahead => (0.0, 0.45),
-        Turn::Left => (eased * 0.45 * PI, 0.1),
-        Turn::Right => (-eased * 0.45 * PI, 0.1),
-        Turn::Back => (eased * PI, 0.0),
+    wipe.progress = if walk.revealing { 1.0 + t } else { t };
+    // Match Megatower: the camera reaches the doorway just before cover.
+    dolly.0 = if walk.revealing {
+        0.0
+    } else {
+        (t / 0.967).min(1.0)
     };
-    dolly.0 = eased * push;
+    let eased = t * t * (3.0 - 2.0 * t);
+    let yaw = if walk.revealing {
+        0.0
+    } else {
+        match turn {
+            Turn::Ahead => 0.0,
+            Turn::Left => eased * 0.45 * PI,
+            Turn::Right => -eased * 0.45 * PI,
+            Turn::Back => eased * PI,
+        }
+    };
     for mut transform in &mut camera {
         transform.rotation = Quat::from_rotation_y(yaw) * rest;
     }
     if t >= 1.0 {
-        walk.turn = None;
         dolly.0 = 0.0;
         for mut transform in &mut camera {
             transform.rotation = rest;
         }
-        run.step_turn(turn);
+        if walk.revealing {
+            walk.turn = None;
+            wipe.progress = 0.0;
+        } else {
+            run.step_turn(turn);
+            walk.revealing = true;
+            walk.t = 0.0;
+            wipe.progress = 1.0;
+        }
     }
 }
 
@@ -514,6 +542,45 @@ pub fn spawn_explore(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn room_changes_only_under_cover_and_movement_waits_for_reveal() {
+        let mut run = Run::new(2, 1);
+        run.pick_starter(0);
+        let origin = run.floor.current;
+        let turn = run.floor.turns()[0].0;
+        let mut walking = Walk::default();
+        walking.start(turn, &mut run);
+        assert!(walking.active());
+        let mut app = App::new();
+        app.insert_resource(run)
+            .insert_resource(walking)
+            .insert_resource(Time::<()>::default())
+            .init_resource::<RoomCameraDolly>()
+            .init_resource::<ScreenWipe>()
+            .add_systems(Update, walk);
+        let tick = |app: &mut App, seconds| {
+            app.world_mut()
+                .resource_mut::<Time>()
+                .advance_by(std::time::Duration::from_secs_f32(seconds));
+            app.world_mut().run_schedule(Update);
+        };
+        tick(&mut app, WALK_SECS * 0.5);
+        assert_eq!(app.world().resource::<Run>().floor.current, origin);
+        assert!(app.world().resource::<RoomCameraDolly>().0 > 0.0);
+        tick(&mut app, WALK_SECS);
+        let destination = app.world().resource::<Run>().floor.current;
+        assert_ne!(destination, origin);
+        assert_eq!(app.world().resource::<ScreenWipe>().progress, 1.0);
+        assert_eq!(app.world().resource::<RoomCameraDolly>().0, 0.0);
+        assert!(app.world().resource::<Walk>().active());
+        tick(&mut app, WALK_SECS * 0.5);
+        assert!(app.world().resource::<ScreenWipe>().progress > 1.0);
+        assert_eq!(app.world().resource::<Run>().floor.current, destination);
+        tick(&mut app, WALK_SECS);
+        assert!(!app.world().resource::<Walk>().active());
+        assert_eq!(app.world().resource::<ScreenWipe>().progress, 0.0);
+    }
 
     /// The room camera's resting place (`room.rs`).
     const EYE: Vec3 = Vec3::new(0.0, 1.357, 2.75);
