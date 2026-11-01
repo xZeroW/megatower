@@ -5,6 +5,7 @@
     nodes: [
         (id: "str_start", name: "Might", kind: Start, x: -5.0, y: 3.0, links: [], mods: [
             (stat: Life, kind: Flat, value: 10.0),
+            (stat: Strength, kind: Flat, value: 10.0),
         ]),
         (id: "str_life1", name: "Vigour", kind: Small, x: -6.5, y: 2.0, links: ["str_start"], mods: [
             (stat: Life, kind: Flat, value: 10.0),
@@ -61,6 +62,7 @@
         ]),
         (id: "int_start", name: "Insight", kind: Start, x: 0.0, y: -5.0, links: [], mods: [
             (stat: Mana, kind: Flat, value: 10.0),
+            (stat: Intelligence, kind: Flat, value: 10.0),
         ]),
         (id: "int_mana1", name: "Clarity", kind: Small, x: -1.5, y: -6.0, links: ["int_start", "str_int_bridge"], mods: [
             (stat: Mana, kind: Flat, value: 10.0),
@@ -112,6 +114,7 @@
         ]),
         (id: "dex_start", name: "Agility", kind: Start, x: 5.0, y: 3.0, links: [], mods: [
             (stat: Evasion, kind: Flat, value: 3.0),
+            (stat: Dexterity, kind: Flat, value: 10.0),
         ]),
         (id: "dex_ev1", name: "Footwork", kind: Small, x: 6.5, y: 2.0, links: ["dex_start", "winters_grip"], mods: [
             (stat: Evasion, kind: Flat, value: 3.0),

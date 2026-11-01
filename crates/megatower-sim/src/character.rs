@@ -358,6 +358,16 @@ mod tests {
     }
 
     #[test]
+    fn attributes_feed_the_derived_stats() {
+        let mut c = Character::new([]);
+        c.progress = crate::passives::Progress::new("str_start");
+        let mods = c.mods();
+        assert_eq!(mods.flat(Stat::Strength, Tags::NONE), 10.0);
+        // The start node's 10 plus 10 Strength at one life per two.
+        assert_eq!(mods.flat(Stat::Life, Tags::NONE), 15.0);
+    }
+
+    #[test]
     fn gear_mods_add_up() {
         let c = Character::new([
             (EquipSlot::Helm, item("leather_cap")),
