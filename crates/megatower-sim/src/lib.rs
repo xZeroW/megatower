@@ -3,6 +3,7 @@
 //!
 //! - [`tags`]: skill/support tags and the damage types they carry.
 //! - [`modifier`]: stats, modifiers (flat / increased / more) and their sums.
+//! - [`derived`]: stats computed from other stats, on the `megatower-stats` graph.
 //! - [`damage`]: the hit pipeline (roll, conversion, scaling, crit, mitigation).
 //! - [`ailment`]: ignite, bleed, poison, shock, chill and freeze in turns.
 //! - [`gems`]: skill and support gems, rarity, and the skill a socket group makes.
@@ -25,6 +26,7 @@ pub mod character;
 pub mod combat;
 pub mod content;
 pub mod damage;
+pub mod derived;
 pub mod describe;
 pub mod gems;
 pub mod items;

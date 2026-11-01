@@ -102,6 +102,11 @@ impl Tags {
         self.0 & other.0 != 0
     }
 
+    /// The tags as bits, in [`Tag`] order.
+    pub const fn bits(self) -> u32 {
+        self.0
+    }
+
     pub const fn is_empty(self) -> bool {
         self.0 == 0
     }

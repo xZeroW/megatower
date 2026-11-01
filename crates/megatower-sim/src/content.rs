@@ -1,6 +1,7 @@
 //! Game data from `assets/data/game/`, embedded at build time and parsed once.
 
 use crate::combat::EnemyDef;
+use crate::derived::DerivedRule;
 use crate::gems::GemDb;
 use crate::items::ItemDb;
 use crate::passives::TreeDb;
@@ -15,6 +16,7 @@ pub struct Content {
     pub tree: TreeDb,
     pub boons: Vec<BoonDef>,
     pub events: Vec<EventDef>,
+    pub derived: Vec<DerivedRule>,
 }
 
 /// A malformed embedded file is a build mistake, so it panics with its name.
@@ -48,6 +50,10 @@ pub fn get() -> &'static Content {
         events: parse(
             include_str!("../../../assets/data/game/events.ron"),
             "events.ron",
+        ),
+        derived: parse(
+            include_str!("../../../assets/data/game/derived.ron"),
+            "derived.ron",
         ),
     })
 }

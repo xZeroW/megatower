@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/megatower-core", "crates/megatower-assets", "crates/megatower-runtime", "crates/megatower-ui", "crates/megatower-client", "crates/megatower-sim"]
+members = ["crates/megatower-core", "crates/megatower-assets", "crates/megatower-runtime", "crates/megatower-ui", "crates/megatower-client", "crates/megatower-sim", "crates/megatower-stats"]
 
 [workspace.package]
 version = "0.1.0"

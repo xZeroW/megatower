@@ -134,7 +134,7 @@ impl Character {
         for item in self.equipment.iter().flatten() {
             mods.extend(item.mods().iter());
         }
-        mods
+        crate::derived::resolve(&mods, &content.derived)
     }
 
     pub fn max_life(&self) -> f64 {

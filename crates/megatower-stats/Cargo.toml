@@ -1,0 +1,7 @@
+[package]
+name = "megatower-stats"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+lasso = { version = "0.7", features = ["multi-threaded"] }

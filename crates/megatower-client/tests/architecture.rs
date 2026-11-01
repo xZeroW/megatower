@@ -14,7 +14,8 @@ fn internal_deps(manifest: &Path) -> BTreeSet<String> {
 
 /// Each crate and the only internal crates it may depend on.
 const ALLOWED: &[(&str, &[&str])] = &[
-    ("megatower-sim", &[]),
+    ("megatower-sim", &["megatower-stats"]),
+    ("megatower-stats", &[]),
     ("megatower-core", &[]),
     ("megatower-assets", &["megatower-core"]),
     ("megatower-runtime", &["megatower-core", "megatower-assets"]),

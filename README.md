@@ -77,6 +77,7 @@ below, and the env-driven QA tooling (`src/dev`). The libraries sit under
 | Crate | Role |
 | --- | --- |
 | `megatower-sim` | target game's labyrinth, combat, equipment, gems, room interactions and progression |
+| `megatower-stats` | headless attribute graph (a port of `bevy_gauge`'s core): stats as expressions over other stats, tagged modifiers; used by the sim's `derived` rules |
 | `megatower-ui` | original presentation and the `labyrinth` adapter from `megatower-sim` into its HUD/timeline/input |
 | `megatower-runtime` | Bevy capability plugins: `audio` (kira buses driven by `MusicCue`/`SfxQueue`/`AudioVolumes`), `input` (`GameAction`, bindings), `render` (off-screen room, HUD layout; `RoomSceneRequest` picks the scene) |
 | `megatower-assets` | Godot-resolved layouts, room geometry, palette |

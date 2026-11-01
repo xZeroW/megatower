@@ -10,3 +10,4 @@ path = "src/lib.rs"
 [dependencies]
 serde.workspace = true
 ron.workspace = true
+megatower-stats = { path = "../megatower-stats" }

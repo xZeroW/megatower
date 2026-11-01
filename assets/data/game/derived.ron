@@ -1,0 +1,7 @@
+// Stats computed from other stats, applied to the hero (see megatower-sim `derived`).
+// Each rule gives `stat` a modifier of `kind` whose value is an expression over
+// other stats by name, e.g.
+//   (stat: Life, kind: Flat, value: "Strength / 2.0"),
+//   (stat: Damage, kind: Increased, value: "Intelligence / 5.0", requires: [Spell]),
+// None yet: the hero's numbers come straight from gear, tree and boons.
+[]
