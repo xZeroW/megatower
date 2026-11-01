@@ -79,18 +79,18 @@ mod tests {
         assert_eq!(
             names,
             [
-                "Fren", "Pyry", "Sid", "Elys", "Fael", "Tyr", "Viran", "Kinno", "Riel", "Amon",
-                "Jace"
+                "Kestrel", "Umbrath", "Rethan", "Elaris", "Branric", "Gorix", "Thalara", "Mirelle", "Pellim", "Orvian",
+                "Nivor"
             ]
         );
         assert_eq!(catalog.available(true).len(), 3);
-        let fren = catalog.from_name("Fren").unwrap();
+        let fren = catalog.from_name("Kestrel").unwrap();
         assert_eq!(fren.doubled_stat, Some(StatId::Agility));
         assert_eq!(fren.passive, None);
         assert_eq!(fren.sockets.len(), 8);
         assert_eq!(
             catalog
-                .from_name("Jace")
+                .from_name("Nivor")
                 .unwrap()
                 .challenge_market_items
                 .len(),

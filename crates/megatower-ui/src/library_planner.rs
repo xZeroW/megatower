@@ -68,7 +68,7 @@ impl LibraryUi {
     /// entry (`LibraryState._ready`).
     fn ensure(&mut self, profile: &ProfileStore) {
         if self.game.is_none() {
-            self.game = Some(Box::new(Game::new(NewRun::default_for("Fren", 1))));
+            self.game = Some(Box::new(Game::new(NewRun::default_for("Kestrel", 1))));
         }
         if self.known == profile.encountered_items.len() && !self.entities.is_empty() {
             return;
@@ -424,7 +424,7 @@ mod tests {
     use super::*;
 
     fn profile_knowing(names: &[&str]) -> ProfileStore {
-        let game = Game::new(NewRun::default_for("Fren", 1));
+        let game = Game::new(NewRun::default_for("Kestrel", 1));
         let ids = game
             .items
             .list

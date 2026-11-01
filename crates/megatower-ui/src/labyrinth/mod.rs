@@ -366,7 +366,7 @@ fn popup_for(event: &CombatEvent) -> Option<(Actor, Popup)> {
 
 fn autostart(mut session: ResMut<Labyrinth>, mut ui: ResMut<crate::UiRes>) {
     if std::env::var_os("GAME_AUTOSTART").is_some() {
-        session.start(Some("assets/textures/portraits/fren.png".into()));
+        session.start(Some("assets/textures/portraits/kestrel.png".into()));
         ui.0.screen = Screen::Playing;
     }
 }

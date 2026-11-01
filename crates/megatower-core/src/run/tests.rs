@@ -8,7 +8,7 @@ fn fresh(adventurer: &str, seed: u64) -> Game {
 #[test]
 fn new_run_matches_initialize_memory() {
     for name in [
-        "Fren", "Pyry", "Sid", "Elys", "Fael", "Tyr", "Viran", "Kinno", "Riel", "Amon", "Jace",
+        "Kestrel", "Umbrath", "Rethan", "Elaris", "Branric", "Gorix", "Thalara", "Mirelle", "Pellim", "Orvian", "Nivor",
     ] {
         let game = fresh(name, 7);
         let local = game.local();
@@ -35,7 +35,7 @@ fn new_run_matches_initialize_memory() {
 
 #[test]
 fn first_battle_can_be_played_to_the_end() {
-    let mut game = fresh("Fren", 11);
+    let mut game = fresh("Kestrel", 11);
     game.enter_tower();
     assert_eq!(game.memory.room_type, Room::Battle);
     let local = game.local();
@@ -123,7 +123,7 @@ fn bot_step(game: &mut Game) {
 fn bot_plays_every_adventurer_without_panicking() {
     let mut deepest = 0;
     for name in [
-        "Fren", "Pyry", "Sid", "Elys", "Fael", "Tyr", "Viran", "Kinno", "Riel", "Amon", "Jace",
+        "Kestrel", "Umbrath", "Rethan", "Elaris", "Branric", "Gorix", "Thalara", "Mirelle", "Pellim", "Orvian", "Nivor",
     ] {
         for seed in [1_u64, 2, 3] {
             let mut game = fresh(name, seed);
@@ -143,7 +143,7 @@ fn bot_plays_every_adventurer_without_panicking() {
 #[test]
 #[ignore]
 fn trace_one_run() {
-    let mut game = fresh("Fren", 1);
+    let mut game = fresh("Kestrel", 1);
     for step in 0..40 {
         let before = (
             game.memory.floor_number,
@@ -187,7 +187,7 @@ fn fuzz_many_seeds_for_panics() {
     let mut deaths = 0;
     for seed in 0..40_u64 {
         for name in [
-            "Fren", "Pyry", "Sid", "Elys", "Fael", "Tyr", "Viran", "Kinno", "Riel", "Amon", "Jace",
+            "Kestrel", "Umbrath", "Rethan", "Elaris", "Branric", "Gorix", "Thalara", "Mirelle", "Pellim", "Orvian", "Nivor",
         ] {
             let mut game = fresh(name, seed * 7919 + 13);
             for step in 0..3000 {
@@ -216,7 +216,7 @@ fn every_room_type_sets_up_and_completes() {
     use crate::inventory::Slot;
     let mut seen = std::collections::HashSet::new();
     for floor in (0..110).step_by(1) {
-        let mut game = fresh("Sid", 99 + floor as u64);
+        let mut game = fresh("Rethan", 99 + floor as u64);
         game.memory.floor_number = floor;
         let local = game.local();
         game.char_state_mut(local).diamonds = 50.0;
@@ -308,7 +308,7 @@ fn merge_equip_unequip_and_sell_follow_item_manager() {
         inventory::Slot,
         items::{instance::Item, rarity::ItemRarity},
     };
-    let mut game = fresh("Fren", 5);
+    let mut game = fresh("Kestrel", 5);
     let local = game.local();
     let inventory = game.state(local).inventory;
     let equipment = game.state(local).equipment.unwrap();
@@ -364,7 +364,7 @@ fn merge_equip_unequip_and_sell_follow_item_manager() {
 
 #[test]
 fn overflow_goes_to_the_loot_stash() {
-    let mut game = fresh("Fren", 6);
+    let mut game = fresh("Kestrel", 6);
     let local = game.local();
     for _ in 0..22 {
         give(&mut game, "chainmail", 0, 0);
@@ -386,7 +386,7 @@ fn overflow_goes_to_the_loot_stash() {
 #[test]
 fn room_transition_gets_shorter_at_higher_battle_speed() {
     let transition = |battle_speed: f64| {
-        let mut game = fresh("Fren", 3);
+        let mut game = fresh("Kestrel", 3);
         game.battle_speed = battle_speed;
         let before = game.clock;
         game.advance(1);
@@ -406,7 +406,7 @@ fn room_transition_gets_shorter_at_higher_battle_speed() {
 #[test]
 fn run_records_item_and_enemy_encounters() {
     use super::game::Encounter;
-    let mut game = fresh("Fren", 5);
+    let mut game = fresh("Kestrel", 5);
     assert!(
         game.encounters
             .iter()

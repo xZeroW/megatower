@@ -987,7 +987,7 @@ impl Labyrinth {
             rects.portrait,
             self.portrait
                 .as_deref()
-                .unwrap_or("assets/textures/portraits/fren.png"),
+                .unwrap_or("assets/textures/portraits/kestrel.png"),
         ));
         out.push(image(
             rects.portrait_border,

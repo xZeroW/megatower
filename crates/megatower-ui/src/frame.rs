@@ -246,8 +246,8 @@ pub(super) fn select_draws(
         });
         if let Some(portrait) = &adventurer.portrait {
             out.push(compose::image(
-                [cell[0] + 24.0, cell[1] + 8.0, 32.0, 32.0],
-                portrait,
+                [cell[0] + 20.0, cell[1] + 4.0, 40.0, 40.0],
+                &portrait.replace(".png", "_framed.png"),
             ));
         }
         out.push(Draw::Text {

@@ -79,7 +79,7 @@ mod tests {
         ui.screen = Screen::Select;
         assert_eq!(track(cue_for(&ui, &slot)), music::NEW_JOURNEY);
 
-        let game_slot = GameSlot(Some(Game::new(NewRun::default_for("Fren", 1))));
+        let game_slot = GameSlot(Some(Game::new(NewRun::default_for("Kestrel", 1))));
         ui.screen = Screen::Playing;
         assert!(matches!(cue_for(&ui, &game_slot), MusicCue::Floor(_)));
     }

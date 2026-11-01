@@ -3310,7 +3310,7 @@ mod tooltip_tests {
 
     #[test]
     fn translated_text_resolves_battle_actions_and_draws_them() {
-        let game = Game::new(NewRun::default_for("Fren", 1));
+        let game = Game::new(NewRun::default_for("Kestrel", 1));
         let piece = lookup_piece(&game, "DODGE", false);
         assert_eq!(
             piece,

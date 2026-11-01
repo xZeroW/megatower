@@ -767,8 +767,8 @@ fn profile_cell(layout: &Layout, index: usize) -> Option<[f32; 4]> {
     ])
 }
 
-/// `profile_state.tscn`: adventurer buttons (32px portrait inside a 54px
-/// border, -2px margins) in name order.
+/// `profile_state.tscn`: adventurer buttons (the `_framed` 64px portrait drawn at 45px
+/// inside a 54px border, -2px margins) in name order.
 pub fn profile_draws(layout: &Layout, entries: &[ProfileEntry]) -> Vec<Draw> {
     let mut out = layout_draws(layout, &[]);
     for (i, entry) in entries.iter().enumerate() {
@@ -776,11 +776,11 @@ pub fn profile_draws(layout: &Layout, entries: &[ProfileEntry]) -> Vec<Draw> {
             break;
         };
         out.push(Draw::Image {
-            rect: [cell[0] + 9.0, cell[1] + 9.0, 32.0, 32.0],
-            path: entry
-                .portrait
-                .as_deref()
-                .map_or_else(|| crate::adventurer_ui::UNKNOWN_PORTRAIT.to_owned(), trim),
+            rect: [cell[0] + 2.5, cell[1] + 2.5, 45.0, 45.0],
+            path: entry.portrait.as_deref().map_or_else(
+                || crate::adventurer_ui::UNKNOWN_PORTRAIT.to_owned(),
+                |p| trim(p).replace(".png", "_framed.png"),
+            ),
             region: None,
             tint: [1.0; 4],
             slice: None,
@@ -1193,7 +1193,7 @@ mod library_tests {
     fn popup_shows_one_unlocked_card_for_a_fresh_record() {
         let layout = megatower_assets::godot_layout::adventurer_overview_layout();
         let draws =
-            profile_popup_draws(&layout, Some("assets/textures/portraits/fren.png"), 0, 0.0);
+            profile_popup_draws(&layout, Some("assets/textures/portraits/kestrel.png"), 0, 0.0);
         let text_of = |needle: &str| {
             draws
                 .iter()
