@@ -177,7 +177,7 @@ fn tree_node_icon(node: &megatower_sim::passives::NodeDef) -> &'static str {
         }
         Stat::Convert(..) => "assets/textures/icons/power_icon.png",
         Stat::CritChance | Stat::CritMultiplier => "assets/textures/icons/execution_icon.png",
-        Stat::Resistance(_) => "assets/textures/icons/magic_shield_icon.png",
+        Stat::Resistance(_) | Stat::MaxResistance(_) => "assets/textures/icons/magic_shield_icon.png",
         Stat::Penetration(_) => "assets/textures/icons/magic_shield_break_icon.png",
         Stat::AilmentChance(A::Ignite) => "assets/textures/icons/magma_icon.png",
         Stat::AilmentChance(A::Bleed) => "assets/textures/icons/bleed.png",

@@ -57,6 +57,11 @@ fn line(m: &Modifier) -> String {
         Stat::CritChance => signed(m.kind, m.value, "critical chance"),
         Stat::CritMultiplier => format!("{:+.0}% critical multiplier", m.value),
         Stat::Resistance(t) => format!("{:+.0}% {} resistance", m.value, lower(format!("{t:?}"))),
+        Stat::MaxResistance(t) => format!(
+            "{:+.0}% maximum {} resistance",
+            m.value,
+            lower(format!("{t:?}"))
+        ),
         Stat::Penetration(t) => format!(
             "Penetrates {:.0}% {} resistance",
             m.value,

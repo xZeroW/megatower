@@ -22,6 +22,8 @@ use std::ops::{Index, IndexMut};
 pub const BASE_CRIT_MULTIPLIER: f64 = 150.0;
 /// Resistances above this have no effect.
 pub const MAX_RESISTANCE: f64 = 75.0;
+/// No amount of "+maximum resistance" goes past this.
+pub const RESISTANCE_LIMIT: f64 = 90.0;
 /// Armour never removes more than this fraction of a hit's physical damage.
 pub const MAX_ARMOUR_REDUCTION: f64 = 0.9;
 /// `reduction = armour / (armour + ARMOUR_FACTOR × physical)`: armour is
@@ -89,17 +91,23 @@ fn full_effectiveness() -> f64 {
 pub struct Defence {
     pub armour: f64,
     pub resistances: DamageMap,
+    /// Added to [`MAX_RESISTANCE`] per type.
+    #[serde(default)]
+    pub max_resistance_bonus: DamageMap,
 }
 
 impl Defence {
     pub fn from_mods(mods: &ModSet) -> Self {
         let mut resistances = DamageMap::default();
+        let mut max_resistance_bonus = DamageMap::default();
         for t in DamageType::ALL {
             resistances[t] = mods.total(Stat::Resistance(t), 0.0, Tags::NONE);
+            max_resistance_bonus[t] = mods.total(Stat::MaxResistance(t), 0.0, Tags::NONE);
         }
         Self {
             armour: mods.total(Stat::Armour, 0.0, Tags::NONE).max(0.0),
             resistances,
+            max_resistance_bonus,
         }
     }
 }
@@ -202,7 +210,8 @@ pub fn mitigate(hit: Hit, tags: Tags, attacker: &ModSet, defence: &Defence) -> H
             let reduction = defence.armour / (defence.armour + ARMOUR_FACTOR * damage[t]);
             damage[t] *= 1.0 - reduction.min(MAX_ARMOUR_REDUCTION);
         }
-        let resistance = defence.resistances[t].min(MAX_RESISTANCE)
+        let cap = (MAX_RESISTANCE + defence.max_resistance_bonus[t]).clamp(0.0, RESISTANCE_LIMIT);
+        let resistance = defence.resistances[t].min(cap)
             - attacker.flat(Stat::Penetration(t), tags).max(0.0);
         damage[t] *= (1.0 - resistance / 100.0).max(0.0);
     }
@@ -372,6 +381,32 @@ mod tests {
             ..spec(&[Tag::Attack], &[(Physical, 1.0)])
         };
         assert!(hit(&s, &attacker).crit);
+    }
+
+    #[test]
+    fn maximum_resistance_raises_the_cap_up_to_the_limit() {
+        let base = Hit {
+            damage: {
+                let mut d = DamageMap::default();
+                d[Fire] = 100.0;
+                d[Cold] = 100.0;
+                d
+            },
+            crit: false,
+        };
+        let mut defence = Defence::from_mods(&mods(&[
+            Modifier::flat(Stat::Resistance(Fire), 120.0),
+            Modifier::flat(Stat::MaxResistance(Fire), 5.0),
+            Modifier::flat(Stat::Resistance(Cold), 120.0),
+            Modifier::flat(Stat::MaxResistance(Cold), 40.0),
+        ]));
+        approx(defence.resistances[Fire], 120.0); // overcap is kept
+        let taken = mitigate(base, Tags::NONE, &ModSet::new(), &defence);
+        approx(taken.damage[Fire], 20.0); // capped at 80
+        approx(taken.damage[Cold], 10.0); // limited to 90
+        defence.max_resistance_bonus[Fire] = 0.0;
+        let taken = mitigate(base, Tags::NONE, &ModSet::new(), &defence);
+        approx(taken.damage[Fire], 25.0);
     }
 
     #[test]

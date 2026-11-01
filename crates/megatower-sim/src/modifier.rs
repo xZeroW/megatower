@@ -33,6 +33,9 @@ pub enum Stat {
     /// Percent; flat values add to [`crate::damage::BASE_CRIT_MULTIPLIER`].
     CritMultiplier,
     Resistance(DamageType),
+    /// Percentage points on top of [`crate::damage::MAX_RESISTANCE`], up to
+    /// [`crate::damage::RESISTANCE_LIMIT`]. Resistance above the cap is kept.
+    MaxResistance(DamageType),
     /// Percent of the target's resistance ignored by hits.
     Penetration(DamageType),
     ManaCost,
