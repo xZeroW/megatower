@@ -6,7 +6,7 @@ use megatower_sim::{
     ailment::Ailment,
     character::Character,
     combat::{HERO_MANA_REGEN, MAX_EVASION},
-    damage::{BASE_CRIT_MULTIPLIER, MAX_RESISTANCE},
+    damage::{BASE_CRIT_MULTIPLIER, Defence, MAX_RESISTANCE, RESISTANCE_LIMIT},
     modifier::Stat,
     tags::{DamageType, Tag, Tags},
 };
@@ -112,6 +112,16 @@ fn added_name(t: DamageType) -> &'static str {
     )(t)
 }
 
+fn max_resist_name(t: DamageType) -> &'static str {
+    per_type!(
+        DamageType::Physical => "Max Phys Res",
+        DamageType::Lightning => "Max Light Res",
+        DamageType::Cold => "Max Cold Res",
+        DamageType::Fire => "Max Fire Res",
+        DamageType::Chaos => "Max Chaos Res",
+    )(t)
+}
+
 fn pen_name(t: DamageType) -> &'static str {
     per_type!(
         DamageType::Physical => "Physical Pen",
@@ -132,6 +142,11 @@ fn ailment_line(a: Ailment, chance: f64) -> StatLine {
         Ailment::Freeze => ("Freeze Chance", 0x5a88ff),
     };
     line(name, "stats/dazzle_icon.png", color, percent(chance))
+}
+
+/// The most resistance to `t` counts for, with the hero's bonuses.
+fn resistance_cap(defence: &Defence, t: DamageType) -> f64 {
+    (MAX_RESISTANCE + defence.max_resistance_bonus[t]).clamp(0.0, RESISTANCE_LIMIT)
 }
 
 /// Core stats always show; the rest appear once something gives them a value.
@@ -183,7 +198,7 @@ pub fn lines(hero: &Character) -> Vec<StatLine> {
             resist_name(t),
             "stats/elemental_resistance.png",
             type_color(t),
-            percent(defence.resistances[t].min(MAX_RESISTANCE)),
+            percent(defence.resistances[t].min(resistance_cap(&defence, t))),
         ));
     }
     out.push(line(
@@ -284,6 +299,24 @@ pub fn lines(hero: &Character) -> Vec<StatLine> {
             percent(repeat),
         ),
     );
+    for t in [
+        DamageType::Fire,
+        DamageType::Cold,
+        DamageType::Lightning,
+        DamageType::Chaos,
+    ] {
+        let bonus = defence.max_resistance_bonus[t];
+        optional(
+            &mut out,
+            bonus,
+            line(
+                max_resist_name(t),
+                "stats/elemental_resistance.png",
+                type_color(t),
+                percent(resistance_cap(&defence, t)),
+            ),
+        );
+    }
     for (name, stat, color) in [
         ("Strength", Stat::Strength, 0xfa3949),
         ("Dexterity", Stat::Dexterity, 0x00cd58),
@@ -386,6 +419,21 @@ mod tests {
             lines.iter().map(|l| l.color.map(f32::to_bits)).collect();
         assert!(colours.len() >= 6, "names share too few colours");
         assert!(lines.len() <= 2 * 17, "the grid fits 17 rows");
+    }
+
+    #[test]
+    fn maximum_resistance_shows_once_the_hero_has_some() {
+        let mut hero = Character::new([]);
+        assert!(!lines(&hero).iter().any(|l| l.name == "Max Fire Res"));
+        hero.progress = megatower_sim::passives::Progress::new("str_start");
+        let tree = &megatower_sim::content::get().tree;
+        hero.progress.points = 3;
+        for node in ["str_life1", "str_armour1", "iron_hide"] {
+            hero.progress.allocate(tree, node).unwrap();
+        }
+        let lines = lines(&hero);
+        let max = lines.iter().find(|l| l.name == "Max Fire Res").unwrap();
+        assert_eq!(max.value, "78%");
     }
 
     #[test]
