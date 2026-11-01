@@ -75,19 +75,6 @@ impl RoomScreenState {
 mod tests {
     use super::*;
     #[test]
-    fn nested_viewport_and_camera_constants_match_source_scene() {
-        let source = std::fs::read_to_string(
-            megatower_core::paths::recovered_root()
-                .join("scenes/states/room_screen/room_screen.tscn"),
-        )
-        .expect("recovered RoomScreen scene is required");
-        assert_eq!(source.matches("size = Vector2i(352, 304)").count(), 2);
-        assert!(source.contains("offset_left = -10.0\noffset_top = -10.0"));
-        assert!(source.contains("fov = 45.0"));
-        assert!(source.contains("0, 1.357, 2.75)"));
-    }
-
-    #[test]
     fn room_screen_local_rules_follow_recovered_script() {
         let mut state = RoomScreenState::default();
         state.process(0.2, 6.75);

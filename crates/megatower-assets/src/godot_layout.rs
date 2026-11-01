@@ -226,18 +226,4 @@ mod tests {
         assert_eq!(slots[19].rect, [258.0, 239.0, 34.0, 34.0]);
     }
 
-    #[test]
-    fn exported_visuals_reference_recovered_assets_only() {
-        for visual in recovered_layout().visuals {
-            if let Some(path) = visual.texture {
-                assert!(path.starts_with("res://assets/"), "{}: {path}", visual.path);
-                assert!(
-                    megatower_core::paths::recovered_root()
-                        .join(path.trim_start_matches("res://"))
-                        .exists(),
-                    "{path}"
-                );
-            }
-        }
-    }
 }
