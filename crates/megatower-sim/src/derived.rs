@@ -114,6 +114,11 @@ pub fn resolve(mods: &ModSet, rules: &[DerivedRule]) -> ModSet {
             .expect("a rule id is a valid expression");
     }
 
+    assert!(
+        !graph.has_cycle(),
+        "derived rules depend on each other in a circle"
+    );
+
     let mut out = mods.clone();
     for (i, rule) in rules.iter().enumerate() {
         let value = graph.value(ACTOR, &format!("Derived{i}"));
@@ -201,6 +206,17 @@ mod tests {
         let mods: ModSet = [Modifier::flat(Stat::Strength, 50.0)].into_iter().collect();
         let out = resolve(&mods, &[rule(Stat::Damage, ModKind::More, "Strength / 10.0")]);
         approx(out.more(Stat::Damage, Tags::NONE), 1.05);
+    }
+
+    #[test]
+    #[should_panic(expected = "in a circle")]
+    fn circular_rules_are_refused() {
+        let mods: ModSet = [Modifier::flat(Stat::Strength, 10.0)].into_iter().collect();
+        let rules = [
+            rule(Stat::Life, ModKind::Flat, "Mana"),
+            rule(Stat::Mana, ModKind::Flat, "Life"),
+        ];
+        resolve(&mods, &rules);
     }
 
     #[test]

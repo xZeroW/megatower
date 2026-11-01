@@ -19,6 +19,7 @@ use crate::tags::{TagMask, TagResolver};
 /// Reading attributes does NOT require this - use `&Attributes` directly.
 #[derive(Default)]
 pub struct AttributesMut {
+    cyclic: bool,
     query: AttributeStore,
     graph: DependencyGraph,
     tag_resolver: TagResolver,
@@ -41,6 +42,12 @@ impl AttributeStore {
 impl AttributesMut {
     pub fn new() -> Self {
         Self::default()
+    }
+
+    /// True once any change reached attributes that depend on each other in a
+    /// circle. Those are never re-evaluated, so their values are stale.
+    pub fn has_cycle(&self) -> bool {
+        self.cyclic
     }
 
     pub fn tag_resolver_mut(&mut self) -> &mut TagResolver {
@@ -787,6 +794,12 @@ impl AttributesMut {
             }
         }
 
+        // An edge back into the root is a circle through it.
+        if indegree[&root] > 0 {
+            self.cyclic = true;
+            indegree.insert(root, 0);
+        }
+
         // Kahn's algorithm; a node is re-evaluated only if an input changed.
         let mut dirty: HashSet<DepNode> = HashSet::from([root]);
         let mut ready = vec![root];
@@ -804,6 +817,9 @@ impl AttributesMut {
             }
             let deps: Vec<DepNode> = self.graph.dependents(node).to_vec();
             for dep in deps {
+                if dep == root {
+                    continue;
+                }
                 if changed {
                     dirty.insert(dep);
                 }
@@ -813,6 +829,10 @@ impl AttributesMut {
                     ready.push(dep);
                 }
             }
+        }
+        // Nodes in a circle (or fed by one) never reach in-degree zero.
+        if indegree.values().any(|&count| count > 0) {
+            self.cyclic = true;
         }
     }
 }

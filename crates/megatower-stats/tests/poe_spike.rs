@@ -112,3 +112,22 @@ fn removing_a_modifier_restores_the_value() {
     s.remove_modifier(HERO, "Strength", &Modifier::Flat(5.0));
     assert_eq!(s.value(HERO, "Life"), 20.0);
 }
+
+#[test]
+fn circular_attributes_are_reported() {
+    let mut s = stats();
+    s.add_modifier(HERO, "Seed", 1.0);
+    s.add_expr_modifier(HERO, "A", "B + Seed").unwrap();
+    s.add_expr_modifier(HERO, "B", "A + 1.0").unwrap();
+    s.add_modifier(HERO, "Seed", 1.0);
+    assert!(s.has_cycle());
+}
+
+#[test]
+fn acyclic_graphs_are_not_reported() {
+    let mut s = stats();
+    s.add_modifier(HERO, "A", 1.0);
+    s.add_expr_modifier(HERO, "B", "A + 1.0").unwrap();
+    s.add_modifier(HERO, "A", 1.0);
+    assert!(!s.has_cycle());
+}
