@@ -6,10 +6,7 @@
 
 mod encounter;
 
-pub use encounter::{
-    DAMAGE_PER_FLOOR, ELITE_DAMAGE, ELITE_LIFE, EnemyDef, Intent, IntentKind, LIFE_PER_FLOOR,
-    encounter, spawn,
-};
+pub use encounter::{ELITE_LIFE, EnemyDef, Intent, IntentKind, LIFE_PER_FLOOR, encounter, spawn};
 
 use crate::ailment::{Afflictions, Ailment};
 use crate::damage::{Defence, HitSpec, resolve_hit};
@@ -56,6 +53,18 @@ impl Fighter {
 
     pub fn hero(mods: ModSet) -> Self {
         Self::new("Hero", HERO_LIFE, HERO_MANA, mods)
+    }
+
+    /// Conditions of the moment that modifiers can require.
+    pub fn state_tags(&self) -> Tags {
+        let mut tags = Tags::NONE;
+        if self.life >= self.max_life {
+            tags |= Tag::FullLife;
+        }
+        if self.life <= self.max_life * crate::tags::LOW_LIFE_PERCENT / 100.0 {
+            tags |= Tag::LowLife;
+        }
+        tags
     }
 
     pub fn alive(&self) -> bool {
@@ -191,6 +200,8 @@ pub struct Battle {
 struct Strike<'a> {
     spec: &'a HitSpec,
     mods: &'a ModSet,
+    /// The attacker's [`Fighter::state_tags`] when the hit lands.
+    state: Tags,
     dealt_multiplier: f64,
     no_ailments: bool,
 }
@@ -208,7 +219,11 @@ impl Strike<'_> {
             log.push(CombatEvent::Dodge { target: actor });
             return 0.0;
         }
-        let mut hit = resolve_hit(self.spec, self.mods, &target.defence(), rng);
+        let spec = HitSpec {
+            tags: self.spec.tags | self.state,
+            ..self.spec.clone()
+        };
+        let mut hit = resolve_hit(&spec, self.mods, &target.defence(), rng);
         let multiplier = self.dealt_multiplier * target.afflictions.damage_taken_multiplier();
         for t in crate::tags::DamageType::ALL {
             hit.damage[t] *= multiplier;
@@ -229,7 +244,7 @@ impl Strike<'_> {
         if !self.no_ailments && target.alive() {
             for ailment in Ailment::ALL {
                 let source = ailment.source_damage(&hit.damage);
-                let chance = self.mods.flat(Stat::AilmentChance(ailment), self.spec.tags);
+                let chance = self.mods.flat(Stat::AilmentChance(ailment), self.spec.tags | self.state);
                 if source > 0.0 && chance > 0.0 && rng.chance(chance) {
                     target.afflictions.inflict(ailment, source);
                     log.push(CombatEvent::Inflict {
@@ -363,6 +378,7 @@ impl Battle {
         let strike = Strike {
             spec: &skill.hit,
             mods: &mods,
+            state: self.hero.state_tags(),
             dealt_multiplier: self.hero.afflictions.damage_dealt_multiplier(),
             no_ailments: skill.no_ailments,
         };
@@ -422,6 +438,7 @@ impl Battle {
                     let strike = Strike {
                         spec: &spec,
                         mods: &enemy.fighter.mods,
+                        state: enemy.fighter.state_tags(),
                         dealt_multiplier: enemy.fighter.afflictions.damage_dealt_multiplier(),
                         no_ailments: false,
                     };
@@ -471,6 +488,17 @@ impl Battle {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn state_tags_follow_life() {
+        let mut f = Fighter::new("x", 100.0, 0.0, ModSet::new());
+        assert!(f.state_tags().has(Tag::FullLife));
+        assert!(!f.state_tags().has(Tag::LowLife));
+        f.life = 50.0;
+        assert_eq!(f.state_tags(), Tags::NONE);
+        f.life = 35.0;
+        assert!(f.state_tags().has(Tag::LowLife));
+    }
+
     use super::*;
     use crate::damage::DamageRange;
     use crate::modifier::Modifier;

@@ -17,6 +17,8 @@ pub struct Content {
     pub boons: Vec<BoonDef>,
     pub events: Vec<EventDef>,
     pub derived: Vec<DerivedRule>,
+    /// Applied to every enemy as it spawns.
+    pub enemy_derived: Vec<DerivedRule>,
 }
 
 /// A malformed embedded file is a build mistake, so it panics with its name.
@@ -54,6 +56,10 @@ pub fn get() -> &'static Content {
         derived: parse(
             include_str!("../../../assets/data/game/derived.ron"),
             "derived.ron",
+        ),
+        enemy_derived: parse(
+            include_str!("../../../assets/data/game/enemy_derived.ron"),
+            "enemy_derived.ron",
         ),
     })
 }

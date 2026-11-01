@@ -211,8 +211,8 @@ pub fn mitigate(hit: Hit, tags: Tags, attacker: &ModSet, defence: &Defence) -> H
             damage[t] *= 1.0 - reduction.min(MAX_ARMOUR_REDUCTION);
         }
         let cap = (MAX_RESISTANCE + defence.max_resistance_bonus[t]).clamp(0.0, RESISTANCE_LIMIT);
-        let resistance = defence.resistances[t].min(cap)
-            - attacker.flat(Stat::Penetration(t), tags).max(0.0);
+        let resistance =
+            defence.resistances[t].min(cap) - attacker.flat(Stat::Penetration(t), tags).max(0.0);
         damage[t] *= (1.0 - resistance / 100.0).max(0.0);
     }
     Hit { damage, ..hit }

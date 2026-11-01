@@ -49,6 +49,10 @@ pub enum Stat {
     SkillsCostLife,
     /// Percent chance for a skill to repeat for free, on top of its supports.
     RepeatChance,
+    /// Floors below the first. Set on enemies so `enemy_derived.ron` can scale them.
+    Depth,
+    /// 1 on elites, otherwise absent. Set on enemies for `enemy_derived.ron`.
+    Elite,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]

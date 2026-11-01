@@ -49,11 +49,7 @@ pub struct EnemyDef {
 
 /// Percent more life per floor below the first.
 pub const LIFE_PER_FLOOR: f64 = 60.0;
-/// Percent more damage per floor below the first.
-pub const DAMAGE_PER_FLOOR: f64 = 35.0;
 pub const ELITE_LIFE: f64 = 2.0;
-/// Percent more damage for elites.
-pub const ELITE_DAMAGE: f64 = 30.0;
 
 pub fn spawn(def: &EnemyDef, floor: u32, elite: bool) -> Enemy {
     let depth = f64::from(floor.max(1) - 1);
@@ -63,15 +59,14 @@ pub fn spawn(def: &EnemyDef, floor: u32, elite: bool) -> Enemy {
     for &(t, value) in &def.resistances {
         mods.push(Modifier::flat(Stat::Resistance(t), value));
     }
-    if depth > 0.0 {
-        mods.push(Modifier::more(Stat::Damage, DAMAGE_PER_FLOOR * depth));
-    }
+    mods.push(Modifier::flat(Stat::Depth, depth));
     let mut name = def.name.clone();
     if elite {
         life *= ELITE_LIFE;
-        mods.push(Modifier::more(Stat::Damage, ELITE_DAMAGE));
+        mods.push(Modifier::flat(Stat::Elite, 1.0));
         name = format!("Elite {name}");
     }
+    let mods = crate::derived::resolve(&mods, &crate::content::get().enemy_derived);
     Enemy {
         fighter: Fighter::new(name, life, 0.0, mods),
         id: def.id.clone(),

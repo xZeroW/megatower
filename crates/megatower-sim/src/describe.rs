@@ -6,9 +6,19 @@ use crate::tags::{Tag, Tags};
 fn tag_words(tags: Tags) -> String {
     Vec::<Tag>::from(tags)
         .iter()
+        .filter(|t| !matches!(t, Tag::FullLife | Tag::LowLife))
         .map(|t| format!("{t:?}"))
         .collect::<Vec<_>>()
         .join(" ")
+}
+
+/// " while …" for the life conditions a modifier requires.
+fn condition_words(tags: Tags) -> &'static str {
+    match (tags.has(Tag::FullLife), tags.has(Tag::LowLife)) {
+        (true, _) => " while at full life",
+        (_, true) => " while on low life",
+        _ => "",
+    }
 }
 
 fn signed(kind: ModKind, value: f64, stat: &str) -> String {
@@ -40,7 +50,7 @@ fn line(m: &Modifier) -> String {
             } else {
                 format!("{what} damage")
             };
-            return signed(m.kind, m.value, &stat);
+            signed(m.kind, m.value, &stat)
         }
         Stat::AddedMin(t) | Stat::AddedMax(t) => signed(
             m.kind,
@@ -57,6 +67,8 @@ fn line(m: &Modifier) -> String {
         Stat::CritChance => signed(m.kind, m.value, "critical chance"),
         Stat::CritMultiplier => format!("{:+.0}% critical multiplier", m.value),
         Stat::Resistance(t) => format!("{:+.0}% {} resistance", m.value, lower(format!("{t:?}"))),
+        Stat::Depth => format!("{:+.0} floors deep", m.value),
+        Stat::Elite => "Elite".to_string(),
         Stat::MaxResistance(t) => format!(
             "{:+.0}% maximum {} resistance",
             m.value,
@@ -75,11 +87,12 @@ fn line(m: &Modifier) -> String {
         Stat::RepeatChance => format!("{:.0}% chance to repeat skills", m.value),
     }
     .to_string()
-        + &if m.requires.is_empty() || matches!(m.stat, Stat::Damage) {
+        + &if tag_words(m.requires).is_empty() || matches!(m.stat, Stat::Damage) {
             String::new()
         } else {
             format!(" with {}", tag_words(m.requires))
         }
+        + condition_words(m.requires)
 }
 
 /// One line per modifier; added min/max pairs read as one "Adds X-Y" line.
@@ -118,6 +131,21 @@ pub fn mod_lines(mods: &[Modifier]) -> Vec<String> {
 mod tests {
     use super::*;
     use crate::tags::DamageType;
+
+    #[test]
+    fn life_conditions_read_as_while_clauses() {
+        let m = Modifier::increased(Stat::Damage, 10.0)
+            .requiring(Tags::of(&[Tag::Attack, Tag::FullLife]));
+        assert_eq!(
+            mod_lines(&[m]),
+            vec!["10% increased Attack damage while at full life".to_string()]
+        );
+        let m = Modifier::flat(Stat::Armour, 50.0).requiring(Tag::LowLife);
+        assert_eq!(
+            mod_lines(&[m]),
+            vec!["+50 armour while on low life".to_string()]
+        );
+    }
 
     #[test]
     fn reads_like_gear_text() {

@@ -6,8 +6,7 @@ static GLOBAL_RODEO: OnceLock<Arc<ThreadedRodeo>> = OnceLock::new();
 
 /// Access the global interner rodeo.
 ///
-/// Panics if [`AttributesPlugin`](crate::plugin::AttributesPlugin) has not
-/// been added to the app yet.
+/// Created on first use.
 pub(crate) fn global_rodeo() -> &'static Arc<ThreadedRodeo> {
     GLOBAL_RODEO.get_or_init(|| Arc::new(ThreadedRodeo::default()))
 }
@@ -26,9 +25,9 @@ pub struct AttributeId(pub(crate) Spur);
 /// `AttributeId` handles. This eliminates heap string allocations and makes
 /// comparisons O(1).
 ///
-/// At runtime, [`AttributesPlugin`](crate::plugin::AttributesPlugin) initializes
-/// a single global `Interner` accessible via [`Interner::global()`]. Unit tests
-/// can create isolated instances via [`Interner::new()`].
+/// All attributes share one global `Interner`, reached via
+/// [`Interner::global()`] and created on first use. Unit tests can create
+/// isolated instances via [`Interner::new()`].
 #[derive(Clone)]
 pub struct Interner {
     rodeo: Arc<ThreadedRodeo>,
@@ -43,22 +42,10 @@ impl Interner {
     }
 
     /// Get the global `Interner`.
-    ///
-    /// Panics if [`AttributesPlugin`](crate::plugin::AttributesPlugin) has not
-    /// been added yet.
     pub fn global() -> Self {
         Self {
             rodeo: Arc::clone(global_rodeo()),
         }
-    }
-
-    /// Publish this interner's rodeo to the global static so that
-    /// [`Attributes::value`](crate::attributes::Attributes::value) can
-    /// resolve names without an explicit `Res<Interner>`.
-    ///
-    /// Called automatically by [`AttributesPlugin`](crate::plugin::AttributesPlugin).
-    pub fn set_global(&self) {
-        let _ = GLOBAL_RODEO.set(Arc::clone(&self.rodeo));
     }
 
     /// Intern a string, returning its `AttributeId`. If the string was already

@@ -30,7 +30,7 @@ struct AliasUsage {
 
 /// Global dependency graph tracking all attribute-to-attribute edges and cross-entity aliases.
 ///
-/// This is a Bevy Resource. It tracks:
+/// It tracks:
 /// - **Dependency edges**: both local (within one entity) and cross-entity.
 /// - **Aliases**: which entity an alias on a given entity points to.
 /// - **Alias usage**: which attributes on an entity reference which aliases

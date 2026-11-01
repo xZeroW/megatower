@@ -61,7 +61,15 @@ pub enum Tag {
     Cold,
     Fire,
     Chaos,
+    /// Not on a skill: set by combat while the attacker is at full life.
+    FullLife,
+    /// Not on a skill: set by combat while the attacker is at or below
+    /// [`LOW_LIFE_PERCENT`] of maximum life.
+    LowLife,
 }
+
+/// Life, in percent of maximum, at or below which a fighter is on low life.
+pub const LOW_LIFE_PERCENT: f64 = 35.0;
 
 impl Tag {
     const fn bit(self) -> u32 {
@@ -153,7 +161,7 @@ impl From<Vec<Tag>> for Tags {
 
 impl From<Tags> for Vec<Tag> {
     fn from(tags: Tags) -> Self {
-        const ALL: [Tag; 12] = [
+        const ALL: [Tag; 14] = [
             Tag::Attack,
             Tag::Spell,
             Tag::Melee,
@@ -166,6 +174,8 @@ impl From<Tags> for Vec<Tag> {
             Tag::Cold,
             Tag::Fire,
             Tag::Chaos,
+            Tag::FullLife,
+            Tag::LowLife,
         ];
         ALL.into_iter().filter(|&t| tags.has(t)).collect()
     }

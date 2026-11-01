@@ -92,10 +92,10 @@ impl std::ops::BitAnd for TagMask {
 }
 
 // ---------------------------------------------------------------------------
-// TagResolver - ECS resource mapping tag name strings to TagMask values
+// TagResolver - maps tag name strings to TagMask values
 // ---------------------------------------------------------------------------
 
-/// ECS resource that maps tag name strings to [`TagMask`] values.
+/// Maps tag name strings to [`TagMask`] values.
 ///
 /// This replaces the need for a global static configuration. Tag names are
 /// registered at app startup (manually or via a future `define_tags!` macro)

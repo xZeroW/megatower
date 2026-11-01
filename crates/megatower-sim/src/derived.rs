@@ -16,6 +16,7 @@ use megatower_stats::modifier::Modifier as GraphMod;
 use megatower_stats::node::ReduceFn;
 use megatower_stats::tags::TagMask;
 use serde::{Deserialize, Serialize};
+use std::cell::RefCell;
 
 const ACTOR: Entity = Entity(0);
 
@@ -75,15 +76,70 @@ fn declare(graph: &mut AttributesMut, stat: Stat) {
 }
 
 /// `mods` plus the value of every rule.
+///
+/// The sim asks for the same character's modifiers many times a turn, so the
+/// last few results are remembered per thread.
 pub fn resolve(mods: &ModSet, rules: &[DerivedRule]) -> ModSet {
     if rules.is_empty() {
         return mods.clone();
     }
+    thread_local! {
+        static RECENT: RefCell<Recent> = RefCell::new(Recent::default());
+    }
+    RECENT.with(|recent| {
+        if let Some(hit) = recent.borrow().get(mods, rules) {
+            return hit;
+        }
+        let out = compute(mods, rules);
+        recent.borrow_mut().put(mods, rules, out.clone());
+        out
+    })
+}
+
+const RECENT_RESULTS: usize = 32;
+
+#[derive(Default)]
+struct Recent {
+    entries: Vec<(ModSet, usize, usize, ModSet)>,
+    next: usize,
+}
+
+impl Recent {
+    /// Rules are matched by address: they come from the one loaded content.
+    fn key(rules: &[DerivedRule]) -> (usize, usize) {
+        (rules.as_ptr() as usize, rules.len())
+    }
+
+    fn get(&self, mods: &ModSet, rules: &[DerivedRule]) -> Option<ModSet> {
+        let (ptr, len) = Self::key(rules);
+        self.entries
+            .iter()
+            .find(|(m, p, l, _)| *p == ptr && *l == len && m == mods)
+            .map(|e| e.3.clone())
+    }
+
+    fn put(&mut self, mods: &ModSet, rules: &[DerivedRule], out: ModSet) {
+        let (ptr, len) = Self::key(rules);
+        let entry = (mods.clone(), ptr, len, out);
+        if self.entries.len() < RECENT_RESULTS {
+            self.entries.push(entry);
+        } else {
+            self.entries[self.next] = entry;
+            self.next = (self.next + 1) % RECENT_RESULTS;
+        }
+    }
+}
+
+fn compute(mods: &ModSet, rules: &[DerivedRule]) -> ModSet {
     let mut graph = AttributesMut::new();
     graph.spawn(ACTOR);
 
     let mut declared = Vec::new();
-    for stat in mods.iter().map(|m| m.stat).chain(rules.iter().map(|r| r.stat)) {
+    for stat in mods
+        .iter()
+        .map(|m| m.stat)
+        .chain(rules.iter().map(|r| r.stat))
+    {
         if !declared.contains(&stat) {
             declare(&mut graph, stat);
             declared.push(stat);
@@ -100,7 +156,11 @@ pub fn resolve(mods: &ModSet, rules: &[DerivedRule]) -> ModSet {
 
     for (i, rule) in rules.iter().enumerate() {
         let id = format!("Derived{i}");
-        let scale = if rule.kind == ModKind::More { " / 100.0" } else { "" };
+        let scale = if rule.kind == ModKind::More {
+            " / 100.0"
+        } else {
+            ""
+        };
         graph
             .add_expr_modifier(ACTOR, &id, &rule.value)
             .unwrap_or_else(|e| panic!("derived rule {i} ({}): {e:?}", rule.value));
@@ -193,7 +253,9 @@ mod tests {
 
     #[test]
     fn a_rule_can_be_limited_to_tags_and_to_percent_kinds() {
-        let mods: ModSet = [Modifier::flat(Stat::Intelligence, 100.0)].into_iter().collect();
+        let mods: ModSet = [Modifier::flat(Stat::Intelligence, 100.0)]
+            .into_iter()
+            .collect();
         let mut r = rule(Stat::Damage, ModKind::Increased, "Intelligence / 5.0");
         r.requires = Tag::Spell.into();
         let out = resolve(&mods, &[r]);
@@ -204,7 +266,10 @@ mod tests {
     #[test]
     fn a_more_rule_multiplies() {
         let mods: ModSet = [Modifier::flat(Stat::Strength, 50.0)].into_iter().collect();
-        let out = resolve(&mods, &[rule(Stat::Damage, ModKind::More, "Strength / 10.0")]);
+        let out = resolve(
+            &mods,
+            &[rule(Stat::Damage, ModKind::More, "Strength / 10.0")],
+        );
         approx(out.more(Stat::Damage, Tags::NONE), 1.05);
     }
 

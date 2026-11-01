@@ -134,7 +134,7 @@ impl AttributesMut {
         }
 
         // Add the modifier to the node
-        if let Ok(mut attrs) = self.query.get_mut(entity) {
+        if let Ok(attrs) = self.query.get_mut(entity) {
             let node = attrs.ensure_node(attribute_id, ReduceFn::Sum);
             node.add_tagged_modifier(modifier, tag);
         } else {
@@ -178,7 +178,7 @@ impl AttributesMut {
             register_expr_deps(&mut self.graph, entity, attribute_id, expr.dependencies());
         }
 
-        if let Ok(mut attrs) = self.query.get_mut(entity) {
+        if let Ok(attrs) = self.query.get_mut(entity) {
             let node = attrs.ensure_node(attribute_id, reduce);
             node.add_tagged_modifier(modifier, tag);
         } else {
@@ -237,7 +237,7 @@ impl AttributesMut {
             unregister_expr_deps(&mut self.graph, entity, attribute_id, expr.dependencies());
         }
 
-        if let Ok(mut attrs) = self.query.get_mut(entity) {
+        if let Ok(attrs) = self.query.get_mut(entity) {
             if let Some(node) = attrs.nodes.get_mut(&attribute_id) {
                 node.remove_modifier(modifier);
             }
@@ -260,7 +260,7 @@ impl AttributesMut {
             unregister_expr_deps(&mut self.graph, entity, attribute_id, expr.dependencies());
         }
 
-        if let Ok(mut attrs) = self.query.get_mut(entity) {
+        if let Ok(attrs) = self.query.get_mut(entity) {
             if let Some(node) = attrs.nodes.get_mut(&attribute_id) {
                 node.remove_tagged_modifier(modifier, tag);
             }
@@ -289,7 +289,7 @@ impl AttributesMut {
     pub fn set_base(&mut self, entity: Entity, attribute: &str, value: f64) {
         let attribute_id = self.intern(attribute);
 
-        if let Ok(mut attrs) = self.query.get_mut(entity) {
+        if let Ok(attrs) = self.query.get_mut(entity) {
             let node = attrs.ensure_node(attribute_id, ReduceFn::Sum);
             node.modifiers.retain(|tm| {
                 !(tm.tag.is_empty() && matches!(tm.modifier, Modifier::Flat(_)))
@@ -321,7 +321,7 @@ impl AttributesMut {
 
         let attribute_id = self.intern(attribute);
 
-        if let Ok(mut attrs) = self.query.get_mut(entity) {
+        if let Ok(attrs) = self.query.get_mut(entity) {
             let node = attrs.ensure_node(attribute_id, ReduceFn::Sum);
             node.modifiers.retain(|tm| {
                 !(tm.tag == tag && matches!(tm.modifier, Modifier::Flat(_)))
@@ -384,7 +384,7 @@ impl AttributesMut {
         for (part_name, reduce) in parts {
             let attribute_name = format!("{}.{}", name, part_name);
             let attribute_id = self.intern(&attribute_name);
-            if let Ok(mut attrs) = self.query.get_mut(entity) {
+            if let Ok(attrs) = self.query.get_mut(entity) {
                 attrs.ensure_node(attribute_id, reduce.clone());
                 attrs.evaluate_and_cache(attribute_id);
             }
@@ -424,14 +424,14 @@ impl AttributesMut {
         for (part_name, reduce) in parts {
             let attribute_name = format!("{}.{}", name, part_name);
             let attribute_id = self.intern(&attribute_name);
-            if let Ok(mut attrs) = self.query.get_mut(entity) {
+            if let Ok(attrs) = self.query.get_mut(entity) {
                 attrs.ensure_node(attribute_id, reduce.clone());
                 attrs.evaluate_and_cache(attribute_id);
             }
         }
 
         let parent_id = self.intern(name);
-        if let Ok(mut attrs) = self.query.get_mut(entity) {
+        if let Ok(attrs) = self.query.get_mut(entity) {
             attrs.ensure_node(parent_id, ReduceFn::Sum);
         }
 
@@ -441,7 +441,7 @@ impl AttributesMut {
             name: name.to_string(),
             materialized: std::collections::HashSet::new(),
         };
-        if let Ok(mut attrs) = self.query.get_mut(entity) {
+        if let Ok(attrs) = self.query.get_mut(entity) {
             attrs.templates.insert(parent_id, template);
         }
 
@@ -511,7 +511,7 @@ impl AttributesMut {
     pub fn evaluate(&mut self, entity: Entity, attribute: &str) -> f64 {
         let attribute_id = self.intern(attribute);
 
-        if let Ok(mut attrs) = self.query.get_mut(entity) {
+        if let Ok(attrs) = self.query.get_mut(entity) {
             attrs.evaluate_and_cache(attribute_id)
         } else {
             0.0
@@ -532,7 +532,7 @@ impl AttributesMut {
     /// Re-evaluate a attribute by its pre-resolved [`AttributeId`], bypassing
     /// string lookup entirely.
     pub fn evaluate_id(&mut self, entity: Entity, attribute_id: AttributeId) -> f64 {
-        if let Ok(mut attrs) = self.query.get_mut(entity) {
+        if let Ok(attrs) = self.query.get_mut(entity) {
             attrs.evaluate_and_cache(attribute_id)
         } else {
             0.0
@@ -570,7 +570,7 @@ impl AttributesMut {
 
         let synthetic_id = self.ensure_tag_query(entity, attribute_id, query);
 
-        if let Ok(mut attrs) = self.query.get_mut(entity) {
+        if let Ok(attrs) = self.query.get_mut(entity) {
             attrs.evaluate_and_cache(synthetic_id)
         } else {
             0.0
@@ -626,7 +626,7 @@ impl AttributesMut {
         let _ = self.add_expr_modifier_tagged(entity, &name, &qualified, mask);
 
         // Mark this combo as materialized
-        if let Ok(mut attrs) = self.query.get_mut(entity) {
+        if let Ok(attrs) = self.query.get_mut(entity) {
             if let Some(tmpl) = attrs.templates.get_mut(&attribute_id) {
                 tmpl.materialized.insert(mask);
             }
@@ -658,7 +658,7 @@ impl AttributesMut {
         let synthetic_id = self.intern(&synthetic_name);
 
         // Register in Attributes
-        if let Ok(mut attrs) = self.query.get_mut(entity) {
+        if let Ok(attrs) = self.query.get_mut(entity) {
             attrs.register_tag_query(parent_attribute_id, mask, synthetic_id);
         }
 
@@ -669,7 +669,7 @@ impl AttributesMut {
 
         // Evaluate immediately so expressions that depend on this synthetic
         // node see the correct value rather than the default 0.
-        if let Ok(mut attrs) = self.query.get_mut(entity) {
+        if let Ok(attrs) = self.query.get_mut(entity) {
             attrs.evaluate_and_cache(synthetic_id);
         }
 
@@ -694,7 +694,7 @@ impl AttributesMut {
                 })
                 .unwrap_or(0.0);
 
-            if let Ok(mut attrs) = self.query.get_mut(entity) {
+            if let Ok(attrs) = self.query.get_mut(entity) {
                 attrs.context.set(cache_key, value);
             }
         }
@@ -734,7 +734,7 @@ impl AttributesMut {
                 })
                 .unwrap_or(0.0);
 
-            if let Ok(mut attrs) = self.query.get_mut(entity) {
+            if let Ok(attrs) = self.query.get_mut(entity) {
                 attrs.context.set(cache_key, value);
             }
         }
@@ -760,7 +760,7 @@ impl AttributesMut {
                 .collect()
         };
 
-        if let Ok(mut attrs) = self.query.get_mut(entity) {
+        if let Ok(attrs) = self.query.get_mut(entity) {
             for key in clear_keys {
                 attrs.context.set(key, 0.0);
             }

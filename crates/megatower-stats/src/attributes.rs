@@ -77,8 +77,7 @@ impl Attributes {
 
     /// Read a attribute by string name using the global interner.
     ///
-    /// Requires [`AttributesPlugin`](crate::plugin::AttributesPlugin) to have
-    /// been added. Panics otherwise.
+    /// Uses the global interner.
     pub fn value(&self, name: &str) -> f64 {
         if let Some(spur) = global_rodeo().get(name) {
             self.context.get(AttributeId(spur))
@@ -89,8 +88,7 @@ impl Attributes {
 
     /// Read a tagged attribute query by string name using the global interner.
     ///
-    /// Requires [`AttributesPlugin`](crate::plugin::AttributesPlugin) to have
-    /// been added. Panics otherwise.
+    /// Uses the global interner.
     pub fn value_tagged(&self, name: &str, mask: TagMask) -> f64 {
         if let Some(spur) = global_rodeo().get(name) {
             self.get_tagged(AttributeId(spur), mask)

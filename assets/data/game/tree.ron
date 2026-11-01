@@ -14,6 +14,10 @@
             (stat: Armour, kind: Flat, value: 20.0),
         ]),
         (id: "iron_hide", name: "Iron Hide", kind: Notable, x: -9.5, y: 1.0, links: ["str_armour1"], mods: [
+            (stat: Strength, kind: Flat, value: 10.0),
+            (stat: MaxResistance(Fire), kind: Flat, value: 3.0),
+            (stat: MaxResistance(Cold), kind: Flat, value: 3.0),
+            (stat: MaxResistance(Lightning), kind: Flat, value: 3.0),
             (stat: Armour, kind: Flat, value: 60.0),
             (stat: Armour, kind: Increased, value: 15.0),
         ]),
@@ -24,6 +28,7 @@
             (stat: Damage, kind: Increased, value: 10.0, requires: [Physical]),
         ]),
         (id: "brute_force", name: "Brute Force", kind: Notable, x: -6.5, y: 7.0, links: ["str_phys2"], mods: [
+            (stat: Strength, kind: Flat, value: 10.0),
             (stat: Damage, kind: Increased, value: 20.0, requires: [Physical]),
             (stat: AddedMin(Physical), kind: Flat, value: 1.0, requires: [Attack]),
             (stat: AddedMax(Physical), kind: Flat, value: 3.0, requires: [Attack]),
@@ -49,6 +54,7 @@
             (stat: AilmentChance(Ignite), kind: Flat, value: 10.0),
         ]),
         (id: "pyromancer", name: "Pyromancer", kind: Notable, x: -4.5, y: -3.0, links: ["str_fire2"], mods: [
+            (stat: Intelligence, kind: Flat, value: 10.0),
             (stat: Damage, kind: Increased, value: 20.0, requires: [Fire]),
             (stat: Penetration(Fire), kind: Flat, value: 5.0),
         ]),
@@ -71,6 +77,7 @@
             (stat: ManaRegen, kind: Flat, value: 1.0),
         ]),
         (id: "arcane_mind", name: "Arcane Mind", kind: Notable, x: -4.5, y: -8.0, links: ["int_regen"], mods: [
+            (stat: Intelligence, kind: Flat, value: 15.0),
             (stat: Mana, kind: Flat, value: 20.0),
             (stat: ManaRegen, kind: Flat, value: 2.0),
         ]),
@@ -81,6 +88,7 @@
             (stat: Damage, kind: Increased, value: 10.0, requires: [Spell]),
         ]),
         (id: "spellcraft", name: "Spellcraft", kind: Notable, x: 0.0, y: -10.0, links: ["int_spell2"], mods: [
+            (stat: Intelligence, kind: Flat, value: 10.0),
             (stat: Damage, kind: Increased, value: 20.0, requires: [Spell]),
             (stat: CritChance, kind: Increased, value: 20.0, requires: [Spell]),
         ]),
@@ -123,6 +131,7 @@
             (stat: Evasion, kind: Flat, value: 3.0),
         ]),
         (id: "shadowstep", name: "Shadowstep", kind: Notable, x: 9.5, y: 1.0, links: ["dex_ev2"], mods: [
+            (stat: Dexterity, kind: Flat, value: 10.0),
             (stat: Evasion, kind: Flat, value: 8.0),
             (stat: Life, kind: Flat, value: 10.0),
         ]),
@@ -133,6 +142,7 @@
             (stat: CritMultiplier, kind: Flat, value: 10.0),
         ]),
         (id: "deadeye", name: "Deadeye", kind: Notable, x: 6.5, y: 7.0, links: ["dex_crit2"], mods: [
+            (stat: Dexterity, kind: Flat, value: 10.0),
             (stat: CritChance, kind: Increased, value: 40.0),
             (stat: CritMultiplier, kind: Flat, value: 20.0),
         ]),
@@ -151,6 +161,7 @@
             (stat: Damage, kind: Increased, value: 20.0, requires: [Chaos]),
         ]),
         (id: "dex_attack", name: "Quick Hands", kind: Small, x: 3.5, y: 4.0, links: ["dex_start"], mods: [
+            (stat: Damage, kind: Increased, value: 10.0, requires: [Attack, FullLife]),
             (stat: Damage, kind: Increased, value: 10.0, requires: [Attack]),
         ]),
         (id: "crossroads", name: "Crossroads", kind: Small, x: 0.0, y: 2.0, links: ["str_attack", "dex_attack", "int_hub"], mods: [

@@ -144,9 +144,9 @@ pub enum CompileError {
     UnknownTag(String),
     /// Empty expression.
     EmptyExpression,
-    /// A [`TagMask`](crate::tags::TagMask) could not be decomposed into named
+    /// A [`TagMask`] could not be decomposed into named
     /// tags for expression generation (some bits have no registered name in
-    /// the [`TagResolver`](crate::tags::TagResolver)).
+    /// the [`TagResolver`]).
     UnresolvableTagMask(crate::tags::TagMask),
     /// A tag name is ambiguous - it was registered by multiple namespaces.
     /// The `Vec<String>` contains the fully-qualified alternatives.
@@ -908,8 +908,6 @@ mod tests {
     use crate::attribute_id::Interner;
 
     fn test_interner() -> Interner {
-        let i = Interner::new();
-        i.set_global();
         Interner::global()
     }
 
