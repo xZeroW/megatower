@@ -1,7 +1,7 @@
 [
     (
         id: Some(build),
-        source_path: "res://resources/item_containers/build.tres",
+        source_path: "resources/item_containers/build",
         move_to_inventory_on_alt_press: false,
         merge_on_buy: false,
         is_shop: false,
@@ -9,7 +9,7 @@
     ),
     (
         id: Some(dismantle),
-        source_path: "res://resources/item_containers/dismantle.tres",
+        source_path: "resources/item_containers/dismantle",
         move_to_inventory_on_alt_press: true,
         merge_on_buy: false,
         is_shop: false,
@@ -17,7 +17,7 @@
     ),
     (
         id: Some(enemy_upgrade),
-        source_path: "res://resources/item_containers/enemy_upgrade.tres",
+        source_path: "resources/item_containers/enemy_upgrade",
         move_to_inventory_on_alt_press: true,
         merge_on_buy: false,
         is_shop: false,
@@ -25,7 +25,7 @@
     ),
     (
         id: Some(equipment),
-        source_path: "res://resources/item_containers/equipment.tres",
+        source_path: "resources/item_containers/equipment",
         move_to_inventory_on_alt_press: false,
         merge_on_buy: false,
         is_shop: false,
@@ -33,7 +33,7 @@
     ),
     (
         id: Some(inventory),
-        source_path: "res://resources/item_containers/inventory.tres",
+        source_path: "resources/item_containers/inventory",
         move_to_inventory_on_alt_press: false,
         merge_on_buy: false,
         is_shop: false,
@@ -41,7 +41,7 @@
     ),
     (
         id: Some(library),
-        source_path: "res://resources/item_containers/library.tres",
+        source_path: "resources/item_containers/library",
         move_to_inventory_on_alt_press: false,
         merge_on_buy: false,
         is_shop: false,
@@ -49,7 +49,7 @@
     ),
     (
         id: Some(loot_stash),
-        source_path: "res://resources/item_containers/loot_stash.tres",
+        source_path: "resources/item_containers/loot_stash",
         move_to_inventory_on_alt_press: true,
         merge_on_buy: false,
         is_shop: false,
@@ -57,7 +57,7 @@
     ),
     (
         id: Some(market),
-        source_path: "res://resources/item_containers/market.tres",
+        source_path: "resources/item_containers/market",
         move_to_inventory_on_alt_press: false,
         merge_on_buy: true,
         is_shop: true,
@@ -65,7 +65,7 @@
     ),
     (
         id: Some(merchant),
-        source_path: "res://resources/item_containers/merchant.tres",
+        source_path: "resources/item_containers/merchant",
         move_to_inventory_on_alt_press: false,
         merge_on_buy: false,
         is_shop: true,
@@ -73,7 +73,7 @@
     ),
     (
         id: Some(mystic_trader),
-        source_path: "res://resources/item_containers/mystic_trader.tres",
+        source_path: "resources/item_containers/mystic_trader",
         move_to_inventory_on_alt_press: false,
         merge_on_buy: false,
         is_shop: true,
@@ -81,7 +81,7 @@
     ),
     (
         id: Some(partner),
-        source_path: "res://resources/item_containers/partner.tres",
+        source_path: "resources/item_containers/partner",
         move_to_inventory_on_alt_press: false,
         merge_on_buy: false,
         is_shop: false,
@@ -89,7 +89,7 @@
     ),
     (
         id: Some(sell),
-        source_path: "res://resources/item_containers/sell.tres",
+        source_path: "resources/item_containers/sell",
         move_to_inventory_on_alt_press: false,
         merge_on_buy: false,
         is_shop: false,
@@ -97,7 +97,7 @@
     ),
     (
         id: Some(split),
-        source_path: "res://resources/item_containers/split.tres",
+        source_path: "resources/item_containers/split",
         move_to_inventory_on_alt_press: false,
         merge_on_buy: false,
         is_shop: false,
@@ -105,7 +105,7 @@
     ),
     (
         id: Some(tinker),
-        source_path: "res://resources/item_containers/tinker.tres",
+        source_path: "resources/item_containers/tinker",
         move_to_inventory_on_alt_press: false,
         merge_on_buy: false,
         is_shop: false,

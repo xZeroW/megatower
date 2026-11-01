@@ -40,7 +40,7 @@ impl RecalculationContext {
             _ => &self.specializations,
         };
         ids.iter()
-            .any(|id| id == &format!("res://resources/{group}/{name}.tres"))
+            .any(|id| id == &format!("resources/{group}/{name}"))
     }
 }
 

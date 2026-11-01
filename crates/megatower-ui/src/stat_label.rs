@@ -1,4 +1,4 @@
-//! `stat_label_container.gd` state independent of Godot controls.
+//! `stat_label_container.gd` state independent of the original game controls.
 
 #[derive(Clone, Debug, PartialEq, Eq, Default)]
 pub struct StatLabelView {

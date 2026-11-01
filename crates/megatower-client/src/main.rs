@@ -15,7 +15,7 @@ fn main() {
         .add_plugins((
             DefaultPlugins
                 .set(AssetPlugin {
-                    // Resolve runtime media from the Rust workspace, not recovered Godot source.
+                    // Resolve runtime media from the Rust workspace, not the original game source.
                     file_path: "../..".into(),
                     ..default()
                 })

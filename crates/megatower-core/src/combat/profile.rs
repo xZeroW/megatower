@@ -156,7 +156,7 @@ impl BattleProfile {
         self.has_status(StatusEffectId::ArthursMark)
     }
 
-    /// Prunes invalid entries and returns REVERSE array order, as in Godot.
+    /// Prunes invalid entries and returns REVERSE array order, as in the original game.
     pub fn active_statuses(
         &mut self,
         kind: Option<StatusKind>,

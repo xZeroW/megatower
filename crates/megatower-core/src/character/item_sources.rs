@@ -9,7 +9,7 @@ use crate::{
 };
 use bevy::prelude::{Entity, World};
 
-pub const GENERIC_SET: &str = "res://resources/item_sets/generic.tres";
+pub const GENERIC_SET: &str = "resources/item_sets/generic";
 
 pub struct CharacterItems<'a> {
     pub world: &'a World,

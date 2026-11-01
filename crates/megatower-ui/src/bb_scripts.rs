@@ -725,7 +725,7 @@ pub fn attack_stat_container(
 }
 
 /// `Color.to_html(true)`: RRGGBBAA, each channel rounded half away from zero
-/// (verified against Godot 4.4.1).
+/// (verified against the original game).
 pub fn color_html(c: [f32; 4]) -> String {
     let h = |v: f32| ((v * 255.0).round().clamp(0.0, 255.0)) as u8;
     format!(
@@ -842,7 +842,7 @@ mod tests {
     }
 
     #[test]
-    fn color_html_matches_godot_probe() {
+    fn color_html_matches_reference_probe() {
         use super::*;
         assert_eq!(color_html([0.5, 0.1, 0.998, 0.3]), "801afe4d");
         assert_eq!(color_html([0.002, 0.9999, 0.502, 1.0]), "01ff80ff");

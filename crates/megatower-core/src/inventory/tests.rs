@@ -10,8 +10,8 @@ use bevy::prelude::*;
 use serde_json::{Value, json};
 use std::sync::Arc;
 
-const SET_A: &str = "res://resources/item_sets/set_a.tres";
-const SET_B: &str = "res://resources/item_sets/set_b.tres";
+const SET_A: &str = "resources/item_sets/set_a";
+const SET_B: &str = "resources/item_sets/set_b";
 
 fn definition(index: usize) -> Arc<ItemDefinition> {
     let mut def = ItemDefinition {
@@ -104,8 +104,8 @@ fn labels(world: &World, pool: &[Entity], items: &[Option<Entity>]) -> Vec<i32> 
 fn names(sets: Vec<String>) -> Vec<String> {
     sets.into_iter()
         .map(|id| {
-            id.trim_start_matches("res://resources/item_sets/")
-                .trim_end_matches(".tres")
+            id.trim_start_matches("resources/item_sets/")
+                .trim_end_matches("")
                 .to_string()
         })
         .collect()

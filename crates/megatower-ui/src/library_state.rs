@@ -2,7 +2,7 @@
 //! `toggle_option`, `esc_menu_screen`, `loading_info` and friends: data
 //! rules of the library/profile/options screens.
 
-use megatower_core::godot_sort::source_sort;
+use megatower_core::custom_sort::source_sort;
 use std::collections::HashSet;
 
 /// `LibraryState._ready`: an item is shown only when it is available and has
@@ -125,7 +125,7 @@ pub fn hovered_library_slot(item_hovering: &[bool], build_hovered: &[bool]) -> H
 }
 
 /// `ProfileState.update_adventurers`: names sorted with the strict `<`
-/// comparator through Godot's unstable sort; returns the order as indexes.
+/// comparator through the original game's unstable sort; returns the order as indexes.
 pub fn sorted_adventurer_order(names: &[String]) -> Vec<usize> {
     let mut idx: Vec<usize> = (0..names.len()).collect();
     source_sort(&mut idx, |a, b| names[*a] < names[*b]);
@@ -144,7 +144,7 @@ pub fn pressed_buttons(pressed: &[bool]) -> Vec<usize> {
         .collect()
 }
 
-/// Godot `db_to_linear`.
+/// The original game `db_to_linear`.
 pub fn db_to_linear(db: f32) -> f32 {
     10f32.powf(db / 20.0)
 }

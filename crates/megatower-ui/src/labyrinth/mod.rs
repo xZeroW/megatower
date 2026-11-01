@@ -7,6 +7,8 @@ mod view;
 
 use crate::{FrameInput, model::*, screens};
 use bevy::prelude::*;
+use megatower_core::run::events::{EnemyView, Frame, Fx, Popup, StatusView, Timed, VitalsView};
+use megatower_runtime::audio::{MusicCue, music};
 use megatower_sim::{
     character::{EquipSlot, GemSpot, Loot},
     combat::{Actor, CombatEvent, HeroAction},
@@ -14,8 +16,6 @@ use megatower_sim::{
     labyrinth::{RoomKind, Turn},
     run::{Mode, Run},
 };
-use megatower_core::run::events::{EnemyView, Frame, Fx, Popup, StatusView, Timed, VitalsView};
-use megatower_runtime::audio::{MusicCue, music};
 
 pub struct LabyrinthPlugin;
 impl Plugin for LabyrinthPlugin {
@@ -107,8 +107,8 @@ fn actor_vitals(actor: Actor, frame: &mut Frame) -> Option<&mut VitalsView> {
 
 /// Icon aliases only. All ailment application/duration remains in megatower-sim.
 fn statuses(f: &megatower_sim::combat::Fighter) -> Vec<StatusView> {
-    use megatower_sim::ailment::Ailment as A;
     use megatower_core::status_effects::StatusEffectId as S;
+    use megatower_sim::ailment::Ailment as A;
     [
         (A::Ignite, S::CinderEssence),
         (A::Bleed, S::Bleed),
@@ -585,7 +585,7 @@ impl Labyrinth {
         if !ui.esc_open {
             return None;
         }
-        let layout = megatower_assets::godot_layout::esc_menu_layout();
+        let layout = megatower_assets::ui_layout::esc_menu_layout();
         if click && let Some([x, y]) = ui.cursor {
             match screens::esc_hit(&layout, x, y) {
                 Some(screens::EscButton::Resume) => ui.esc_open = false,
@@ -1170,7 +1170,7 @@ mod tests {
         }
     }
     fn rects() -> Rects {
-        Rects::from_layout(&megatower_assets::godot_layout::recovered_layout())
+        Rects::from_layout(&megatower_assets::ui_layout::recovered_layout())
     }
 
     #[test]

@@ -415,7 +415,7 @@ fn run_script_step(game: &mut Game, step: &str) {
                     .filter(|d| {
                         d.set_resources
                             .iter()
-                            .any(|s| s.ends_with(&format!("/{set}.tres")))
+                            .any(|s| s.ends_with(&format!("/{set}")))
                     })
                     .cloned()
                     .collect();

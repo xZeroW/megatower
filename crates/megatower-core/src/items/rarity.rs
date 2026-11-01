@@ -85,8 +85,8 @@ impl ItemRarity {
 
     pub fn hue_texture(index: i32) -> Option<&'static str> {
         match Self::from_index(index) {
-            Some(Self::Cosmic) => Some("resources/hues/galaxy_hue.tres"),
-            Some(Self::Divine) => Some("resources/hues/divine_hue.tres"),
+            Some(Self::Cosmic) => Some("resources/hues/galaxy_hue"),
+            Some(Self::Divine) => Some("resources/hues/divine_hue"),
             _ => None,
         }
     }

@@ -1,5 +1,5 @@
-//! The static part of `gameplay_canvas_layer.tscn` as resolved by Godot
-//! (`assets/data/layouts/godot-layout.ron`), the room render target inside its frame,
+//! The static part of `gameplay_canvas_layer` as resolved by the original game
+//! (`assets/data/layouts/ui-layout.ron`), the room render target inside its frame,
 //! and the 640x360 logical viewport scaling.
 
 use crate::render::{
@@ -8,8 +8,8 @@ use crate::render::{
 };
 use bevy::prelude::*;
 use bevy_auto_plugin::prelude::*;
-use megatower_assets::godot_layout::{Visual, recovered_layout};
 use megatower_assets::room_screen::{ROOM_FRAME_RECT, ROOM_VIEWPORT_OFFSET, ROOM_VIEWPORT_SIZE};
+use megatower_assets::ui_layout::{Visual, recovered_layout};
 
 const FONT: &str = "assets/fonts/monogram-extended.ttf";
 
@@ -84,7 +84,7 @@ fn is_dynamic(visual: &Visual) -> bool {
 }
 
 fn image_node(assets: &AssetServer, visual: &Visual, texture: &str) -> ImageNode {
-    let mut image = ImageNode::new(assets.load(texture.trim_start_matches("res://").to_owned()));
+    let mut image = ImageNode::new(assets.load(texture.to_owned()));
     image.color = palette_color(visual.palette);
     // The scene's `ShaderMaterial` modulates this icon (`type = CUSTOM`).
     if visual.path.ends_with("MarketButton/NinePatchRect") {
@@ -136,7 +136,7 @@ fn layout_visual(
     let node = absolute(visual.rect);
     let name = visual.path.clone();
     if let Some(texture) = &visual.texture {
-        let path = texture.trim_start_matches("res://").to_owned();
+        let path = texture.to_owned();
         let look = image_node(assets, visual, texture);
         let (color, rect, image_mode) = (look.color, look.rect, look.image_mode.clone());
         if let Some(capture) = capture.as_mut() {

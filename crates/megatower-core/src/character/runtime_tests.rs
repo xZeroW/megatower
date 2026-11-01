@@ -103,15 +103,15 @@ fn character_mutations_cache_rebuilds_and_observer_views_match_source() {
         let inventory = world.spawn(ItemContainer::default()).id();
         let equipment = world.spawn(ItemContainer::default()).id();
         let mut profile = BattleProfile::default();
-        let berserker = "res://resources/item_sets/berserker.tres".to_owned();
+        let berserker = "resources/item_sets/berserker".to_owned();
         profile.active_item_sets = match case["mode"].as_f64().unwrap() as u64 {
             0 => vec![],
             1 => vec![berserker.clone()],
             2 => vec![berserker.clone(), berserker.clone()],
             3 => vec![
                 berserker,
-                "res://resources/item_sets/generic.tres".into(),
-                "res://resources/item_sets/swiftness.tres".into(),
+                "resources/item_sets/generic".into(),
+                "resources/item_sets/swiftness".into(),
             ],
             _ => unreachable!(),
         };
@@ -121,7 +121,7 @@ fn character_mutations_cache_rebuilds_and_observer_views_match_source() {
                 .as_mut()
                 .unwrap()
                 .abilities
-                .push(Some("res://resources/abilities/triple_attack.tres".into()));
+                .push(Some("resources/abilities/triple_attack".into()));
         }
         let profile = world.spawn(profile).id();
         let mut state = CharacterStats::new(inventory, Some(equipment), profile, &rules);
@@ -136,7 +136,7 @@ fn character_mutations_cache_rebuilds_and_observer_views_match_source() {
             Stat::new(StatId::TotalAttacks, 1.0),
         ]);
         if variant == 1 {
-            state.base_passive = Some("res://resources/passives/manaflow.tres".into());
+            state.base_passive = Some("resources/passives/manaflow".into());
             state.context.doubled_stat = Some(StatId::MaxHealth);
         }
         let entity = world.spawn(state).id();
@@ -284,7 +284,7 @@ fn real_equipment_and_berserker_wildcard_counts_feed_the_character_owner() {
     let mut world = World::new();
     let item = world
         .spawn(Item::new(std::sync::Arc::clone(
-            catalog.get("res://resources/items/chainmail.tres").unwrap(),
+            catalog.get("resources/items/chainmail").unwrap(),
         )))
         .id();
     let inventory = world.spawn(ItemContainer::default()).id();
@@ -294,7 +294,7 @@ fn real_equipment_and_berserker_wildcard_counts_feed_the_character_owner() {
     add_item_at(&mut world, equipment, 0, Some(item)).unwrap();
     let profile = world
         .spawn(BattleProfile {
-            active_item_sets: vec!["res://resources/item_sets/berserker.tres".into()],
+            active_item_sets: vec!["resources/item_sets/berserker".into()],
             ..Default::default()
         })
         .id();

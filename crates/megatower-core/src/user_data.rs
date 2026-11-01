@@ -1,6 +1,6 @@
 //! Pure rules of the `UserData` singleton: memory slot table management,
 //! slot-file naming, backup pruning and encounter filtering. Disk and
-//! signal wiring are the caller's job; the Godot encrypted container is not
+//! signal wiring are the caller's job; the original encrypted container is not
 //! reproduced (see `save_system`).
 
 pub const MAX_BACKUPS: usize = 10;
@@ -15,7 +15,7 @@ pub struct SlotKey {
 
 #[derive(Clone, Debug)]
 pub struct MemorySlots<T> {
-    /// `None` is a freed/deleted slot (Godot null).
+    /// `None` is a freed/deleted slot (the original game null).
     pub slots: Vec<Option<(SlotKey, T)>>,
     pub active_idx: i32,
 }

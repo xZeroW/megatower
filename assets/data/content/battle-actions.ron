@@ -13,7 +13,7 @@
     (
         id: backstab,
         name: "Backstab",
-        icon: Some("res://assets/textures/icons/backstab_icon.png"),
+        icon: Some("assets/textures/icons/backstab_icon.png"),
         color: (0.282353, 0.278431, 0.278431, 1.0),
         use_limit: 0,
         popup_color: (0.282353, 0.278431, 0.278431, 1.0),
@@ -46,7 +46,7 @@
     (
         id: counter_attack,
         name: "Counter Attack",
-        icon: Some("res://assets/textures/icons/counter_attack_icon.png"),
+        icon: Some("assets/textures/icons/counter_attack_icon.png"),
         color: (0.972549, 0.635294, 0.105882, 1.0),
         use_limit: 0,
         popup_color: (0.972549, 0.635294, 0.105882, 1.0),
@@ -57,7 +57,7 @@
     (
         id: critical_strike,
         name: "Critical Strike",
-        icon: Some("res://assets/textures/icons/stats/critical_strike_icon.png"),
+        icon: Some("assets/textures/icons/stats/critical_strike_icon.png"),
         color: (1.0, 0.396078, 0.262745, 1.0),
         use_limit: 0,
         popup_color: (0.0, 0.0, 0.0, 1.0),
@@ -68,7 +68,7 @@
     (
         id: dodge,
         name: "Dodge",
-        icon: Some("res://assets/textures/icons/stats/agility_icon.png"),
+        icon: Some("assets/textures/icons/stats/agility_icon.png"),
         color: (0.780392, 0.690196, 0.545098, 1.0),
         use_limit: 0,
         popup_color: (0.721569, 0.52549, 0.0431373, 1.0),
@@ -145,7 +145,7 @@
     (
         id: omni_crit,
         name: "Omni Crit",
-        icon: Some("res://assets/textures/icons/stats/critical_strike_icon.png"),
+        icon: Some("assets/textures/icons/stats/critical_strike_icon.png"),
         color: (0.737255, 0.290196, 0.607843, 1.0),
         use_limit: 0,
         popup_color: (0.0, 0.0, 0.0, 1.0),

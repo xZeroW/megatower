@@ -37,7 +37,7 @@ pub fn png_bounds(alpha: &[u8], width: usize, height: usize) -> Bounds {
     b
 }
 
-/// Godot `roundi`: halves away from zero.
+/// The original game `roundi`: halves away from zero.
 fn roundi(v: f32) -> i32 {
     v.round() as i32
 }

@@ -8,7 +8,8 @@ fn fresh(adventurer: &str, seed: u64) -> Game {
 #[test]
 fn new_run_matches_initialize_memory() {
     for name in [
-        "Kestrel", "Umbrath", "Rethan", "Elaris", "Branric", "Gorix", "Thalara", "Mirelle", "Pellim", "Orvian", "Nivor",
+        "Kestrel", "Umbrath", "Rethan", "Elaris", "Branric", "Gorix", "Thalara", "Mirelle",
+        "Pellim", "Orvian", "Nivor",
     ] {
         let game = fresh(name, 7);
         let local = game.local();
@@ -123,7 +124,8 @@ fn bot_step(game: &mut Game) {
 fn bot_plays_every_adventurer_without_panicking() {
     let mut deepest = 0;
     for name in [
-        "Kestrel", "Umbrath", "Rethan", "Elaris", "Branric", "Gorix", "Thalara", "Mirelle", "Pellim", "Orvian", "Nivor",
+        "Kestrel", "Umbrath", "Rethan", "Elaris", "Branric", "Gorix", "Thalara", "Mirelle",
+        "Pellim", "Orvian", "Nivor",
     ] {
         for seed in [1_u64, 2, 3] {
             let mut game = fresh(name, seed);
@@ -187,7 +189,8 @@ fn fuzz_many_seeds_for_panics() {
     let mut deaths = 0;
     for seed in 0..40_u64 {
         for name in [
-            "Kestrel", "Umbrath", "Rethan", "Elaris", "Branric", "Gorix", "Thalara", "Mirelle", "Pellim", "Orvian", "Nivor",
+            "Kestrel", "Umbrath", "Rethan", "Elaris", "Branric", "Gorix", "Thalara", "Mirelle",
+            "Pellim", "Orvian", "Nivor",
         ] {
             let mut game = fresh(name, seed * 7919 + 13);
             for step in 0..3000 {

@@ -106,7 +106,7 @@ struct UpgradeCase {
 }
 
 #[test]
-fn all_upgrade_rules_match_godot_executed_source() {
+fn all_upgrade_rules_match_reference_source() {
     let cases: Vec<UpgradeCase> = serde_json::from_str(include_str!(
         "../../../../artifacts/stat-upgrade-golden.json"
     ))

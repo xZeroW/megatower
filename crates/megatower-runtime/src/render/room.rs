@@ -1,5 +1,5 @@
 //! The off-screen 3D room (`RoomScreen`'s SubViewport): the room's `.glb`
-//! (baked by Godot, `tools/export_room_gltf.py`) drawn with the `room_toon.wesl`
+//! (baked by the original game, `tools/export_room_gltf.py`) drawn with the `room_toon.wesl`
 //! port of `pixel_toon.gdshader`/`flat_light.gdshader`, swapped when the run
 //! enters a room whose `RoomResource.scene` differs. Lights come from
 //! `assets/data/rooms/room-scenes.ron`, per-mesh materials from
@@ -130,7 +130,7 @@ fn room_material(mesh: &MeshMaterial, lights: &[RoomLight], wall: Handle<Image>)
     }
 }
 
-/// Godot's RoomScreen uses a nested SubViewport: render the room to a texture
+/// The original game's RoomScreen uses a nested SubViewport: render the room to a texture
 /// first, then show that texture beneath the 2D controls.
 #[auto_add_system(plugin = RoomRenderPlugin, schedule = Startup)]
 pub fn setup_room(
@@ -215,7 +215,7 @@ fn spawn_room_scene(
         .spawn((
             WorldAssetRoot(handle.clone()),
             RoomPart(scene_name),
-            Name::new(format!("{scene_name}.tscn")),
+            Name::new(format!("{scene_name}")),
         ))
         .observe(texture_room);
     handle
@@ -236,7 +236,7 @@ fn repeating_texture(assets: &AssetServer, path: &str) -> Handle<Image> {
         .load(path.to_owned())
 }
 
-/// Gives each mesh of a freshly spawned room its Godot material: triplanar
+/// Gives each mesh of a freshly spawned room its the original game material: triplanar
 /// `pixel_toon` walls or UV-mapped `flat_light` props, lit by the scene's lights.
 fn texture_room(
     ready: On<WorldInstanceReady>,

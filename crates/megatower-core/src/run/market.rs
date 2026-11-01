@@ -7,7 +7,7 @@ use super::{
     game::{Game, item_id},
     state::Player,
 };
-use crate::rng::GodotRng;
+use crate::rng::GameRng;
 use crate::{
     character::runtime::CharacterStats,
     game_mode::{GameMode, Room},
@@ -433,7 +433,7 @@ impl Game {
             .unwrap()
             .items
             .len();
-        let mut rand = GodotRng::seeded(u64::from(self.global.0.randi()));
+        let mut rand = GameRng::seeded(u64::from(self.global.0.randi()));
         while items.len() < market_size {
             if extra.is_empty() {
                 break;

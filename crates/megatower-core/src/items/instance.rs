@@ -183,7 +183,7 @@ impl Item {
             currency: Some(StatId::Gold),
             amount,
         };
-        if def.id == "res://resources/items/insightus.tres" {
+        if def.id == "resources/items/insightus" {
             return diamond(3.0);
         }
         if def.is_stat_adapter() {
@@ -212,10 +212,10 @@ impl Item {
 
     pub fn set_resources(&self) -> Vec<String> {
         if self.is_reforge {
-            return vec!["res://resources/item_sets/reforge.tres".into()];
+            return vec!["resources/item_sets/reforge".into()];
         }
         if self.is_phantom {
-            return vec!["res://resources/item_sets/phantom.tres".into()];
+            return vec!["resources/item_sets/phantom".into()];
         }
         self.resource
             .as_ref()

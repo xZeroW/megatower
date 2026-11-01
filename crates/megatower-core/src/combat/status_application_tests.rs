@@ -1,5 +1,5 @@
 use super::{profile::BattleProfile, status_application::*};
-use crate::rng::GodotRng;
+use crate::rng::GameRng;
 use crate::{
     character::{content::CharacterContent, runtime::*},
     inventory::ItemContainer,
@@ -11,7 +11,7 @@ use serde::Deserialize;
 use serde_json::{Value, json};
 
 fn set(name: &str) -> String {
-    format!("res://resources/item_sets/{name}.tres")
+    format!("resources/item_sets/{name}")
 }
 fn rules(synthetic: bool) -> CharacterStatRules {
     let stats = StatCatalog::recovered();
@@ -29,7 +29,7 @@ fn rules(synthetic: bool) -> CharacterStatRules {
             let definition = content
                 .specializations
                 .iter_mut()
-                .find(|def| def.id == format!("res://resources/specializations/{name}.tres"))
+                .find(|def| def.id == format!("resources/specializations/{name}"))
                 .unwrap();
             definition.original_item_set = Some(set("unchained"));
             definition.synergy_item_set = Some(set("unchained"));
@@ -324,7 +324,7 @@ fn processor_status_order_snapshots_and_rng_match_recovered_methods() {
             mutate_profile(&mut world, *actor, |p| {
                 if let Some(Some(turn)) = p.turns.last_mut() {
                     turn.abilities
-                        .push(Some("res://resources/abilities/triple_attack.tres".into()));
+                        .push(Some("resources/abilities/triple_attack".into()));
                 }
             });
         }
@@ -334,7 +334,7 @@ fn processor_status_order_snapshots_and_rng_match_recovered_methods() {
             enemies_in_combat: vec![actors[1], actors[2]],
         };
         let mut events = Vec::new();
-        let mut rng = GodotRng::seeded(case.seed);
+        let mut rng = GameRng::seeded(case.seed);
         let result=apply_status_effect(&mut world,StatusApplication {target,applier,resource:case.resource,amount:case.amount},&context,&rules,&mut rng,&mut |world,rng,action|{
             events.push(json!({"action":action_value(&action,&actors),"snapshot":snapshot(world,&actors),"state":rng.state() as i64}));
             if case.mode==20 && matches!(action,StatusAction::Received {..}) {
@@ -384,7 +384,7 @@ fn sink_errors_stop_processing_without_undoing_completed_mutations() {
         },
         &context,
         &rules,
-        &mut GodotRng::seeded(42),
+        &mut GameRng::seeded(42),
         &mut |_, _, action| {
             calls += 1;
             assert!(matches!(action, StatusAction::Received { .. }));

@@ -25,7 +25,7 @@ pub struct CharacterState {
 }
 
 /// `Player` fields. Item handles are entities; resource lists hold item
-/// resource ids (the recovered `res://` path).
+/// resource ids (the recovered `` path).
 #[derive(Component, Clone, Debug)]
 pub struct Player {
     pub adventurer: Arc<Adventurer>,

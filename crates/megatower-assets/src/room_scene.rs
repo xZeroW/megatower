@@ -1,5 +1,5 @@
-//! Native Bevy geometry for the recovered `scenes/rooms/room_normal.tscn`.
-//! The regression test reads the Godot scene and checks every CSG box's
+//! Native Bevy geometry for the recovered `scenes/rooms/room_normal`.
+//! The regression test reads the original scene and checks every CSG box's
 //! position and dimensions against this translation.
 
 #[derive(Clone, Copy, Debug)]
@@ -164,12 +164,12 @@ pub const ROOM_NORMAL_BOXES: [RoomBox; 18] = [
     },
 ];
 
-/// One CSG part flattened to world space by `tools/export_room_scenes.py`.
+/// One CSG part flattened to world space from the original game scenes.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct RoomPart {
     pub name: String,
     pub shape: String,
-    /// Godot `Transform3D` order: three basis columns, then the origin.
+    /// The original game `Transform3D` order: three basis columns, then the origin.
     pub matrix: [f32; 12],
     /// Box size, or `[radius, height, 0]` for a cylinder.
     pub size: [f32; 3],
@@ -193,7 +193,7 @@ pub struct RoomScene {
     pub lights: Vec<RoomLight>,
 }
 
-/// `RoomResource.scene` for each room type (`resources/rooms/*.tres`).
+/// `RoomResource.scene` for each room type (`resources/rooms/*`).
 pub fn scene_for(room: megatower_core::game_mode::Room) -> &'static str {
     use megatower_core::game_mode::Room;
     match room {

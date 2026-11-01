@@ -1,5 +1,5 @@
 //! Persistent `Profile`: encountered items and enemies and the best floor per
-//! adventurer and version. Stored as JSON in the user directory; the Godot
+//! adventurer and version. Stored as JSON in the user directory; the original game
 //! encrypted `var_to_bytes` container is not reproduced.
 
 use crate::records::GAME_VERSION;
@@ -248,7 +248,8 @@ mod tests {
     fn profile_backup_retains_previous_valid_version() {
         // Exercise the same serialization and backup replacement used by try_save,
         // without changing the process-wide MEGALOOT_USER_DIR.
-        let dir = std::env::temp_dir().join(format!("megatower-profile-backup-{}", std::process::id()));
+        let dir =
+            std::env::temp_dir().join(format!("megatower-profile-backup-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
         let main = dir.join("profile.json");
         let backup = main.with_extension("json.bak");
@@ -258,8 +259,14 @@ mod tests {
         let previous = std::fs::read(&main).unwrap();
         crate::save_system::write_atomic(&backup, &previous).unwrap();
         crate::save_system::write_atomic(&main, &serde_json::to_vec(&new).unwrap()).unwrap();
-        assert_eq!(serde_json::from_slice::<ProfileStore>(&std::fs::read(backup).unwrap()).unwrap(), old);
-        assert_eq!(serde_json::from_slice::<ProfileStore>(&std::fs::read(main).unwrap()).unwrap(), new);
+        assert_eq!(
+            serde_json::from_slice::<ProfileStore>(&std::fs::read(backup).unwrap()).unwrap(),
+            old
+        );
+        assert_eq!(
+            serde_json::from_slice::<ProfileStore>(&std::fs::read(main).unwrap()).unwrap(),
+            new
+        );
         std::fs::remove_dir_all(dir).unwrap();
     }
 

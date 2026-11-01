@@ -1,8 +1,8 @@
 //! Source-local rules from `gameplay_canvas_layer.gd` that do not require a
-//! Godot scene tree. Bevy presentation binds these results to its own nodes.
+//! The original game scene tree. Bevy presentation binds these results to its own nodes.
 
 /// `_on_stats_scroll_container_search_changed` visibility result, in source
-/// display order. Godot's `to_lower`/`contains` becomes Unicode lowercase
+/// display order. the original game's `to_lower`/`contains` becomes Unicode lowercase
 /// matching; an empty query leaves every label visible.
 pub fn stat_search_visibility<'a>(
     names: impl IntoIterator<Item = &'a str>,

@@ -11,13 +11,13 @@ struct Case {
 }
 
 #[test]
-fn all_operations_and_consumed_states_match_godot_4_4_1() {
+fn all_operations_and_consumed_states_match_reference() {
     let cases: Vec<Case> =
         serde_json::from_str(include_str!("../../../../artifacts/rng-golden.json")).unwrap();
     assert_eq!(cases.len(), 60);
     for case in cases {
         let seed = case.seed.parse::<i64>().unwrap() as u64;
-        let mut rng = GodotRng::seeded(seed);
+        let mut rng = GameRng::seeded(seed);
         let mut global = GlobalRng::seeded(seed);
         if !case.states.is_empty() {
             assert_eq!(rng.state(), case.states[0].parse::<i64>().unwrap() as u64);

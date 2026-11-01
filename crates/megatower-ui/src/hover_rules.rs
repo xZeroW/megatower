@@ -5,7 +5,7 @@
 /// Rect as (x, y, w, h).
 pub type Rect = [f32; 4];
 
-/// Godot `Rect2.has_point`: half-open on the far edges.
+/// The original game `Rect2.has_point`: half-open on the far edges.
 pub fn rect_has_point(r: Rect, p: [f32; 2]) -> bool {
     p[0] >= r[0] && p[1] >= r[1] && p[0] < r[0] + r[2] && p[1] < r[1] + r[3]
 }

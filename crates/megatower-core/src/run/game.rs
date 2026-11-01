@@ -239,7 +239,7 @@ impl Game {
 
     pub fn has_specialization(&self, e: Entity, name: &str) -> bool {
         self.specializations(e)
-            .contains(&format!("res://resources/specializations/{name}.tres"))
+            .contains(&format!("resources/specializations/{name}"))
     }
 
     /// `get_stat_amount(stat)`: `[final, base, modifier]`.
@@ -295,14 +295,14 @@ impl Game {
 }
 
 pub fn set_id(name: &str) -> String {
-    format!("res://resources/item_sets/{name}.tres")
+    format!("resources/item_sets/{name}")
 }
 pub fn passive_id(name: &str) -> String {
-    format!("res://resources/passives/{name}.tres")
+    format!("resources/passives/{name}")
 }
 pub fn ability_id(name: &str) -> String {
-    format!("res://resources/abilities/{name}.tres")
+    format!("resources/abilities/{name}")
 }
 pub fn item_id(name: &str) -> String {
-    format!("res://resources/items/{name}.tres")
+    format!("resources/items/{name}")
 }

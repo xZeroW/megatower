@@ -1,4 +1,4 @@
-//! Keyboard bindings and intent ordering translated from `project.godot`
+//! Keyboard bindings and intent ordering translated from the original input map
 //! `[input]` and `GameplayState.process_inputs()`.
 //!
 //! Keys map to [`GameAction`]s through a `leafwing-input-manager` input map
@@ -34,7 +34,7 @@ pub struct InputContext {
     pub dragged_slot: Option<usize>,
 }
 
-/// Default keyboard binding per rebindable action (`project.godot` `[input]`).
+/// Default keyboard binding per rebindable action (original input map).
 pub const DEFAULT_KEYS: [(&str, KeyCode); 14] = [
     ("quick_buy_item_1", KeyCode::Digit1),
     ("quick_buy_item_2", KeyCode::Digit2),
@@ -104,7 +104,7 @@ pub enum GameAction {
 }
 
 impl GameAction {
-    /// Each action with its `project.godot` action name.
+    /// Each action with its input action name.
     pub const ALL: [(Self, &'static str); 14] = [
         (Self::QuickBuy1, "quick_buy_item_1"),
         (Self::QuickBuy2, "quick_buy_item_2"),

@@ -1,7 +1,7 @@
 //! Rules of the VFX/object scripts: camera shake, menu floating textures,
 //! audio-player fades, impact effects, consumption path and shard
 //! generation. Noise sampling and Delaunay triangulation are supplied by
-//! the caller (Godot's FastNoiseLite and Geometry2D are not re-implemented).
+//! the caller (the original game's FastNoiseLite and Geometry2D are not re-implemented).
 
 pub type V2 = [f32; 2];
 

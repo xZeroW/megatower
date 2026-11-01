@@ -113,7 +113,7 @@ fn healing_and_vital_mutations_match_source_including_stale_cache_and_signal_vie
                 .get_mut::<BattleProfile>(profile)
                 .unwrap()
                 .active_item_sets
-                .push("res://resources/item_sets/flesh.tres".into());
+                .push("resources/item_sets/flesh".into());
         }
         if flags & 2 != 0 {
             world
@@ -126,7 +126,7 @@ fn healing_and_vital_mutations_match_source_including_stale_cache_and_signal_vie
             world
                 .get_mut::<CharacterStats>(entity)
                 .unwrap()
-                .base_passive = Some("res://resources/passives/empty_bastion.tres".into());
+                .base_passive = Some("resources/passives/empty_bastion".into());
         }
         for (step_index, step) in case["steps"].as_array().unwrap().iter().enumerate() {
             let mut result = Value::Null;

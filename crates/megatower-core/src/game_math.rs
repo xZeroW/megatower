@@ -1,6 +1,6 @@
 //! Numeric rules translated from `classes/utils/math.gd`.
 //! Randomness is supplied by the caller; this does not substitute a new RNG
-//! algorithm for Godot's seeded streams.
+//! algorithm for the original game's seeded streams.
 
 use bevy::math::{DVec2, Rect};
 

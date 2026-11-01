@@ -80,22 +80,22 @@ below, and the env-driven QA tooling (`src/dev`). The libraries sit under
 | `megatower-stats` | headless attribute graph (a port of `bevy_gauge`'s core): stats as expressions over other stats, tagged modifiers; used by the sim's `derived` rules |
 | `megatower-ui` | original presentation and the `labyrinth` adapter from `megatower-sim` into its HUD/timeline/input |
 | `megatower-runtime` | Bevy capability plugins: `audio` (kira buses driven by `MusicCue`/`SfxQueue`/`AudioVolumes`), `input` (`GameAction`, bindings), `render` (off-screen room, HUD layout; `RoomSceneRequest` picks the scene) |
-| `megatower-assets` | Godot-resolved layouts, room geometry, palette |
+| `megatower-assets` | layouts, room geometry, palette |
 | `megatower-core` | simulation (run, combat, items, enemies), settings and profile data, paths, translations |
 
 Lower crates own the resources they consume; the UI writes them.
 
 ## Rooms
 
-Room scenes were baked from Godot into one `.glb` per room in
+Room scenes were baked from the original game into one `.glb` per room in
 `crates/megatower-runtime/src/render/rooms/`, with the per-mesh materials in
 `assets/data/rooms/room-materials.ron` and the lights in `assets/data/rooms/room-scenes.ron`.
-The recovered Godot project and its export scripts are gone, so edit those files directly.
+The the original game project and its export scripts are gone, so edit those files directly.
 
 **Hot reload.** In dev (debug) builds, edit a room while the game runs: when a `.glb` in
 `crates/megatower-runtime/src/render/rooms/` or `assets/data/rooms/room-materials.ron` /
 `room-scenes.json` changes on disk, the room is respawned from the new files within half a
-second, with no rebuild. Works from any editor that writes those files (Blender, Godot export).
+second, with no rebuild. Works from any editor that writes those files (Blender, the original game export).
 Release builds use the embedded copies; `MEGALOOT_HOT_ROOMS=0` turns it off in dev builds.
 
 ## Data files
@@ -105,4 +105,4 @@ Everything under `assets/data/` (`layouts/`, `content/`, `rooms/`) is RON, compi
 ## Runtime assets
 
 The game loads fonts, textures, and audio from the workspace `assets/` folder,
-not from the original Godot project, which is no longer in the repo.
+not from the original game project, which is no longer in the repo.

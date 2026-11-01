@@ -1,4 +1,4 @@
-//! Nested viewport geometry and camera defaults from `room_screen.tscn`.
+//! Nested viewport geometry and camera defaults from `room_screen`.
 
 pub const ROOM_VIEWPORT_SIZE: [u32; 2] = [352, 304];
 pub const ROOM_FRAME_RECT: [f32; 4] = [308.0, 0.0, 332.0, 295.0];

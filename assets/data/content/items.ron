@@ -1,18 +1,18 @@
 [
     (
-        id: "res://resources/items/alchemist\'s_wisdom.tres",
+        id: "resources/items/alchemist\'s_wisdom",
         name: "Alchemist\'s Wisdom",
-        texture: Some("res://assets/textures/items/alchemists_wisdom.png"),
+        texture: Some("assets/textures/items/alchemists_wisdom.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/manaflow.tres"),
+        passive: Some("resources/passives/manaflow"),
         bonus_stats: [
             (
                 resource: wisdom,
@@ -41,13 +41,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/amulet_of_life.tres",
+        id: "resources/items/amulet_of_life",
         name: "Amulet of Life",
-        texture: Some("res://assets/textures/items/amulet_of_life.png"),
+        texture: Some("assets/textures/items/amulet_of_life.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -80,13 +80,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/arcanum_hood.tres",
+        id: "resources/items/arcanum_hood",
         name: "Arcanum Hood",
-        texture: Some("res://assets/textures/items/arcanum_hood.png"),
+        texture: Some("assets/textures/items/arcanum_hood.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/arcanum.tres",
+            "resources/item_sets/arcanum",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -119,13 +119,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/arcanum_robe.tres",
+        id: "resources/items/arcanum_robe",
         name: "Arcanum Robe",
-        texture: Some("res://assets/textures/items/arcanum_robe.png"),
+        texture: Some("assets/textures/items/arcanum_robe.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/arcanum.tres",
+            "resources/item_sets/arcanum",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -138,7 +138,7 @@
                 amount: 12.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/arcanum.tres"),
+                    Some("resources/item_sets/arcanum"),
                 ],
             ),
             (
@@ -160,13 +160,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/arcanum_shoes.tres",
+        id: "resources/items/arcanum_shoes",
         name: "Arcanum Shoes",
-        texture: Some("res://assets/textures/items/arcanum_shoes.png"),
+        texture: Some("assets/textures/items/arcanum_shoes.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/arcanum.tres",
+            "resources/item_sets/arcanum",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -179,7 +179,7 @@
                 amount: 5.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/arcanum.tres"),
+                    Some("resources/item_sets/arcanum"),
                 ],
             ),
             (
@@ -201,13 +201,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/ashcrow.tres",
+        id: "resources/items/ashcrow",
         name: "Ashcrow",
-        texture: Some("res://assets/textures/items/ashcrow.png"),
+        texture: Some("assets/textures/items/ashcrow.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/chromalure.tres",
+            "resources/item_sets/chromalure",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -220,7 +220,7 @@
                 amount: 12.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/chromalure.tres"),
+                    Some("resources/item_sets/chromalure"),
                 ],
             ),
         ],
@@ -236,13 +236,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/bastolics_gauntlet.tres",
+        id: "resources/items/bastolics_gauntlet",
         name: "Bastolic\'s Gauntlet",
-        texture: Some("res://assets/textures/items/bastolics_gauntlet.png"),
+        texture: Some("assets/textures/items/bastolics_gauntlet.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/bastolic.tres",
+            "resources/item_sets/bastolic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -255,7 +255,7 @@
                 amount: 6.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/bastolic.tres"),
+                    Some("resources/item_sets/bastolic"),
                 ],
             ),
         ],
@@ -271,13 +271,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/bastolics_guardian.tres",
+        id: "resources/items/bastolics_guardian",
         name: "Bastolic\'s Guardian",
-        texture: Some("res://assets/textures/items/bastolics_chestplate.png"),
+        texture: Some("assets/textures/items/bastolics_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/bastolic.tres",
+            "resources/item_sets/bastolic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -290,7 +290,7 @@
                 amount: 6.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/bastolic.tres"),
+                    Some("resources/item_sets/bastolic"),
                 ],
             ),
         ],
@@ -306,13 +306,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/believers_locket.tres",
+        id: "resources/items/believers_locket",
         name: "Believer\'s Locket",
-        texture: Some("res://assets/textures/items/believers_locket.png"),
+        texture: Some("assets/textures/items/believers_locket.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/silver.tres",
+            "resources/item_sets/silver",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -325,7 +325,7 @@
                 amount: 36.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/silver.tres"),
+                    Some("resources/item_sets/silver"),
                 ],
             ),
         ],
@@ -341,13 +341,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/berserkers_axe.tres",
+        id: "resources/items/berserkers_axe",
         name: "Berserker\'s Axe",
-        texture: Some("res://assets/textures/items/berserkers_axe.png"),
+        texture: Some("assets/textures/items/berserkers_axe.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/berserker.tres",
+            "resources/item_sets/berserker",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -374,26 +374,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/berserkers_helmet.tres",
+        id: "resources/items/berserkers_helmet",
         name: "Berserker\'s Helmet",
-        texture: Some("res://assets/textures/items/berserkers_helmet.png"),
+        texture: Some("assets/textures/items/berserkers_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/berserker.tres",
+            "resources/item_sets/berserker",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/wrath_of_the_broken_flesh.tres"),
+        passive: Some("resources/passives/wrath_of_the_broken_flesh"),
         bonus_stats: [
             (
                 resource: physical_attack,
                 amount: 25.0,
                 is_modifier: true,
                 boosting_sets: [
-                    Some("res://resources/item_sets/berserker.tres"),
+                    Some("resources/item_sets/berserker"),
                 ],
             ),
             (
@@ -415,27 +415,27 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/black_oath.tres",
+        id: "resources/items/black_oath",
         name: "Black Oath",
-        texture: Some("res://assets/textures/items/black_oath.png"),
+        texture: Some("assets/textures/items/black_oath.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/cursed.tres",
-            "res://resources/item_sets/warrior.tres",
+            "resources/item_sets/cursed",
+            "resources/item_sets/warrior",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/shattered_breath.tres"),
+        passive: Some("resources/passives/shattered_breath"),
         bonus_stats: [
             (
                 resource: armor,
                 amount: 17.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/warrior.tres"),
+                    Some("resources/item_sets/warrior"),
                 ],
             ),
             (
@@ -457,13 +457,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/blackthorn_chestplate.tres",
+        id: "resources/items/blackthorn_chestplate",
         name: "Blackthorn Chestplate",
-        texture: Some("res://assets/textures/items/blackthorn_chestplate.png"),
+        texture: Some("assets/textures/items/blackthorn_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/blackthorn.tres",
+            "resources/item_sets/blackthorn",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -476,7 +476,7 @@
                 amount: 15.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/blackthorn.tres"),
+                    Some("resources/item_sets/blackthorn"),
                 ],
             ),
         ],
@@ -492,13 +492,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/blackthorn_crown.tres",
+        id: "resources/items/blackthorn_crown",
         name: "Blackthorn Crown",
-        texture: Some("res://assets/textures/items/blackthorn_crown.png"),
+        texture: Some("assets/textures/items/blackthorn_crown.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/blackthorn.tres",
+            "resources/item_sets/blackthorn",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -511,7 +511,7 @@
                 amount: 25.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/blackthorn.tres"),
+                    Some("resources/item_sets/blackthorn"),
                 ],
             ),
             (
@@ -519,7 +519,7 @@
                 amount: 17.0,
                 is_modifier: true,
                 boosting_sets: [
-                    Some("res://resources/item_sets/blackthorn.tres"),
+                    Some("resources/item_sets/blackthorn"),
                 ],
             ),
         ],
@@ -535,13 +535,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/blackthorn_leggings.tres",
+        id: "resources/items/blackthorn_leggings",
         name: "Blackthorn Leggings",
-        texture: Some("res://assets/textures/items/blackthorn_leggings.png"),
+        texture: Some("assets/textures/items/blackthorn_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/blackthorn.tres",
+            "resources/item_sets/blackthorn",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -554,7 +554,7 @@
                 amount: 12.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/blackthorn.tres"),
+                    Some("resources/item_sets/blackthorn"),
                 ],
             ),
         ],
@@ -570,13 +570,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/blackthorn_sabatons.tres",
+        id: "resources/items/blackthorn_sabatons",
         name: "Blackthorn Sabatons",
-        texture: Some("res://assets/textures/items/blackthorn_sabatons.png"),
+        texture: Some("assets/textures/items/blackthorn_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/blackthorn.tres",
+            "resources/item_sets/blackthorn",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -589,7 +589,7 @@
                 amount: 6.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/blackthorn.tres"),
+                    Some("resources/item_sets/blackthorn"),
                 ],
             ),
         ],
@@ -605,26 +605,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/blade_of_the_ruined.tres",
+        id: "resources/items/blade_of_the_ruined",
         name: "Blade of the Ruined",
-        texture: Some("res://assets/textures/items/blade_of_the_ruined.png"),
+        texture: Some("assets/textures/items/blade_of_the_ruined.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/cursed.tres",
+            "resources/item_sets/cursed",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/edge_of_the_ruined.tres"),
+        passive: Some("resources/passives/edge_of_the_ruined"),
         bonus_stats: [
             (
                 resource: physical_attack,
                 amount: 12.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/cursed.tres"),
+                    Some("resources/item_sets/cursed"),
                 ],
             ),
             (
@@ -646,13 +646,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/blake.tres",
+        id: "resources/items/blake",
         name: "Blake",
-        texture: Some("res://assets/textures/items/blake.png"),
+        texture: Some("assets/textures/items/blake.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/jade.tres",
+            "resources/item_sets/jade",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -665,7 +665,7 @@
                 amount: 25.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/jade.tres"),
+                    Some("resources/item_sets/jade"),
                 ],
             ),
             (
@@ -687,26 +687,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/bloodedge.tres",
+        id: "resources/items/bloodedge",
         name: "Bloodedge",
-        texture: Some("res://assets/textures/items/bloodedge.png"),
-        bb_script: Some("res://resources/bb_scripts/bloodedge.gd"),
+        texture: Some("assets/textures/items/bloodedge.png"),
+        bb_script: Some("resources/bb_scripts/bloodedge.gd"),
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/vampiric.tres",
+            "resources/item_sets/vampiric",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/bloodedges_blood_slash.tres"),
+        passive: Some("resources/passives/bloodedges_blood_slash"),
         bonus_stats: [
             (
                 resource: physical_attack,
                 amount: 100.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/vampiric.tres"),
+                    Some("resources/item_sets/vampiric"),
                 ],
             ),
             (
@@ -736,13 +736,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/celestial_chestplate.tres",
+        id: "resources/items/celestial_chestplate",
         name: "Celestial Chestplate",
-        texture: Some("res://assets/textures/items/celestial_chestplate.png"),
+        texture: Some("assets/textures/items/celestial_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/celestial.tres",
+            "resources/item_sets/celestial",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -755,7 +755,7 @@
                 amount: 145.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/celestial.tres"),
+                    Some("resources/item_sets/celestial"),
                 ],
             ),
             (
@@ -777,13 +777,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/celestial_helmet.tres",
+        id: "resources/items/celestial_helmet",
         name: "Celestial Helmet",
-        texture: Some("res://assets/textures/items/celestial_helmet.png"),
+        texture: Some("assets/textures/items/celestial_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/celestial.tres",
+            "resources/item_sets/celestial",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -796,7 +796,7 @@
                 amount: 127.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/celestial.tres"),
+                    Some("resources/item_sets/celestial"),
                 ],
             ),
             (
@@ -818,13 +818,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/celestial_leggings.tres",
+        id: "resources/items/celestial_leggings",
         name: "Celestial Leggings",
-        texture: Some("res://assets/textures/items/celestial_leggings.png"),
+        texture: Some("assets/textures/items/celestial_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/celestial.tres",
+            "resources/item_sets/celestial",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -837,7 +837,7 @@
                 amount: 138.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/celestial.tres"),
+                    Some("resources/item_sets/celestial"),
                 ],
             ),
             (
@@ -859,13 +859,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/celestial_sabatons.tres",
+        id: "resources/items/celestial_sabatons",
         name: "Celestial Sabatons",
-        texture: Some("res://assets/textures/items/celestial_sabatons.png"),
+        texture: Some("assets/textures/items/celestial_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/celestial.tres",
+            "resources/item_sets/celestial",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -878,7 +878,7 @@
                 amount: 114.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/celestial.tres"),
+                    Some("resources/item_sets/celestial"),
                 ],
             ),
             (
@@ -900,13 +900,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/chainmail.tres",
+        id: "resources/items/chainmail",
         name: "Chainmail",
-        texture: Some("res://assets/textures/items/chainmail.png"),
+        texture: Some("assets/textures/items/chainmail.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -933,13 +933,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/cowards_ring.tres",
+        id: "resources/items/cowards_ring",
         name: "Coward\'s Ring",
-        texture: Some("res://assets/textures/items/cowards_ring.png"),
+        texture: Some("assets/textures/items/cowards_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -966,13 +966,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/crystal_staff.tres",
+        id: "resources/items/crystal_staff",
         name: "Crystal Staff",
-        texture: Some("res://assets/textures/items/crystal_staff.png"),
+        texture: Some("assets/textures/items/crystal_staff.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -999,26 +999,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/cursed_necklace.tres",
+        id: "resources/items/cursed_necklace",
         name: "Cursed Necklace",
-        texture: Some("res://assets/textures/items/cursed_necklace.png"),
+        texture: Some("assets/textures/items/cursed_necklace.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/cursed.tres",
+            "resources/item_sets/cursed",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/cursed_chain.tres"),
+        passive: Some("resources/passives/cursed_chain"),
         bonus_stats: [
             (
                 resource: malice,
                 amount: 25.0,
                 is_modifier: true,
                 boosting_sets: [
-                    Some("res://resources/item_sets/cursed.tres"),
+                    Some("resources/item_sets/cursed"),
                 ],
             ),
         ],
@@ -1034,26 +1034,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/cursed_ring.tres",
+        id: "resources/items/cursed_ring",
         name: "Cursed Ring",
-        texture: Some("res://assets/textures/items/cursed_ring.png"),
+        texture: Some("assets/textures/items/cursed_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/cursed.tres",
+            "resources/item_sets/cursed",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/litany_of_malice.tres"),
+        passive: Some("resources/passives/litany_of_malice"),
         bonus_stats: [
             (
                 resource: malice,
                 amount: 25.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/cursed.tres"),
+                    Some("resources/item_sets/cursed"),
                 ],
             ),
         ],
@@ -1069,14 +1069,14 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/dark_harness.tres",
+        id: "resources/items/dark_harness",
         name: "Dark Harness",
-        texture: Some("res://assets/textures/items/dark_harness.png"),
+        texture: Some("assets/textures/items/dark_harness.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/darkness.tres",
-            "res://resources/item_sets/wood.tres",
+            "resources/item_sets/darkness",
+            "resources/item_sets/wood",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1089,7 +1089,7 @@
                 amount: 45.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/darkness.tres"),
+                    Some("resources/item_sets/darkness"),
                 ],
             ),
             (
@@ -1111,14 +1111,14 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/dark_magical_ring.tres",
+        id: "resources/items/dark_magical_ring",
         name: "Dark Magical Ring",
-        texture: Some("res://assets/textures/items/dark_magical_ring.png"),
+        texture: Some("assets/textures/items/dark_magical_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/darkness.tres",
-            "res://resources/item_sets/zephyron.tres",
+            "resources/item_sets/darkness",
+            "resources/item_sets/zephyron",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1131,7 +1131,7 @@
                 amount: 25.0,
                 is_modifier: true,
                 boosting_sets: [
-                    Some("res://resources/item_sets/darkness.tres"),
+                    Some("resources/item_sets/darkness"),
                 ],
             ),
             (
@@ -1153,14 +1153,14 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/darkwood_plates.tres",
+        id: "resources/items/darkwood_plates",
         name: "Darkwood Plates",
-        texture: Some("res://assets/textures/items/darkwood_plates.png"),
+        texture: Some("assets/textures/items/darkwood_plates.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/darkness.tres",
-            "res://resources/item_sets/wood.tres",
+            "resources/item_sets/darkness",
+            "resources/item_sets/wood",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1187,19 +1187,19 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/dawnbringer.tres",
+        id: "resources/items/dawnbringer",
         name: "Dawnbringer",
-        texture: Some("res://assets/textures/items/dawnbringer.png"),
+        texture: Some("assets/textures/items/dawnbringer.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/luminous_trial.tres"),
+        passive: Some("resources/passives/luminous_trial"),
         bonus_stats: [
             (
                 resource: magic_attack,
@@ -1232,26 +1232,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/demonic_axe.tres",
+        id: "resources/items/demonic_axe",
         name: "Demonic Axe",
-        texture: Some("res://assets/textures/items/demonic_axe.png"),
+        texture: Some("assets/textures/items/demonic_axe.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/demonic.tres",
+            "resources/item_sets/demonic",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/shatterwave.tres"),
+        passive: Some("resources/passives/shatterwave"),
         bonus_stats: [
             (
                 resource: physical_attack,
                 amount: 25.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/demonic.tres"),
+                    Some("resources/item_sets/demonic"),
                 ],
             ),
         ],
@@ -1267,13 +1267,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/demonic_chestplate.tres",
+        id: "resources/items/demonic_chestplate",
         name: "Demonic Chestplate",
-        texture: Some("res://assets/textures/items/demonic_chestplate.png"),
+        texture: Some("assets/textures/items/demonic_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/demonic.tres",
+            "resources/item_sets/demonic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1286,7 +1286,7 @@
                 amount: 15.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/demonic.tres"),
+                    Some("resources/item_sets/demonic"),
                 ],
             ),
             (
@@ -1308,14 +1308,14 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/demonic_claymore.tres",
+        id: "resources/items/demonic_claymore",
         name: "Demonic Claymore",
-        texture: Some("res://assets/textures/items/demonic_claymore.png"),
+        texture: Some("assets/textures/items/demonic_claymore.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/demonic.tres",
-            "res://resources/item_sets/swiftness.tres",
+            "resources/item_sets/demonic",
+            "resources/item_sets/swiftness",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1328,7 +1328,7 @@
                 amount: 15.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/demonic.tres"),
+                    Some("resources/item_sets/demonic"),
                 ],
             ),
         ],
@@ -1344,13 +1344,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/demonic_helmet.tres",
+        id: "resources/items/demonic_helmet",
         name: "Demonic Helmet",
-        texture: Some("res://assets/textures/items/demonic_helmet.png"),
+        texture: Some("assets/textures/items/demonic_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/demonic.tres",
+            "resources/item_sets/demonic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1363,7 +1363,7 @@
                 amount: 10.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/demonic.tres"),
+                    Some("resources/item_sets/demonic"),
                 ],
             ),
             (
@@ -1385,13 +1385,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/demonic_leggings.tres",
+        id: "resources/items/demonic_leggings",
         name: "Demonic Leggings",
-        texture: Some("res://assets/textures/items/demonic_leggings.png"),
+        texture: Some("assets/textures/items/demonic_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/demonic.tres",
+            "resources/item_sets/demonic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1426,13 +1426,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/demonic_ring.tres",
+        id: "resources/items/demonic_ring",
         name: "Demonic Ring",
-        texture: Some("res://assets/textures/items/demonic_ring.png"),
+        texture: Some("assets/textures/items/demonic_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/demonic.tres",
+            "resources/item_sets/demonic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1445,7 +1445,7 @@
                 amount: 7.0,
                 is_modifier: true,
                 boosting_sets: [
-                    Some("res://resources/item_sets/demonic.tres"),
+                    Some("resources/item_sets/demonic"),
                 ],
             ),
         ],
@@ -1461,13 +1461,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/demonic_sabatons.tres",
+        id: "resources/items/demonic_sabatons",
         name: "Demonic Sabatons",
-        texture: Some("res://assets/textures/items/demonic_sabatons.png"),
+        texture: Some("assets/textures/items/demonic_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/demonic.tres",
+            "resources/item_sets/demonic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1502,26 +1502,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/eldrids_ring.tres",
+        id: "resources/items/eldrids_ring",
         name: "Eldrid\'s Ring",
-        texture: Some("res://assets/textures/items/eldrids_ring.png"),
+        texture: Some("assets/textures/items/eldrids_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/flesh.tres",
+            "resources/item_sets/flesh",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/eldrids_fury.tres"),
+        passive: Some("resources/passives/eldrids_fury"),
         bonus_stats: [
             (
                 resource: max_health,
                 amount: 15.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/flesh.tres"),
+                    Some("resources/item_sets/flesh"),
                 ],
             ),
             (
@@ -1543,13 +1543,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/elemental_necklace.tres",
+        id: "resources/items/elemental_necklace",
         name: "Elemental Necklace",
-        texture: Some("res://assets/textures/items/elemental_necklace.png"),
+        texture: Some("assets/textures/items/elemental_necklace.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1584,27 +1584,27 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/emperors_will.tres",
+        id: "resources/items/emperors_will",
         name: "Emperor\'s Will",
-        texture: Some("res://assets/textures/items/emperors_will.png"),
+        texture: Some("assets/textures/items/emperors_will.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/golden.tres",
-            "res://resources/item_sets/arcanum.tres",
+            "resources/item_sets/golden",
+            "resources/item_sets/arcanum",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/all_is_mine.tres"),
+        passive: Some("resources/passives/all_is_mine"),
         bonus_stats: [
             (
                 resource: max_health,
                 amount: 15.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/golden.tres"),
+                    Some("resources/item_sets/golden"),
                 ],
             ),
             (
@@ -1612,7 +1612,7 @@
                 amount: 12.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/arcanum.tres"),
+                    Some("resources/item_sets/arcanum"),
                 ],
             ),
             (
@@ -1624,11 +1624,11 @@
         ],
         unlock_requirements: [
             (
-                item_resource: Some("res://resources/items/golden_helmet.tres"),
+                item_resource: Some("resources/items/golden_helmet"),
                 completed_battles: 12,
             ),
             (
-                item_resource: Some("res://resources/items/arcanum_hood.tres"),
+                item_resource: Some("resources/items/arcanum_hood"),
                 completed_battles: 12,
             ),
         ],
@@ -1643,14 +1643,14 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/ethercrests_blade.tres",
+        id: "resources/items/ethercrests_blade",
         name: "Ethercrest\'s Blade",
-        texture: Some("res://assets/textures/items/ethercrests_blade.png"),
+        texture: Some("assets/textures/items/ethercrests_blade.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/ancient_ice.tres",
-            "res://resources/item_sets/swiftness.tres",
+            "resources/item_sets/ancient_ice",
+            "resources/item_sets/swiftness",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1663,7 +1663,7 @@
                 amount: 8.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/ancient_ice.tres"),
+                    Some("resources/item_sets/ancient_ice"),
                 ],
             ),
         ],
@@ -1679,13 +1679,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/ethercrests_chestplate.tres",
+        id: "resources/items/ethercrests_chestplate",
         name: "Ethercrest\'s Chestplate",
-        texture: Some("res://assets/textures/items/ethercrests_chestplate.png"),
+        texture: Some("assets/textures/items/ethercrests_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/ancient_ice.tres",
+            "resources/item_sets/ancient_ice",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1698,7 +1698,7 @@
                 amount: 18.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/ancient_ice.tres"),
+                    Some("resources/item_sets/ancient_ice"),
                 ],
             ),
         ],
@@ -1714,13 +1714,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/ethercrests_helmet.tres",
+        id: "resources/items/ethercrests_helmet",
         name: "Ethercrest\'s Helmet",
-        texture: Some("res://assets/textures/items/ethercrests_helmet.png"),
+        texture: Some("assets/textures/items/ethercrests_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/ancient_ice.tres",
+            "resources/item_sets/ancient_ice",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1733,7 +1733,7 @@
                 amount: 10.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/ancient_ice.tres"),
+                    Some("resources/item_sets/ancient_ice"),
                 ],
             ),
         ],
@@ -1749,13 +1749,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/ethercrests_leggings.tres",
+        id: "resources/items/ethercrests_leggings",
         name: "Ethercrest\'s Leggings",
-        texture: Some("res://assets/textures/items/ethercrests_leggings.png"),
+        texture: Some("assets/textures/items/ethercrests_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/ancient_ice.tres",
+            "resources/item_sets/ancient_ice",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1768,7 +1768,7 @@
                 amount: 14.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/ancient_ice.tres"),
+                    Some("resources/item_sets/ancient_ice"),
                 ],
             ),
         ],
@@ -1784,13 +1784,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/ethercrests_ring.tres",
+        id: "resources/items/ethercrests_ring",
         name: "Ethercrest\'s Ring",
-        texture: Some("res://assets/textures/items/ethercrests_ring.png"),
+        texture: Some("assets/textures/items/ethercrests_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/ancient_ice.tres",
+            "resources/item_sets/ancient_ice",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1803,7 +1803,7 @@
                 amount: 6.0,
                 is_modifier: true,
                 boosting_sets: [
-                    Some("res://resources/item_sets/ancient_ice.tres"),
+                    Some("resources/item_sets/ancient_ice"),
                 ],
             ),
             (
@@ -1811,7 +1811,7 @@
                 amount: 4.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/ancient_ice.tres"),
+                    Some("resources/item_sets/ancient_ice"),
                 ],
             ),
         ],
@@ -1827,13 +1827,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/ethercrests_sabatons.tres",
+        id: "resources/items/ethercrests_sabatons",
         name: "Ethercrest\'s Sabatons",
-        texture: Some("res://assets/textures/items/ethercrests_sabatons.png"),
+        texture: Some("assets/textures/items/ethercrests_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/ancient_ice.tres",
+            "resources/item_sets/ancient_ice",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1846,7 +1846,7 @@
                 amount: 6.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/ancient_ice.tres"),
+                    Some("resources/item_sets/ancient_ice"),
                 ],
             ),
         ],
@@ -1862,26 +1862,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/ethercrests_staff.tres",
+        id: "resources/items/ethercrests_staff",
         name: "Ethercrest\'s Staff",
-        texture: Some("res://assets/textures/items/ethercrests_staff.png"),
+        texture: Some("assets/textures/items/ethercrests_staff.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/ancient_ice.tres",
+            "resources/item_sets/ancient_ice",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/magical_frostflare.tres"),
+        passive: Some("resources/passives/magical_frostflare"),
         bonus_stats: [
             (
                 resource: magic_attack,
                 amount: 14.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/ancient_ice.tres"),
+                    Some("resources/item_sets/ancient_ice"),
                 ],
             ),
         ],
@@ -1897,13 +1897,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/ethercrests_sword.tres",
+        id: "resources/items/ethercrests_sword",
         name: "Ethercrest\'s Sword",
-        texture: Some("res://assets/textures/items/ethercrests_sword.png"),
+        texture: Some("assets/textures/items/ethercrests_sword.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/ancient_ice.tres",
+            "resources/item_sets/ancient_ice",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -1916,7 +1916,7 @@
                 amount: 28.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/ancient_ice.tres"),
+                    Some("resources/item_sets/ancient_ice"),
                 ],
             ),
         ],
@@ -1932,17 +1932,17 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/ethercrests_tome.tres",
+        id: "resources/items/ethercrests_tome",
         name: "Ethercrest\'s Tome",
-        texture: Some("res://assets/textures/items/ethercrests_tome.png"),
+        texture: Some("assets/textures/items/ethercrests_tome.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
-        ability_to_learn: Some("res://resources/abilities/frozen_strike.tres"),
+        ability_to_learn: Some("resources/abilities/frozen_strike"),
         stat_to_adapt: None,
         passive: None,
         bonus_stats: [],
@@ -1958,19 +1958,19 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/excalibur.tres",
+        id: "resources/items/excalibur",
         name: "Excalibur",
-        texture: Some("res://assets/textures/items/excalibur.png"),
-        bb_script: Some("res://resources/bb_scripts/excalibur.gd"),
+        texture: Some("assets/textures/items/excalibur.png"),
+        bb_script: Some("resources/bb_scripts/excalibur.gd"),
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/legacy.tres",
+            "resources/item_sets/legacy",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/strike_of_destiny.tres"),
+        passive: Some("resources/passives/strike_of_destiny"),
         bonus_stats: [
             (
                 resource: physical_attack,
@@ -1991,13 +1991,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/famished_blade.tres",
+        id: "resources/items/famished_blade",
         name: "Famished Blade",
-        texture: Some("res://assets/textures/items/famished_blade.png"),
+        texture: Some("assets/textures/items/famished_blade.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/flesh.tres",
+            "resources/item_sets/flesh",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2010,7 +2010,7 @@
                 amount: 8.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/flesh.tres"),
+                    Some("resources/item_sets/flesh"),
                 ],
             ),
             (
@@ -2040,13 +2040,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/frokt.tres",
+        id: "resources/items/frokt",
         name: "Frokt",
-        texture: Some("res://assets/textures/items/frokt.png"),
+        texture: Some("assets/textures/items/frokt.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2066,13 +2066,13 @@
         is_special: true,
     ),
     (
-        id: "res://resources/items/giants_ring.tres",
+        id: "resources/items/giants_ring",
         name: "Giants Ring",
-        texture: Some("res://assets/textures/items/giants_ring.png"),
+        texture: Some("assets/textures/items/giants_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2107,26 +2107,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/glimmer.tres",
+        id: "resources/items/glimmer",
         name: "Glimmer",
-        texture: Some("res://assets/textures/items/glimmer.png"),
+        texture: Some("assets/textures/items/glimmer.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/jade.tres",
+            "resources/item_sets/jade",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/faded_discipline.tres"),
+        passive: Some("resources/passives/faded_discipline"),
         bonus_stats: [
             (
                 resource: dazzle,
                 amount: 25.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/jade.tres"),
+                    Some("resources/item_sets/jade"),
                 ],
             ),
         ],
@@ -2142,13 +2142,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/gloom.tres",
+        id: "resources/items/gloom",
         name: "Gloom",
-        texture: Some("res://assets/textures/items/gloom.png"),
+        texture: Some("assets/textures/items/gloom.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/jade.tres",
+            "resources/item_sets/jade",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2161,7 +2161,7 @@
                 amount: 85.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/jade.tres"),
+                    Some("resources/item_sets/jade"),
                 ],
             ),
         ],
@@ -2177,13 +2177,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/golden_chestplate.tres",
+        id: "resources/items/golden_chestplate",
         name: "Golden Chestplate",
-        texture: Some("res://assets/textures/items/golden_chestplate.png"),
+        texture: Some("assets/textures/items/golden_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/golden.tres",
+            "resources/item_sets/golden",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2210,13 +2210,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/golden_crown.tres",
+        id: "resources/items/golden_crown",
         name: "Golden Crown",
-        texture: Some("res://assets/textures/items/golden_crown.png"),
+        texture: Some("assets/textures/items/golden_crown.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/golden.tres",
+            "resources/item_sets/golden",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2229,7 +2229,7 @@
                 amount: 10.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/golden.tres"),
+                    Some("resources/item_sets/golden"),
                 ],
             ),
         ],
@@ -2245,14 +2245,14 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/golden_dagger.tres",
+        id: "resources/items/golden_dagger",
         name: "Golden Dagger",
-        texture: Some("res://assets/textures/items/golden_dagger.png"),
+        texture: Some("assets/textures/items/golden_dagger.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/golden.tres",
-            "res://resources/item_sets/swiftness.tres",
+            "resources/item_sets/golden",
+            "resources/item_sets/swiftness",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2265,7 +2265,7 @@
                 amount: 3.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/golden.tres"),
+                    Some("resources/item_sets/golden"),
                 ],
             ),
         ],
@@ -2281,13 +2281,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/golden_helmet.tres",
+        id: "resources/items/golden_helmet",
         name: "Golden Helmet",
-        texture: Some("res://assets/textures/items/golden_helmet.png"),
+        texture: Some("assets/textures/items/golden_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/golden.tres",
+            "resources/item_sets/golden",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2314,13 +2314,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/golden_leggings.tres",
+        id: "resources/items/golden_leggings",
         name: "Golden Leggings",
-        texture: Some("res://assets/textures/items/golden_leggings.png"),
+        texture: Some("assets/textures/items/golden_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/golden.tres",
+            "resources/item_sets/golden",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2347,13 +2347,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/golden_sabatons.tres",
+        id: "resources/items/golden_sabatons",
         name: "Golden Sabatons",
-        texture: Some("res://assets/textures/items/golden_sabatons.png"),
+        texture: Some("assets/textures/items/golden_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/golden.tres",
+            "resources/item_sets/golden",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2380,13 +2380,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/golden_sword.tres",
+        id: "resources/items/golden_sword",
         name: "Golden Sword",
-        texture: Some("res://assets/textures/items/golden_sword.png"),
+        texture: Some("assets/textures/items/golden_sword.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/golden.tres",
+            "resources/item_sets/golden",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2399,7 +2399,7 @@
                 amount: 5.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/golden.tres"),
+                    Some("resources/item_sets/golden"),
                 ],
             ),
         ],
@@ -2415,13 +2415,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/golden_warden.tres",
+        id: "resources/items/golden_warden",
         name: "Golden Warden",
-        texture: Some("res://assets/textures/items/golden_warden.png"),
+        texture: Some("assets/textures/items/golden_warden.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/golden.tres",
+            "resources/item_sets/golden",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2434,7 +2434,7 @@
                 amount: 5.0,
                 is_modifier: true,
                 boosting_sets: [
-                    Some("res://resources/item_sets/golden.tres"),
+                    Some("resources/item_sets/golden"),
                 ],
             ),
         ],
@@ -2450,13 +2450,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/greeds_grasp.tres",
+        id: "resources/items/greeds_grasp",
         name: "Greed\'s Grasp",
-        texture: Some("res://assets/textures/items/greeds_grasp.png"),
+        texture: Some("assets/textures/items/greeds_grasp.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/golden.tres",
+            "resources/item_sets/golden",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2483,13 +2483,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/heart_of_gold.tres",
+        id: "resources/items/heart_of_gold",
         name: "Heart of Gold",
-        texture: Some("res://assets/textures/items/heart_of_gold.png"),
+        texture: Some("assets/textures/items/heart_of_gold.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/golden.tres",
+            "resources/item_sets/golden",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2502,7 +2502,7 @@
                 amount: 17.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/golden.tres"),
+                    Some("resources/item_sets/golden"),
                 ],
             ),
             (
@@ -2522,11 +2522,11 @@
         ],
         unlock_requirements: [
             (
-                item_resource: Some("res://resources/items/golden_chestplate.tres"),
+                item_resource: Some("resources/items/golden_chestplate"),
                 completed_battles: 12,
             ),
             (
-                item_resource: Some("res://resources/items/greeds_grasp.tres"),
+                item_resource: Some("resources/items/greeds_grasp"),
                 completed_battles: 8,
             ),
         ],
@@ -2541,14 +2541,14 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/hunger_blade.tres",
+        id: "resources/items/hunger_blade",
         name: "Hunger Blade",
-        texture: Some("res://assets/textures/items/hunger_blade.png"),
+        texture: Some("assets/textures/items/hunger_blade.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/flesh.tres",
-            "res://resources/item_sets/swiftness.tres",
+            "resources/item_sets/flesh",
+            "resources/item_sets/swiftness",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2561,7 +2561,7 @@
                 amount: 6.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/flesh.tres"),
+                    Some("resources/item_sets/flesh"),
                 ],
             ),
             (
@@ -2583,13 +2583,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/hunters_boots.tres",
+        id: "resources/items/hunters_boots",
         name: "Hunter\'s Boots",
-        texture: Some("res://assets/textures/items/hunters_boots.png"),
+        texture: Some("assets/textures/items/hunters_boots.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/hunter.tres",
+            "resources/item_sets/hunter",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2616,13 +2616,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/hunters_hood.tres",
+        id: "resources/items/hunters_hood",
         name: "Hunter\'s Hood",
-        texture: Some("res://assets/textures/items/hunters_hood.png"),
+        texture: Some("assets/textures/items/hunters_hood.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/hunter.tres",
+            "resources/item_sets/hunter",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2649,13 +2649,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/hunters_jerkin.tres",
+        id: "resources/items/hunters_jerkin",
         name: "Hunter\'s Jerkin",
-        texture: Some("res://assets/textures/items/hunters_jerkin.png"),
+        texture: Some("assets/textures/items/hunters_jerkin.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/hunter.tres",
+            "resources/item_sets/hunter",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2682,13 +2682,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/hunters_necklace.tres",
+        id: "resources/items/hunters_necklace",
         name: "Hunter\'s Necklace",
-        texture: Some("res://assets/textures/items/hunters_necklace.png"),
+        texture: Some("assets/textures/items/hunters_necklace.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/hunter.tres",
+            "resources/item_sets/hunter",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2715,13 +2715,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/hunters_pants.tres",
+        id: "resources/items/hunters_pants",
         name: "Hunter\'s Pants",
-        texture: Some("res://assets/textures/items/hunters_pants.png"),
+        texture: Some("assets/textures/items/hunters_pants.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/hunter.tres",
+            "resources/item_sets/hunter",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2748,19 +2748,19 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/hunters_ring.tres",
+        id: "resources/items/hunters_ring",
         name: "Hunter\'s Ring",
-        texture: Some("res://assets/textures/items/hunters_ring.png"),
+        texture: Some("assets/textures/items/hunters_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/hunter.tres",
+            "resources/item_sets/hunter",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/critical_focus.tres"),
+        passive: Some("resources/passives/critical_focus"),
         bonus_stats: [
             (
                 resource: crit_chance,
@@ -2781,13 +2781,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/hysword.tres",
+        id: "resources/items/hysword",
         name: "HySword",
-        texture: Some("res://assets/textures/items/hysword.png"),
+        texture: Some("assets/textures/items/hysword.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/golden.tres",
+            "resources/item_sets/golden",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2800,7 +2800,7 @@
                 amount: 5.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/golden.tres"),
+                    Some("resources/item_sets/golden"),
                 ],
             ),
             (
@@ -2822,13 +2822,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/insightus.tres",
+        id: "resources/items/insightus",
         name: "Insightus",
-        texture: Some("res://assets/textures/items/insightus.png"),
+        texture: Some("assets/textures/items/insightus.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2848,14 +2848,14 @@
         is_special: true,
     ),
     (
-        id: "res://resources/items/iron_dagger.tres",
+        id: "resources/items/iron_dagger",
         name: "Iron Dagger",
-        texture: Some("res://assets/textures/items/iron_dagger.png"),
+        texture: Some("assets/textures/items/iron_dagger.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
-            "res://resources/item_sets/swiftness.tres",
+            "resources/item_sets/generic",
+            "resources/item_sets/swiftness",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2882,13 +2882,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/iron_eater.tres",
+        id: "resources/items/iron_eater",
         name: "Iron Eater",
-        texture: Some("res://assets/textures/items/iron_eater.png"),
+        texture: Some("assets/textures/items/iron_eater.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -2921,19 +2921,19 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/jesters_bone_mask.tres",
+        id: "resources/items/jesters_bone_mask",
         name: "Jester\'s Bone Mask",
-        texture: Some("res://assets/textures/items/jesters_bone_mask.png"),
+        texture: Some("assets/textures/items/jesters_bone_mask.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/folly_of_kings.tres"),
+        passive: Some("resources/passives/folly_of_kings"),
         bonus_stats: [
             (
                 resource: elemental_power,
@@ -2978,13 +2978,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/keepsake.tres",
+        id: "resources/items/keepsake",
         name: "Keepsake",
-        texture: Some("res://assets/textures/items/keepsake.png"),
+        texture: Some("assets/textures/items/keepsake.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3011,13 +3011,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/leather_boots.tres",
+        id: "resources/items/leather_boots",
         name: "Leather Boots",
-        texture: Some("res://assets/textures/items/leather_boots.png"),
+        texture: Some("assets/textures/items/leather_boots.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/mercenary.tres",
+            "resources/item_sets/mercenary",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3044,13 +3044,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/leather_chestplate.tres",
+        id: "resources/items/leather_chestplate",
         name: "Leather Chestplate",
-        texture: Some("res://assets/textures/items/leather_chestplate.png"),
+        texture: Some("assets/textures/items/leather_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/mercenary.tres",
+            "resources/item_sets/mercenary",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3077,13 +3077,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/leather_helmet.tres",
+        id: "resources/items/leather_helmet",
         name: "Leather Helmet",
-        texture: Some("res://assets/textures/items/leather_helmet.png"),
+        texture: Some("assets/textures/items/leather_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/mercenary.tres",
+            "resources/item_sets/mercenary",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3110,13 +3110,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/leather_pants.tres",
+        id: "resources/items/leather_pants",
         name: "Leather Pants",
-        texture: Some("res://assets/textures/items/leather_pants.png"),
+        texture: Some("assets/textures/items/leather_pants.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/mercenary.tres",
+            "resources/item_sets/mercenary",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3143,13 +3143,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/life_seeker.tres",
+        id: "resources/items/life_seeker",
         name: "Life Seeker",
-        texture: Some("res://assets/textures/items/life_seeker.png"),
+        texture: Some("assets/textures/items/life_seeker.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/silver.tres",
+            "resources/item_sets/silver",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3162,7 +3162,7 @@
                 amount: 5.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/silver.tres"),
+                    Some("resources/item_sets/silver"),
                 ],
             ),
             (
@@ -3184,14 +3184,14 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/lightning_boots.tres",
+        id: "resources/items/lightning_boots",
         name: "Lightning Boots",
-        texture: Some("res://assets/textures/items/lightning_boots.png"),
+        texture: Some("assets/textures/items/lightning_boots.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
-            "res://resources/item_sets/swiftness.tres",
+            "resources/item_sets/generic",
+            "resources/item_sets/swiftness",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3218,13 +3218,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/living_boots.tres",
+        id: "resources/items/living_boots",
         name: "Living Boots",
-        texture: Some("res://assets/textures/items/living_boots.png"),
+        texture: Some("assets/textures/items/living_boots.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/flesh.tres",
+            "resources/item_sets/flesh",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3237,7 +3237,7 @@
                 amount: 10.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/flesh.tres"),
+                    Some("resources/item_sets/flesh"),
                 ],
             ),
             (
@@ -3259,13 +3259,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/living_chestplate.tres",
+        id: "resources/items/living_chestplate",
         name: "Living Chestplate",
-        texture: Some("res://assets/textures/items/living_chestplate.png"),
+        texture: Some("assets/textures/items/living_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/flesh.tres",
+            "resources/item_sets/flesh",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3278,7 +3278,7 @@
                 amount: 24.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/flesh.tres"),
+                    Some("resources/item_sets/flesh"),
                 ],
             ),
             (
@@ -3300,13 +3300,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/living_helmet.tres",
+        id: "resources/items/living_helmet",
         name: "Living Helmet",
-        texture: Some("res://assets/textures/items/living_helmet.png"),
+        texture: Some("assets/textures/items/living_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/flesh.tres",
+            "resources/item_sets/flesh",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3319,7 +3319,7 @@
                 amount: 15.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/flesh.tres"),
+                    Some("resources/item_sets/flesh"),
                 ],
             ),
             (
@@ -3341,13 +3341,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/living_leggings.tres",
+        id: "resources/items/living_leggings",
         name: "Living Leggings",
-        texture: Some("res://assets/textures/items/living_leggings.png"),
+        texture: Some("assets/textures/items/living_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/flesh.tres",
+            "resources/item_sets/flesh",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3360,7 +3360,7 @@
                 amount: 20.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/flesh.tres"),
+                    Some("resources/item_sets/flesh"),
                 ],
             ),
             (
@@ -3382,27 +3382,27 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/magic_wand.tres",
+        id: "resources/items/magic_wand",
         name: "Magic Wand",
-        texture: Some("res://assets/textures/items/magic_wand.png"),
+        texture: Some("assets/textures/items/magic_wand.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/darkness.tres",
-            "res://resources/item_sets/wood.tres",
+            "resources/item_sets/darkness",
+            "resources/item_sets/wood",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/mana_steal.tres"),
+        passive: Some("resources/passives/mana_steal"),
         bonus_stats: [
             (
                 resource: magic_attack,
                 amount: 14.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/darkness.tres"),
+                    Some("resources/item_sets/darkness"),
                 ],
             ),
             (
@@ -3424,13 +3424,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/magical_stick.tres",
+        id: "resources/items/magical_stick",
         name: "Magical Stick",
-        texture: Some("res://assets/textures/items/magical_stick.png"),
+        texture: Some("assets/textures/items/magical_stick.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/wood.tres",
+            "resources/item_sets/wood",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3457,13 +3457,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/magma_chestplate.tres",
+        id: "resources/items/magma_chestplate",
         name: "Magma Chestplate",
-        texture: Some("res://assets/textures/items/magma_chestplate.png"),
+        texture: Some("assets/textures/items/magma_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/magma.tres",
+            "resources/item_sets/magma",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3476,7 +3476,7 @@
                 amount: 21.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/magma.tres"),
+                    Some("resources/item_sets/magma"),
                 ],
             ),
             (
@@ -3498,13 +3498,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/magma_helmet.tres",
+        id: "resources/items/magma_helmet",
         name: "Magma Helmet",
-        texture: Some("res://assets/textures/items/magma_helmet.png"),
+        texture: Some("assets/textures/items/magma_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/magma.tres",
+            "resources/item_sets/magma",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3517,7 +3517,7 @@
                 amount: 14.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/magma.tres"),
+                    Some("resources/item_sets/magma"),
                 ],
             ),
             (
@@ -3539,13 +3539,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/magma_leggings.tres",
+        id: "resources/items/magma_leggings",
         name: "Magma Leggings",
-        texture: Some("res://assets/textures/items/magma_leggings.png"),
+        texture: Some("assets/textures/items/magma_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/magma.tres",
+            "resources/item_sets/magma",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3558,7 +3558,7 @@
                 amount: 17.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/magma.tres"),
+                    Some("resources/item_sets/magma"),
                 ],
             ),
             (
@@ -3580,13 +3580,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/magma_necklace.tres",
+        id: "resources/items/magma_necklace",
         name: "Magma Necklace",
-        texture: Some("res://assets/textures/items/magma_necklace.png"),
+        texture: Some("assets/textures/items/magma_necklace.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/magma.tres",
+            "resources/item_sets/magma",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3621,26 +3621,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/magma_poleaxe.tres",
+        id: "resources/items/magma_poleaxe",
         name: "Magma Poleaxe",
-        texture: Some("res://assets/textures/items/magma_poleaxe.png"),
+        texture: Some("assets/textures/items/magma_poleaxe.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/magma.tres",
+            "resources/item_sets/magma",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/cinder_touch.tres"),
+        passive: Some("resources/passives/cinder_touch"),
         bonus_stats: [
             (
                 resource: physical_attack,
                 amount: 27.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/magma.tres"),
+                    Some("resources/item_sets/magma"),
                 ],
             ),
         ],
@@ -3656,13 +3656,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/magma_sabatons.tres",
+        id: "resources/items/magma_sabatons",
         name: "Magma Sabatons",
-        texture: Some("res://assets/textures/items/magma_sabatons.png"),
+        texture: Some("assets/textures/items/magma_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/magma.tres",
+            "resources/item_sets/magma",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3675,7 +3675,7 @@
                 amount: 12.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/magma.tres"),
+                    Some("resources/item_sets/magma"),
                 ],
             ),
             (
@@ -3697,14 +3697,14 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/marauders_helmet.tres",
+        id: "resources/items/marauders_helmet",
         name: "Marauder\'s Helmet",
-        texture: Some("res://assets/textures/items/marauders_helmet.png"),
+        texture: Some("assets/textures/items/marauders_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/silver.tres",
-            "res://resources/item_sets/mercenary.tres",
+            "resources/item_sets/silver",
+            "resources/item_sets/mercenary",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3717,7 +3717,7 @@
                 amount: 4.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/mercenary.tres"),
+                    Some("resources/item_sets/mercenary"),
                 ],
             ),
             (
@@ -3739,13 +3739,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/mask_of_cataclysm.tres",
+        id: "resources/items/mask_of_cataclysm",
         name: "Mask of Cataclysm",
-        texture: Some("res://assets/textures/items/mask_of_cataclysm.png"),
+        texture: Some("assets/textures/items/mask_of_cataclysm.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/cataclysm.tres",
+            "resources/item_sets/cataclysm",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3772,26 +3772,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/mask_of_the_cursed.tres",
+        id: "resources/items/mask_of_the_cursed",
         name: "Mask of the Cursed",
-        texture: Some("res://assets/textures/items/mask_of_the_cursed.png"),
+        texture: Some("assets/textures/items/mask_of_the_cursed.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/cursed.tres",
+            "resources/item_sets/cursed",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/evil_mark.tres"),
+        passive: Some("resources/passives/evil_mark"),
         bonus_stats: [
             (
                 resource: malice,
                 amount: 75.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/cursed.tres"),
+                    Some("resources/item_sets/cursed"),
                 ],
             ),
         ],
@@ -3807,13 +3807,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/merchant_upgrade.tres",
+        id: "resources/items/merchant_upgrade",
         name: "Merchant Upgrade",
-        texture: Some("res://assets/textures/items/cheese.png"),
-        bb_script: Some("res://resources/bb_scripts/merchant_upgrade.gd"),
+        texture: Some("assets/textures/items/cheese.png"),
+        bb_script: Some("resources/bb_scripts/merchant_upgrade.gd"),
         socket_type: None,
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3833,13 +3833,13 @@
         is_special: true,
     ),
     (
-        id: "res://resources/items/natures_collar.tres",
+        id: "resources/items/natures_collar",
         name: "Nature\'s Collar",
-        texture: Some("res://assets/textures/items/natures_collar.png"),
+        texture: Some("assets/textures/items/natures_collar.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/wood.tres",
+            "resources/item_sets/wood",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3866,13 +3866,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/natures_gift.tres",
+        id: "resources/items/natures_gift",
         name: "Nature\'s Gift",
-        texture: Some("res://assets/textures/items/natures_gift.png"),
+        texture: Some("assets/textures/items/natures_gift.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/wood.tres",
+            "resources/item_sets/wood",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3899,26 +3899,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/nighthorn.tres",
+        id: "resources/items/nighthorn",
         name: "Nighthorn",
-        texture: Some("res://assets/textures/items/nighthorn.png"),
+        texture: Some("assets/textures/items/nighthorn.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/chromalure.tres",
+            "resources/item_sets/chromalure",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/toxic_redemption.tres"),
+        passive: Some("resources/passives/toxic_redemption"),
         bonus_stats: [
             (
                 resource: toxicity,
                 amount: 25.0,
                 is_modifier: true,
                 boosting_sets: [
-                    Some("res://resources/item_sets/chromalure.tres"),
+                    Some("resources/item_sets/chromalure"),
                 ],
             ),
         ],
@@ -3934,13 +3934,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/omni_ring.tres",
+        id: "resources/items/omni_ring",
         name: "Omni Ring",
-        texture: Some("res://assets/textures/items/omni_ring.png"),
+        texture: Some("assets/textures/items/omni_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -3965,11 +3965,11 @@
         ],
         unlock_requirements: [
             (
-                item_resource: Some("res://resources/items/vitality_ring.tres"),
+                item_resource: Some("resources/items/vitality_ring"),
                 completed_battles: 10,
             ),
             (
-                item_resource: Some("res://resources/items/starborn_ring.tres"),
+                item_resource: Some("resources/items/starborn_ring"),
                 completed_battles: 10,
             ),
         ],
@@ -3984,13 +3984,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/orions_core.tres",
+        id: "resources/items/orions_core",
         name: "Orion\'s Core",
-        texture: Some("res://assets/textures/items/orions_core.png"),
+        texture: Some("assets/textures/items/orions_core.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/orion.tres",
+            "resources/item_sets/orion",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4003,7 +4003,7 @@
                 amount: 15.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/orion.tres"),
+                    Some("resources/item_sets/orion"),
                 ],
             ),
             (
@@ -4025,13 +4025,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/orions_destiny.tres",
+        id: "resources/items/orions_destiny",
         name: "Orion\'s Destiny",
-        texture: Some("res://assets/textures/items/orions_destiny.png"),
+        texture: Some("assets/textures/items/orions_destiny.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/orion.tres",
+            "resources/item_sets/orion",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4044,7 +4044,7 @@
                 amount: 12.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/orion.tres"),
+                    Some("resources/item_sets/orion"),
                 ],
             ),
             (
@@ -4052,7 +4052,7 @@
                 amount: 7.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/orion.tres"),
+                    Some("resources/item_sets/orion"),
                 ],
             ),
         ],
@@ -4068,26 +4068,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/orions_heart.tres",
+        id: "resources/items/orions_heart",
         name: "Orion\'s Heart",
-        texture: Some("res://assets/textures/items/orions_heart.png"),
+        texture: Some("assets/textures/items/orions_heart.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/orion.tres",
+            "resources/item_sets/orion",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/battleforged_heart.tres"),
+        passive: Some("resources/passives/battleforged_heart"),
         bonus_stats: [
             (
                 resource: max_health,
                 amount: 25.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/orion.tres"),
+                    Some("resources/item_sets/orion"),
                 ],
             ),
             (
@@ -4095,7 +4095,7 @@
                 amount: 10.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/orion.tres"),
+                    Some("resources/item_sets/orion"),
                 ],
             ),
         ],
@@ -4111,13 +4111,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/orions_leggings.tres",
+        id: "resources/items/orions_leggings",
         name: "Orion\'s Leggings",
-        texture: Some("res://assets/textures/items/orions_leggings.png"),
+        texture: Some("assets/textures/items/orions_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/orion.tres",
+            "resources/item_sets/orion",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4130,7 +4130,7 @@
                 amount: 8.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/orion.tres"),
+                    Some("resources/item_sets/orion"),
                 ],
             ),
         ],
@@ -4146,13 +4146,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/orions_path.tres",
+        id: "resources/items/orions_path",
         name: "Orion\'s Path",
-        texture: Some("res://assets/textures/items/orions_path.png"),
+        texture: Some("assets/textures/items/orions_path.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/orion.tres",
+            "resources/item_sets/orion",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4165,7 +4165,7 @@
                 amount: 6.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/orion.tres"),
+                    Some("resources/item_sets/orion"),
                 ],
             ),
         ],
@@ -4181,13 +4181,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/orions_rage.tres",
+        id: "resources/items/orions_rage",
         name: "Orion\'s Rage",
-        texture: Some("res://assets/textures/items/orions_rage.png"),
+        texture: Some("assets/textures/items/orions_rage.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/orion.tres",
+            "resources/item_sets/orion",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4200,7 +4200,7 @@
                 amount: 14.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/orion.tres"),
+                    Some("resources/item_sets/orion"),
                 ],
             ),
             (
@@ -4222,13 +4222,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/orions_sanguine_salvation.tres",
+        id: "resources/items/orions_sanguine_salvation",
         name: "Orion\'s Sanguine Salvation",
-        texture: Some("res://assets/textures/items/orions_sanguine_salvation.png"),
+        texture: Some("assets/textures/items/orions_sanguine_salvation.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/orion.tres",
+            "resources/item_sets/orion",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4241,7 +4241,7 @@
                 amount: 10.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/orion.tres"),
+                    Some("resources/item_sets/orion"),
                 ],
             ),
             (
@@ -4263,13 +4263,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/pallac.tres",
+        id: "resources/items/pallac",
         name: "Pallac",
-        texture: Some("res://assets/textures/items/pallac.png"),
+        texture: Some("assets/textures/items/pallac.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4289,13 +4289,13 @@
         is_special: true,
     ),
     (
-        id: "res://resources/items/pantaloons_of_greatness.tres",
+        id: "resources/items/pantaloons_of_greatness",
         name: "Pantaloons of Greatness",
-        texture: Some("res://assets/textures/items/pantaloons_of_greatness.png"),
+        texture: Some("assets/textures/items/pantaloons_of_greatness.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4330,13 +4330,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/poor_mans_blade.tres",
+        id: "resources/items/poor_mans_blade",
         name: "Poor Man\'s Blade",
-        texture: Some("res://assets/textures/items/poor_mans_blade.png"),
+        texture: Some("assets/textures/items/poor_mans_blade.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/poverty.tres",
+            "resources/item_sets/poverty",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4349,7 +4349,7 @@
                 amount: 1.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/poverty.tres"),
+                    Some("resources/item_sets/poverty"),
                 ],
             ),
         ],
@@ -4365,19 +4365,19 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/poor_mans_helmet.tres",
+        id: "resources/items/poor_mans_helmet",
         name: "Poor Man\'s Helmet",
-        texture: Some("res://assets/textures/items/poor_mans_helmet.png"),
+        texture: Some("assets/textures/items/poor_mans_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/poverty.tres",
+            "resources/item_sets/poverty",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/edge_of_death.tres"),
+        passive: Some("resources/passives/edge_of_death"),
         bonus_stats: [
             (
                 resource: armor,
@@ -4398,13 +4398,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/poor_mans_path.tres",
+        id: "resources/items/poor_mans_path",
         name: "Poor Man\'s Path",
-        texture: Some("res://assets/textures/items/poor_mans_path.png"),
+        texture: Some("assets/textures/items/poor_mans_path.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/poverty.tres",
+            "resources/item_sets/poverty",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4431,13 +4431,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/precious_ring.tres",
+        id: "resources/items/precious_ring",
         name: "Precious Ring",
-        texture: Some("res://assets/textures/items/precious_ring.png"),
+        texture: Some("assets/textures/items/precious_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/golden.tres",
+            "resources/item_sets/golden",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4450,7 +4450,7 @@
                 amount: 5.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/golden.tres"),
+                    Some("resources/item_sets/golden"),
                 ],
             ),
         ],
@@ -4466,14 +4466,14 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/qolk.tres",
+        id: "resources/items/qolk",
         name: "Qolk",
-        texture: Some("res://assets/textures/items/qolk.png"),
+        texture: Some("assets/textures/items/qolk.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/jade.tres",
-            "res://resources/item_sets/swiftness.tres",
+            "resources/item_sets/jade",
+            "resources/item_sets/swiftness",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4486,7 +4486,7 @@
                 amount: 12.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/jade.tres"),
+                    Some("resources/item_sets/jade"),
                 ],
             ),
             (
@@ -4508,13 +4508,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/recruits_boots.tres",
+        id: "resources/items/recruits_boots",
         name: "Recruit\'s Boots",
-        texture: Some("res://assets/textures/items/recruits_boots.png"),
+        texture: Some("assets/textures/items/recruits_boots.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/scout.tres",
+            "resources/item_sets/scout",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4541,13 +4541,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/recruits_cloak.tres",
+        id: "resources/items/recruits_cloak",
         name: "Recruit\'s Cloak",
-        texture: Some("res://assets/textures/items/recruits_cloak.png"),
+        texture: Some("assets/textures/items/recruits_cloak.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/scout.tres",
+            "resources/item_sets/scout",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4574,13 +4574,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/recruits_hood.tres",
+        id: "resources/items/recruits_hood",
         name: "Recruit\'s Hood",
-        texture: Some("res://assets/textures/items/recruits_hood.png"),
+        texture: Some("assets/textures/items/recruits_hood.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/scout.tres",
+            "resources/item_sets/scout",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4607,13 +4607,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/recruits_pants.tres",
+        id: "resources/items/recruits_pants",
         name: "Recruit\'s Pants",
-        texture: Some("res://assets/textures/items/recruits_pants.png"),
+        texture: Some("assets/textures/items/recruits_pants.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/scout.tres",
+            "resources/item_sets/scout",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4640,13 +4640,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/ribbon_of_fortune.tres",
+        id: "resources/items/ribbon_of_fortune",
         name: "Ribbon of Fortune",
-        texture: Some("res://assets/textures/items/ribbon_of_fortune.png"),
-        bb_script: Some("res://resources/bb_scripts/ribbon_of_fortune.gd"),
+        texture: Some("assets/textures/items/ribbon_of_fortune.png"),
+        bb_script: Some("resources/bb_scripts/ribbon_of_fortune.gd"),
         socket_type: None,
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4666,19 +4666,19 @@
         is_special: true,
     ),
     (
-        id: "res://resources/items/ring_of_anger.tres",
+        id: "resources/items/ring_of_anger",
         name: "Ring of Anger",
-        texture: Some("res://assets/textures/items/ring_of_anger.png"),
+        texture: Some("assets/textures/items/ring_of_anger.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/growing_anger.tres"),
+        passive: Some("resources/passives/growing_anger"),
         bonus_stats: [
             (
                 resource: crit_chance,
@@ -4699,13 +4699,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/ring_of_ice.tres",
+        id: "resources/items/ring_of_ice",
         name: "Ring of Ice",
-        texture: Some("res://assets/textures/items/ring_of_ice.png"),
+        texture: Some("assets/textures/items/ring_of_ice.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4732,19 +4732,19 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/ring_of_interest.tres",
+        id: "resources/items/ring_of_interest",
         name: "Ring of Interest",
-        texture: Some("res://assets/textures/items/ring_of_interest.png"),
+        texture: Some("assets/textures/items/ring_of_interest.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/absolution.tres"),
+        passive: Some("resources/passives/absolution"),
         bonus_stats: [
             (
                 resource: elemental_power,
@@ -4773,13 +4773,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/ring_of_power.tres",
+        id: "resources/items/ring_of_power",
         name: "Ring of Power",
-        texture: Some("res://assets/textures/items/ring_of_power.png"),
+        texture: Some("assets/textures/items/ring_of_power.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4806,19 +4806,19 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/ring_of_unity.tres",
+        id: "resources/items/ring_of_unity",
         name: "Ring of Unity",
-        texture: Some("res://assets/textures/items/ring_of_unity.png"),
+        texture: Some("assets/textures/items/ring_of_unity.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/legacy.tres",
+            "resources/item_sets/legacy",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/arcane_equilibrium.tres"),
+        passive: Some("resources/passives/arcane_equilibrium"),
         bonus_stats: [
             (
                 resource: wisdom,
@@ -4847,14 +4847,14 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/rod_of_doom.tres",
+        id: "resources/items/rod_of_doom",
         name: "Rod of Doom",
-        texture: Some("res://assets/textures/items/rod_of_doom.png"),
+        texture: Some("assets/textures/items/rod_of_doom.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/darkness.tres",
-            "res://resources/item_sets/wood.tres",
+            "resources/item_sets/darkness",
+            "resources/item_sets/wood",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4881,13 +4881,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/royal_chestplate.tres",
+        id: "resources/items/royal_chestplate",
         name: "Royal Chestplate",
-        texture: Some("res://assets/textures/items/royal_chestplate.png"),
+        texture: Some("assets/textures/items/royal_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/royal.tres",
+            "resources/item_sets/royal",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4900,7 +4900,7 @@
                 amount: 14.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/royal.tres"),
+                    Some("resources/item_sets/royal"),
                 ],
             ),
             (
@@ -4908,7 +4908,7 @@
                 amount: 12.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/silver.tres"),
+                    Some("resources/item_sets/silver"),
                 ],
             ),
             (
@@ -4930,13 +4930,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/royal_helmet.tres",
+        id: "resources/items/royal_helmet",
         name: "Royal Helmet",
-        texture: Some("res://assets/textures/items/royal_helmet.png"),
+        texture: Some("assets/textures/items/royal_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/royal.tres",
+            "resources/item_sets/royal",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4949,7 +4949,7 @@
                 amount: 10.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/royal.tres"),
+                    Some("resources/item_sets/royal"),
                 ],
             ),
             (
@@ -4957,7 +4957,7 @@
                 amount: 8.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/silver.tres"),
+                    Some("resources/item_sets/silver"),
                 ],
             ),
             (
@@ -4979,13 +4979,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/royal_leggings.tres",
+        id: "resources/items/royal_leggings",
         name: "Royal Leggings",
-        texture: Some("res://assets/textures/items/royal_leggings.png"),
+        texture: Some("assets/textures/items/royal_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/royal.tres",
+            "resources/item_sets/royal",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -4998,7 +4998,7 @@
                 amount: 12.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/royal.tres"),
+                    Some("resources/item_sets/royal"),
                 ],
             ),
             (
@@ -5006,7 +5006,7 @@
                 amount: 10.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/silver.tres"),
+                    Some("resources/item_sets/silver"),
                 ],
             ),
             (
@@ -5028,13 +5028,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/royal_sabatons.tres",
+        id: "resources/items/royal_sabatons",
         name: "Royal Sabatons",
-        texture: Some("res://assets/textures/items/royal_sabatons.png"),
+        texture: Some("assets/textures/items/royal_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/royal.tres",
+            "resources/item_sets/royal",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5047,7 +5047,7 @@
                 amount: 8.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/royal.tres"),
+                    Some("resources/item_sets/royal"),
                 ],
             ),
             (
@@ -5055,7 +5055,7 @@
                 amount: 6.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/silver.tres"),
+                    Some("resources/item_sets/silver"),
                 ],
             ),
             (
@@ -5077,13 +5077,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/shadow_cloak.tres",
+        id: "resources/items/shadow_cloak",
         name: "Shadow Cloak",
-        texture: Some("res://assets/textures/items/shadow_cloak.png"),
+        texture: Some("assets/textures/items/shadow_cloak.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/shadow.tres",
+            "resources/item_sets/shadow",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5118,13 +5118,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/shadow_echo.tres",
+        id: "resources/items/shadow_echo",
         name: "Shadow Echo",
-        texture: Some("res://assets/textures/items/shadow_echo.png"),
+        texture: Some("assets/textures/items/shadow_echo.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/shadow.tres",
+            "resources/item_sets/shadow",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5137,7 +5137,7 @@
                 amount: 8.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/shadow.tres"),
+                    Some("resources/item_sets/shadow"),
                 ],
             ),
         ],
@@ -5153,13 +5153,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/shadow_piercer.tres",
+        id: "resources/items/shadow_piercer",
         name: "Shadow Piercer",
-        texture: Some("res://assets/textures/items/shadow_piercer.png"),
+        texture: Some("assets/textures/items/shadow_piercer.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/shadow.tres",
+            "resources/item_sets/shadow",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5172,7 +5172,7 @@
                 amount: 5.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/shadow.tres"),
+                    Some("resources/item_sets/shadow"),
                 ],
             ),
             (
@@ -5194,13 +5194,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/shadow_ring.tres",
+        id: "resources/items/shadow_ring",
         name: "Shadow Ring",
-        texture: Some("res://assets/textures/items/shadow_ring.png"),
+        texture: Some("assets/textures/items/shadow_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/shadow.tres",
+            "resources/item_sets/shadow",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5213,7 +5213,7 @@
                 amount: 10.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/shadow.tres"),
+                    Some("resources/item_sets/shadow"),
                 ],
             ),
             (
@@ -5235,14 +5235,14 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/shadow_sentence.tres",
+        id: "resources/items/shadow_sentence",
         name: "Shadow Sentence",
-        texture: Some("res://assets/textures/items/shadow_sentence.png"),
+        texture: Some("assets/textures/items/shadow_sentence.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/shadow.tres",
-            "res://resources/item_sets/swiftness.tres",
+            "resources/item_sets/shadow",
+            "resources/item_sets/swiftness",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5255,7 +5255,7 @@
                 amount: 7.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/shadow.tres"),
+                    Some("resources/item_sets/shadow"),
                 ],
             ),
             (
@@ -5277,13 +5277,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/shadow_vortex.tres",
+        id: "resources/items/shadow_vortex",
         name: "Shadow Vortex",
-        texture: Some("res://assets/textures/items/shadow_vortex.png"),
+        texture: Some("assets/textures/items/shadow_vortex.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/shadow.tres",
+            "resources/item_sets/shadow",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5296,7 +5296,7 @@
                 amount: 7.0,
                 is_modifier: true,
                 boosting_sets: [
-                    Some("res://resources/item_sets/shadow.tres"),
+                    Some("resources/item_sets/shadow"),
                 ],
             ),
         ],
@@ -5312,13 +5312,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/shadow_whisper.tres",
+        id: "resources/items/shadow_whisper",
         name: "Shadow Whisper",
-        texture: Some("res://assets/textures/items/shadow_whisper.png"),
+        texture: Some("assets/textures/items/shadow_whisper.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/shadow.tres",
+            "resources/item_sets/shadow",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5331,7 +5331,7 @@
                 amount: 17.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/shadow.tres"),
+                    Some("resources/item_sets/shadow"),
                 ],
             ),
             (
@@ -5353,13 +5353,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/shadow_wisdom.tres",
+        id: "resources/items/shadow_wisdom",
         name: "Shadow Wisdom",
-        texture: Some("res://assets/textures/items/shadow_wisdom.png"),
+        texture: Some("assets/textures/items/shadow_wisdom.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/shadow.tres",
+            "resources/item_sets/shadow",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5372,7 +5372,7 @@
                 amount: 10.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/shadow.tres"),
+                    Some("resources/item_sets/shadow"),
                 ],
             ),
         ],
@@ -5388,26 +5388,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/shamans_robe.tres",
+        id: "resources/items/shamans_robe",
         name: "Shaman\'s Robe",
-        texture: Some("res://assets/textures/items/shamans_robe.png"),
+        texture: Some("assets/textures/items/shamans_robe.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/cursed.tres",
+            "resources/item_sets/cursed",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/empty_bastion.tres"),
+        passive: Some("resources/passives/empty_bastion"),
         bonus_stats: [
             (
                 resource: wisdom,
                 amount: 25.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/cursed.tres"),
+                    Some("resources/item_sets/cursed"),
                 ],
             ),
         ],
@@ -5423,13 +5423,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/shard_of_power.tres",
+        id: "resources/items/shard_of_power",
         name: "Shard of Power",
-        texture: Some("res://assets/textures/items/shard_of_power.png"),
+        texture: Some("assets/textures/items/shard_of_power.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5464,14 +5464,14 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/silver_axe.tres",
+        id: "resources/items/silver_axe",
         name: "Silver Axe",
-        texture: Some("res://assets/textures/items/silver_axe.png"),
+        texture: Some("assets/textures/items/silver_axe.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/silver.tres",
-            "res://resources/item_sets/swiftness.tres",
+            "resources/item_sets/silver",
+            "resources/item_sets/swiftness",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5484,7 +5484,7 @@
                 amount: 8.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/silver.tres"),
+                    Some("resources/item_sets/silver"),
                 ],
             ),
         ],
@@ -5500,13 +5500,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/silver_chestplate.tres",
+        id: "resources/items/silver_chestplate",
         name: "Silver Chestplate",
-        texture: Some("res://assets/textures/items/silver_chestplate.png"),
+        texture: Some("assets/textures/items/silver_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/silver.tres",
+            "resources/item_sets/silver",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5533,13 +5533,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/silver_heart.tres",
+        id: "resources/items/silver_heart",
         name: "Silver Heart",
-        texture: Some("res://assets/textures/items/silver_heart.png"),
+        texture: Some("assets/textures/items/silver_heart.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/silver.tres",
+            "resources/item_sets/silver",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5552,7 +5552,7 @@
                 amount: 25.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/silver.tres"),
+                    Some("resources/item_sets/silver"),
                 ],
             ),
             (
@@ -5570,11 +5570,11 @@
         ],
         unlock_requirements: [
             (
-                item_resource: Some("res://resources/items/silver_chestplate.tres"),
+                item_resource: Some("resources/items/silver_chestplate"),
                 completed_battles: 18,
             ),
             (
-                item_resource: Some("res://resources/items/life_seeker.tres"),
+                item_resource: Some("resources/items/life_seeker"),
                 completed_battles: 12,
             ),
         ],
@@ -5589,13 +5589,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/silver_helmet.tres",
+        id: "resources/items/silver_helmet",
         name: "Silver Helmet",
-        texture: Some("res://assets/textures/items/silver_helmet.png"),
+        texture: Some("assets/textures/items/silver_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/silver.tres",
+            "resources/item_sets/silver",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5622,13 +5622,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/silver_leggings.tres",
+        id: "resources/items/silver_leggings",
         name: "Silver Leggings",
-        texture: Some("res://assets/textures/items/silver_leggings.png"),
+        texture: Some("assets/textures/items/silver_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/silver.tres",
+            "resources/item_sets/silver",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5655,13 +5655,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/silver_ring.tres",
+        id: "resources/items/silver_ring",
         name: "Silver Ring",
-        texture: Some("res://assets/textures/items/silver_ring.png"),
+        texture: Some("assets/textures/items/silver_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/silver.tres",
+            "resources/item_sets/silver",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5688,13 +5688,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/silver_sabatons.tres",
+        id: "resources/items/silver_sabatons",
         name: "Silver Sabatons",
-        texture: Some("res://assets/textures/items/silver_sabatons.png"),
+        texture: Some("assets/textures/items/silver_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/silver.tres",
+            "resources/item_sets/silver",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5721,13 +5721,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/silver_sword.tres",
+        id: "resources/items/silver_sword",
         name: "Silver Sword",
-        texture: Some("res://assets/textures/items/silver_sword.png"),
+        texture: Some("assets/textures/items/silver_sword.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/silver.tres",
+            "resources/item_sets/silver",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5754,13 +5754,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/soul_collector.tres",
+        id: "resources/items/soul_collector",
         name: "Soul Collector",
-        texture: Some("res://assets/textures/items/soul_collector.png"),
+        texture: Some("assets/textures/items/soul_collector.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5795,13 +5795,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/starborn_ring.tres",
+        id: "resources/items/starborn_ring",
         name: "Starborn Ring",
-        texture: Some("res://assets/textures/items/starborn_ring.png"),
+        texture: Some("assets/textures/items/starborn_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5828,13 +5828,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/steak.tres",
+        id: "resources/items/steak",
         name: "Steak",
-        texture: Some("res://assets/textures/items/steak.png"),
+        texture: Some("assets/textures/items/steak.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5854,13 +5854,13 @@
         is_special: true,
     ),
     (
-        id: "res://resources/items/throngler.tres",
+        id: "resources/items/throngler",
         name: "Throngler",
-        texture: Some("res://assets/textures/items/throngler.png"),
+        texture: Some("assets/textures/items/throngler.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5903,26 +5903,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/thunderblade.tres",
+        id: "resources/items/thunderblade",
         name: "Thunderblade",
-        texture: Some("res://assets/textures/items/thunderblade.png"),
+        texture: Some("assets/textures/items/thunderblade.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/thunder.tres",
+            "resources/item_sets/thunder",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/thunderstrike.tres"),
+        passive: Some("resources/passives/thunderstrike"),
         bonus_stats: [
             (
                 resource: magic_attack,
                 amount: 12.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/thunder.tres"),
+                    Some("resources/item_sets/thunder"),
                 ],
             ),
             (
@@ -5944,13 +5944,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/thundergrace.tres",
+        id: "resources/items/thundergrace",
         name: "Thundergrace",
-        texture: Some("res://assets/textures/items/thundergrace.png"),
+        texture: Some("assets/textures/items/thundergrace.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/thunder.tres",
+            "resources/item_sets/thunder",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5963,7 +5963,7 @@
                 amount: 25.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/thunder.tres"),
+                    Some("resources/item_sets/thunder"),
                 ],
             ),
         ],
@@ -5979,13 +5979,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/thunderhelm.tres",
+        id: "resources/items/thunderhelm",
         name: "Thunderhelm",
-        texture: Some("res://assets/textures/items/thunderhelm.png"),
+        texture: Some("assets/textures/items/thunderhelm.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/thunder.tres",
+            "resources/item_sets/thunder",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -5998,7 +5998,7 @@
                 amount: 10.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/thunder.tres"),
+                    Some("resources/item_sets/thunder"),
                 ],
             ),
             (
@@ -6020,13 +6020,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/thunderiders.tres",
+        id: "resources/items/thunderiders",
         name: "Thunderiders",
-        texture: Some("res://assets/textures/items/thunderiders.png"),
+        texture: Some("assets/textures/items/thunderiders.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/thunder.tres",
+            "resources/item_sets/thunder",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6039,7 +6039,7 @@
                 amount: 7.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/thunder.tres"),
+                    Some("resources/item_sets/thunder"),
                 ],
             ),
             (
@@ -6061,13 +6061,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/thunderstriders.tres",
+        id: "resources/items/thunderstriders",
         name: "Thunderstriders",
-        texture: Some("res://assets/textures/items/thunderstriders.png"),
+        texture: Some("assets/textures/items/thunderstriders.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/thunder.tres",
+            "resources/item_sets/thunder",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6080,7 +6080,7 @@
                 amount: 14.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/thunder.tres"),
+                    Some("resources/item_sets/thunder"),
                 ],
             ),
             (
@@ -6102,13 +6102,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/thundervow.tres",
+        id: "resources/items/thundervow",
         name: "Thundervow",
-        texture: Some("res://assets/textures/items/thundervow.png"),
+        texture: Some("assets/textures/items/thundervow.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/thunder.tres",
+            "resources/item_sets/thunder",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6121,7 +6121,7 @@
                 amount: 17.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/thunder.tres"),
+                    Some("resources/item_sets/thunder"),
                 ],
             ),
             (
@@ -6143,17 +6143,17 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/tome_of_arcanum.tres",
+        id: "resources/items/tome_of_arcanum",
         name: "Tome of Arcanum",
-        texture: Some("res://assets/textures/items/tome_of_arcanum.png"),
+        texture: Some("assets/textures/items/tome_of_arcanum.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
-        ability_to_learn: Some("res://resources/abilities/barrier.tres"),
+        ability_to_learn: Some("resources/abilities/barrier"),
         stat_to_adapt: None,
         passive: None,
         bonus_stats: [],
@@ -6169,17 +6169,17 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/tome_of_attacks.tres",
+        id: "resources/items/tome_of_attacks",
         name: "Tome of Attacks",
-        texture: Some("res://assets/textures/items/tome_of_attacks.png"),
+        texture: Some("assets/textures/items/tome_of_attacks.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
-        ability_to_learn: Some("res://resources/abilities/steady_grip.tres"),
+        ability_to_learn: Some("resources/abilities/steady_grip"),
         stat_to_adapt: None,
         passive: None,
         bonus_stats: [],
@@ -6195,17 +6195,17 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/tome_of_darkness.tres",
+        id: "resources/items/tome_of_darkness",
         name: "Tome of Darkness",
-        texture: Some("res://assets/textures/items/tome_of_darkness.png"),
+        texture: Some("assets/textures/items/tome_of_darkness.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
-        ability_to_learn: Some("res://resources/abilities/mind_control.tres"),
+        ability_to_learn: Some("resources/abilities/mind_control"),
         stat_to_adapt: None,
         passive: None,
         bonus_stats: [],
@@ -6221,13 +6221,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/totem_of_greed.tres",
+        id: "resources/items/totem_of_greed",
         name: "Totem of Greed",
-        texture: Some("res://assets/textures/items/totem_of_greed.png"),
+        texture: Some("assets/textures/items/totem_of_greed.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6254,13 +6254,13 @@
         is_special: true,
     ),
     (
-        id: "res://resources/items/training_axe.tres",
+        id: "resources/items/training_axe",
         name: "Training Axe",
-        texture: Some("res://assets/textures/items/training_axe.png"),
+        texture: Some("assets/textures/items/training_axe.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/wood.tres",
+            "resources/item_sets/wood",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6287,19 +6287,19 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/training_hammer.tres",
+        id: "resources/items/training_hammer",
         name: "Training Hammer",
-        texture: Some("res://assets/textures/items/training_hammer.png"),
+        texture: Some("assets/textures/items/training_hammer.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/wood.tres",
+            "resources/item_sets/wood",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/faultbreaker.tres"),
+        passive: Some("resources/passives/faultbreaker"),
         bonus_stats: [
             (
                 resource: physical_attack,
@@ -6320,14 +6320,14 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/training_sword.tres",
+        id: "resources/items/training_sword",
         name: "Training Sword",
-        texture: Some("res://assets/textures/items/training_sword.png"),
+        texture: Some("assets/textures/items/training_sword.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/wood.tres",
-            "res://resources/item_sets/swiftness.tres",
+            "resources/item_sets/wood",
+            "resources/item_sets/swiftness",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6354,13 +6354,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/turtle_chestplate.tres",
+        id: "resources/items/turtle_chestplate",
         name: "Turtle Chestplate",
-        texture: Some("res://assets/textures/items/turtle_chestplate.png"),
+        texture: Some("assets/textures/items/turtle_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/ancient_shell.tres",
+            "resources/item_sets/ancient_shell",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6373,7 +6373,7 @@
                 amount: 25.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/items/turtle_chestplate.tres::Resource_oeg16"),
+                    Some("resources/items/turtle_chestplate::Resource_oeg16"),
                 ],
             ),
             (
@@ -6395,13 +6395,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/turtle_gauntlet.tres",
+        id: "resources/items/turtle_gauntlet",
         name: "Turtle Gauntlet",
-        texture: Some("res://assets/textures/items/turtle_gauntlet.png"),
+        texture: Some("assets/textures/items/turtle_gauntlet.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/ancient_shell.tres",
+            "resources/item_sets/ancient_shell",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6428,13 +6428,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/turtle_leggings.tres",
+        id: "resources/items/turtle_leggings",
         name: "Turtle Leggings",
-        texture: Some("res://assets/textures/items/turtle_leggings.png"),
+        texture: Some("assets/textures/items/turtle_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/ancient_shell.tres",
+            "resources/item_sets/ancient_shell",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6447,7 +6447,7 @@
                 amount: 20.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/ancient_shell.tres"),
+                    Some("resources/item_sets/ancient_shell"),
                 ],
             ),
             (
@@ -6469,13 +6469,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/turtle_sabatons.tres",
+        id: "resources/items/turtle_sabatons",
         name: "Turtle Sabatons",
-        texture: Some("res://assets/textures/items/turtle_sabatons.png"),
+        texture: Some("assets/textures/items/turtle_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/ancient_shell.tres",
+            "resources/item_sets/ancient_shell",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6488,7 +6488,7 @@
                 amount: 10.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/ancient_shell.tres"),
+                    Some("resources/item_sets/ancient_shell"),
                 ],
             ),
             (
@@ -6510,19 +6510,19 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/unchained_gauntlet.tres",
+        id: "resources/items/unchained_gauntlet",
         name: "Unchained Gauntlet",
-        texture: Some("res://assets/textures/items/unchained_gauntlet.png"),
+        texture: Some("assets/textures/items/unchained_gauntlet.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/unchained.tres",
+            "resources/item_sets/unchained",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/mimicry.tres"),
+        passive: Some("resources/passives/mimicry"),
         bonus_stats: [
             (
                 resource: adaptive_attack,
@@ -6543,19 +6543,19 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/unchained_ring.tres",
+        id: "resources/items/unchained_ring",
         name: "Unchained Ring",
-        texture: Some("res://assets/textures/items/unchained_ring.png"),
+        texture: Some("assets/textures/items/unchained_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/unchained.tres",
+            "resources/item_sets/unchained",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/liberation.tres"),
+        passive: Some("resources/passives/liberation"),
         bonus_stats: [
             (
                 resource: adaptive_attack,
@@ -6576,13 +6576,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/vampiric_chestplate.tres",
+        id: "resources/items/vampiric_chestplate",
         name: "Vampiric Chestplate",
-        texture: Some("res://assets/textures/items/vampiric_chestplate.png"),
+        texture: Some("assets/textures/items/vampiric_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/vampiric.tres",
+            "resources/item_sets/vampiric",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6595,7 +6595,7 @@
                 amount: 17.0,
                 is_modifier: true,
                 boosting_sets: [
-                    Some("res://resources/item_sets/vampiric.tres"),
+                    Some("resources/item_sets/vampiric"),
                 ],
             ),
             (
@@ -6617,13 +6617,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/vampiric_helmet.tres",
+        id: "resources/items/vampiric_helmet",
         name: "Vampiric Helmet",
-        texture: Some("res://assets/textures/items/vampiric_helmet.png"),
+        texture: Some("assets/textures/items/vampiric_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/vampiric.tres",
+            "resources/item_sets/vampiric",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6636,7 +6636,7 @@
                 amount: 13.0,
                 is_modifier: true,
                 boosting_sets: [
-                    Some("res://resources/item_sets/vampiric.tres"),
+                    Some("resources/item_sets/vampiric"),
                 ],
             ),
             (
@@ -6658,13 +6658,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/vitality_ring.tres",
+        id: "resources/items/vitality_ring",
         name: "Vitality Ring",
-        texture: Some("res://assets/textures/items/vitality_ring.png"),
+        texture: Some("assets/textures/items/vitality_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6691,26 +6691,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/vurk.tres",
+        id: "resources/items/vurk",
         name: "Vurk",
-        texture: Some("res://assets/textures/items/vurk.png"),
+        texture: Some("assets/textures/items/vurk.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/jade.tres",
+            "resources/item_sets/jade",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/crystal_hardening.tres"),
+        passive: Some("resources/passives/crystal_hardening"),
         bonus_stats: [
             (
                 resource: dazzle,
                 amount: 21.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/jade.tres"),
+                    Some("resources/item_sets/jade"),
                 ],
             ),
             (
@@ -6718,7 +6718,7 @@
                 amount: 18.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/jade.tres"),
+                    Some("resources/item_sets/jade"),
                 ],
             ),
         ],
@@ -6734,13 +6734,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/warriors_chestplate.tres",
+        id: "resources/items/warriors_chestplate",
         name: "Warrior\'s Chestplate",
-        texture: Some("res://assets/textures/items/warriors_chestplate.png"),
+        texture: Some("assets/textures/items/warriors_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/warrior.tres",
+            "resources/item_sets/warrior",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6767,26 +6767,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/warriors_helmet.tres",
+        id: "resources/items/warriors_helmet",
         name: "Warrior\'s Helmet",
-        texture: Some("res://assets/textures/items/warriors_helmet.png"),
+        texture: Some("assets/textures/items/warriors_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/warrior.tres",
+            "resources/item_sets/warrior",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/warriors_resolute.tres"),
+        passive: Some("resources/passives/warriors_resolute"),
         bonus_stats: [
             (
                 resource: combat,
                 amount: 15.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/warrior.tres"),
+                    Some("resources/item_sets/warrior"),
                 ],
             ),
             (
@@ -6808,13 +6808,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/warriors_leggings.tres",
+        id: "resources/items/warriors_leggings",
         name: "Warrior\'s Leggings",
-        texture: Some("res://assets/textures/items/warriors_leggings.png"),
+        texture: Some("assets/textures/items/warriors_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
-            "res://resources/item_sets/warrior.tres",
+            "resources/item_sets/warrior",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6841,26 +6841,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/warriors_ring.tres",
+        id: "resources/items/warriors_ring",
         name: "Warrior\'s Ring",
-        texture: Some("res://assets/textures/items/warriors_ring.png"),
+        texture: Some("assets/textures/items/warriors_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/warrior.tres",
+            "resources/item_sets/warrior",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/combat_instinct.tres"),
+        passive: Some("resources/passives/combat_instinct"),
         bonus_stats: [
             (
                 resource: max_health,
                 amount: 10.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/warrior.tres"),
+                    Some("resources/item_sets/warrior"),
                 ],
             ),
             (
@@ -6882,13 +6882,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/warriors_sabatons.tres",
+        id: "resources/items/warriors_sabatons",
         name: "Warrior\'s Sabatons",
-        texture: Some("res://assets/textures/items/warriors_sabatons.png"),
+        texture: Some("assets/textures/items/warriors_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/warrior.tres",
+            "resources/item_sets/warrior",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6915,26 +6915,26 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/warriors_war_hammer.tres",
+        id: "resources/items/warriors_war_hammer",
         name: "Warrior\'s War Hammer",
-        texture: Some("res://assets/textures/items/warriors_war_hammer.png"),
+        texture: Some("assets/textures/items/warriors_war_hammer.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/warrior.tres",
+            "resources/item_sets/warrior",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/faultbreaker.tres"),
+        passive: Some("resources/passives/faultbreaker"),
         bonus_stats: [
             (
                 resource: physical_attack,
                 amount: 8.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/warrior.tres"),
+                    Some("resources/item_sets/warrior"),
                 ],
             ),
         ],
@@ -6950,13 +6950,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/witchcraft_leggings.tres",
+        id: "resources/items/witchcraft_leggings",
         name: "Witchcraft Leggings",
-        texture: Some("res://assets/textures/items/witchcraft_leggings.png"),
+        texture: Some("assets/textures/items/witchcraft_leggings.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/cursed.tres",
+            "resources/item_sets/cursed",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -6969,7 +6969,7 @@
                 amount: 25.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/cursed.tres"),
+                    Some("resources/item_sets/cursed"),
                 ],
             ),
         ],
@@ -6985,14 +6985,14 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/witherscar.tres",
+        id: "resources/items/witherscar",
         name: "Witherscar",
-        texture: Some("res://assets/textures/items/witherscar.png"),
+        texture: Some("assets/textures/items/witherscar.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/chromalure.tres",
-            "res://resources/item_sets/swiftness.tres",
+            "resources/item_sets/chromalure",
+            "resources/item_sets/swiftness",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -7027,13 +7027,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/wooden_crown.tres",
+        id: "resources/items/wooden_crown",
         name: "Wooden Crown",
-        texture: Some("res://assets/textures/items/wooden_crown.png"),
+        texture: Some("assets/textures/items/wooden_crown.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/wood.tres",
+            "resources/item_sets/wood",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -7046,7 +7046,7 @@
                 amount: 45.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/wood.tres"),
+                    Some("resources/item_sets/wood"),
                 ],
             ),
             (
@@ -7054,21 +7054,21 @@
                 amount: 25.0,
                 is_modifier: true,
                 boosting_sets: [
-                    Some("res://resources/item_sets/wood.tres"),
+                    Some("resources/item_sets/wood"),
                 ],
             ),
         ],
         unlock_requirements: [
             (
-                item_resource: Some("res://resources/items/training_hammer.tres"),
+                item_resource: Some("resources/items/training_hammer"),
                 completed_battles: 12,
             ),
             (
-                item_resource: Some("res://resources/items/training_sword.tres"),
+                item_resource: Some("resources/items/training_sword"),
                 completed_battles: 12,
             ),
             (
-                item_resource: Some("res://resources/items/training_axe.tres"),
+                item_resource: Some("resources/items/training_axe"),
                 completed_battles: 12,
             ),
         ],
@@ -7083,13 +7083,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/wooden_plates.tres",
+        id: "resources/items/wooden_plates",
         name: "Wooden Plates",
-        texture: Some("res://assets/textures/items/wooden_plates.png"),
+        texture: Some("assets/textures/items/wooden_plates.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/wood.tres",
+            "resources/item_sets/wood",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -7116,13 +7116,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/wooden_shoes.tres",
+        id: "resources/items/wooden_shoes",
         name: "Wooden Shoes",
-        texture: Some("res://assets/textures/items/wooden_shoes.png"),
+        texture: Some("assets/textures/items/wooden_shoes.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/wood.tres",
+            "resources/item_sets/wood",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -7149,13 +7149,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/zefrot.tres",
+        id: "resources/items/zefrot",
         name: "Zefrot",
-        texture: Some("res://assets/textures/items/zefrot.png"),
+        texture: Some("assets/textures/items/zefrot.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -7175,19 +7175,19 @@
         is_special: true,
     ),
     (
-        id: "res://resources/items/zephyrons_eye.tres",
+        id: "resources/items/zephyrons_eye",
         name: "Zephyron\'s Eye",
-        texture: Some("res://assets/textures/items/zephyrons_eye.png"),
+        texture: Some("assets/textures/items/zephyrons_eye.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
-            "res://resources/item_sets/zephyron.tres",
+            "resources/item_sets/zephyron",
         ],
         consumption_effect: None,
         activation_effect: None,
         ability_to_learn: None,
         stat_to_adapt: None,
-        passive: Some("res://resources/passives/spell_block.tres"),
+        passive: Some("resources/passives/spell_block"),
         bonus_stats: [
             (
                 resource: wisdom,
@@ -7208,13 +7208,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/zephyrons_magical_cap.tres",
+        id: "resources/items/zephyrons_magical_cap",
         name: "Zephyron\'s Magical Cap",
-        texture: Some("res://assets/textures/items/zephyrons_magical_cap.png"),
+        texture: Some("assets/textures/items/zephyrons_magical_cap.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
-            "res://resources/item_sets/zephyron.tres",
+            "resources/item_sets/zephyron",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -7241,13 +7241,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/zephyrons_magical_cloak.tres",
+        id: "resources/items/zephyrons_magical_cloak",
         name: "Zephyron\'s Magical Cloak",
-        texture: Some("res://assets/textures/items/zephyrons_magical_cloak.png"),
+        texture: Some("assets/textures/items/zephyrons_magical_cloak.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
-            "res://resources/item_sets/zephyron.tres",
+            "resources/item_sets/zephyron",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -7274,13 +7274,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/zephyrons_magical_ring.tres",
+        id: "resources/items/zephyrons_magical_ring",
         name: "Zephyron\'s Magical Ring",
-        texture: Some("res://assets/textures/items/zephyrons_magical_ring.png"),
+        texture: Some("assets/textures/items/zephyrons_magical_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
-            "res://resources/item_sets/zephyron.tres",
+            "resources/item_sets/zephyron",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -7293,7 +7293,7 @@
                 amount: 14.0,
                 is_modifier: false,
                 boosting_sets: [
-                    Some("res://resources/item_sets/zephyron.tres"),
+                    Some("resources/item_sets/zephyron"),
                 ],
             ),
         ],
@@ -7309,13 +7309,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/zephyrons_magical_shoes.tres",
+        id: "resources/items/zephyrons_magical_shoes",
         name: "Zephyron\'s Magical Shoes",
-        texture: Some("res://assets/textures/items/zephyrons_magical_shoes.png"),
+        texture: Some("assets/textures/items/zephyrons_magical_shoes.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
-            "res://resources/item_sets/zephyron.tres",
+            "resources/item_sets/zephyron",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -7342,13 +7342,13 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/zephyrons_magical_staff.tres",
+        id: "resources/items/zephyrons_magical_staff",
         name: "Zephyron\'s Magical Staff",
-        texture: Some("res://assets/textures/items/zephyrons_magical_staff.png"),
+        texture: Some("assets/textures/items/zephyrons_magical_staff.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
-            "res://resources/item_sets/zephyron.tres",
+            "resources/item_sets/zephyron",
         ],
         consumption_effect: None,
         activation_effect: None,
@@ -7375,17 +7375,17 @@
         is_special: false,
     ),
     (
-        id: "res://resources/items/zephyrons_tome.tres",
+        id: "resources/items/zephyrons_tome",
         name: "Zephyron\'s Tome",
-        texture: Some("res://assets/textures/items/zephyrons_tome.png"),
+        texture: Some("assets/textures/items/zephyrons_tome.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
-            "res://resources/item_sets/generic.tres",
+            "resources/item_sets/generic",
         ],
         consumption_effect: None,
         activation_effect: None,
-        ability_to_learn: Some("res://resources/abilities/spell_bind.tres"),
+        ability_to_learn: Some("resources/abilities/spell_bind"),
         stat_to_adapt: None,
         passive: None,
         bonus_stats: [],

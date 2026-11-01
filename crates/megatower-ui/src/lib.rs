@@ -76,7 +76,7 @@ use compose::{
 use frame::{adventurer_cells, select_draws};
 pub use frame::{refresh, run_action};
 pub use input::{FrameInput, ScriptedInput};
-use megatower_assets::godot_layout::recovered_layout;
+use megatower_assets::ui_layout::recovered_layout;
 use megatower_core::combat::turn::TurnType;
 use megatower_core::run::{
     events::{FlashKind, Fx, Popup},
@@ -103,7 +103,7 @@ pub struct GameSlot(pub Option<Game>);
 #[auto_insert_resource(plugin = UiPlugin, insert(UiRes(UiState::default())))]
 pub struct UiRes(pub UiState);
 
-/// Rectangles of the Godot-resolved gameplay canvas.
+/// Rectangles of the gameplay canvas.
 #[derive(Resource)]
 #[auto_insert_resource(plugin = UiPlugin, insert(RectsRes(Rects::from_layout(&recovered_layout()))))]
 pub struct RectsRes(pub Rects);
@@ -122,7 +122,7 @@ pub enum UiSystems {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use megatower_assets::godot_layout::recovered_layout;
+    use megatower_assets::ui_layout::recovered_layout;
     use megatower_core::run::gameplay::NewRun;
 
     /// Compose the HUD at every step of bot-driven runs, in every tab, with the

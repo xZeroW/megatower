@@ -4,7 +4,7 @@
 //! false, exactly like a freed Object.
 
 use super::BattleTurnDirection;
-use crate::rng::GodotRng;
+use crate::rng::GameRng;
 use crate::{
     character::runtime::CharacterStats,
     combat::profile::{BattleProfile, cleanup_profile},
@@ -72,7 +72,7 @@ pub fn wrapi(value: i32, min: i32, max: i32) -> i32 {
 }
 
 /// GDScript array indexing: negative indexes count from the end; anything
-/// else out of range is Godot's error + null, which is `None` here.
+/// else out of range is the original game's error + null, which is `None` here.
 fn at<T: Copy>(values: &[T], index: i32) -> Option<T> {
     let index = if index < 0 {
         values.len() as i32 + index
@@ -137,7 +137,7 @@ impl Battle {
         !self.enemies_in_combat(world).is_empty() || self.next_enemies != [None; 3]
     }
 
-    pub fn random_enemy_in_combat(&self, world: &World, rng: &mut GodotRng) -> Option<Entity> {
+    pub fn random_enemy_in_combat(&self, world: &World, rng: &mut GameRng) -> Option<Entity> {
         let enemies = self.enemies_in_combat(world);
         if enemies.is_empty() {
             return None;

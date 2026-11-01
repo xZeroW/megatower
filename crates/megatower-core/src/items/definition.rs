@@ -114,7 +114,7 @@ impl Default for ItemDefinition {
             texture: None,
             bb_script: None,
             socket_type: None,
-            set_resources: vec!["res://resources/item_sets/generic.tres".into()],
+            set_resources: vec!["resources/item_sets/generic".into()],
             consumption_effect: None,
             activation_effect: None,
             ability_to_learn: None,

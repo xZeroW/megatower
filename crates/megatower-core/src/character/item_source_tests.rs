@@ -14,9 +14,9 @@ use bevy::prelude::*;
 use serde_json::{Value, json};
 use std::sync::Arc;
 
-const A: &str = "res://resources/item_sets/set_a.tres";
-const B: &str = "res://resources/item_sets/set_b.tres";
-const PHANTOM: &str = "res://resources/item_sets/phantom.tres";
+const A: &str = "resources/item_sets/set_a";
+const B: &str = "resources/item_sets/set_b";
+const PHANTOM: &str = "resources/item_sets/phantom";
 
 fn bonus(id: StatId, amount: f64, modifier: bool, sets: &[&str]) -> BonusStat {
     let mut bonus = BonusStat::new(id, amount, modifier);
@@ -87,8 +87,8 @@ fn make_item(index: usize, rarity: i32, config: i64) -> Item {
 fn names(sets: &[String]) -> Vec<String> {
     sets.iter()
         .map(|id| {
-            id.trim_start_matches("res://resources/item_sets/")
-                .trim_end_matches(".tres")
+            id.trim_start_matches("resources/item_sets/")
+                .trim_end_matches("")
                 .to_owned()
         })
         .collect()

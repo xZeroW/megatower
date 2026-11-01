@@ -89,7 +89,7 @@ pub fn reset_active_armor(world: &mut World, entity: Entity) -> Result<(), Chara
     passives.extend(state.extra_passives.iter().cloned());
     let amount = if passives
         .iter()
-        .any(|id| id == "res://resources/passives/empty_bastion.tres")
+        .any(|id| id == "resources/passives/empty_bastion")
     {
         0.0
     } else {
@@ -189,10 +189,7 @@ pub fn heal(
             .ok_or(CharacterStatError::MissingProfile)?
             .active_item_sets,
     );
-    let mut amount = if sets
-        .iter()
-        .any(|id| id == "res://resources/item_sets/flesh.tres")
-    {
+    let mut amount = if sets.iter().any(|id| id == "resources/item_sets/flesh") {
         amount
     } else {
         state.missing_health().min(amount)

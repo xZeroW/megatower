@@ -183,7 +183,7 @@ impl ItemContainer {
                 continue;
             }
             for set in item.set_resources() {
-                if set != "res://resources/item_sets/generic.tres" && !sets.contains(&set) {
+                if set != "resources/item_sets/generic" && !sets.contains(&set) {
                     sets.push(set);
                 }
             }
@@ -257,7 +257,7 @@ fn live_item(world: &World, entity: Option<Entity>) -> Option<&Item> {
     world.get::<Item>(entity?)
 }
 
-/// Godot array indexing supports negatives. get_item(-1) is special-cased by
+/// The original game array indexing supports negatives. get_item(-1) is special-cased by
 /// the source, while add_item_at(-1) writes the final slot.
 pub(super) fn array_index(index: i32, length: usize) -> Option<usize> {
     let resolved = if index < 0 {
@@ -411,7 +411,7 @@ pub fn remove_item_at(
 
 /// Caller still owns/removes the incoming entity, as ItemManager.merge does
 /// after this call. The target entity identity is unchanged.
-/// Stat buffers remain native owned values, not shared Godot Stat objects.
+/// Stat buffers remain native owned values, not the original game Stat objects.
 pub fn merge_items(
     world: &mut World,
     entity: Entity,

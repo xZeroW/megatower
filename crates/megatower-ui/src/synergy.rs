@@ -1,4 +1,4 @@
-//! `synergy_container.gd` data assignment, independent of Godot controls.
+//! `synergy_container.gd` data assignment, independent of the original game controls.
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct SetPresentation<T> {

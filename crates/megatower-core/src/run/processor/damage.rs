@@ -1,7 +1,7 @@
 //! `BattleProcesor` damage pipeline: attack_character, try_to_damage_character,
 //! calculate_damage_result, process_on_hit, directly_damage, kill and removal.
 
-use crate::rng::GodotRng;
+use crate::rng::GameRng;
 use crate::{
     battle_actions::{BattleActionId, action},
     character::{
@@ -33,7 +33,7 @@ impl Game {
     pub fn with_attack<R>(
         &mut self,
         e: Entity,
-        f: impl FnOnce(&mut CharacterAttack<'_>, &mut GodotRng) -> R,
+        f: impl FnOnce(&mut CharacterAttack<'_>, &mut GameRng) -> R,
     ) -> R {
         let state = self.state(e).clone();
         let sets = self.active_item_sets(e);
@@ -251,7 +251,7 @@ impl Game {
             None => (Vec::new(), Vec::new()),
         };
         let has = |list: &[String], kind: &str, name: &str| {
-            list.contains(&format!("res://resources/{kind}/{name}.tres"))
+            list.contains(&format!("resources/{kind}/{name}"))
         };
 
         self.create_damage_popup(&result);
@@ -536,7 +536,7 @@ impl Game {
         let target_passives = self.passives(target);
         let target_specs = self.specializations(target);
         let has = |list: &[String], kind: &str, name: &str| {
-            list.contains(&format!("res://resources/{kind}/{name}.tres"))
+            list.contains(&format!("resources/{kind}/{name}"))
         };
 
         if let Some(attacker) = attacker {
@@ -569,7 +569,7 @@ impl Game {
                 result.life_steal = 0.0;
             }
             if self.state(attacker).base_passive.as_deref()
-                == Some("res://resources/passives/shaded_essence.tres")
+                == Some("resources/passives/shaded_essence")
                 && self.has_status(target, Eff::Silence)
             {
                 data.apply_multiplier(3.75);
@@ -766,7 +766,7 @@ impl Game {
         let attacker_sets = self.active_item_sets(attacker);
         let attacker_passives = self.passives(attacker);
         let has = |list: &[String], kind: &str, name: &str| {
-            list.contains(&format!("res://resources/{kind}/{name}.tres"))
+            list.contains(&format!("resources/{kind}/{name}"))
         };
 
         let mut on_hit: Vec<StatusEffect> =
@@ -848,7 +848,7 @@ impl Game {
                 broke_armor = active_armor_percentage <= 75.0;
             }
             if self.profile_mut(attacker).with_current_turn(|turn| {
-                turn.is_used_ability("res://resources/abilities/shatter_strike.tres")
+                turn.is_used_ability("resources/abilities/shatter_strike")
             }) {
                 broke_armor = true;
             }
@@ -1035,7 +1035,7 @@ impl Game {
         }
         if result.result_type == Some(BattleActionId::Dodge)
             && self.state(target).base_passive.as_deref()
-                == Some("res://resources/passives/exploited_opportunity.tres")
+                == Some("resources/passives/exploited_opportunity")
         {
             self.wait_battle(0.25);
             if self.aborted {
@@ -1153,9 +1153,7 @@ impl Game {
             self.add_gold(stolen, [false, false]);
         }
         self.wait_battle(0.45);
-        if self.state(stealer).base_passive.as_deref()
-            == Some("res://resources/passives/escape.tres")
-        {
+        if self.state(stealer).base_passive.as_deref() == Some("resources/passives/escape") {
             self.fx(Fx::Popup(Popup::new(
                 crate::translation::text("ESCAPED").to_uppercase(),
                 colors::DARK_GOLDENROD,
@@ -1272,7 +1270,7 @@ impl Game {
         } else {
             self.try_to_execute(target, None);
         }
-        if target_specs.contains(&"res://resources/specializations/bloodmoon.tres".to_owned()) {
+        if target_specs.contains(&"resources/specializations/bloodmoon".to_owned()) {
             self.add_temp_stat(
                 target,
                 &BonusStat::new(StatId::PhysicalAttack, result.direct_damage * 2.0, false),
@@ -1365,8 +1363,7 @@ impl Game {
             self.try_to_apply_status_effect(character, None, Eff::Vimblow, 1.0);
         }
         let selected = self.selected_enemy();
-        let has =
-            |name: &str| specs.contains(&format!("res://resources/specializations/{name}.tres"));
+        let has = |name: &str| specs.contains(&format!("resources/specializations/{name}"));
         if has("vampiercer") {
             let mut data =
                 DamageData::new(DamageSource::Bloodcaster, StatId::PhysicalDamage, healed);

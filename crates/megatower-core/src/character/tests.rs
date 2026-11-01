@@ -58,7 +58,7 @@ fn all_derived_stat_passes_match_executed_character_source() {
             ] {
                 assert!(
                     (a - b).abs() < 1e-8,
-                    "case {index}, {id:?}, {field}: native={a}, Godot={b}"
+                    "case {index}, {id:?}, {field}: native={a}, reference={b}"
                 );
             }
             assert_eq!(
@@ -118,7 +118,7 @@ fn poverty_reads_order_dependent_intermediate_health_not_captured_max_health() {
     let catalog = StatCatalog::recovered();
     let order: Vec<_> = catalog.definitions.iter().map(|def| def.id).collect();
     let context = RecalculationContext {
-        item_sets: vec!["res://resources/item_sets/poverty.tres".into()],
+        item_sets: vec!["resources/item_sets/poverty".into()],
         doubled_stat: Some(StatId::MaxHealth),
         ..Default::default()
     };

@@ -1,5 +1,5 @@
 use super::battle::*;
-use crate::rng::GodotRng;
+use crate::rng::GameRng;
 use crate::{
     character::runtime::{CharacterStatRules, CharacterStats, spawn_character},
     combat::profile::BattleProfile,
@@ -205,7 +205,7 @@ fn queries_selection_cleanup_and_rng_match_executed_battle_source() {
             &expected["selected2"],
             &format!("{path}.sel2"),
         );
-        let mut rng = GodotRng::seeded(case["seed"].as_u64().unwrap());
+        let mut rng = GameRng::seeded(case["seed"].as_u64().unwrap());
         let picked = fixture
             .battle
             .random_enemy_in_combat(&fixture.world, &mut rng);

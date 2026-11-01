@@ -50,7 +50,7 @@ pub enum Selection {
     HoverOwner,
 }
 
-/// Godot `Rect2.intersects` (touching edges do not intersect).
+/// The original game `Rect2.intersects` (touching edges do not intersect).
 fn intersects(a: Rect, b: Rect) -> bool {
     a.min.x < b.max.x && a.max.x > b.min.x && a.min.y < b.max.y && a.max.y > b.min.y
 }

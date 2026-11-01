@@ -29,7 +29,7 @@ fn oracle() -> Vec<Value> {
 }
 
 #[test]
-fn all_raw_recovered_items_match_godot_resource_loader() {
+fn all_raw_recovered_items_match_reference_data() {
     let raw = RawItemCatalog::recovered();
     assert_eq!(raw.0.len(), 199);
     let cases = oracle();
@@ -49,7 +49,7 @@ fn all_raw_recovered_items_match_godot_resource_loader() {
         .unwrap();
     assert_eq!(
         turtle.bonus_stats[0].boosting_sets,
-        ["res://resources/items/turtle_chestplate.tres::Resource_oeg16"]
+        ["resources/items/turtle_chestplate::Resource_oeg16"]
     );
     assert_ne!(
         turtle.bonus_stats[0].boosting_sets[0],
@@ -65,12 +65,9 @@ fn all_raw_recovered_items_match_godot_resource_loader() {
     a.boosting_sets = vec![
         String::new(),
         String::new(),
-        "res://resources/item_sets/generic.tres".into(),
+        "resources/item_sets/generic".into(),
     ];
-    b.boosting_sets = vec![
-        String::new(),
-        "res://resources/item_sets/generic.tres".into(),
-    ];
+    b.boosting_sets = vec![String::new(), "resources/item_sets/generic".into()];
     for expected in cases[0]["bonus_equality"].as_array().unwrap() {
         let result = a.is_same_as(&b);
         assert_eq!(
@@ -150,7 +147,7 @@ fn real_item_creation_equipment_and_character_stats_use_catalog_definitions() {
     let raw = RawItemCatalog::recovered();
     let order: Vec<_> = raw.0.iter().map(|def| def.id.clone()).collect();
     let items = raw.initialize(&order, false).unwrap();
-    let chainmail = Arc::clone(items.get("res://resources/items/chainmail.tres").unwrap());
+    let chainmail = Arc::clone(items.get("resources/items/chainmail").unwrap());
     assert_eq!(chainmail.socket_type, Some(SocketType::Chestplate));
     assert_eq!(chainmail.bonus_stats[0].amount, 6.0);
     let mut world = World::new();
@@ -204,16 +201,13 @@ fn initialization_does_not_mutate_raw_defs_and_rejects_ambiguous_orders() {
     let original = raw
         .0
         .iter()
-        .find(|def| def.id.ends_with("/merchant_upgrade.tres"))
+        .find(|def| def.id.ends_with("/merchant_upgrade"))
         .unwrap();
     let initialized = raw.initialize(&order, false).unwrap();
-    assert_eq!(
-        original.set_resources,
-        ["res://resources/item_sets/generic.tres"]
-    );
+    assert_eq!(original.set_resources, ["resources/item_sets/generic"]);
     assert_eq!(
         initialized.get(&original.id).unwrap().set_resources,
-        ["res://resources/item_sets/essential.tres"]
+        ["resources/item_sets/essential"]
     );
     assert!(initialized.special.is_empty());
     assert!(matches!(

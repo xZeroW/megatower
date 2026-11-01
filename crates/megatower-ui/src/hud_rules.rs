@@ -190,13 +190,13 @@ pub fn enemy_mana(max_mana: i32, mana: i32) -> (bool, i32, i32) {
 /// `update_enemy_elite_glow`: (enabled level, line color, hue resource).
 pub fn elite_glow(level: i32) -> (i32, Option<([f32; 4], &'static str)>) {
     let table: [(&str, &str); 7] = [
-        ("#cac8c9", "resources/hues/elite_lvl_1.tres"),
-        ("#51ff2c", "resources/hues/elite_lvl_2.tres"),
-        ("#00cbde", "resources/hues/elite_lvl_3.tres"),
-        ("#db5cd1", "resources/hues/elite_lvl_4.tres"),
-        ("#efa300", "resources/hues/elite_lvl_5.tres"),
-        ("#c80038", "resources/hues/elite_lvl_6.tres"),
-        ("#34000f", "resources/hues/elite_lvl_7.tres"),
+        ("#cac8c9", "resources/hues/elite_lvl_1"),
+        ("#51ff2c", "resources/hues/elite_lvl_2"),
+        ("#00cbde", "resources/hues/elite_lvl_3"),
+        ("#db5cd1", "resources/hues/elite_lvl_4"),
+        ("#efa300", "resources/hues/elite_lvl_5"),
+        ("#c80038", "resources/hues/elite_lvl_6"),
+        ("#34000f", "resources/hues/elite_lvl_7"),
     ];
     let entry = usize::try_from(level - 1)
         .ok()
@@ -343,7 +343,7 @@ mod tests {
         assert_eq!(enemy_mana(2, 1), (true, 20, 10));
         let (lvl, glow) = elite_glow(3);
         assert_eq!(lvl, 3);
-        assert_eq!(glow.unwrap().1, "resources/hues/elite_lvl_3.tres");
+        assert_eq!(glow.unwrap().1, "resources/hues/elite_lvl_3");
         assert_eq!(elite_glow(0).1, None);
         assert_eq!(elite_glow(8).1, None);
         assert!(enemy_selected(false, false, true, 1, 1));
