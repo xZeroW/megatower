@@ -1,5 +1,5 @@
-// The passive tree. Loaded by game-sim (`content.rs`); the shape is `TreeDb`
-// in crates/game-sim/src/passives.rs. Links are listed once and work both ways;
+// The passive tree. Loaded by megatower-sim (`content.rs`); the shape is `TreeDb`
+// in crates/megatower-sim/src/passives.rs. Links are listed once and work both ways;
 // x / y place the node on the tree screen.
 (
     nodes: [

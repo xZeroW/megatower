@@ -2,7 +2,7 @@
 //! grid (icon, stat name coloured by type, white value on the right).
 use crate::compose::{Align, Draw, WHITE, hex, palette, text, tinted};
 use crate::model::R;
-use game_sim::{
+use megatower_sim::{
     ailment::Ailment,
     character::Character,
     combat::{HERO_MANA_REGEN, MAX_EVASION},

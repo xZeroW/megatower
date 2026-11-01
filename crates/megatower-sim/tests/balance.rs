@@ -1,13 +1,13 @@
 //! Balance report, not a pass/fail check: how each starter gem, unsupported,
 //! does against each floor's fights and its boss with a greedy policy.
-//! `cargo test -p game-sim --test balance -- --ignored --nocapture`
+//! `cargo test -p megatower-sim --test balance -- --ignored --nocapture`
 
-use game_sim::combat::{Battle, Fighter, HeroAction, Outcome, encounter};
-use game_sim::content;
-use game_sim::gems::{Gem, GemRarity, build_skill};
-use game_sim::labyrinth::RoomKind;
-use game_sim::modifier::ModSet;
-use game_sim::rng::Rng;
+use megatower_sim::combat::{Battle, Fighter, HeroAction, Outcome, encounter};
+use megatower_sim::content;
+use megatower_sim::gems::{Gem, GemRarity, build_skill};
+use megatower_sim::labyrinth::RoomKind;
+use megatower_sim::modifier::ModSet;
+use megatower_sim::rng::Rng;
 
 /// Fights `kind` on `floor` from full life; returns (won, turns, life left).
 fn fight(gem: &str, kind: RoomKind, floor: u32, seed: u64) -> (bool, u32, f64) {

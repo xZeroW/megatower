@@ -1,8 +1,8 @@
 //! Balance report: the bot plays many runs per starter gem.
-//! `cargo run -p game-sim --example bot --release [runs] [last_floor]`
+//! `cargo run -p megatower-sim --example bot --release [runs] [last_floor]`
 
-use game_sim::bot::play;
-use game_sim::content;
+use megatower_sim::bot::play;
+use megatower_sim::content;
 
 fn main() {
     let mut args = std::env::args().skip(1);
@@ -15,10 +15,10 @@ fn main() {
     );
     for gem in content::get().gems.starters() {
         let results: Vec<_> = (0..runs).map(|seed| play(seed, &gem.id, last)).collect();
-        let pct = |f: &dyn Fn(&game_sim::bot::BotResult) -> bool| {
+        let pct = |f: &dyn Fn(&megatower_sim::bot::BotResult) -> bool| {
             100.0 * results.iter().filter(|r| f(r)).count() as f64 / runs as f64
         };
-        let avg = |f: &dyn Fn(&game_sim::bot::BotResult) -> f64| {
+        let avg = |f: &dyn Fn(&megatower_sim::bot::BotResult) -> f64| {
             results.iter().map(f).sum::<f64>() / runs as f64
         };
         println!(

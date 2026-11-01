@@ -318,7 +318,7 @@ mod labyrinth_routing_tests {
                 .as_ref()
                 .unwrap()
                 .mode,
-            game_sim::run::Mode::Starter(_)
+            megatower_sim::run::Mode::Starter(_)
         ));
     }
 }

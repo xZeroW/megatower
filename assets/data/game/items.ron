@@ -1,5 +1,5 @@
-// Gear bases, affixes and uniques. Loaded by game-sim (`content.rs`); the
-// shape is `ItemDb` in crates/game-sim/src/items.rs. `level` is the lowest
+// Gear bases, affixes and uniques. Loaded by megatower-sim (`content.rs`); the
+// shape is `ItemDb` in crates/megatower-sim/src/items.rs. `level` is the lowest
 // item level (floor) a base or an affix tier rolls at.
 (
     bases: [

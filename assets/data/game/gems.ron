@@ -1,5 +1,5 @@
-// Skill and support gems. Loaded by game-sim (`content.rs`); the shape is
-// `GemDb` in crates/game-sim/src/gems.rs. Damage ranges are at gem level 1.
+// Skill and support gems. Loaded by megatower-sim (`content.rs`); the shape is
+// `GemDb` in crates/megatower-sim/src/gems.rs. Damage ranges are at gem level 1.
 (
     actives: [
         (

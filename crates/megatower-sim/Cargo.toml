@@ -1,10 +1,10 @@
 [package]
-name = "game-sim"
+name = "megatower-sim"
 version.workspace = true
 edition.workspace = true
 
 [lib]
-name = "game_sim"
+name = "megatower_sim"
 path = "src/lib.rs"
 
 [dependencies]

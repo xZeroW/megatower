@@ -7,25 +7,21 @@ fn internal_deps(manifest: &Path) -> BTreeSet<String> {
     let text = fs::read_to_string(manifest).unwrap_or_else(|_| panic!("{}", manifest.display()));
     text.lines()
         .filter_map(|line| line.split_once('=').map(|(key, _)| key.trim()))
-        .filter(|key| key.starts_with("megatower-") || key.starts_with("game-"))
+        .filter(|key| key.starts_with("megatower-"))
         .map(str::to_owned)
         .collect()
 }
 
 /// Each crate and the only internal crates it may depend on.
 const ALLOWED: &[(&str, &[&str])] = &[
-    ("game-sim", &[]),
-    (
-        "game-client",
-        &["game-sim", "megatower-assets", "megatower-runtime"],
-    ),
+    ("megatower-sim", &[]),
     ("megatower-core", &[]),
     ("megatower-assets", &["megatower-core"]),
     ("megatower-runtime", &["megatower-core", "megatower-assets"]),
     (
         "megatower-ui",
         &[
-            "game-sim",
+            "megatower-sim",
             "megatower-core",
             "megatower-assets",
             "megatower-runtime",

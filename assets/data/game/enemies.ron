@@ -1,6 +1,6 @@
 // Enemies at floor 1; `encounter.rs` scales them with depth. Each enemy
 // repeats its intents in order, and the player sees the next one.
-// The shape is `EnemyDef` in crates/game-sim/src/combat/encounter.rs. `sprite`
+// The shape is `EnemyDef` in crates/megatower-sim/src/combat/encounter.rs. `sprite`
 // is the 64x64 picture the room view stands up for it.
 [
     (

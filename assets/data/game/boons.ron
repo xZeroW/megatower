@@ -1,5 +1,5 @@
 // Shrine boons: permanent for the run. Shape: `BoonDef` in
-// crates/game-sim/src/rooms.rs.
+// crates/megatower-sim/src/rooms.rs.
 [
     (id: "vitality", name: "Blessing of Vitality", mods: [
         (stat: Life, kind: Increased, value: 15.0),

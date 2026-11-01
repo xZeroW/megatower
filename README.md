@@ -8,12 +8,11 @@ cargo run -p megatower-client
 
 Megatower is the base client, with its existing menus, resolved HUD layout,
 pixel-art slots, tooltips, options, audio and room renderer. Its new runs use
-`game-sim` for labyrinths, map-dependent exits, combat, equipment, gems, shops
+`megatower-sim` for labyrinths, map-dependent exits, combat, equipment, gems, shops
 and progression. The adapter lives in `crates/megatower-ui/src/labyrinth/`;
 Megatower's original simulation does not run alongside it. Adventurer selection
 currently chooses a portrait; the first skill gem determines the starting build.
 
-The earlier `game-client` remains a prototype, not the presentation target.
 No crates or binaries have been renamed. To run the original simulation for
 reference/parity work: `MEGATOWER_LEGACY=1 cargo run -p megatower-client`.
 
@@ -34,7 +33,7 @@ reference/parity work: `MEGATOWER_LEGACY=1 cargo run -p megatower-client`.
 ### Gameplay checks
 
 ```bash
-cargo test -p megatower-client -p megatower-ui -p game-sim
+cargo test -p megatower-client -p megatower-ui -p megatower-sim
 ```
 
 ### Settings
@@ -77,9 +76,8 @@ below, and the env-driven QA tooling (`src/dev`). The libraries sit under
 
 | Crate | Role |
 | --- | --- |
-| `game-client` | earlier standalone gameplay prototype; no longer the presentation target |
-| `game-sim` | target game's labyrinth, combat, equipment, gems, room interactions and progression |
-| `megatower-ui` | original presentation and the `labyrinth` adapter from `game-sim` into its HUD/timeline/input |
+| `megatower-sim` | target game's labyrinth, combat, equipment, gems, room interactions and progression |
+| `megatower-ui` | original presentation and the `labyrinth` adapter from `megatower-sim` into its HUD/timeline/input |
 | `megatower-runtime` | Bevy capability plugins: `audio` (kira buses driven by `MusicCue`/`SfxQueue`/`AudioVolumes`), `input` (`GameAction`, bindings), `render` (off-screen room, HUD layout; `RoomSceneRequest` picks the scene) |
 | `megatower-assets` | Godot-resolved layouts, room geometry, palette |
 | `megatower-core` | simulation (run, combat, items, enemies), settings and profile data, paths, translations |

@@ -1,9 +1,9 @@
 //! Populate Megatower's existing 640x360 HUD, not a second UI layout.
 use super::*;
 use crate::compose::{self, Align, Draw, Seg, TipView, WHITE, hex, image, palette, text, tinted};
-use game_sim::labyrinth::Dir;
-use game_sim::passives::NodeKind;
-use game_sim::{
+use megatower_sim::labyrinth::Dir;
+use megatower_sim::passives::NodeKind;
+use megatower_sim::{
     gems::{Gem, GemRarity},
     items::{Item, ItemRarity, Slot},
     labyrinth::Visibility,
@@ -142,10 +142,10 @@ fn progress_lit(game: &Run, a: &str, b: &str) -> bool {
 
 /// The picture a notable or keystone carries: its own keystone art, or the
 /// icon of the first thing it changes.
-fn tree_node_icon(node: &game_sim::passives::NodeDef) -> &'static str {
-    use game_sim::ailment::Ailment as A;
-    use game_sim::modifier::Stat;
-    use game_sim::tags::Tag;
+fn tree_node_icon(node: &megatower_sim::passives::NodeDef) -> &'static str {
+    use megatower_sim::ailment::Ailment as A;
+    use megatower_sim::modifier::Stat;
+    use megatower_sim::tags::Tag;
     const ICONS: &str = "assets/textures/icons/";
     let keystone = match node.id.as_str() {
         "glass_cannon" => Some("frailty_keystone"),
@@ -196,8 +196,8 @@ const ARROW_SIZE: (f32, f32) = (7.0, 10.0);
 /// The rectangles of an arrow pointing `facing`, relative to its own top-left
 /// corner. North is a four-row head over a stem; the others are the same
 /// arrow turned, so the box is 7x10 or 10x7.
-fn arrow_rects(facing: game_sim::labyrinth::Dir) -> Vec<R> {
-    use game_sim::labyrinth::Dir;
+fn arrow_rects(facing: megatower_sim::labyrinth::Dir) -> Vec<R> {
+    use megatower_sim::labyrinth::Dir;
     let (w, h) = ARROW_SIZE;
     // Head rows 1, 3, 5, 7 wide, then a 3-wide stem.
     let mut up: Vec<R> = (0..4)
@@ -220,14 +220,14 @@ fn arrow_rects(facing: game_sim::labyrinth::Dir) -> Vec<R> {
 /// The experience bar under the portrait (canvas pixels).
 const XP_BAR: R = [16.0, 87.0, 36.0, 5.0];
 
-fn intent_amount(enemy: &game_sim::combat::Enemy) -> String {
-    use game_sim::combat::IntentKind;
+fn intent_amount(enemy: &megatower_sim::combat::Enemy) -> String {
+    use megatower_sim::combat::IntentKind;
     match &enemy.intent().kind {
         IntentKind::Attack(spec) => {
             let scale = enemy
                 .fighter
                 .mods
-                .more(game_sim::modifier::Stat::Damage, spec.tags)
+                .more(megatower_sim::modifier::Stat::Damage, spec.tags)
                 * enemy.fighter.afflictions.damage_dealt_multiplier();
             let min: f64 = spec.base.iter().map(|(_, r)| r.min).sum();
             let max: f64 = spec.base.iter().map(|(_, r)| r.max).sum();
@@ -250,15 +250,15 @@ fn tip_lines(loot: &Loot) -> Vec<String> {
                 .chain(item.fixed.iter())
                 .copied()
                 .collect();
-            lines.extend(game_sim::describe::mod_lines(&mods));
+            lines.extend(megatower_sim::describe::mod_lines(&mods));
             if let Some(s) = &item.sockets {
                 lines.push(format!("{} linked sockets", s.links));
-                lines.extend(s.gems.iter().map(|g| game_sim::run::gem_name(&g.id)));
+                lines.extend(s.gems.iter().map(|g| megatower_sim::run::gem_name(&g.id)));
             }
             lines
         }
         Loot::Gem(g) => {
-            let mut lines = vec![game_sim::run::gem_name(&g.id), format!("Level {}", g.level)];
+            let mut lines = vec![megatower_sim::run::gem_name(&g.id), format!("Level {}", g.level)];
             if let Some(def) = content::get().gems.active(&g.id) {
                 lines.push(format!("{:.0} mana / {:?}", def.cost, def.targeting));
                 lines.extend(
@@ -267,7 +267,7 @@ fn tip_lines(loot: &Loot) -> Vec<String> {
                         .map(|(kind, r)| format!("{:.0}-{:.0} {kind:?}", r.min, r.max)),
                 );
             } else if let Some(def) = content::get().gems.support(&g.id) {
-                lines.extend(game_sim::describe::mod_lines(&def.mods));
+                lines.extend(megatower_sim::describe::mod_lines(&def.mods));
             }
             lines
         }
@@ -364,7 +364,7 @@ impl Labyrinth {
                     out.push(choice(
                         [170.0 + i as f32 * 110.0, 138.0, 80.0, 70.0],
                         Action::Starter(i),
-                        game_sim::run::gem_name(id),
+                        megatower_sim::run::gem_name(id),
                         "Choose this first skill gem",
                     ));
                 }
@@ -379,7 +379,7 @@ impl Labyrinth {
                         "",
                         exit.as_ref()
                             .and_then(|(_, e)| e.known)
-                            .map_or("Unexplored room", game_sim::run::room_name),
+                            .map_or("Unexplored room", megatower_sim::run::room_name),
                     );
                     c.icon = Some(arrow);
                     c.enabled = exit.is_some()
@@ -418,7 +418,7 @@ impl Labyrinth {
                             skill.name.clone(),
                         );
                         c.label.clear();
-                        c.icon = Some(if skill.tags.has(game_sim::tags::Tag::Attack) {
+                        c.icon = Some(if skill.tags.has(megatower_sim::tags::Tag::Attack) {
                             "assets/textures/icons/attack_icon.png"
                         } else {
                             "assets/textures/icons/magic_damage_icon.png"
@@ -452,12 +452,12 @@ impl Labyrinth {
                     refresh.enabled = game.character.gold >= shop.refresh_cost();
                     for (i, (rect, gem)) in rects.merchant.iter().zip(&shop.stock).enumerate() {
                         if let Some(g) = gem {
-                            let price = game_sim::merchant::gem_price(&content::get().gems, g);
+                            let price = megatower_sim::merchant::gem_price(&content::get().gems, g);
                             let mut c = choice(
                                 in_action_area(*rect),
                                 Action::Buy(i),
                                 "",
-                                game_sim::run::gem_name(&g.id),
+                                megatower_sim::run::gem_name(&g.id),
                             );
                             c.tip = tip_lines(&Loot::Gem(g.clone()));
                             c.tip.push(format!("{price} gold"));
@@ -706,7 +706,7 @@ impl Labyrinth {
                 );
                 out.push(text(
                     [x - 38.0, 184.0, 110.0, 13.0],
-                    game_sim::run::gem_name(id),
+                    megatower_sim::run::gem_name(id),
                     WHITE,
                     Align::Center,
                 ));
@@ -724,9 +724,9 @@ impl Labyrinth {
                         })
                         .collect();
                     let targets = match def.targeting {
-                        game_sim::gems::Targeting::Single => "one".to_owned(),
-                        game_sim::gems::Targeting::All => "all".to_owned(),
-                        game_sim::gems::Targeting::Chain(n) => format!("chain {n}"),
+                        megatower_sim::gems::Targeting::Single => "one".to_owned(),
+                        megatower_sim::gems::Targeting::All => "all".to_owned(),
+                        megatower_sim::gems::Targeting::Chain(n) => format!("chain {n}"),
                     };
                     out.push(text(
                         [x - 38.0, 200.0, 110.0, 13.0],
@@ -825,7 +825,7 @@ impl Labyrinth {
                     loot_draw(&mut out, *rect, &Loot::Gem(g.clone()));
                     out.push(text(
                         [rect[0], rect[1] + 34.0, 34.0, 13.0],
-                        game_sim::merchant::gem_price(&content::get().gems, g).to_string(),
+                        megatower_sim::merchant::gem_price(&content::get().gems, g).to_string(),
                         palette(8),
                         Align::Center,
                     ));
@@ -904,7 +904,7 @@ impl Labyrinth {
                     format!("Next: {} ({})", e.intent().name, intent_amount(e)),
                 ];
                 lines.extend(
-                    game_sim::ailment::Ailment::ALL
+                    megatower_sim::ailment::Ailment::ALL
                         .into_iter()
                         .filter(|a| e.fighter.afflictions.has(*a))
                         .map(|a| format!("{a:?}")),
@@ -924,7 +924,7 @@ impl Labyrinth {
                         format!(
                             "{} / {} XP",
                             progress.xp,
-                            game_sim::passives::xp_to_next(progress.level)
+                            megatower_sim::passives::xp_to_next(progress.level)
                         ),
                         format!("{} passive points to spend", progress.points),
                     ],
@@ -934,7 +934,7 @@ impl Labyrinth {
                 && let Some(node) = content::get().tree.nodes.iter().find(|n| n.id == id)
             {
                 let mut lines = vec![node.name.clone()];
-                lines.extend(game_sim::describe::mod_lines(&node.mods));
+                lines.extend(megatower_sim::describe::mod_lines(&node.mods));
                 tooltip(&mut out, rects, cursor, lines);
             } else if self.view == View::Profile && ui.tab == Tab::Profile {
                 let loot = rects
@@ -1018,7 +1018,7 @@ impl Labyrinth {
         ));
         let v = &frame.player;
         // Use the original animated bars, numerical panels and segmented mana
-        // pip. Armour here is only game-sim's temporary guard, not a new rule.
+        // pip. Armour here is only megatower-sim's temporary guard, not a new rule.
         let mut health = rects.bar_second;
         if v.max_armor > 0.0 {
             compose::bar(
@@ -1086,7 +1086,7 @@ impl Labyrinth {
         }
         // Experience toward the next level: a thin bar under the portrait.
         let progress = &game.character.progress;
-        let next = game_sim::passives::xp_to_next(progress.level).max(1);
+        let next = megatower_sim::passives::xp_to_next(progress.level).max(1);
         let frac = (progress.xp as f32 / next as f32).clamp(0.0, 1.0);
         out.push(Draw::Fill {
             rect: XP_BAR,
@@ -1244,8 +1244,8 @@ impl Labyrinth {
             let x = ox + f32::from(p.x) * step;
             let y = oy + f32::from(p.y) * step;
             for dir in [
-                game_sim::labyrinth::Dir::East,
-                game_sim::labyrinth::Dir::South,
+                megatower_sim::labyrinth::Dir::East,
+                megatower_sim::labyrinth::Dir::South,
             ] {
                 let known = floor.neighbor(p, dir).is_some_and(|n| {
                     room.visibility == Visibility::Visited
@@ -1253,7 +1253,7 @@ impl Labyrinth {
                 });
                 if room.has_door(dir) && known {
                     out.push(Draw::Fill {
-                        rect: if dir == game_sim::labyrinth::Dir::East {
+                        rect: if dir == megatower_sim::labyrinth::Dir::East {
                             [x + cell, y + cell / 2.0, 7.0, 2.0]
                         } else {
                             [x + cell / 2.0, y + cell, 2.0, 7.0]
@@ -1441,11 +1441,11 @@ mod tests {
 
     #[test]
     fn enemy_intents_show_their_numbers() {
-        use game_sim::combat::{encounter, spawn};
+        use megatower_sim::combat::{encounter, spawn};
         let content = content::get();
         let rat = spawn(&content.enemies[0], 1, false);
         assert_eq!(intent_amount(&rat), "3-5");
-        let mut rng = game_sim::rng::Rng::seeded(1);
+        let mut rng = megatower_sim::rng::Rng::seeded(1);
         let boss = encounter(
             RoomKind::Stairs { boss: true },
             3,
@@ -1529,7 +1529,7 @@ mod tests {
 
     #[test]
     fn the_map_arrow_points_where_you_face() {
-        use game_sim::labyrinth::Dir;
+        use megatower_sim::labyrinth::Dir;
         let tip = |dir| {
             // The thinnest end of the head: the one 1x1 rectangle.
             arrow_rects(dir)
@@ -1742,7 +1742,7 @@ mod tests {
         );
     }
     #[test]
-    fn original_merchant_cells_buy_and_lock_the_game_sims_stock() {
+    fn original_merchant_cells_buy_and_lock_the_megatower_sims_stock() {
         let (mut session, mut ui, rects) = fixture();
         session
             .game_mut()

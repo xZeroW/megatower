@@ -2,7 +2,7 @@
 //! [`Run`] commands the screens use, with plain heuristics (explore every
 //! room, hit the weakest enemy hardest, wear whatever scores higher, socket
 //! fitting supports, buy supports, take the best-looking passives).
-//! `cargo run -p game-sim --example bot --release` prints a report.
+//! `cargo run -p megatower-sim --example bot --release` prints a report.
 
 use crate::character::{EquipSlot, Loot};
 use crate::combat::{Battle, HeroAction};

@@ -3,8 +3,8 @@
 Working title TBD. Turn-based, one hero, build-driven (deep but simplified ARPG-style
 builds), exploring hidden labyrinth floors.
 
-> **Presentation status:** the screens described below (`game-client`, the prototype)
-> are superseded by megatower's HUD driven by `game-sim`
+> **Presentation status:** the screens described below (from the removed `game-client` prototype)
+> are superseded by megatower's HUD driven by `megatower-sim`
 > (`crates/megatower-ui/src/labyrinth/`, see the README). The rules and numbers here
 > still hold; room view, doors, enemy drawing, bars and combat text now come from
 > megatower's own presentation code.
@@ -31,11 +31,11 @@ builds), exploring hidden labyrinth floors.
   (heal + refill flasks), Event, Gem Altar, Stairs/Boss. Start room is always empty.
 - Placement rules: Stairs far from start (BFS distance), at least one Rest and one
   Treasure per floor, Elites off the main path.
-- Current numbers (`game-sim/src/labyrinth`): side = 5 + (floor − 1) / 2, max 8; one
+- Current numbers (`megatower-sim/src/labyrinth`): side = 5 + (floor − 1) / 2, max 8; one
   extra door per 8 rooms; elites = 1 + floor / 3; Rest, Treasure, Merchant and Gem Altar
   once per floor; Shrine on half the floors; 1–2 Events; the rest are Fights. You can only
   leave a room once it is resolved.
-- The room view (`game-client/src/room_view.rs`): the hero stands in the 3D room from
+- The room view (`game-client/src/ (removed) room_view.rs`): the hero stands in the 3D room from
   `megatower-runtime` and faces the way they last walked (`Floor::facing`). Doors are
   built in code where the floor has exits: ahead in the baked far doorway (bricked up
   when there is no exit ahead), left and right on the side walls between z -8.0 and
@@ -46,7 +46,7 @@ builds), exploring hidden labyrinth floors.
   Scenes: treasure `chest_room`, merchant `mystic_trader`, Gem Altar `altar_room`,
   shrine `monolith_room`, everything else `room_normal`.
 - Fights happen in the same room view, drawn the way megatower draws enemies
-  (`game-client/src/fighters.rs`, ported from `megatower-ui` `compose.rs`
+  (`game-client/src/ (removed) fighters.rs`, ported from `megatower-ui` `compose.rs`
   `enemy_widget`): each enemy's sprite (`enemies.ron` `sprite`) over the room with its
   oval shadow, the stats panel from `enemy-container-layout.ron` (pill health bar and
   value label; guard shows as the armor bar), ailment icons above, the selection arrow
@@ -54,7 +54,7 @@ builds), exploring hidden labyrinth floors.
   enemy actions lunge it, dodges sidestep it, with megatower's keyframes. Clicking a
   sprite targets it; the target's name, the hero, skills and the log sit in the side
   panel.
-  Life bars animate like megatower's (`game-client/src/bars.rs`, from `resource_bar.rs`):
+  Life bars animate like megatower's (`game-client/src/ (removed) bars.rs`, from `resource_bar.rs`):
   a hit drops the main fill at once while an orange trail keeps the old value, waits
   0.25s, then drains at 2.5x the maximum per second; the hero's life bar does the same.
 - Later options: scouting items that reveal room types, a danger clock that makes fights
@@ -67,27 +67,27 @@ builds), exploring hidden labyrinth floors.
 - Resources: Life, Mana (skill costs, regenerates per turn), optional Energy Shield.
 - Turn-based reading of ARPG mechanics: "cast speed" → chance to act twice / repeat,
   durations measured in turns, damage over time ticks at turn end.
-- Current implementation (`game-sim/src/combat`, data in `assets/data/game/`):
+- Current implementation (`megatower-sim/src/combat`, data in `assets/data/game/`):
   - Hero starts at 100 life, 40 mana, 6 mana regen per turn. Enemies repeat their
     intents (Attack / Guard / Heal) in order; guard lasts until their next action.
   - Fights hold 1 enemy on floor 1, up to 3 deeper; elite rooms add an Elite (×2 life,
     30% more damage) and maybe a normal; boss stairs hold the boss. Enemies get 60%
     more life and 35% more damage per floor. Winning a fight restores 15% of life.
   - Evasion dodges attacks only, capped at 75%. Damage over time ignores mitigation.
-  - Ailment numbers are in `game-sim/src/ailment.rs`.
-  - `cargo test -p game-sim --test balance -- --ignored --nocapture` prints how each
+  - Ailment numbers are in `megatower-sim/src/ailment.rs`.
+  - `cargo test -p megatower-sim --test balance -- --ignored --nocapture` prints how each
     unsupported level-1 starter gem does in single fights.
 
 ## Balance
 
-The run logic lives in `game-sim/src/run.rs`, so `game-sim/src/bot.rs` can play whole
+The run logic lives in `megatower-sim/src/run.rs`, so `megatower-sim/src/bot.rs` can play whole
 runs through the same commands as the screens: it explores every room, hits the weakest
 enemy with its best affordable skill, wears whatever scores higher, sockets fitting
 supports, buys supports, takes the best-looking non-keystone passives, the first shrine
 boon and the first event choice.
 
 ```bash
-cargo run -p game-sim --example bot --release -- 300 9
+cargo run -p megatower-sim --example bot --release -- 300 9
 ```
 
 prints, per starter gem over 300 seeds, how often the bot dies on floor 1, beats the
@@ -151,7 +151,7 @@ Converted damage keeps the modifiers of the types it passed through.
 - Small nodes (+stats), notables (bigger clusters), ~4 keystones with real trade-offs
   (e.g. skills cost life instead of mana; can't crit but deal more damage).
 - 1 point per level; respec costs a currency item.
-- Current implementation (`game-sim/src/passives.rs`, data in `assets/data/game/tree.ron`
+- Current implementation (`megatower-sim/src/passives.rs`, data in `assets/data/game/tree.ron`
   with hand-placed node positions): 45 nodes, 3 starts. The start comes from the
   starter gem (spells: Intelligence, melee: Strength, other attacks: Dexterity).
   Keystones: Glass Cannon (40% more damage, 30% less life), Blood Pact (skills cost life,
@@ -191,7 +191,7 @@ gems and items), so selling is the main way to free room and get gold from extra
 - Rarity: Normal (0 affixes), Magic (1–2), Rare (3–6), Unique (fixed mods).
 - Affixes are prefixes/suffixes with tiers gated by item level (= floor depth).
 - 4 crafting orbs: reroll affixes, add an affix, upgrade rarity, reroll sockets/links.
-- Current implementation (`game-sim/src/items.rs`, `character.rs`, `loot.rs`, data in
+- Current implementation (`megatower-sim/src/items.rs`, `character.rs`, `loot.rs`, data in
   `assets/data/game/items.ron`): 19 bases, 20 affixes with level-gated tiers, 2 uniques.
   Magic items hold at most 1 prefix + 1 suffix, rares 3–6 affixes (3 + 3 max). New items
   roll 1 link, each extra link at 45%. Bag holds 20 items/gems; gems stay socketed when

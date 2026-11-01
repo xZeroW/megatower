@@ -1,5 +1,5 @@
 //! The new rules inside the recovered Megatower client. This module adapts
-//! game-sim to the existing HUD, widgets, timeline, audio and room renderer;
+//! megatower-sim to the existing HUD, widgets, timeline, audio and room renderer;
 //! it never creates or advances a Megatower `Game`.
 mod doors;
 mod stats;
@@ -7,7 +7,7 @@ mod view;
 
 use crate::{FrameInput, model::*, screens};
 use bevy::prelude::*;
-use game_sim::{
+use megatower_sim::{
     character::{EquipSlot, GemSpot, Loot},
     combat::{Actor, CombatEvent, HeroAction},
     content,
@@ -105,9 +105,9 @@ fn actor_vitals(actor: Actor, frame: &mut Frame) -> Option<&mut VitalsView> {
     }
 }
 
-/// Icon aliases only. All ailment application/duration remains in game-sim.
-fn statuses(f: &game_sim::combat::Fighter) -> Vec<StatusView> {
-    use game_sim::ailment::Ailment as A;
+/// Icon aliases only. All ailment application/duration remains in megatower-sim.
+fn statuses(f: &megatower_sim::combat::Fighter) -> Vec<StatusView> {
+    use megatower_sim::ailment::Ailment as A;
     use megatower_core::status_effects::StatusEffectId as S;
     [
         (A::Ignite, S::CinderEssence),
@@ -181,7 +181,7 @@ struct Gains {
 }
 
 impl Gains {
-    fn of(character: &game_sim::character::Character) -> Self {
+    fn of(character: &megatower_sim::character::Character) -> Self {
         Self {
             gold: character.gold,
             level: character.progress.level,
@@ -195,13 +195,13 @@ impl Gains {
 /// crossed.
 fn xp_gained(before: &Gains, level: u32, xp: u32) -> u32 {
     let crossed: u32 = (before.level..level)
-        .map(game_sim::passives::xp_to_next)
+        .map(megatower_sim::passives::xp_to_next)
         .sum();
     (xp + crossed).saturating_sub(before.xp)
 }
 
-fn item_color(rarity: game_sim::items::ItemRarity) -> u32 {
-    use game_sim::items::ItemRarity as R;
+fn item_color(rarity: megatower_sim::items::ItemRarity) -> u32 {
+    use megatower_sim::items::ItemRarity as R;
     match rarity {
         R::Normal => 0xd9d9d9,
         R::Magic => 0x80a6ff,
@@ -210,8 +210,8 @@ fn item_color(rarity: game_sim::items::ItemRarity) -> u32 {
     }
 }
 
-fn gem_color(rarity: game_sim::gems::GemRarity) -> u32 {
-    use game_sim::gems::GemRarity as R;
+fn gem_color(rarity: megatower_sim::gems::GemRarity) -> u32 {
+    use megatower_sim::gems::GemRarity as R;
     match rarity {
         R::Common => 0xd0d8d0,
         R::Uncommon => 0x66d973,
@@ -222,7 +222,7 @@ fn gem_color(rarity: game_sim::gems::GemRarity) -> u32 {
 
 /// The floating text for a won fight, like the original's gold popup: the
 /// amount with its icon at the end. At most two drops are named.
-fn win_popups(before: &Gains, character: &game_sim::character::Character) -> Vec<Popup> {
+fn win_popups(before: &Gains, character: &megatower_sim::character::Character) -> Vec<Popup> {
     let hex = crate::compose::hex;
     let mut popups = Vec::new();
     if character.gold > before.gold {
@@ -249,7 +249,7 @@ fn win_popups(before: &Gains, character: &game_sim::character::Character) -> Vec
             Loot::Item(item) => item_color(item.rarity),
             Loot::Gem(gem) => gem_color(gem.rarity),
         };
-        popups.push(Popup::new(game_sim::run::loot_name(loot), hex(color)));
+        popups.push(Popup::new(megatower_sim::run::loot_name(loot), hex(color)));
     }
     popups
 }
@@ -295,8 +295,8 @@ fn scripted_moves(
 }
 
 /// Colour and icon of a damage type's numbers.
-fn damage_look(kind: game_sim::tags::DamageType) -> (u32, &'static str) {
-    use game_sim::tags::DamageType as D;
+fn damage_look(kind: megatower_sim::tags::DamageType) -> (u32, &'static str) {
+    use megatower_sim::tags::DamageType as D;
     match kind {
         D::Physical => (0xe8e6e0, "assets/textures/icons/attack_icon.png"),
         D::Fire => (0xff8a30, "assets/textures/icons/magma_icon.png"),
@@ -307,8 +307,8 @@ fn damage_look(kind: game_sim::tags::DamageType) -> (u32, &'static str) {
 }
 
 /// Colour and icon of an ailment's damage over time.
-fn ailment_look(ailment: game_sim::ailment::Ailment) -> (u32, &'static str) {
-    use game_sim::ailment::Ailment as A;
+fn ailment_look(ailment: megatower_sim::ailment::Ailment) -> (u32, &'static str) {
+    use megatower_sim::ailment::Ailment as A;
     match ailment {
         A::Ignite => (0xff8a30, "assets/textures/icons/magma_icon.png"),
         A::Bleed => (0xd2263f, "assets/textures/icons/bleed.png"),
@@ -426,7 +426,7 @@ impl Labyrinth {
                 '$' => self.game_mut().debug_loot(),
                 '+' => {
                     let progress = &mut self.game_mut().character.progress;
-                    progress.gain_xp(game_sim::passives::xp_to_next(progress.level));
+                    progress.gain_xp(megatower_sim::passives::xp_to_next(progress.level));
                 }
                 '^' => {
                     let tree = &content::get().tree;
@@ -801,7 +801,7 @@ impl Labyrinth {
             .as_ref()
             .map(|b| b.hero.clone())
             .unwrap_or_else(|| game.character.fighter());
-        let vitals = |f: &game_sim::combat::Fighter| VitalsView {
+        let vitals = |f: &megatower_sim::combat::Fighter| VitalsView {
             health: f.life.max(0.0).ceil(),
             max_health: f.max_life,
             armor: f.guard,
@@ -1031,7 +1031,7 @@ mod tests {
 
     #[test]
     fn combat_text_follows_the_event() {
-        use game_sim::tags::DamageType;
+        use megatower_sim::tags::DamageType;
         let hit = CombatEvent::Hit {
             target: Actor::Enemy(1),
             damage: 12.4,
@@ -1046,7 +1046,7 @@ mod tests {
         assert_eq!(popup.color, crate::compose::hex(0xff8a30));
         let tick = CombatEvent::Dot {
             target: Actor::Hero,
-            ailment: game_sim::ailment::Ailment::Bleed,
+            ailment: megatower_sim::ailment::Ailment::Bleed,
             damage: 3.0,
         };
         let (actor, popup) = popup_for(&tick).unwrap();
@@ -1101,7 +1101,7 @@ mod tests {
             xp: 10,
             bag: 0,
         };
-        let need = game_sim::passives::xp_to_next(1);
+        let need = megatower_sim::passives::xp_to_next(1);
         assert_eq!(xp_gained(&before, 1, 25), 15);
         assert_eq!(xp_gained(&before, 2, 5), need - 10 + 5);
     }
@@ -1174,7 +1174,7 @@ mod tests {
     }
 
     #[test]
-    fn combat_commands_have_exactly_the_game_sim_outcome() {
+    fn combat_commands_have_exactly_the_megatower_sim_outcome() {
         let mut session = fixture(17, 4);
         let mut reference = Run::new(17, 4);
         reference.pick_starter(0);
