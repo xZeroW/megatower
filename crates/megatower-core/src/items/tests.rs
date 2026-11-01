@@ -39,7 +39,7 @@ fn definition(kind: i32) -> Arc<ItemDefinition> {
         4 => def.ability_to_learn = Some("fixture".into()),
         5 => def.stat_to_adapt = Some(StatId::Armor),
         6 => {
-            def.id = "res://resources/items/insightus.tres".into();
+            def.id = "resources/items/insightus".into();
             def.is_special = true;
         }
         7 => def.use_custom_rarity = true,
@@ -61,8 +61,8 @@ fn make_item(kind: i32, floor: i32, rarity: i32, level: i32) -> Item {
 
 fn set_name(id: &str) -> &str {
     match id {
-        "res://resources/item_sets/reforge.tres" => "reforge",
-        "res://resources/item_sets/phantom.tres" => "phantom",
+        "resources/item_sets/reforge" => "reforge",
+        "resources/item_sets/phantom" => "phantom",
         _ => id,
     }
 }
@@ -215,10 +215,7 @@ fn resource_policies_and_item_edge_cases_preserve_source_quirks() {
     assert!(!item.can_reforge(&stats));
     item.is_reforge = true;
     assert!(item.stats_to_dismantle(&[]).is_empty());
-    assert_eq!(
-        item.set_resources(),
-        ["res://resources/item_sets/reforge.tres"]
-    );
+    assert_eq!(item.set_resources(), ["resources/item_sets/reforge"]);
     assert!(!Item::is_compatible(Some(&item), Some(&item)));
     assert!(!Item::is_compatible(None, Some(&item)));
     item.resource = None;

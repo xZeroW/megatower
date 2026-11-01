@@ -288,7 +288,7 @@ pub enum BbColor2 {
     PaleVioletRed,
 }
 
-/// Godot `String.capitalize()` for ASCII identifiers.
+/// The original game `String.capitalize()` for ASCII identifiers.
 pub fn capitalize(s: &str) -> String {
     megatower_core::translation::snake_case(s)
         .replace('_', " ")

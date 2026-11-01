@@ -3,7 +3,7 @@
 //! state and main-menu button gating. Lobby browsing is multiplayer and not
 //! ported.
 
-use megatower_core::godot_sort::source_sort;
+use megatower_core::custom_sort::source_sort;
 
 /// Slot used by the sort: `Some(last_save_time)` for valid slots.
 #[derive(Clone, Copy)]
@@ -14,7 +14,7 @@ struct Entry {
 
 /// `update_memory_slot_containers`: slot indexes in display order, sorted by
 /// descending `last_save_time` with the source's `>=` comparator through
-/// Godot's unstable sort; invalid slots compare false and are not shown.
+/// The original game's unstable sort; invalid slots compare false and are not shown.
 pub fn display_order(last_save_times: &[Option<f64>]) -> Vec<usize> {
     let mut entries: Vec<Entry> = last_save_times
         .iter()

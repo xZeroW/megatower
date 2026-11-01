@@ -1,7 +1,7 @@
-//! Godot 4.4.1 PCG streams and `singletons/rng_manager.gd` helpers.
+//! The original game PCG streams and `singletons/rng_manager.gd` helpers.
 //! Engine references and license notices: `third_party/RNG-NOTICE.md`.
 //!
-//! Godot's RNG.randf() and global randf() are DIFFERENT algorithms and consume
+//! The original game's RNG.randf() and global randf() are DIFFERENT algorithms and consume
 //! different numbers of random words. Keep the global stream separate.
 
 use bevy::prelude::Resource;
@@ -11,12 +11,12 @@ const DEFAULT_SEQUENCE: u64 = 1442695040888963407;
 const INCREMENT: u64 = (DEFAULT_SEQUENCE << 1) | 1;
 
 #[derive(Clone, Debug)]
-pub struct GodotRng {
+pub struct GameRng {
     seed: u64,
     state: u64,
 }
 
-impl GodotRng {
+impl GameRng {
     pub fn seeded(seed: u64) -> Self {
         let mut rng = Self { seed, state: 0 };
         rng.randi();
@@ -56,7 +56,7 @@ impl GodotRng {
     }
 
     /// Reversed bounds are supported. The full 2^32-wide range is rejected:
-    /// Godot's bound wraps to zero there, outside its supported operation.
+    /// The original game's bound wraps to zero there, outside its supported operation.
     pub fn randi_range(&mut self, from: i32, to: i32) -> Option<i32> {
         if from == to {
             return Some(from);
@@ -104,7 +104,7 @@ impl GodotRng {
     pub fn shuffle_array<T>(&mut self, values: &mut [T]) {
         assert!(
             values.len() <= i32::MAX as usize,
-            "Godot array index exceeds i32"
+            "the original game array index exceeds i32"
         );
         for index in (0..values.len()).rev() {
             let other = self
@@ -127,19 +127,19 @@ impl GodotRng {
 /// each stream identically; they diverge only through their own consumption.
 #[derive(Resource, Clone, Debug)]
 pub struct RngStreams {
-    pub gameplay: GodotRng,
-    pub market: GodotRng,
-    pub enemy: GodotRng,
-    pub luck: GodotRng,
+    pub gameplay: GameRng,
+    pub market: GameRng,
+    pub enemy: GameRng,
+    pub luck: GameRng,
 }
 
 impl RngStreams {
     pub fn seeded(seed: u64) -> Self {
         Self {
-            gameplay: GodotRng::seeded(seed),
-            market: GodotRng::seeded(seed),
-            enemy: GodotRng::seeded(seed),
-            luck: GodotRng::seeded(seed),
+            gameplay: GameRng::seeded(seed),
+            market: GameRng::seeded(seed),
+            enemy: GameRng::seeded(seed),
+            luck: GameRng::seeded(seed),
         }
     }
 
@@ -166,11 +166,11 @@ impl RngStreams {
 }
 
 #[derive(Resource, Clone, Debug)]
-pub struct GlobalRng(pub GodotRng);
+pub struct GlobalRng(pub GameRng);
 
 impl GlobalRng {
     pub fn seeded(seed: u64) -> Self {
-        Self(GodotRng::seeded(seed))
+        Self(GameRng::seeded(seed))
     }
 
     /// Global GDScript randf calls Math::randf (one word, float32 division,

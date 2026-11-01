@@ -93,9 +93,9 @@ pub enum StateType {
 }
 
 pub const STATE_SCENE_PATHS: [&str; 3] = [
-    "res://scenes/states/board_state/board_state.tscn",
-    "res://scenes/states/battle_state/battle_state.tscn",
-    "res://scenes/states/chest_state/chest_state.tscn",
+    "scenes/states/board_state/board_state",
+    "scenes/states/battle_state/battle_state",
+    "scenes/states/chest_state/chest_state",
 ];
 
 /// `State.get_type`: `Array.find`, -1 when absent.
@@ -117,7 +117,7 @@ pub struct Keyword {
 
 const BLACK: Rgba4 = [0.0, 0.0, 0.0, 1.0];
 
-/// `Keywords.LIST` in singleton declaration order. `evade.tres` exists but
+/// `Keywords.LIST` in singleton declaration order. `evade` exists but
 /// the singleton never loads it.
 pub const KEYWORDS: [Keyword; 8] = [
     Keyword {
@@ -257,7 +257,7 @@ impl Default for RoomResource {
     fn default() -> Self {
         Self {
             restless: false,
-            scene: "scenes/rooms/room_normal.tscn",
+            scene: "scenes/rooms/room_normal",
             enemy_h_separation: 20.0,
         }
     }

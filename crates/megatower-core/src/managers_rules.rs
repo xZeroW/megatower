@@ -105,7 +105,7 @@ impl AudioState {
     }
 }
 
-/// Godot `linear_to_db`.
+/// The original game `linear_to_db`.
 pub fn linear_to_db(linear: f32) -> f32 {
     20.0 * linear.log10()
 }
@@ -190,8 +190,8 @@ pub fn item_received_text(template: &str, item_name: &str, sender: &str) -> Stri
 /// impact scene.
 pub fn impact_effect_scene(damage_stat: &str) -> Option<&'static str> {
     match damage_stat {
-        "PHYSICAL_DAMAGE" => Some("scenes/vfx/physical_impact_effect/physical_impact_effect.tscn"),
-        "MAGIC_DAMAGE" => Some("scenes/vfx/magic_impact_effect/magic_impact_effect.tscn"),
+        "PHYSICAL_DAMAGE" => Some("scenes/vfx/physical_impact_effect/physical_impact_effect"),
+        "MAGIC_DAMAGE" => Some("scenes/vfx/magic_impact_effect/magic_impact_effect"),
         _ => None,
     }
 }

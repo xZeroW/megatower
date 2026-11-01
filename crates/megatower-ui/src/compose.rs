@@ -1,5 +1,5 @@
 //! Pure composition of the dynamic HUD: game state -> draw commands.
-//! Positions are logical (640x360) pixels in the resolved Godot layout.
+//! Positions are logical (640x360) pixels in the resolved the original game layout.
 
 use super::model::*;
 
@@ -59,7 +59,7 @@ pub const WHITE: Rgba = [1.0; 4];
 const CHAR_W: f32 = 6.0;
 
 fn trim(path: &str) -> String {
-    path.trim_start_matches("res://").to_owned()
+    path.to_owned()
 }
 
 /// PNG dimensions from the IHDR chunk (cached); (64, 64) if unreadable.
@@ -153,7 +153,7 @@ fn center_text(x: f32, y: f32, w: f32, text_: &str, color: Rgba) -> Draw {
 
 pub(super) fn nine_patch(
     rect: R,
-    template: &megatower_assets::godot_layout::Visual,
+    template: &megatower_assets::ui_layout::Visual,
     tint: Rgba,
 ) -> Draw {
     Draw::Image {
@@ -184,7 +184,7 @@ pub(super) fn label_panel(
     out.push(center_text(cx, y, w, text_, color));
 }
 
-/// `resource_bar.tscn`: the `minimal_bar` outline (`BackPanel`) around a
+/// `resource_bar`: the `minimal_bar` outline (`BackPanel`) around a
 /// `minimal_bar_fill` pill, both modulated by the bar colour.
 pub(super) fn pill_bar(
     rect: R,
@@ -230,7 +230,7 @@ fn pill_fill(rect: R, frac: f32, color: Rgba, out: &mut Vec<Draw>) {
     }
 }
 
-/// `health_bar.tscn`'s `ProgressBarUnder` is orange; the armor bar keeps the
+/// `health_bar`'s `ProgressBarUnder` is orange; the armor bar keeps the
 /// scene default, white.
 const HEALTH_TRAIL: Rgba = [1.0, 0.529_412, 0.0, 1.0];
 const ARMOR_TRAIL: Rgba = [1.0, 1.0, 1.0, 1.0];
@@ -261,7 +261,7 @@ pub(super) fn mana_width(max_mana: i64) -> f32 {
     }
 }
 
-/// `small_resource_bar.tscn` for the enemy mana: the bar is 10px wide for one
+/// `small_resource_bar` for the enemy mana: the bar is 10px wide for one
 /// mana and 7px wider per extra one; the mana already spent is darkened from
 /// the right. Returns the bar's width.
 pub(super) fn mana_pip(right: f32, y: f32, max_mana: i64, mana: i64, out: &mut Vec<Draw>) -> f32 {
@@ -550,7 +550,7 @@ pub(crate) fn item_set_tip(game: &Game, set_id: &str, spec_id: Option<&str>) -> 
     let tip = crate::info_builders::item_set(
         &set.name,
         &translation::text("set"),
-        set.id.ends_with("/essential.tres"),
+        set.id.ends_with("/essential"),
         spec.map(|s| s.name.as_str()),
         description,
         &|k, kind| translation::t(k, kind),
@@ -1244,7 +1244,7 @@ pub(crate) fn item_tip(game: &Game, item: Entity) -> Option<TipView> {
         .set_resources()
         .iter()
         .filter_map(|set| game.rules.content.item_sets.iter().find(|s| &s.id == set))
-        .filter(|s| !s.id.ends_with("generic.tres"))
+        .filter(|s| !s.id.ends_with("generic"))
         .filter_map(|s| s.icon.clone().map(|icon| (icon, s.color)))
         .collect();
     let price = value.buy_price(true);
@@ -1355,7 +1355,7 @@ fn wrap_rows(rows: Vec<TipRow>, max: f32) -> Vec<TipRow> {
     out
 }
 
-/// `hover_info.tscn`: a flat dark panel with 10x5 margins and 5px between its
+/// `hover_info`: a flat dark panel with 10x5 margins and 5px between its
 /// parts: the top row (set icons, name, right-aligned cost), the description
 /// in its own bordered panel and the bottom hint in a darker strip.
 pub(crate) fn draw_tip(out: &mut Vec<Draw>, _rects: &Rects, cursor: [f32; 2], tip: TipView) {
@@ -1515,7 +1515,7 @@ fn set_property(id: &str) -> String {
     id.rsplit('/')
         .next()
         .unwrap_or(id)
-        .trim_end_matches(".tres")
+        .trim_end_matches("")
         .to_uppercase()
 }
 
@@ -1677,7 +1677,7 @@ pub(crate) fn ability_tip(game: &Game, slot: usize) -> Option<TipView> {
         .id
         .rsplit('/')
         .next()
-        .map(|f| f.trim_end_matches(".tres").to_owned());
+        .map(|f| f.trim_end_matches("").to_owned());
     let description =
         description_pieces_for(game, &def.name, "Ability Description", script.as_deref());
     let used = game.profile(local).used_ability_count(&def.id) as i32;
@@ -1825,9 +1825,9 @@ pub(super) fn enemy_widget(
     idx: usize,
     out: &mut Vec<Draw>,
 ) {
-    // Geometry comes from the Godot-resolved `enemy_container.tscn`; node
+    // Geometry comes from the `enemy_container`; node
     // rects are relative to the container's top-left corner.
-    let l = megatower_assets::godot_layout::enemy_container_layout();
+    let l = megatower_assets::ui_layout::enemy_container_layout();
     let ox = cx - l.size[0] / 2.0;
     let oy = ENEMY_TOP;
     if !view.hide_stats {
@@ -1838,7 +1838,7 @@ pub(super) fn enemy_widget(
 
 fn enemy_stats(
     rects: &Rects,
-    l: &megatower_assets::godot_layout::EnemyLayout,
+    l: &megatower_assets::ui_layout::EnemyLayout,
     view: &EnemyView,
     ox: f32,
     oy: f32,
@@ -1994,7 +1994,7 @@ fn preview_sparkles(ox: f32, oy: f32, color: Rgba, time: f64, seed: usize, out: 
     }
 }
 
-/// `death_screen.tscn` `show`: after a second the wipe grows to 0.8 over
+/// `death_screen` `show`: after a second the wipe grows to 0.8 over
 /// two seconds; the screen's content is revealed under it.
 pub fn death_wipe_progress(ui: &UiState) -> f32 {
     // The wipe starts when `Fx::GameEnded` arrives on the timeline: the game
@@ -2187,7 +2187,7 @@ fn vfx_draws(ui: &UiState, out: &mut Vec<Draw>) {
 
 #[allow(clippy::too_many_arguments)]
 fn enemy_visuals(
-    l: &megatower_assets::godot_layout::EnemyLayout,
+    l: &megatower_assets::ui_layout::EnemyLayout,
     policies: &megatower_core::combat::profile::StatusPolicies,
     view: &EnemyView,
     ox: f32,
@@ -2454,11 +2454,7 @@ pub fn popup_draws(ui: &UiState, out: &mut Vec<Draw>) {
         let mut cx = x - width / 2.0;
         let icon = |out: &mut Vec<Draw>, cx: &mut f32, path: &Option<String>| {
             if let Some(path) = path {
-                out.push(tinted(
-                    [*cx, top + 2.0, icon_w, icon_w],
-                    path.trim_start_matches("res://"),
-                    color,
-                ));
+                out.push(tinted([*cx, top + 2.0, icon_w, icon_w], path, color));
                 *cx += icon_w + 3.0;
             }
         };
@@ -2518,7 +2514,7 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
             continue;
         }
         out.extend(super::screens::layout_visuals(
-            &megatower_assets::godot_layout::Layout {
+            &megatower_assets::ui_layout::Layout {
                 viewport: [640.0, 360.0],
                 visuals: vec![v.clone()],
             },
@@ -2831,7 +2827,7 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     match ui.tab {
         Tab::Stats => super::panels::draw_stats_tab(game, &mut out),
         Tab::Log => {
-            let layout = megatower_assets::godot_layout::battle_log_layout();
+            let layout = megatower_assets::ui_layout::battle_log_layout();
             out.extend(super::screens::battle_log_draws(
                 &layout,
                 &ui.log_pages,
@@ -3049,7 +3045,7 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     }
     if state_died {
         // `DeathScreen`: the resolved scene with the source's result texts.
-        let layout = megatower_assets::godot_layout::death_screen_layout();
+        let layout = megatower_assets::ui_layout::death_screen_layout();
         let floor = game.memory.floor_number;
         let death_text = translation::t("died-on-floor", "Text")
             .replace("{floor-number}", &(floor + 1).to_string());
@@ -3071,9 +3067,9 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     out
 }
 
-/// The death screen's confirm button (`ConfirmButton` in `death_screen.tscn`).
+/// The death screen's confirm button (`ConfirmButton` in `death_screen`).
 pub fn new_run_rect() -> R {
-    super::screens::death_confirm_rect(&megatower_assets::godot_layout::death_screen_layout())
+    super::screens::death_confirm_rect(&megatower_assets::ui_layout::death_screen_layout())
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -3336,7 +3332,7 @@ mod tooltip_tests {
     #[test]
     fn tooltip_background_is_opaque() {
         let mut out = vec![];
-        let rects = Rects::from_layout(&megatower_assets::godot_layout::recovered_layout());
+        let rects = Rects::from_layout(&megatower_assets::ui_layout::recovered_layout());
         draw_tip(
             &mut out,
             &rects,

@@ -1,8 +1,8 @@
-//! Source inventory layout, using the shared Godot 4.4.1 sort implementation
-//! in `godot_sort` to preserve tied-item ordering.
+//! Source inventory layout, using the shared original sort implementation
+//! in `custom_sort` to preserve tied-item ordering.
 
 use super::{InventoryError, ItemContainer, array_index};
-use crate::godot_sort::source_sort;
+use crate::custom_sort::source_sort;
 use crate::items::{definition::SocketType, instance::Item};
 use bevy::prelude::*;
 use std::collections::BTreeMap;

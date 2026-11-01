@@ -1,13 +1,7 @@
-//! Where the recovered Godot project lives. The game reads its assets and the
-//! tests read the original scenes from it; both resolve it from the workspace
-//! root rather than the current directory.
+//! Where the packaged runtime assets live, resolved from the workspace root
+//! rather than the current directory.
 
 use std::path::{Path, PathBuf};
-
-/// `Megaloot-GDRE-Recovered/` at the workspace root.
-pub fn recovered_root() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR")).join("../../Megaloot-GDRE-Recovered")
-}
 
 /// Rust workspace root containing packaged runtime assets.
 pub fn runtime_root() -> PathBuf {

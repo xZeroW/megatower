@@ -3,7 +3,7 @@
 /// One `sort()` pass from the source. `Some(value)` represents a
 /// `StatLabelContiner`; other children keep their relative position and are
 /// never compared. Larger target values move toward the front one neighbour
-/// at a time, matching the forward Godot loop.
+/// at a time, matching the forward original loop.
 pub fn sort_once<T>(children: &mut [(Option<f32>, T)]) {
     for index in 0..children.len().saturating_sub(1) {
         let (Some(current), Some(next)) = (children[index].0, children[index + 1].0) else {

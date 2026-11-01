@@ -896,9 +896,9 @@ impl Game {
             }
             let c = *character;
             self.profile_mut(c).remove_matching_status(Eff::Bleed, 2.0);
-            let used_mana_regen = self.profile_mut(c).with_current_turn(|turn| {
-                turn.is_used_ability("res://resources/abilities/mana_regen.tres")
-            });
+            let used_mana_regen = self
+                .profile_mut(c)
+                .with_current_turn(|turn| turn.is_used_ability("resources/abilities/mana_regen"));
             if used_mana_regen {
                 self.wait_battle(0.45);
                 if !self.is_character(c) {
@@ -907,9 +907,9 @@ impl Game {
                 let missing = self.missing_mana(c);
                 self.regen_mana(c, missing);
             }
-            let mut cleansed = self.profile_mut(c).with_current_turn(|turn| {
-                turn.is_used_ability("res://resources/abilities/purify.tres")
-            });
+            let mut cleansed = self
+                .profile_mut(c)
+                .with_current_turn(|turn| turn.is_used_ability("resources/abilities/purify"));
             if self.has_status(c, Eff::Purification) {
                 if !cleansed {
                     self.profile_mut(c)
@@ -1119,7 +1119,7 @@ impl Game {
         if self.health(enemy) <= 0.0 {
             for other in self.enemies_in_combat_vec() {
                 if self.state(other).base_passive.as_deref()
-                    == Some("res://resources/passives/undead_blessing.tres")
+                    == Some("resources/passives/undead_blessing")
                 {
                     self.try_to_apply_status_effect(other, Some(other), Eff::Purification, 1.0);
                 }

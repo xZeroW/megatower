@@ -177,7 +177,9 @@ fn tree_node_icon(node: &megatower_sim::passives::NodeDef) -> &'static str {
         }
         Stat::Convert(..) => "assets/textures/icons/power_icon.png",
         Stat::CritChance | Stat::CritMultiplier => "assets/textures/icons/execution_icon.png",
-        Stat::Resistance(_) | Stat::MaxResistance(_) => "assets/textures/icons/magic_shield_icon.png",
+        Stat::Resistance(_) | Stat::MaxResistance(_) => {
+            "assets/textures/icons/magic_shield_icon.png"
+        }
         Stat::Penetration(_) => "assets/textures/icons/magic_shield_break_icon.png",
         Stat::AilmentChance(A::Ignite) => "assets/textures/icons/magma_icon.png",
         Stat::AilmentChance(A::Bleed) => "assets/textures/icons/bleed.png",
@@ -258,7 +260,10 @@ fn tip_lines(loot: &Loot) -> Vec<String> {
             lines
         }
         Loot::Gem(g) => {
-            let mut lines = vec![megatower_sim::run::gem_name(&g.id), format!("Level {}", g.level)];
+            let mut lines = vec![
+                megatower_sim::run::gem_name(&g.id),
+                format!("Level {}", g.level),
+            ];
             if let Some(def) = content::get().gems.active(&g.id) {
                 lines.push(format!("{:.0} mana / {:?}", def.cost, def.targeting));
                 lines.extend(
@@ -753,7 +758,7 @@ impl Labyrinth {
         compose::draw_tabs(ui, rects, &mut out);
         // Keep the original gear button and exact resolved control geometry.
         out.extend(screens::layout_visuals(
-            &megatower_assets::godot_layout::Layout {
+            &megatower_assets::ui_layout::Layout {
                 viewport: [640.0, 360.0],
                 visuals: rects
                     .buttons
@@ -973,7 +978,7 @@ impl Labyrinth {
                 color: palette(1),
             });
             out.extend(screens::death_draws(
-                &megatower_assets::godot_layout::death_screen_layout(),
+                &megatower_assets::ui_layout::death_screen_layout(),
                 &format!("Died on floor {}", game.floor.number),
                 None,
             ));
@@ -1483,7 +1488,7 @@ mod tests {
                 screen: Screen::Playing,
                 ..default()
             },
-            Rects::from_layout(&megatower_assets::godot_layout::recovered_layout()),
+            Rects::from_layout(&megatower_assets::ui_layout::recovered_layout()),
         )
     }
 

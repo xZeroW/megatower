@@ -174,9 +174,8 @@ pub fn rebuild_cache(
         .flatten()
         .filter_map(|effect| effect.resource)
         .collect();
-    context.triple_attack_used = profile.with_current_turn(|turn| {
-        turn.is_used_ability("res://resources/abilities/triple_attack.tres")
-    });
+    context.triple_attack_used =
+        profile.with_current_turn(|turn| turn.is_used_ability("resources/abilities/triple_attack"));
     let mut scripts = Vec::new();
     for set in &context.item_sets {
         let definition = rules
@@ -187,7 +186,7 @@ pub fn rebuild_cache(
             .ok_or_else(|| StatSourceError::MissingItemSet(set.clone()))?;
         if let Some(script) = &definition.game_logic_script {
             let name = script
-                .strip_prefix("res://resources/item_set_scripts/")
+                .strip_prefix("resources/item_set_scripts/")
                 .and_then(|name| name.strip_suffix(".gd"));
             // These current scripts inherit the empty base stat-bonus method.
             // Their initialize/signal callbacks are NOT executed here.

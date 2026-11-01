@@ -79,10 +79,10 @@ fn update_screens(
                 {
                     ui.screen = Screen::MainMenu;
                 }
-                screens::intro_draws(&megatower_assets::godot_layout::intro_layout(), ui.time)
+                screens::intro_draws(&megatower_assets::ui_layout::intro_layout(), ui.time)
             }
             (None, Screen::MainMenu) => {
-                let layout = megatower_assets::godot_layout::main_menu_layout();
+                let layout = megatower_assets::ui_layout::main_menu_layout();
                 if let (true, Some([x, y])) = (click, ui.cursor) {
                     match screens::main_menu_hit(&layout, x, y) {
                         Some(screens::MenuButton::EnterTheTower) => ui.screen = Screen::Select,
@@ -295,7 +295,7 @@ mod labyrinth_routing_tests {
         app.insert_resource(Time::<()>::default())
             .insert_resource(UiRes(ui))
             .insert_resource(RectsRes(Rects::from_layout(
-                &megatower_assets::godot_layout::recovered_layout(),
+                &megatower_assets::ui_layout::recovered_layout(),
             )))
             .insert_resource(FrameInput {
                 click: true,
@@ -415,9 +415,7 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
             }
         }
         Fx::Sfx { name, volume_db } => ui.audio.push((format!("assets/sfx/{name}.wav"), volume_db)),
-        Fx::SfxFile { path, volume_db } => ui
-            .audio
-            .push((path.trim_start_matches("res://").to_owned(), volume_db)),
+        Fx::SfxFile { path, volume_db } => ui.audio.push((path.clone(), volume_db)),
         Fx::FloorChanged { floor } => {
             ui.message = Some((format!("FLOOR {}", floor + 1), now + 1.5))
         }
@@ -489,7 +487,7 @@ pub(super) fn handle_input(
         }
         if ui.tab == Tab::Log {
             match screens::battle_log_arrows(
-                &megatower_assets::godot_layout::battle_log_layout(),
+                &megatower_assets::ui_layout::battle_log_layout(),
                 x,
                 y,
             ) {

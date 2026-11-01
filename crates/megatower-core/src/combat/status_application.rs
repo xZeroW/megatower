@@ -7,7 +7,7 @@ use super::{
     damage::{DamageData, DamageSource},
     profile::{BattleProfile, StatusKind},
 };
-use crate::rng::GodotRng;
+use crate::rng::GameRng;
 use crate::{
     character::{
         item_sources::CharacterItems,
@@ -112,7 +112,7 @@ fn count(world: &World, entity: Option<Entity>, set: &str) -> Result<usize, Char
     }
     .item_set_count(
         &profile.active_item_sets,
-        &format!("res://resources/item_sets/{set}.tres"),
+        &format!("resources/item_sets/{set}"),
     )
     .map_err(StatSourceError::from)?)
 }
@@ -120,21 +120,21 @@ fn count(world: &World, entity: Option<Entity>, set: &str) -> Result<usize, Char
 /// What the engine needs from its owner: disjoint borrows of the world, rules
 /// and gameplay stream, plus a synchronous sink for each source call boundary.
 pub trait StatusHost {
-    fn parts(&mut self) -> (&mut World, &CharacterStatRules, &mut GodotRng);
+    fn parts(&mut self) -> (&mut World, &CharacterStatRules, &mut GameRng);
     fn sink(&mut self, action: StatusAction) -> Result<(), CharacterStatError>;
 }
 
 struct ClosureHost<'a, F> {
     world: &'a mut World,
     rules: &'a CharacterStatRules,
-    rng: &'a mut GodotRng,
+    rng: &'a mut GameRng,
     sink: &'a mut F,
 }
 
-impl<F: FnMut(&mut World, &mut GodotRng, StatusAction) -> Result<(), CharacterStatError>> StatusHost
+impl<F: FnMut(&mut World, &mut GameRng, StatusAction) -> Result<(), CharacterStatError>> StatusHost
     for ClosureHost<'_, F>
 {
-    fn parts(&mut self) -> (&mut World, &CharacterStatRules, &mut GodotRng) {
+    fn parts(&mut self) -> (&mut World, &CharacterStatRules, &mut GameRng) {
         (self.world, self.rules, self.rng)
     }
     fn sink(&mut self, action: StatusAction) -> Result<(), CharacterStatError> {
@@ -150,8 +150,8 @@ pub fn apply_status_effect(
     request: StatusApplication,
     context: &StatusApplicationContext,
     rules: &CharacterStatRules,
-    rng: &mut GodotRng,
-    sink: &mut impl FnMut(&mut World, &mut GodotRng, StatusAction) -> Result<(), CharacterStatError>,
+    rng: &mut GameRng,
+    sink: &mut impl FnMut(&mut World, &mut GameRng, StatusAction) -> Result<(), CharacterStatError>,
 ) -> Result<bool, CharacterStatError> {
     apply_status_effect_host(
         &mut ClosureHost {
@@ -209,11 +209,11 @@ pub fn apply_status_effect_host<H: StatusHost>(
     let has_specialization = |name| {
         specializations
             .iter()
-            .any(|id| id == &format!("res://resources/specializations/{name}.tres"))
+            .any(|id| id == &format!("resources/specializations/{name}"))
     };
     let spread = applier_sets
         .iter()
-        .any(|id| id == "res://resources/item_sets/unchained.tres")
+        .any(|id| id == "resources/item_sets/unchained")
         && policy.kind == StatusKind::Debuff
         && applier.is_some()
         && applier == context.player
@@ -383,7 +383,7 @@ pub fn apply_status_effect_host<H: StatusHost>(
                         && resource == Effect::Poison
                         && active_sets(world, applier)?
                             .iter()
-                            .any(|id| id == "res://resources/item_sets/chromalure.tres")
+                            .any(|id| id == "resources/item_sets/chromalure")
                 }
                 None => false,
             }

@@ -135,13 +135,7 @@ pub fn draw_drop_targets(game: &Game, ui: &UiState, rects: &Rects, out: &mut Vec
 }
 
 fn rects_texture(rects: &Rects) -> String {
-    rects
-        .flat_button
-        .texture
-        .clone()
-        .unwrap_or_default()
-        .trim_start_matches("res://")
-        .to_owned()
+    rects.flat_button.texture.clone().unwrap_or_default()
 }
 
 pub fn draw_stash(game: &Game, ui: &UiState, rects: &Rects, out: &mut Vec<Draw>) {
@@ -203,13 +197,7 @@ pub fn draw_stash(game: &Game, ui: &UiState, rects: &Rects, out: &mut Vec<Draw>)
 }
 
 fn rects_texture_panel(rects: &Rects) -> String {
-    rects
-        .big_panel
-        .texture
-        .clone()
-        .unwrap_or_default()
-        .trim_start_matches("res://")
-        .to_owned()
+    rects.big_panel.texture.clone().unwrap_or_default()
 }
 
 pub fn draw_dismantle_slot(game: &Game, ui: &UiState, out: &mut Vec<Draw>) {

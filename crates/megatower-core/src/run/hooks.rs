@@ -1,4 +1,4 @@
-//! Replacement for Godot signal connections made by item-set, passive,
+//! Replacement for the original game signal connections made by item-set, passive,
 //! ability and stat scripts. A connection records (signal, emitter, script,
 //! slot); `Game::emit` calls matching connections in connection order, awaiting
 //! each to completion like `Await.emit`. Scripts live for one `make_a_turn`.

@@ -1,12 +1,12 @@
-//! `options_screen.tscn`: tabs, sliders, toggles, drop-downs and key rebinding
-//! drawn over the Godot-resolved layouts (one per `GenericTabContainer` tab).
+//! `options_screen`: tabs, sliders, toggles, drop-downs and key rebinding
+//! drawn over the layouts (one per `GenericTabContainer` tab).
 //! Settings persist as JSON in the user directory.
 
 use super::compose::{Align, Draw, palette, text};
 use super::screens::{button_rect, layout_visuals};
 use crate::library_state::db_to_linear;
 use bevy::prelude::KeyCode;
-use megatower_assets::godot_layout::{Layout, Visual};
+use megatower_assets::ui_layout::{Layout, Visual};
 use megatower_core::options::{Binding, Options, WindowMode, supported_resolutions};
 use megatower_runtime::input::gameplay_input::{DEFAULT_KEYS, KeyBindings};
 
@@ -23,10 +23,10 @@ const TAB_BUTTONS: [&str; 4] = [
 
 pub fn layout_for(tab: usize) -> Layout {
     match tab {
-        VIDEO => megatower_assets::godot_layout::options_video_layout(),
-        AUDIO => megatower_assets::godot_layout::options_audio_layout(),
-        MISC => megatower_assets::godot_layout::options_misc_layout(),
-        _ => megatower_assets::godot_layout::options_layout(),
+        VIDEO => megatower_assets::ui_layout::options_video_layout(),
+        AUDIO => megatower_assets::ui_layout::options_audio_layout(),
+        MISC => megatower_assets::ui_layout::options_misc_layout(),
+        _ => megatower_assets::ui_layout::options_layout(),
     }
 }
 

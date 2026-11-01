@@ -4,7 +4,7 @@ use super::{
     runtime_tests::{compare, rules},
     stat_cache::CachedStats,
 };
-use crate::rng::GodotRng;
+use crate::rng::GameRng;
 use crate::{
     combat::{
         damage::{DamageData, DamageSource},
@@ -92,7 +92,7 @@ fn attack_math_packets_statuses_gates_and_exact_rng_consumption_match_source() {
             turn.abilities = case
                 .abilities
                 .iter()
-                .map(|name| Some(format!("res://resources/abilities/{name}.tres")))
+                .map(|name| Some(format!("resources/abilities/{name}")))
                 .collect();
             turn.consumed_stacks = case
                 .consumed
@@ -108,7 +108,7 @@ fn attack_math_packets_statuses_gates_and_exact_rng_consumption_match_source() {
         let sets: Vec<_> = case
             .sets
             .iter()
-            .map(|name| format!("res://resources/item_sets/{name}.tres"))
+            .map(|name| format!("resources/item_sets/{name}"))
             .collect();
         let transformed = if case.omni {
             vec![StatId::OmniCritChance]
@@ -120,9 +120,7 @@ fn attack_math_packets_statuses_gates_and_exact_rng_consumption_match_source() {
             profile: &mut profile,
             active_sets: &sets,
             transformed_stats: &transformed,
-            base_passive: case
-                .ironclad
-                .then_some("res://resources/passives/ironclad.tres"),
+            base_passive: case.ironclad.then_some("resources/passives/ironclad"),
         };
         let mut actual = json!({"attacks":[view.physical_attack(),view.magic_attack(),view.freeze_attack(),view.armored_attack()],
             "type":view.attack_type(),"damage_type":view.attack_damage_type(),"attack_damage":view.attack_damage(),
@@ -139,7 +137,7 @@ fn attack_math_packets_statuses_gates_and_exact_rng_consumption_match_source() {
             view.magic_damage(-2.5),
             view.freeze_damage(-2.5)
         ]);
-        let mut rng = GodotRng::seeded(case.seed);
+        let mut rng = GameRng::seeded(case.seed);
         let mut gates = Vec::new();
         for damage_type in [
             Some(StatId::PhysicalDamage),

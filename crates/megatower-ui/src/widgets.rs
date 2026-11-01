@@ -232,7 +232,7 @@ pub fn toggle_step(
     )
 }
 
-/// Godot `snapped(value, step)`.
+/// The original game `snapped(value, step)`.
 pub fn snapped(value: f32, step: f32) -> f32 {
     if step == 0.0 {
         value

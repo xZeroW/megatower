@@ -36,7 +36,7 @@ pub fn artifact_ron(name: &str, embedded: &'static str) -> std::borrow::Cow<'sta
 }
 
 fn source_path(path: &str) -> String {
-    path.strip_prefix("res://").unwrap_or(path).to_owned()
+    path.to_owned()
 }
 
 /// One mesh's entry of the materials file, as the exporter writes it.

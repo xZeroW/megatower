@@ -79,8 +79,8 @@ mod tests {
         assert_eq!(
             names,
             [
-                "Kestrel", "Umbrath", "Rethan", "Elaris", "Branric", "Gorix", "Thalara", "Mirelle", "Pellim", "Orvian",
-                "Nivor"
+                "Kestrel", "Umbrath", "Rethan", "Elaris", "Branric", "Gorix", "Thalara", "Mirelle",
+                "Pellim", "Orvian", "Nivor"
             ]
         );
         assert_eq!(catalog.available(true).len(), 3);

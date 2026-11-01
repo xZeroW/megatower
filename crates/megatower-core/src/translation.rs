@@ -41,7 +41,7 @@ fn parse_csv(text: &str) -> HashMap<String, String> {
     map
 }
 
-/// Godot 4.4 `String.to_snake_case` (camelCase boundaries, then lowercase).
+/// The original game `String.to_snake_case` (camelCase boundaries, then lowercase).
 pub fn snake_case(text: &str) -> String {
     let chars: Vec<char> = text.chars().collect();
     let mut out = String::new();
@@ -104,7 +104,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn keys_normalize_like_godot_and_lookup_english() {
+    fn keys_normalize_like_reference_and_lookup_english() {
         assert_eq!(
             fixed_key("CANT EQUIP DUPLICATES", "Text"),
             "cant-equip-duplicates-text"

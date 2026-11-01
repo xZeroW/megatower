@@ -406,7 +406,7 @@ impl Game {
                 volume_db: -3.0,
             });
             let mut popup = Popup::new(format!("+{new_amount}"), colors::MANA_BLUE);
-            popup.right_icon = Some("res://assets/textures/icons/mana_icon.png".into());
+            popup.right_icon = Some("assets/textures/icons/mana_icon.png".into());
             self.fx(Fx::Popup(popup));
         }
         self.change_mana(e, new_amount as f64);

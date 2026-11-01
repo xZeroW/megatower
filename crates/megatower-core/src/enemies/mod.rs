@@ -7,7 +7,7 @@ pub mod scaling;
 #[cfg(test)]
 mod tests;
 
-use crate::godot_sort::source_sort;
+use crate::custom_sort::source_sort;
 use crate::{
     character::runtime::{
         CharacterStatError, CharacterStatRules, CharacterStats, rebuild_cache, set_stat_amount,
@@ -68,7 +68,7 @@ pub struct EnemyCatalog {
 
 impl EnemyCatalog {
     /// Startup using the PCK's byte-sorted directory order (verified against
-    /// Godot 4.4.1 `DirAccess` on the original pack), then the source's
+    /// The original game `DirAccess` on the original pack), then the source's
     /// unstable floor sort. Demo mode drops enemies above floor 15.
     pub fn recovered(demo: bool) -> Self {
         let raw: RawEnemies = crate::ron_data::from_str(
@@ -100,7 +100,7 @@ impl EnemyCatalog {
         self.list
             .iter()
             .chain(&self.special)
-            .find(|enemy| enemy.id == format!("res://resources/{name}.tres"))
+            .find(|enemy| enemy.id == format!("resources/{name}"))
             .cloned()
     }
 

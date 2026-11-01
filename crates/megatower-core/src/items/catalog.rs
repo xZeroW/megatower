@@ -59,19 +59,19 @@ impl RawItemCatalog {
             }
             let mut pool = Pool::Market;
             if def.is_essential() || def.is_special {
-                def.set_resources = vec!["res://resources/item_sets/essential.tres".into()];
+                def.set_resources = vec!["resources/item_sets/essential".into()];
                 pool = Pool::Essentials;
             }
             if def.is_tome() {
-                def.set_resources = vec!["res://resources/item_sets/tome.tres".into()];
+                def.set_resources = vec!["resources/item_sets/tome".into()];
                 pool = Pool::Tomes;
             }
             if def.is_stat_adapter() {
-                def.set_resources = vec!["res://resources/item_sets/consumable.tres".into()];
+                def.set_resources = vec!["resources/item_sets/consumable".into()];
                 result.stat_adapters.push(id.clone());
             }
             if def.is_consumable() {
-                def.set_resources = vec!["res://resources/item_sets/consumable.tres".into()];
+                def.set_resources = vec!["resources/item_sets/consumable".into()];
                 pool = Pool::Consumables;
             }
             if def.is_artifact {
@@ -111,7 +111,7 @@ impl RawItemCatalog {
         }
         for floor in floors {
             let mut items: Vec<_> = floor.iter().map(|id| id.as_str()).collect();
-            crate::godot_sort::source_sort(&mut items, |a, b| {
+            crate::custom_sort::source_sort(&mut items, |a, b| {
                 result.definitions[*a].price() < result.definitions[*b].price()
             });
             result.list.extend(items.into_iter().map(str::to_owned));

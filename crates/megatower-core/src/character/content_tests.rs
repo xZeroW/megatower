@@ -37,7 +37,7 @@ fn compare(actual: &Value, expected: &Value, path: &str) {
 }
 
 #[test]
-fn all_177_recovered_definitions_match_godot_resource_loader() {
+fn all_177_recovered_definitions_match_reference_data() {
     let content = CharacterContent::recovered();
     let data = oracle();
     let records = data["records"].as_object().unwrap();
@@ -70,18 +70,17 @@ fn all_177_recovered_definitions_match_godot_resource_loader() {
         compare(&row, &records[id], id);
     }
     let sources = content.stat_sources();
-    let wood = &sources.item_set_tiers["res://resources/item_sets/wood.tres"];
+    let wood = &sources.item_set_tiers["resources/item_sets/wood"];
     assert_eq!(wood.len(), 3);
     assert_eq!(wood[0].as_ref().unwrap()[0].amount, 25.0);
     assert!(wood[1].is_none());
     assert_eq!(wood[2].as_ref().unwrap()[0].amount, 10.0);
     assert_eq!(
-        sources.passive_bonuses["res://resources/passives/whispers_of_anger.tres"][0].amount,
+        sources.passive_bonuses["resources/passives/whispers_of_anger"][0].amount,
         5.0
     );
     assert_eq!(
-        sources.ability_bonuses_while_active["res://resources/abilities/death_strike.tres"][0]
-            .amount,
+        sources.ability_bonuses_while_active["resources/abilities/death_strike"][0].amount,
         5.0
     );
 }
@@ -222,9 +221,9 @@ fn real_content_definitions_feed_native_stat_source_and_recalculation_pipeline()
     let mut world = World::new();
     let inventory = world.spawn(ItemContainer::default()).id();
     let equipment = world.spawn(ItemContainer::default()).id();
-    let wood = "res://resources/item_sets/wood.tres".to_owned();
-    let passive = "res://resources/passives/whispers_of_anger.tres";
-    let death_strike = "res://resources/abilities/death_strike.tres";
+    let wood = "resources/item_sets/wood".to_owned();
+    let passive = "resources/passives/whispers_of_anger";
+    let death_strike = "resources/abilities/death_strike";
     let mut profile = BattleProfile {
         active_item_sets: vec![wood.clone(), wood.clone(), wood],
         turns: vec![Some(BattleTurn {

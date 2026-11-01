@@ -1,7 +1,7 @@
 //! Native counterparts of the data rules in `save_system.gd` and `file.gd`.
-//! The Godot encrypted `var_to_bytes` + gzip container, `inst_to_dict`
+//! The original encrypted `var_to_bytes` + gzip container, `inst_to_dict`
 //! reflection and `load_data` property poking are NOT reproduced: existing
-//! Godot save files cannot be read, and native saves are plain JSON.
+//! Original save files cannot be read, and native saves are plain JSON.
 
 use serde_json::{Map, Value};
 use std::{fs, io, io::Write, path::Path, sync::atomic::{AtomicU64, Ordering}};
@@ -72,7 +72,7 @@ pub fn filter_saved(map: &Map<String, Value>) -> Map<String, Value> {
         .collect()
 }
 
-/// `deserialize` for a `Resource` property: only `res://` string paths that
+/// `deserialize` for a `Resource` property: only `resources/` string paths that
 /// exist load; other strings pass through; anything else is null.
 pub enum ResourceRef<'a> {
     Loaded(&'a str),
@@ -82,7 +82,7 @@ pub enum ResourceRef<'a> {
 
 pub fn resolve_resource_ref(value: &Value, exists: impl Fn(&str) -> bool) -> ResourceRef<'_> {
     match value {
-        Value::String(s) if !s.starts_with("res://") => ResourceRef::PassThrough(s),
+        Value::String(s) if !s.starts_with("resources/") => ResourceRef::PassThrough(s),
         Value::String(s) if exists(s) => ResourceRef::Loaded(s),
         _ => ResourceRef::Null,
     }
@@ -153,7 +153,7 @@ mod tests {
 
     #[test]
     fn resource_refs_and_roundtrip() {
-        let v = json!("res://a.tres");
+        let v = json!("resources/a");
         assert!(matches!(
             resolve_resource_ref(&v, |_| true),
             ResourceRef::Loaded(_)

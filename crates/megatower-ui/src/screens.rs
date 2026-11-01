@@ -1,11 +1,11 @@
-//! Standalone screens drawn straight from Godot-resolved scene layouts
-//! (`esc_menu_screen.tscn`), plus their button hit-testing.
+//! Standalone screens drawn straight from scene layouts
+//! (`esc_menu_screen`), plus their button hit-testing.
 
 use super::compose::{Align, Draw, palette, text};
-use megatower_assets::godot_layout::{Layout, Visual};
+use megatower_assets::ui_layout::{Layout, Visual};
 
 fn trim(path: &str) -> String {
-    path.trim_start_matches("res://").to_owned()
+    path.to_owned()
 }
 
 /// Draw every resolved control in scene order: nine-patch panels/buttons,
@@ -163,7 +163,7 @@ pub fn esc_hit(layout: &Layout, x: f32, y: f32) -> Option<EscButton> {
     })
 }
 
-/// `DeathScreen` (`death_screen.tscn`) with its two result labels filled in
+/// `DeathScreen` (`death_screen`) with its two result labels filled in
 /// the way `set_death_floor` / `set_highest_floor` do. The record label is
 /// hidden for win/final-floor results.
 pub fn death_draws(layout: &Layout, death_text: &str, record_text: Option<&str>) -> Vec<Draw> {
@@ -200,7 +200,7 @@ pub fn death_confirm_rect(layout: &Layout) -> [f32; 4] {
     button_rect(layout, "ConfirmButton").unwrap_or([0.0; 4])
 }
 
-/// Battle log tab (`battle_log_tab_container.tscn`): the resolved panel,
+/// Battle log tab (`battle_log_tab_container`): the resolved panel,
 /// scrollbar and arrows, the page labels and the visible log lines.
 pub fn battle_log_draws(
     layout: &Layout,
@@ -309,7 +309,7 @@ pub const ESC_UNAVAILABLE: [&str; 0] = [];
 #[cfg(test)]
 mod tests {
     use super::*;
-    use megatower_assets::godot_layout::esc_menu_layout;
+    use megatower_assets::ui_layout::esc_menu_layout;
 
     #[test]
     fn esc_menu_matches_the_resolved_scene() {
@@ -341,7 +341,7 @@ mod tests {
     }
 }
 
-/// `intro_state.tscn`'s `play` animation (5.5s): keyframe times and values for
+/// `intro_state`'s `play` animation (5.5s): keyframe times and values for
 /// the three fading elements.
 fn keyframes(times: &[f32], values: &[f32], t: f32) -> f32 {
     if t <= times[0] {
@@ -428,7 +428,7 @@ pub fn main_menu_hit(layout: &Layout, x: f32, y: f32) -> Option<MenuButton> {
     })
 }
 
-/// Default key shown for each rebindable action (`project.godot` input map).
+/// Default key shown for each rebindable action (original input map).
 const OPTION_KEYS: [(&str, &str); 4] = [
     ("PrimaryActionBindingButton", "SPACE"),
     ("AbilityBindingButton", "W"),
@@ -445,7 +445,7 @@ const OPTIONS_DISABLED: [&str; 5] = [
     "ResetToDefaultsButton",
 ];
 
-/// `options_screen.tscn` on its Controls tab with each KeyLabel filled in.
+/// `options_screen` on its Controls tab with each KeyLabel filled in.
 pub fn options_draws(layout: &Layout) -> Vec<Draw> {
     let visuals = layout
         .visuals
@@ -493,10 +493,10 @@ pub const LIBRARY_PASSIVES: usize = 3;
 
 pub fn library_layout_for(tab: usize) -> Layout {
     match tab {
-        LIBRARY_BESTIARY => megatower_assets::godot_layout::library_bestiary_layout(),
-        LIBRARY_SYNERGIES => megatower_assets::godot_layout::library_synergies_layout(),
-        LIBRARY_PASSIVES => megatower_assets::godot_layout::library_passives_layout(),
-        _ => megatower_assets::godot_layout::library_layout(),
+        LIBRARY_BESTIARY => megatower_assets::ui_layout::library_bestiary_layout(),
+        LIBRARY_SYNERGIES => megatower_assets::ui_layout::library_synergies_layout(),
+        LIBRARY_PASSIVES => megatower_assets::ui_layout::library_passives_layout(),
+        _ => megatower_assets::ui_layout::library_layout(),
     }
 }
 
@@ -521,7 +521,7 @@ pub fn library_max_scroll(item_count: usize) -> usize {
         .saturating_sub(library_visible_rows())
 }
 
-/// `library_state.tscn`. On the Items tab `items` is `Items.LIST` with
+/// `library_state`. On the Items tab `items` is `Items.LIST` with
 /// `Some(texture)` for encountered items; locked items show the unknown icon.
 /// The Bestiary tab is the empty panel: the source never fills
 /// `LibraryState.enemy_resources`, so `update_bestiary` adds nothing.
@@ -767,7 +767,7 @@ fn profile_cell(layout: &Layout, index: usize) -> Option<[f32; 4]> {
     ])
 }
 
-/// `profile_state.tscn`: adventurer buttons (the `_framed` 64px portrait drawn at 45px
+/// `profile_state`: adventurer buttons (the `_framed` 64px portrait drawn at 45px
 /// inside a 54px border, -2px margins) in name order.
 pub fn profile_draws(layout: &Layout, entries: &[ProfileEntry]) -> Vec<Draw> {
     let mut out = layout_draws(layout, &[]);
@@ -970,9 +970,9 @@ pub fn profile_popup_draws(
                 v.text = Some(goal.replace("{NUMBER}", &border.number().to_string()));
                 v.palette = Some(4);
             } else if v.path.ends_with("/PortraitTextureRect") {
-                v.texture = portrait.map(|p| format!("res://{p}"));
+                v.texture = portrait.map(str::to_owned);
             } else if v.path.ends_with("/BorderTextureRect") {
-                v.texture = Some(format!("res://{}", border.texture()));
+                v.texture = Some(border.texture().to_owned());
             }
             let start = out.len();
             single(v, &[], &mut out);
@@ -1001,7 +1001,7 @@ pub fn profile_popup_draws(
     out
 }
 
-/// `main_menu_state.tscn`: title, button column and frame. The gradient fades,
+/// `main_menu_state`: title, button column and frame. The gradient fades,
 /// menu-item emitter and social buttons are not drawn.
 pub fn main_menu_draws(layout: &Layout) -> Vec<Draw> {
     let mut out = vec![Draw::Fill {
@@ -1015,7 +1015,7 @@ pub fn main_menu_draws(layout: &Layout) -> Vec<Draw> {
             let skip_node = v.path.contains("/HBoxContainer/DiscordButton")
                 || v.path.contains("/HBoxContainer/CreditsButton")
                 || v.path.ends_with("/PhaseLabel");
-            let gradient = v.texture.as_deref().is_some_and(|t| t.contains(".tscn::"));
+            let gradient = v.texture.as_deref().is_some_and(|t| t.contains("::"));
             !skip_node && !gradient
         })
         .cloned()
@@ -1033,7 +1033,7 @@ pub fn main_menu_draws(layout: &Layout) -> Vec<Draw> {
 #[cfg(test)]
 mod menu_tests {
     use super::*;
-    use megatower_assets::godot_layout::{intro_layout, main_menu_layout};
+    use megatower_assets::ui_layout::{intro_layout, main_menu_layout};
 
     #[test]
     fn main_menu_buttons_are_hit_at_their_centers() {
@@ -1079,7 +1079,7 @@ mod library_tests {
 
     #[test]
     fn library_back_button_is_hit() {
-        let layout = megatower_assets::godot_layout::library_layout();
+        let layout = megatower_assets::ui_layout::library_layout();
         let r = button_rect(&layout, "BackButton").unwrap();
         assert!(library_back_hit(&layout, r[0] + 2.0, r[1] + 2.0));
         assert!(!library_back_hit(&layout, 300.0, 300.0));
@@ -1087,7 +1087,7 @@ mod library_tests {
 
     #[test]
     fn library_tabs_switch_and_bestiary_has_no_enemy_icons() {
-        let layout = megatower_assets::godot_layout::library_layout();
+        let layout = megatower_assets::ui_layout::library_layout();
         let r = button_rect(&layout, "BestiaryButton").unwrap();
         assert_eq!(library_tab_hit(&layout, r[0] + 3.0, r[1] + 3.0), Some(1));
         for (name, tab) in [
@@ -1142,9 +1142,9 @@ mod library_tests {
     #[test]
     fn synergy_grid_draws_three_icons_and_an_equals_per_entry() {
         let entry = SynergyEntry {
-            main: ("res://a.png".to_owned(), [1.0; 4]),
-            synergy: ("res://b.png".to_owned(), [1.0; 4]),
-            result: ("res://c.png".to_owned(), [1.0; 4]),
+            main: ("a.png".to_owned(), [1.0; 4]),
+            synergy: ("b.png".to_owned(), [1.0; 4]),
+            result: ("c.png".to_owned(), [1.0; 4]),
         };
         let layout = library_layout_for(LIBRARY_SYNERGIES);
         let draws = synergy_grid_draws(&layout, &[entry.clone(), entry], 0);
@@ -1161,7 +1161,7 @@ mod library_tests {
 
     #[test]
     fn profile_grid_wraps_at_nine_columns_and_hits_cells() {
-        let layout = megatower_assets::godot_layout::profile_layout();
+        let layout = megatower_assets::ui_layout::profile_layout();
         let first = profile_cell(&layout, 0).unwrap();
         let tenth = profile_cell(&layout, 9).unwrap();
         assert_eq!(first[0], tenth[0]);
@@ -1191,9 +1191,13 @@ mod library_tests {
 
     #[test]
     fn popup_shows_one_unlocked_card_for_a_fresh_record() {
-        let layout = megatower_assets::godot_layout::adventurer_overview_layout();
-        let draws =
-            profile_popup_draws(&layout, Some("assets/textures/portraits/kestrel.png"), 0, 0.0);
+        let layout = megatower_assets::ui_layout::adventurer_overview_layout();
+        let draws = profile_popup_draws(
+            &layout,
+            Some("assets/textures/portraits/kestrel.png"),
+            0,
+            0.0,
+        );
         let text_of = |needle: &str| {
             draws
                 .iter()
@@ -1222,7 +1226,7 @@ mod library_tests {
 
     #[test]
     fn popup_tabs_hit_and_offline_records_show_only_the_header() {
-        let layout = megatower_assets::godot_layout::adventurer_overview_layout();
+        let layout = megatower_assets::ui_layout::adventurer_overview_layout();
         let r = button_rect(&layout, "SpeedrunsTabButton").unwrap();
         assert_eq!(
             popup_tab_hit(&layout, r[0] + 3.0, r[1] + POPUP_DY + 3.0),
@@ -1234,9 +1238,8 @@ mod library_tests {
             Some(POPUP_OVERVIEW)
         );
         assert_eq!(popup_tab_hit(&layout, 300.0, 300.0), None);
-        let draws = profile_popup_records_draws(
-            &megatower_assets::godot_layout::adventurer_records_layout(),
-        );
+        let draws =
+            profile_popup_records_draws(&megatower_assets::ui_layout::adventurer_records_layout());
         let labels: Vec<&str> = draws
             .iter()
             .filter_map(|d| match d {

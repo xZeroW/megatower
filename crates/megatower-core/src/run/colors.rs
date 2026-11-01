@@ -1,4 +1,4 @@
-//! Godot named colors used by gameplay popups (`Color.*` constants).
+//! The original game named colors used by gameplay popups (`Color.*` constants).
 
 use super::events::Rgba;
 

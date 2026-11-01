@@ -25,7 +25,7 @@ fn srgb_to_linear(c: vec3<f32>) -> vec3<f32> {
     return select(pow((c + vec3<f32>(0.055)) / 1.055, vec3<f32>(2.4)), c / 12.92, c < vec3<f32>(0.04045));
 }
 
-// Godot's `omni_attenuation`.
+// the original game's `omni_attenuation`.
 fn omni_attenuation(dist: f32, range: f32, decay: f32) -> f32 {
     var nd = dist / range;
     nd = nd * nd;

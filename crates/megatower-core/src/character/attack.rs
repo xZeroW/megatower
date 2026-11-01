@@ -6,7 +6,7 @@ use super::{
     runtime::{CharacterStatError, CharacterStats},
     stat_cache::CachedStats,
 };
-use crate::rng::GodotRng;
+use crate::rng::GameRng;
 use crate::{
     combat::{
         damage::{DamageData, DamageSource},
@@ -33,12 +33,11 @@ impl CharacterAttack<'_> {
     fn has_set(&self, name: &str) -> bool {
         self.active_sets
             .iter()
-            .any(|id| id == &format!("res://resources/item_sets/{name}.tres"))
+            .any(|id| id == &format!("resources/item_sets/{name}"))
     }
     fn used(&mut self, name: &str) -> bool {
-        self.profile.with_current_turn(|turn| {
-            turn.is_used_ability(&format!("res://resources/abilities/{name}.tres"))
-        })
+        self.profile
+            .with_current_turn(|turn| turn.is_used_ability(&format!("resources/abilities/{name}")))
     }
     pub fn physical_attack(&mut self) -> f64 {
         let mut amount = self.stat(StatId::PhysicalAttack);
@@ -212,7 +211,7 @@ impl CharacterAttack<'_> {
             Vec::new()
         }
     }
-    pub fn try_to_crit(&self, rng: &mut GodotRng, damage_type: Option<StatId>) -> bool {
+    pub fn try_to_crit(&self, rng: &mut GameRng, damage_type: Option<StatId>) -> bool {
         if self.transformed_stats.contains(&StatId::OmniCritChance)
             || damage_type == Some(StatId::PhysicalDamage)
         {
@@ -221,7 +220,7 @@ impl CharacterAttack<'_> {
             false
         }
     }
-    pub fn try_to_dodge(&self, rng: &mut GodotRng) -> bool {
+    pub fn try_to_dodge(&self, rng: &mut GameRng) -> bool {
         if self.profile.is_marked_by_arthur() || self.profile.is_stunned() {
             return false;
         }
@@ -233,7 +232,7 @@ impl CharacterAttack<'_> {
     }
     pub fn try_to_block(&self) -> bool {
         !self.profile.is_marked_by_arthur()
-            && self.base_passive == Some("res://resources/passives/ironclad.tres")
+            && self.base_passive == Some("resources/passives/ironclad")
     }
     pub fn try_to_parry(&mut self) -> bool {
         if self.profile.is_marked_by_arthur()
@@ -282,7 +281,7 @@ impl CharacterAttack<'_> {
 pub fn try_to_hit(
     target_profile: &BattleProfile,
     accuracy: f64,
-    gameplay_rng: &mut GodotRng,
+    gameplay_rng: &mut GameRng,
 ) -> bool {
     gameplay_rng.success(
         accuracy

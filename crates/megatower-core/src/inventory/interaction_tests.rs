@@ -143,7 +143,7 @@ fn definition(kind: i32) -> Arc<ItemDefinition> {
         5 => resource.stat_to_adapt = Some(StatId::Armor),
         6 => {
             resource.is_special = true;
-            resource.id = "res://resources/items/insightus.tres".into();
+            resource.id = "resources/items/insightus".into();
         }
         7 => {
             resource.use_custom_rarity = true;

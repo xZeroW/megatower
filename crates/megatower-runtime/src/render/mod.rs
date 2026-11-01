@@ -1,5 +1,5 @@
 //! Drawing that is not the per-frame HUD: the off-screen 3D room and the
-//! static Godot-resolved HUD layout it sits under.
+//! static HUD layout it sits under.
 //!
 //! Which room to show comes in through [`RoomSceneRequest`]; the app adds
 //! [`room::RoomRenderPlugin`] and [`hud_layout::HudLayoutPlugin`].

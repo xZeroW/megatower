@@ -2,6 +2,7 @@
 //! grid (icon, stat name coloured by type, white value on the right).
 use crate::compose::{Align, Draw, WHITE, hex, palette, text, tinted};
 use crate::model::R;
+use megatower_core::run::events::Rgba;
 use megatower_sim::{
     ailment::Ailment,
     character::Character,
@@ -10,7 +11,6 @@ use megatower_sim::{
     modifier::Stat,
     tags::{DamageType, Tag, Tags},
 };
-use megatower_core::run::events::Rgba;
 
 const AREA: R = [8.0, 30.0, 292.0, 258.0];
 const COL_W: f32 = 142.0;

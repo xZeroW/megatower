@@ -268,7 +268,7 @@ fn update_draw(commands: &mut Commands, assets: &AssetServer, slot: Slot, draw: 
 fn _types(_: Popup, _: FlashKind, _: &Player) {}
 
 /// Image fixes applied when a texture finishes loading:
-/// - Godot's importer clears the RGB of fully transparent pixels ("fix alpha
+/// - the original game's importer clears the RGB of fully transparent pixels ("fix alpha
 ///   border"); the recovered PNGs keep stray colors there, which Bevy's UI
 ///   pipeline lets bleed.
 /// - `enemy_container.gdshader` discards pure-red marker pixels

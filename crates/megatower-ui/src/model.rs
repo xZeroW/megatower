@@ -1,11 +1,11 @@
 //! UI-side state: resolved control rectangles, the presentation timeline and
-//! interaction state. Rectangles come from `assets/data/layouts/godot-layout.ron`
-//! (Godot's own Container layout), never from hand-placed values, except the
-//! enemy widget whose size is measured from `enemy_container.tscn`
+//! interaction state. Rectangles come from `assets/data/layouts/ui-layout.ron`
+//! (the original game's own Container layout), never from hand-placed values, except the
+//! enemy widget whose size is measured from `enemy_container`
 //! (`custom_minimum_size = 76x146`) and the reference footage.
 
 use bevy::prelude::Entity;
-use megatower_assets::godot_layout::Layout;
+use megatower_assets::ui_layout::Layout;
 use megatower_core::inventory::Slot;
 use megatower_core::run::events::{Frame, Fx, Popup, Timed};
 
@@ -34,7 +34,7 @@ pub fn is_hud_button(path: &str) -> bool {
 pub struct Rects {
     /// Controls of the HUD's static buttons (market, market refresh, options
     /// gear): drawn by `compose` so they can react to the pointer.
-    pub buttons: Vec<megatower_assets::godot_layout::Visual>,
+    pub buttons: Vec<megatower_assets::ui_layout::Visual>,
     pub equipment: Vec<R>,
     pub inventory: Vec<R>,
     pub market: Vec<R>,
@@ -67,21 +67,21 @@ pub struct Rects {
     pub action_strip: R,
     pub room_frame: R,
     pub tabs: [R; 3],
-    pub flat_button: megatower_assets::godot_layout::Visual,
-    pub small_panel: megatower_assets::godot_layout::Visual,
-    pub big_panel: megatower_assets::godot_layout::Visual,
+    pub flat_button: megatower_assets::ui_layout::Visual,
+    pub small_panel: megatower_assets::ui_layout::Visual,
+    pub big_panel: megatower_assets::ui_layout::Visual,
 }
 
 impl Rects {
     pub fn from_layout(layout: &Layout) -> Self {
-        let find = |pred: &dyn Fn(&megatower_assets::godot_layout::Visual) -> bool| {
+        let find = |pred: &dyn Fn(&megatower_assets::ui_layout::Visual) -> bool| {
             layout
                 .visuals
                 .iter()
                 .find(|v| pred(v))
                 .expect("layout role")
         };
-        let ends = |v: &megatower_assets::godot_layout::Visual, s: &str| v.path.ends_with(s);
+        let ends = |v: &megatower_assets::ui_layout::Visual, s: &str| v.path.ends_with(s);
         let mut slots: Vec<R> = layout
             .visuals
             .iter()
@@ -116,7 +116,7 @@ impl Rects {
         });
         let market: Vec<R> = slots.iter().copied().filter(|r| r[1] >= 300.0).collect();
         assert_eq!((equipment.len(), inventory.len(), market.len()), (8, 20, 4));
-        // `merchant_action_container.tscn` inside the 328x63 action strip: a
+        // `merchant_action_container` inside the 328x63 action strip: a
         // 15 px left margin, the leave button, then (right-aligned, 30 px margin)
         // the refresh button, a 15 px gap and five 34 px slots 4 px apart.
         let strip = [310.0, 295.0, 328.0, 63.0];

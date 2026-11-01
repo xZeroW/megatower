@@ -1,4 +1,4 @@
-//! Geometry produced by Godot's Container layout, not a hand-written HUD.
+//! Geometry produced by the original game's Container layout, not a hand-written HUD.
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -22,12 +22,12 @@ pub struct Visual {
 
 pub fn recovered_layout() -> Layout {
     megatower_core::ron_data::from_str(
-        include_str!("../../../assets/data/layouts/godot-layout.ron"),
-        "godot-layout.ron",
+        include_str!("../../../assets/data/layouts/ui-layout.ron"),
+        "ui-layout.ron",
     )
 }
 
-/// Godot-resolved layout of `esc_menu_screen.tscn` (640x360).
+/// layout of `esc_menu_screen` (640x360).
 pub fn esc_menu_layout() -> Layout {
     megatower_core::ron_data::from_str(
         include_str!("../../../assets/data/layouts/esc-menu-layout.ron"),
@@ -35,7 +35,7 @@ pub fn esc_menu_layout() -> Layout {
     )
 }
 
-/// Godot-resolved `options_screen.tscn` (640x360, Controls tab).
+/// `options_screen` (640x360, Controls tab).
 pub fn options_layout() -> Layout {
     megatower_core::ron_data::from_str(
         include_str!("../../../assets/data/layouts/options-layout.ron"),
@@ -43,7 +43,7 @@ pub fn options_layout() -> Layout {
     )
 }
 
-/// Godot-resolved `library_state.tscn` (640x360, Items tab).
+/// `library_state` (640x360, Items tab).
 pub fn library_layout() -> Layout {
     megatower_core::ron_data::from_str(
         include_str!("../../../assets/data/layouts/library-layout.ron"),
@@ -51,7 +51,7 @@ pub fn library_layout() -> Layout {
     )
 }
 
-/// `options_screen.tscn` staged on its video tab.
+/// `options_screen` staged on its video tab.
 pub fn options_video_layout() -> Layout {
     megatower_core::ron_data::from_str(
         include_str!("../../../assets/data/layouts/options-video-layout.ron"),
@@ -59,7 +59,7 @@ pub fn options_video_layout() -> Layout {
     )
 }
 
-/// `options_screen.tscn` staged on its audio tab.
+/// `options_screen` staged on its audio tab.
 pub fn options_audio_layout() -> Layout {
     megatower_core::ron_data::from_str(
         include_str!("../../../assets/data/layouts/options-audio-layout.ron"),
@@ -67,7 +67,7 @@ pub fn options_audio_layout() -> Layout {
     )
 }
 
-/// `options_screen.tscn` staged on its misc tab.
+/// `options_screen` staged on its misc tab.
 pub fn options_misc_layout() -> Layout {
     megatower_core::ron_data::from_str(
         include_str!("../../../assets/data/layouts/options-misc-layout.ron"),
@@ -75,7 +75,7 @@ pub fn options_misc_layout() -> Layout {
     )
 }
 
-/// `adventurer_profile_popup.tscn` as saved: its Records tab (640x360).
+/// `adventurer_profile_popup` as saved: its Records tab (640x360).
 pub fn adventurer_records_layout() -> Layout {
     megatower_core::ron_data::from_str(
         include_str!("../../../assets/data/layouts/adventurer-profile-layout.ron"),
@@ -83,7 +83,7 @@ pub fn adventurer_records_layout() -> Layout {
     )
 }
 
-/// `adventurer_profile_popup.tscn` on its Overview tab (640x360).
+/// `adventurer_profile_popup` on its Overview tab (640x360).
 pub fn adventurer_overview_layout() -> Layout {
     megatower_core::ron_data::from_str(
         include_str!("../../../assets/data/layouts/adventurer-overview-layout.ron"),
@@ -91,7 +91,7 @@ pub fn adventurer_overview_layout() -> Layout {
     )
 }
 
-/// Godot-resolved `profile_state.tscn` (640x360).
+/// `profile_state` (640x360).
 pub fn profile_layout() -> Layout {
     megatower_core::ron_data::from_str(
         include_str!("../../../assets/data/layouts/profile-layout.ron"),
@@ -99,7 +99,7 @@ pub fn profile_layout() -> Layout {
     )
 }
 
-/// `library_state.tscn` staged with `current_tab = 1` (Bestiary).
+/// `library_state` staged with `current_tab = 1` (Bestiary).
 pub fn library_bestiary_layout() -> Layout {
     megatower_core::ron_data::from_str(
         include_str!("../../../assets/data/layouts/library-bestiary-layout.ron"),
@@ -107,7 +107,7 @@ pub fn library_bestiary_layout() -> Layout {
     )
 }
 
-/// `library_state.tscn` staged with `current_tab = 3` (Passives).
+/// `library_state` staged with `current_tab = 3` (Passives).
 pub fn library_passives_layout() -> Layout {
     megatower_core::ron_data::from_str(
         include_str!("../../../assets/data/layouts/library-passives-layout.ron"),
@@ -115,7 +115,7 @@ pub fn library_passives_layout() -> Layout {
     )
 }
 
-/// `library_state.tscn` staged with `current_tab = 2` (Synergies).
+/// `library_state` staged with `current_tab = 2` (Synergies).
 pub fn library_synergies_layout() -> Layout {
     megatower_core::ron_data::from_str(
         include_str!("../../../assets/data/layouts/library-synergies-layout.ron"),
@@ -123,7 +123,7 @@ pub fn library_synergies_layout() -> Layout {
     )
 }
 
-/// Godot-resolved `intro_state.tscn` (640x360).
+/// `intro_state` (640x360).
 pub fn intro_layout() -> Layout {
     megatower_core::ron_data::from_str(
         include_str!("../../../assets/data/layouts/intro-layout.ron"),
@@ -131,7 +131,7 @@ pub fn intro_layout() -> Layout {
     )
 }
 
-/// Godot-resolved `main_menu_state.tscn` (640x360).
+/// `main_menu_state` (640x360).
 pub fn main_menu_layout() -> Layout {
     megatower_core::ron_data::from_str(
         include_str!("../../../assets/data/layouts/main-menu-layout.ron"),
@@ -151,7 +151,7 @@ pub struct EnemyNode {
     pub margins: Option<[f32; 4]>,
 }
 
-/// `enemy_container.tscn` resolved by Godot at its natural 76x146 size;
+/// `enemy_container` resolved by the original game at its natural 76x146 size;
 /// rects are relative to the container's top-left.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct EnemyLayout {
@@ -183,7 +183,7 @@ pub fn enemy_container_layout() -> &'static EnemyLayout {
     })
 }
 
-/// Godot-resolved layout of `death_screen.tscn` (640x360).
+/// layout of `death_screen` (640x360).
 pub fn death_screen_layout() -> Layout {
     megatower_core::ron_data::from_str(
         include_str!("../../../assets/data/layouts/death-screen-layout.ron"),
@@ -191,7 +191,7 @@ pub fn death_screen_layout() -> Layout {
     )
 }
 
-/// Godot-resolved layout of `battle_log_tab_container.tscn` placed in the
+/// layout of `battle_log_tab_container` placed in the
 /// inventory's 308x268 player area (y offset 26).
 pub fn battle_log_layout() -> Layout {
     megatower_core::ron_data::from_str(
@@ -224,20 +224,5 @@ mod tests {
         assert_eq!(slots.len(), 20);
         assert_eq!(slots[0].rect, [102.0, 122.0, 34.0, 34.0]);
         assert_eq!(slots[19].rect, [258.0, 239.0, 34.0, 34.0]);
-    }
-
-    #[test]
-    fn exported_visuals_reference_recovered_assets_only() {
-        for visual in recovered_layout().visuals {
-            if let Some(path) = visual.texture {
-                assert!(path.starts_with("res://assets/"), "{}: {path}", visual.path);
-                assert!(
-                    megatower_core::paths::recovered_root()
-                        .join(path.trim_start_matches("res://"))
-                        .exists(),
-                    "{path}"
-                );
-            }
-        }
     }
 }
