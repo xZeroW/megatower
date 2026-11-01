@@ -156,12 +156,6 @@ pub fn lines(hero: &Character) -> Vec<StatLine> {
     let none = Tags::NONE;
     let mut out = vec![
         line(
-            "Level",
-            "stats/combat_icon.png",
-            0xd67c5f,
-            hero.progress.level.to_string(),
-        ),
-        line(
             "Life",
             "max_health_icon.png",
             0xb42045,
@@ -329,18 +323,6 @@ pub fn lines(hero: &Character) -> Vec<StatLine> {
             line(name, "stats/tenacity_icon.png", color, number(v)),
         );
     }
-    out.push(line(
-        "Gold",
-        "gold_coins_icon.png",
-        0xf9a31b,
-        hero.gold.to_string(),
-    ));
-    out.push(line(
-        "Passive Points",
-        "stats/looting_icon.png",
-        0xa28bff,
-        hero.progress.points.to_string(),
-    ));
     out
 }
 
@@ -404,16 +386,17 @@ mod tests {
         let lines = lines(&hero);
         let names: Vec<_> = lines.iter().map(|l| l.name).collect();
         for core in [
-            "Level",
             "Life",
             "Mana",
             "Armour",
             "Evasion",
             "Fire Res",
             "Crit Chance",
-            "Gold",
         ] {
             assert!(names.contains(&core), "{core} missing from {names:?}");
+        }
+        for gone in ["Level", "Gold", "Passive Points"] {
+            assert!(!names.contains(&gone), "{gone} belongs elsewhere");
         }
         let colours: std::collections::HashSet<_> =
             lines.iter().map(|l| l.color.map(f32::to_bits)).collect();
