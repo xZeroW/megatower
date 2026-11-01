@@ -228,18 +228,18 @@ mod tests {
         assert!(p.encounter_item("b"));
         assert!(p.encounter_enemy("e"));
         assert!(!p.encounter_enemy("e"));
-        assert!(p.set_floor_record("Fren", 3));
-        assert!(!p.set_floor_record("Fren", 2));
-        assert!(p.set_floor_record("Fren", 5));
-        assert_eq!(p.floor_record("Fren"), 5);
-        assert_eq!(p.floor_record("Sid"), 0);
+        assert!(p.set_floor_record("Kestrel", 3));
+        assert!(!p.set_floor_record("Kestrel", 2));
+        assert!(p.set_floor_record("Kestrel", 5));
+        assert_eq!(p.floor_record("Kestrel"), 5);
+        assert_eq!(p.floor_record("Rethan"), 0);
     }
 
     #[test]
     fn json_round_trips() {
         let mut p = ProfileStore::new(vec!["a".into()]);
         p.encounter_enemy("e");
-        p.set_floor_record("Fren", 4);
+        p.set_floor_record("Kestrel", 4);
         let back: ProfileStore = serde_json::from_str(&serde_json::to_string(&p).unwrap()).unwrap();
         assert_eq!(back, p);
     }

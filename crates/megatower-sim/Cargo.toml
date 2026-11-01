@@ -1,0 +1,13 @@
+[package]
+name = "megatower-sim"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "megatower_sim"
+path = "src/lib.rs"
+
+[dependencies]
+serde.workspace = true
+ron.workspace = true
+megatower-stats = { path = "../megatower-stats" }

@@ -1,0 +1,8 @@
+// Rules applied to every enemy as it spawns (same format as derived.ron).
+// Inputs set by the sim: Depth (floors below the first) and Elite (1 on elites).
+[
+    // Enemies hit 35% harder (more) per floor below the first.
+    (stat: Damage, kind: More, value: "35.0 * Depth"),
+    // Elites hit 30% harder (more).
+    (stat: Damage, kind: More, value: "30.0 * Elite"),
+]

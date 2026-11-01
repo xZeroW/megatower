@@ -17,6 +17,44 @@ const FONT: &str = "assets/fonts/monogram-extended.ttf";
 #[auto_plugin(impl_plugin_trait)]
 pub struct HudLayoutPlugin;
 
+/// Subtrees whose visuals are supplied by the active gameplay HUD. Keep the
+/// recovered panel geometry, but do not also spawn its editor-state controls.
+#[derive(Resource, Default)]
+pub struct DynamicHudBranches(pub &'static [&'static str]);
+
+impl DynamicHudBranches {
+    fn owns(&self, visual: &Visual) -> bool {
+        visual.path.split('/').any(|part| self.0.contains(&part))
+    }
+}
+
+/// Pixels the right-hand action panel grows upwards, taking them from the room
+/// frame. Zero (the default) keeps the recovered geometry; the labyrinth HUD
+/// inserts its own so the movement and skill buttons have room.
+#[derive(Resource, Default)]
+pub struct ActionAreaGrowth(pub f32);
+
+/// `visual` with the room frame and the action panel moved for `grow` extra
+/// pixels of action area: the frame (and its border) loses them at the bottom,
+/// the panel gains them at the top.
+pub fn with_action_growth(visual: &Visual, grow: f32) -> Visual {
+    let mut visual = visual.clone();
+    let path = visual.path.as_str();
+    if grow > 0.0 && path.contains("/RoomScreen/VBoxContainer/") {
+        if path.ends_with("/MainMarginContainer")
+            || path.ends_with("/MainMarginContainer/GenericPanel")
+        {
+            visual.rect[3] -= grow;
+        } else if path.ends_with("/BottomMarginContainer")
+            || path.ends_with("/BackgroundMarginContainer/GenericPanel")
+        {
+            visual.rect[1] -= grow;
+            visual.rect[3] += grow;
+        }
+    }
+    visual
+}
+
 /// Controls whose content is live game state; the dynamic HUD draws them.
 /// Editor-default labels, partner portraits and status icons never show.
 fn is_dynamic(visual: &Visual) -> bool {
@@ -135,7 +173,10 @@ fn spawn_hud_layout(
     assets: Res<AssetServer>,
     target: Res<RoomRenderTarget>,
     mut capture: Option<ResMut<CaptureReadiness>>,
+    dynamic: Option<Res<DynamicHudBranches>>,
+    growth: Option<Res<ActionAreaGrowth>>,
 ) {
+    let grow = growth.map_or(0.0, |g| g.0);
     commands.spawn(Camera2d);
     let layout = recovered_layout();
     if let Some(capture) = capture.as_mut() {
@@ -145,7 +186,9 @@ fn spawn_hud_layout(
     // The panels are inset by 2 px: the gaps show the border color.
     let border = absolute([0.0, 0.0, layout.viewport[0], layout.viewport[1]]);
     let border_fill = BackgroundColor(palette_color(Some(2)));
-    let mut frame_node = absolute(ROOM_FRAME_RECT);
+    let mut frame_rect = ROOM_FRAME_RECT;
+    frame_rect[3] -= grow;
+    let mut frame_node = absolute(frame_rect);
     frame_node.overflow = Overflow::clip();
     let room = absolute([
         ROOM_VIEWPORT_OFFSET[0],
@@ -157,7 +200,10 @@ fn spawn_hud_layout(
     let visuals: Vec<Box<dyn Scene>> = layout
         .visuals
         .iter()
-        .filter_map(|visual| layout_visual(&assets, &mut capture, visual))
+        .filter(|visual| !dynamic.as_ref().is_some_and(|owner| owner.owns(visual)))
+        .filter_map(|visual| {
+            layout_visual(&assets, &mut capture, &with_action_growth(visual, grow))
+        })
         .collect();
     commands.queue_spawn_scene(bsn! {
         canvas
@@ -177,6 +223,83 @@ fn spawn_hud_layout(
             {visuals}
         ]
     });
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn the_action_area_grows_into_the_room_frame_without_a_gap() {
+        let layout = recovered_layout();
+        let find = |suffix: &str, grow: f32| {
+            let v = layout
+                .visuals
+                .iter()
+                .find(|v| v.path.ends_with(suffix) && v.path.contains("/RoomScreen/"))
+                .unwrap();
+            with_action_growth(v, grow).rect
+        };
+        let frame = find("/VBoxContainer/MainMarginContainer/GenericPanel", 36.0);
+        let panel = find("/BackgroundMarginContainer/GenericPanel", 36.0);
+        assert_eq!(frame[1] + frame[3], 259.0);
+        assert_eq!(panel[1], 259.0, "the panel starts where the frame ends");
+        assert_eq!(panel[1] + panel[3], 358.0, "its bottom edge does not move");
+        // No growth: nothing moves.
+        assert_eq!(
+            find("/BackgroundMarginContainer/GenericPanel", 0.0),
+            [310.0, 295.0, 328.0, 63.0]
+        );
+    }
+
+    #[test]
+    fn dynamic_action_ownership_excludes_all_editor_buttons_but_keeps_the_frames() {
+        let layout = recovered_layout();
+        let owner = DynamicHudBranches(&[
+            "RoomActionContainerHolder",
+            "BattleSpeedContainer",
+            "MarketSlotContainer",
+        ]);
+        let actions: Vec<_> = layout
+            .visuals
+            .iter()
+            .filter(|v| v.path.contains("/RoomActionContainerHolder/") && v.texture.is_some())
+            .collect();
+        assert!(!actions.is_empty());
+        assert!(actions.iter().all(|v| owner.owns(v)));
+        assert!(
+            layout
+                .visuals
+                .iter()
+                .filter(|v| v.path.contains("/BattleSpeedContainer/"))
+                .all(|v| owner.owns(v))
+        );
+        assert!(
+            layout.visuals.iter().any(|v| v
+                .path
+                .ends_with("BackgroundMarginContainer/GenericPanel")
+                && !owner.owns(v))
+        );
+        assert!(
+            layout
+                .visuals
+                .iter()
+                .any(|v| v.path.ends_with("MarketSlot/ItemSlot") && owner.owns(v))
+        );
+        assert!(
+            layout
+                .visuals
+                .iter()
+                .any(|v| v.path.ends_with("ContentsContainer/InventorySlot") && !owner.owns(v))
+        );
+        // The original client still uses the recovered scaffold by default.
+        assert!(
+            layout
+                .visuals
+                .iter()
+                .all(|v| !DynamicHudBranches::default().owns(v))
+        );
+    }
 }
 
 /// The game is laid out on a 640x360 canvas scaled to fit the window, and

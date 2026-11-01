@@ -12,14 +12,30 @@ fn internal_deps(manifest: &Path) -> BTreeSet<String> {
         .collect()
 }
 
-/// Each library crate and the only internal crates it may depend on.
+/// Each crate and the only internal crates it may depend on.
 const ALLOWED: &[(&str, &[&str])] = &[
+    ("megatower-sim", &["megatower-stats"]),
+    ("megatower-stats", &[]),
     ("megatower-core", &[]),
     ("megatower-assets", &["megatower-core"]),
     ("megatower-runtime", &["megatower-core", "megatower-assets"]),
     (
         "megatower-ui",
-        &["megatower-core", "megatower-assets", "megatower-runtime"],
+        &[
+            "megatower-sim",
+            "megatower-core",
+            "megatower-assets",
+            "megatower-runtime",
+        ],
+    ),
+    (
+        "megatower-client",
+        &[
+            "megatower-core",
+            "megatower-assets",
+            "megatower-runtime",
+            "megatower-ui",
+        ],
     ),
 ];
 

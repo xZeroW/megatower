@@ -1,0 +1,78 @@
+// Enemies at floor 1; `encounter.rs` scales them with depth. Each enemy
+// repeats its intents in order, and the player sees the next one.
+// The shape is `EnemyDef` in crates/megatower-sim/src/combat/encounter.rs. `sprite`
+// is the 64x64 picture the room view stands up for it.
+[
+    (
+        id: "tunnel_rat",
+        sprite: Some("assets/textures/enemies/rat.png"),
+        name: "Tunnel Rat",
+        life: 18.0,
+        intents: [
+            (name: "Bite", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 3.0, max: 5.0))]))),
+            (name: "Bite", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 3.0, max: 5.0))]))),
+            (name: "Frenzy", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 5.0, max: 8.0))]))),
+        ],
+    ),
+    (
+        id: "bone_archer",
+        sprite: Some("assets/textures/enemies/skeleton_warrior.png"),
+        name: "Bone Archer",
+        life: 22.0,
+        resistances: [(Cold, 30.0)],
+        intents: [
+            (name: "Shoot", kind: Attack((tags: [Attack, Projectile, Physical], base: [(Physical, (min: 4.0, max: 6.0))], base_crit: 10.0))),
+            (name: "Volley", kind: Attack((tags: [Attack, Projectile, Physical], base: [(Physical, (min: 6.0, max: 9.0))]))),
+        ],
+    ),
+    (
+        id: "acid_slime",
+        sprite: Some("assets/textures/enemies/slime.png"),
+        name: "Acid Slime",
+        life: 30.0,
+        armour: 40.0,
+        resistances: [(Chaos, 40.0)],
+        intents: [
+            (name: "Spit", kind: Attack((tags: [Spell, Projectile, Chaos], base: [(Chaos, (min: 3.0, max: 5.0))]))),
+            (name: "Harden", kind: Guard(armour: 60.0)),
+        ],
+    ),
+    (
+        id: "ember_cultist",
+        sprite: Some("assets/textures/enemies/shadow_wizard.png"),
+        name: "Ember Cultist",
+        life: 20.0,
+        resistances: [(Fire, 50.0)],
+        intents: [
+            (name: "Firebolt", kind: Attack((tags: [Spell, Projectile, Fire], base: [(Fire, (min: 5.0, max: 8.0))]))),
+            (name: "Dark Chant", kind: Heal(percent: 20.0)),
+        ],
+    ),
+    (
+        id: "stone_golem",
+        sprite: Some("assets/textures/enemies/stone_golem.png"),
+        name: "Stone Golem",
+        life: 45.0,
+        armour: 120.0,
+        resistances: [(Lightning, -25.0)],
+        intents: [
+            (name: "Brace", kind: Guard(armour: 100.0)),
+            (name: "Slam", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 10.0, max: 14.0))]))),
+        ],
+    ),
+    (
+        id: "stair_warden",
+        sprite: Some("assets/textures/enemies/golden_guardian.png"),
+        name: "Warden of the Stair",
+        life: 160.0,
+        armour: 60.0,
+        resistances: [(Fire, 25.0), (Cold, 25.0), (Lightning, 25.0), (Chaos, 25.0)],
+        boss: true,
+        intents: [
+            (name: "Cleave", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 10.0, max: 14.0))]))),
+            (name: "Stone Ward", kind: Guard(armour: 100.0)),
+            (name: "Inferno", kind: Attack((tags: [Spell, Area, Fire], base: [(Fire, (min: 14.0, max: 20.0))]))),
+            (name: "Mend", kind: Heal(percent: 10.0)),
+        ],
+    ),
+]

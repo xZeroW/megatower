@@ -22,6 +22,7 @@ fn update_screens(
     mut input_context: ResMut<InputContext>,
     actions: Query<&leafwing_input_manager::prelude::ActionState<GameAction>>,
     mut exit: MessageWriter<AppExit>,
+    mut labyrinth: Option<ResMut<crate::labyrinth::Labyrinth>>,
 ) {
     let ui = &mut ui.0;
     let rects = &rects.0;
@@ -57,11 +58,18 @@ fn update_screens(
                 wheel_rows: input.wheel_rows,
             },
         )
+    } else if labyrinth.as_ref().is_some_and(|l| l.run.is_some()) && ui.screen == Screen::Playing {
+        None // The same Escape menu, dispatched against the labyrinth run.
     } else {
         esc_frame(&mut slot, ui, &keys, click)
     };
     let draws = if let Some(draws) = overlay {
         draws
+    } else if let Some(labyrinth) = labyrinth.as_deref_mut()
+        && labyrinth.run.is_some()
+        && ui.screen == Screen::Playing
+    {
+        labyrinth.frame(ui, rects, &keys, &input, f64::from(time.delta_secs()))
     } else {
         match (&mut slot.0, ui.screen) {
             (None, Screen::Intro) => {
@@ -94,16 +102,20 @@ fn update_screens(
                     for (i, cell) in adventurer_cells(catalog.list.len()).into_iter().enumerate() {
                         if contains(cell, x, y) {
                             ui.selected_adventurer = i;
-                            let seed = std::time::SystemTime::now()
-                                .duration_since(std::time::UNIX_EPOCH)
-                                .map_or(1, |d| d.as_nanos() as u64);
-                            let mut run = NewRun::default_for(&catalog.list[i].name, seed);
-                            if std::env::var("MEGALOOT_MODE")
-                                .is_ok_and(|m| m.eq_ignore_ascii_case("practice"))
-                            {
-                                run.mode = megatower_core::game_mode::GameMode::Practice;
+                            if let Some(labyrinth) = labyrinth.as_deref_mut() {
+                                labyrinth.start(catalog.list[i].portrait.clone());
+                            } else {
+                                let seed = std::time::SystemTime::now()
+                                    .duration_since(std::time::UNIX_EPOCH)
+                                    .map_or(1, |d| d.as_nanos() as u64);
+                                let mut run = NewRun::default_for(&catalog.list[i].name, seed);
+                                if std::env::var("MEGALOOT_MODE")
+                                    .is_ok_and(|m| m.eq_ignore_ascii_case("practice"))
+                                {
+                                    run.mode = megatower_core::game_mode::GameMode::Practice;
+                                }
+                                slot.0 = Some(Game::new(run));
                             }
-                            slot.0 = Some(Game::new(run));
                             ui.screen = Screen::Playing;
                             ui.timeline = Timeline::default();
                             ui.presented_room = None;
@@ -234,8 +246,8 @@ pub(super) fn select_draws(
         });
         if let Some(portrait) = &adventurer.portrait {
             out.push(compose::image(
-                [cell[0] + 24.0, cell[1] + 8.0, 32.0, 32.0],
-                portrait,
+                [cell[0] + 20.0, cell[1] + 4.0, 40.0, 40.0],
+                &portrait.replace(".png", "_framed.png"),
             ));
         }
         out.push(Draw::Text {
@@ -264,6 +276,50 @@ pub fn run_action(game: &mut Game, ui: &mut UiState, f: impl FnOnce(&mut Game)) 
     // this frame shows the timeline's first frame instead of that state.
     for fx in ui.timeline.advance(0.0) {
         apply_event(ui, game, fx);
+    }
+}
+
+#[cfg(test)]
+mod labyrinth_routing_tests {
+    use super::*;
+
+    #[test]
+    fn the_original_selection_screen_starts_only_the_new_simulation() {
+        let mut app = App::new();
+        let cell = adventurer_cells(1)[0];
+        let mut ui = UiState {
+            screen: Screen::Select,
+            ..default()
+        };
+        ui.cursor = Some([cell[0] + cell[2] / 2.0, cell[1] + cell[3] / 2.0]);
+        app.insert_resource(Time::<()>::default())
+            .insert_resource(UiRes(ui))
+            .insert_resource(RectsRes(Rects::from_layout(
+                &megatower_assets::godot_layout::recovered_layout(),
+            )))
+            .insert_resource(FrameInput {
+                click: true,
+                ..default()
+            })
+            .init_resource::<GameSlot>()
+            .init_resource::<ButtonInput<KeyCode>>()
+            .init_resource::<crate::labyrinth::Labyrinth>()
+            .init_resource::<DrawState>()
+            .init_resource::<InputContext>()
+            .add_message::<AppExit>()
+            .add_systems(Update, update_screens);
+        app.world_mut().run_schedule(Update);
+        assert!(app.world().resource::<GameSlot>().0.is_none());
+        assert_eq!(app.world().resource::<UiRes>().0.screen, Screen::Playing);
+        assert!(matches!(
+            app.world()
+                .resource::<crate::labyrinth::Labyrinth>()
+                .run
+                .as_ref()
+                .unwrap()
+                .mode,
+            megatower_sim::run::Mode::Starter(_)
+        ));
     }
 }
 

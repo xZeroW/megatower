@@ -1,0 +1,63 @@
+// Event rooms: a scene and choices; each choice rolls one weighted result.
+// Effects: Heal(% life), Hurt(% life, never kills), Gold(n + 5/floor), Gem,
+// Item (magic or better), Boon, Xp(n per floor). Shape: `EventDef` in
+// crates/megatower-sim/src/rooms.rs.
+[
+    (
+        id: "fountain",
+        name: "Murky Fountain",
+        text: "Dark water bubbles up from a cracked basin. It smells of iron.",
+        choices: [
+            (label: "Drink", results: [
+                (weight: 60, text: "The water is sweet. Your wounds close.", effects: [Heal(50.0)]),
+                (weight: 40, text: "It burns going down.", effects: [Hurt(20.0)]),
+            ]),
+            (label: "Walk away", results: [
+                (weight: 1, text: "You leave the fountain be.", effects: []),
+            ]),
+        ],
+    ),
+    (
+        id: "fallen_adventurer",
+        name: "Fallen Adventurer",
+        text: "A body slumps against the wall, pack still strapped on. Something skitters nearby.",
+        choices: [
+            (label: "Search the pack", results: [
+                (weight: 65, text: "You find something useful.", effects: [Item]),
+                (weight: 35, text: "Rats burst from the pack and bite before fleeing.", effects: [Hurt(15.0), Gold(10)]),
+            ]),
+            (label: "Take only the coin purse", results: [
+                (weight: 1, text: "A handful of coins.", effects: [Gold(15)]),
+            ]),
+        ],
+    ),
+    (
+        id: "ancient_idol",
+        name: "Ancient Idol",
+        text: "A stone idol with ruby eyes watches the room. Old offerings rot at its feet.",
+        choices: [
+            (label: "Pray", results: [
+                (weight: 1, text: "Power floods you, and it takes its price.", effects: [Boon, Hurt(25.0)]),
+            ]),
+            (label: "Pry out the eyes", results: [
+                (weight: 1, text: "The rubies come loose.", effects: [Gold(40)]),
+            ]),
+            (label: "Leave", results: [
+                (weight: 1, text: "You step around it.", effects: []),
+            ]),
+        ],
+    ),
+    (
+        id: "gem_cutter",
+        name: "Gem Cutter's Bench",
+        text: "A workbench with fine tools and a journal of cutting notes.",
+        choices: [
+            (label: "Search the drawers", results: [
+                (weight: 1, text: "A gem was left behind.", effects: [Gem]),
+            ]),
+            (label: "Study the journal", results: [
+                (weight: 1, text: "You learn a few tricks.", effects: [Xp(12)]),
+            ]),
+        ],
+    ),
+]

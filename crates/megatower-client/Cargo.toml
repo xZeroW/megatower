@@ -19,3 +19,6 @@ megatower-ui = { path = "../../crates/megatower-ui" }
 # Remote control for QA: BRP on port 15702 with bevy_brp_extras
 # (screenshots, key/mouse injection). `cargo run --features dev`.
 dev = ["dep:bevy_brp_extras", "bevy/bevy_remote", "bevy/png"]
+# Profiling: streams spans to a running Tracy profiler (match the Tracy
+# version to the tracy-client crate bevy pulls in). `cargo run --features tracy`.
+tracy = ["bevy/trace_tracy"]

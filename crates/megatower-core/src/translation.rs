@@ -1,12 +1,11 @@
-//! English strings from the recovered `assets/translations/english/main.csv`
+//! English strings from `assets/translations/english/main.csv`
 //! with `TranslationManager.get_translated_string`'s key normalization.
 //! Other languages and BB-code formatting are not implemented.
 
 use std::collections::HashMap;
 use std::sync::OnceLock;
 
-const ENGLISH: &str =
-    include_str!("../../../Megaloot-GDRE-Recovered/assets/translations/english/main.csv");
+const ENGLISH: &str = include_str!("../../../assets/translations/english/main.csv");
 
 fn parse_csv(text: &str) -> HashMap<String, String> {
     let mut map = HashMap::new();

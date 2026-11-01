@@ -6,6 +6,38 @@
 cargo run -p megatower-client
 ```
 
+Megatower is the base client, with its existing menus, resolved HUD layout,
+pixel-art slots, tooltips, options, audio and room renderer. Its new runs use
+`megatower-sim` for labyrinths, map-dependent exits, combat, equipment, gems, shops
+and progression. The adapter lives in `crates/megatower-ui/src/labyrinth/`;
+Megatower's original simulation does not run alongside it. Adventurer selection
+currently chooses a portrait; the first skill gem determines the starting build.
+
+No crates or binaries have been renamed. To run the original simulation for
+reference/parity work: `MEGATOWER_LEGACY=1 cargo run -p megatower-client`.
+
+### Controls
+
+- Choose a first gem with 1–3 or a click. In combat, 1–4 use linked skills;
+  Space passes and Left/Right/Tab changes target.
+- Click a door or use W/A/D/S to move relative to your facing. Enter descends
+  from resolved stairs. M shows the floor map; P shows the passive tree.
+- Equipment and all 20 bag slots stay in Megatower's HUD. Right-click gear to
+  equip/unequip. Select a gem, then click equipment to socket it; linked gems
+  appear in the original bottom-left slots (right-click to unsocket).
+- At a merchant, click stock to buy, right-click stock to lock it, and
+  right-click bag gems to sell. At an altar, select a bag gem and upgrade it,
+  or click a socketed gem below the equipment. Escape leaves room choices or
+  opens the original pause/options menu.
+
+### Gameplay checks
+
+```bash
+cargo test -p megatower-client -p megatower-ui -p megatower-sim
+```
+
+### Settings
+
 Settings are saved to `~/.config/io.github.xzerow.megatower/settings.toml`
 (`$XDG_CONFIG_HOME` is honoured); the profile goes to `~/.local/share/megaloot/profile.json`
 (`MEGALOOT_USER_DIR` overrides it).
@@ -24,8 +56,16 @@ curl -s -X POST http://127.0.0.1:15702 -H 'content-type: application/json' \
   -d '{"jsonrpc":"2.0","id":1,"method":"brp_extras/send_keys","params":{"keys":["Space"]}}'
 ```
 
-The `MEGALOOT_*` variables in `crates/megatower-client/src/dev/script.rs` drive scripted runs and screenshots.
-`tools/qa-shot.sh OUT.png [VAR=value ...]` builds, runs the game once with them, saves the screenshot and exits (`MEGALOOT_CAPTURE_FRAMES=n` also writes `artifacts/frames/`).
+`GAME_AUTOSTART=1` skips the menus to the new run's starter selection;
+`GAME_SEED` and `GAME_FLOOR` make the labyrinth reproducible.
+`GAME_MOVES` / `GAME_LATE_MOVES` play scripted commands in that run (pick a gem,
+walk, fight, shops, rooms, tree; the list is on `scripted_moves` in
+`crates/megatower-ui/src/labyrinth/mod.rs`), and `tools/lab-shot.sh OUT.png
+[VAR=value ...]` runs the new rules once and saves a screenshot.
+The `MEGALOOT_*` screenshot and pointer-injection tooling is shared.
+`tools/qa-shot.sh OUT.png [VAR=value ...]` explicitly runs the **legacy reference**
+with its original scripted simulation (`MEGALOOT_CAPTURE_FRAMES=n` also writes
+`artifacts/frames/`). It is not a screenshot of the new game's rules.
 
 ## Architecture
 
@@ -36,7 +76,9 @@ below, and the env-driven QA tooling (`src/dev`). The libraries sit under
 
 | Crate | Role |
 | --- | --- |
-| `megatower-ui` | screens, HUD composition, input handling, tooltip content and BBCode, options and profile systems |
+| `megatower-sim` | target game's labyrinth, combat, equipment, gems, room interactions and progression |
+| `megatower-stats` | headless attribute graph (a port of `bevy_gauge`'s core): stats as expressions over other stats, tagged modifiers; used by the sim's `derived` rules |
+| `megatower-ui` | original presentation and the `labyrinth` adapter from `megatower-sim` into its HUD/timeline/input |
 | `megatower-runtime` | Bevy capability plugins: `audio` (kira buses driven by `MusicCue`/`SfxQueue`/`AudioVolumes`), `input` (`GameAction`, bindings), `render` (off-screen room, HUD layout; `RoomSceneRequest` picks the scene) |
 | `megatower-assets` | Godot-resolved layouts, room geometry, palette |
 | `megatower-core` | simulation (run, combat, items, enemies), settings and profile data, paths, translations |

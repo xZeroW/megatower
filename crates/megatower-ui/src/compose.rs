@@ -71,7 +71,7 @@ pub fn texture_size(path: &str) -> (f32, f32) {
     if let Some(size) = cache.lock().unwrap().get(&key) {
         return *size;
     }
-    let size = std::fs::read(megatower_core::paths::recovered_root().join(&key))
+    let size = std::fs::read(megatower_core::paths::runtime_root().join(&key))
         .ok()
         .filter(|bytes| bytes.len() > 24 && &bytes[12..16] == b"IHDR")
         .map_or((64.0, 64.0), |b| {
@@ -95,7 +95,7 @@ pub fn sprite_bounds(path: &str) -> (f32, f32, f32, f32) {
         return *b;
     }
     let (w, h) = texture_size(path);
-    let bounds = image::open(megatower_core::paths::recovered_root().join(&key))
+    let bounds = image::open(megatower_core::paths::runtime_root().join(&key))
         .ok()
         .and_then(|img| {
             let img = img.to_rgba8();
@@ -151,7 +151,11 @@ fn center_text(x: f32, y: f32, w: f32, text_: &str, color: Rgba) -> Draw {
     text([x - w / 2.0, y, w, 13.0], text_, color, Align::Center)
 }
 
-fn nine_patch(rect: R, template: &megatower_assets::godot_layout::Visual, tint: Rgba) -> Draw {
+pub(super) fn nine_patch(
+    rect: R,
+    template: &megatower_assets::godot_layout::Visual,
+    tint: Rgba,
+) -> Draw {
     Draw::Image {
         rect,
         path: trim(template.texture.as_deref().unwrap_or_default()),
@@ -163,7 +167,14 @@ fn nine_patch(rect: R, template: &megatower_assets::godot_layout::Visual, tint: 
 }
 
 /// A panel label like the source `small_panel_background` behind resource text.
-fn label_panel(rects: &Rects, cx: f32, y: f32, text_: &str, color: Rgba, out: &mut Vec<Draw>) {
+pub(super) fn label_panel(
+    rects: &Rects,
+    cx: f32,
+    y: f32,
+    text_: &str,
+    color: Rgba,
+    out: &mut Vec<Draw>,
+) {
     let w = text_.chars().count() as f32 * CHAR_W + 12.0;
     out.push(nine_patch(
         [cx - w / 2.0, y + 2.0, w, 12.0],
@@ -175,7 +186,13 @@ fn label_panel(rects: &Rects, cx: f32, y: f32, text_: &str, color: Rgba, out: &m
 
 /// `resource_bar.tscn`: the `minimal_bar` outline (`BackPanel`) around a
 /// `minimal_bar_fill` pill, both modulated by the bar colour.
-fn pill_bar(rect: R, frac: f32, under: Option<(f32, Rgba)>, color: Rgba, out: &mut Vec<Draw>) {
+pub(super) fn pill_bar(
+    rect: R,
+    frac: f32,
+    under: Option<(f32, Rgba)>,
+    color: Rgba,
+    out: &mut Vec<Draw>,
+) {
     out.push(Draw::Image {
         rect: [rect[0] - 1.0, rect[1] - 1.0, rect[2] + 2.0, rect[3] + 2.0],
         path: trim("assets/textures/ui/minimal_bar.png"),
@@ -219,7 +236,7 @@ const HEALTH_TRAIL: Rgba = [1.0, 0.529_412, 0.0, 1.0];
 const ARMOR_TRAIL: Rgba = [1.0, 1.0, 1.0, 1.0];
 
 /// A tracked bar's fractions: the main fill and the trailing fill with its colour.
-fn bar_fracs(
+pub(super) fn bar_fracs(
     ui: &UiState,
     key: BarKey,
     value: f64,
@@ -230,12 +247,12 @@ fn bar_fracs(
     (main, under.map(|u| (u, trail)))
 }
 
-fn bar(rect: R, frac: (f32, Option<(f32, Rgba)>), fill: Rgba, out: &mut Vec<Draw>) {
+pub(super) fn bar(rect: R, frac: (f32, Option<(f32, Rgba)>), fill: Rgba, out: &mut Vec<Draw>) {
     pill_bar(rect, frac.0, frac.1, fill, out);
 }
 
 /// `SmallResourceBar._process`: 10px for one mana, 7px more for each extra.
-fn mana_width(max_mana: i64) -> f32 {
+pub(super) fn mana_width(max_mana: i64) -> f32 {
     match max_mana {
         1 => 10.0,
         2 => 17.0,
@@ -247,7 +264,7 @@ fn mana_width(max_mana: i64) -> f32 {
 /// `small_resource_bar.tscn` for the enemy mana: the bar is 10px wide for one
 /// mana and 7px wider per extra one; the mana already spent is darkened from
 /// the right. Returns the bar's width.
-fn mana_pip(right: f32, y: f32, max_mana: i64, mana: i64, out: &mut Vec<Draw>) -> f32 {
+pub(super) fn mana_pip(right: f32, y: f32, max_mana: i64, mana: i64, out: &mut Vec<Draw>) -> f32 {
     let blue = [0.156_863, 0.360_784, 0.768_627, 1.0];
     let w = mana_width(max_mana);
     let x = right - w;
@@ -1743,7 +1760,7 @@ fn names_color(game: &Game, stat: &str) -> Rgba {
     stat_from_key(stat).map_or(hex(0xa9a9a9), |id| game.rules.stats.get(id).color)
 }
 
-fn button(
+pub(super) fn button(
     rects: &Rects,
     rect: R,
     label: &str,
@@ -1770,16 +1787,24 @@ fn button(
         }
     }
     out.push(nine_patch(rect, &rects.flat_button, tint));
+    // The original buttons are 29px tall; taller ones keep the icon and label
+    // centred.
+    let extra = ((rect[3] - 29.0) / 2.0).floor().max(0.0);
     if let Some(icon) = icon {
         out.push(tinted(
-            [rect[0] + (rect[2] - 16.0) / 2.0, rect[1] + 7.0, 16.0, 16.0],
+            [
+                rect[0] + (rect[2] - 16.0) / 2.0,
+                rect[1] + ((rect[3] - 16.0) / 2.0).ceil(),
+                16.0,
+                16.0,
+            ],
             icon,
             if enabled { palette(1) } else { palette(4) },
         ));
     }
     if !label.is_empty() {
         out.push(text(
-            [rect[0], rect[1] + 5.0, rect[2], 13.0],
+            [rect[0], rect[1] + 5.0 + extra, rect[2], 13.0],
             label,
             if enabled { palette(1) } else { palette(4) },
             Align::Center,
@@ -1789,9 +1814,9 @@ fn button(
 
 /// Top of the enemy containers (`EnemyContainerHolder` y in the room's
 /// SubViewport, which starts at the screen's top).
-const ENEMY_TOP: f32 = 138.0;
+pub(super) const ENEMY_TOP: f32 = 138.0;
 
-fn enemy_widget(
+pub(super) fn enemy_widget(
     rects: &Rects,
     policies: &megatower_core::combat::profile::StatusPolicies,
     view: &EnemyView,
@@ -2369,7 +2394,7 @@ fn enemy_visuals(
 /// `TabButton`: the dark `BackPanel` always, the grey `PressedPanel` over it on
 /// the tabs that are not the current one, and a dark `HoverPanel` on such a
 /// tab under the pointer. The icon is dark on grey and grey on dark.
-fn draw_tabs(ui: &UiState, rects: &Rects, out: &mut Vec<Draw>) {
+pub(super) fn draw_tabs(ui: &UiState, rects: &Rects, out: &mut Vec<Draw>) {
     let current = match ui.tab {
         Tab::Profile => 0,
         Tab::Stats => 1,
@@ -2404,6 +2429,56 @@ fn draw_tabs(ui: &UiState, rects: &Rects, out: &mut Vec<Draw>) {
             slice: None,
             flip_x: false,
         });
+    }
+}
+
+/// The floating popups: `EnemyPopupLabel` rises 10px over 0.6s (cubic
+/// ease-out) and fades out over 0.5s after 0.3s; the icons follow the amount,
+/// 3px apart.
+pub fn popup_draws(ui: &UiState, out: &mut Vec<Draw>) {
+    for popup in &ui.popups {
+        let age = (ui.time - popup.at) as f32;
+        let ease_out = |t: f32| 1.0 - (1.0 - t.clamp(0.0, 1.0)).powi(3);
+        let alpha = 1.0 - ease_out((age - 0.3) / 0.5);
+        let [x, y] = popup.origin;
+        let mut color = popup.popup.color;
+        color[3] = alpha;
+        let size = 16.0 * popup.popup.size;
+        let text_w = popup.popup.text.chars().count() as f32 * CHAR_W * popup.popup.size;
+        let icon_w = 9.0 * popup.popup.size.min(1.0);
+        let icons = [&popup.popup.left_icon, &popup.popup.right_icon];
+        let icon_count =
+            icons.iter().filter(|i| i.is_some()).count() as f32 + f32::from(popup.popup.lucky);
+        let width = text_w + icon_count * (icon_w + 3.0);
+        let top = y - ease_out(age / 0.6) * 10.0;
+        let mut cx = x - width / 2.0;
+        let icon = |out: &mut Vec<Draw>, cx: &mut f32, path: &Option<String>| {
+            if let Some(path) = path {
+                out.push(tinted(
+                    [*cx, top + 2.0, icon_w, icon_w],
+                    path.trim_start_matches("res://"),
+                    color,
+                ));
+                *cx += icon_w + 3.0;
+            }
+        };
+        icon(out, &mut cx, icons[0]);
+        out.push(Draw::Text {
+            rect: [cx, top, text_w + 2.0, 14.0 * popup.popup.size],
+            text: popup.popup.text.clone(),
+            size,
+            color,
+            align: Align::Left,
+        });
+        cx += text_w + 3.0;
+        icon(out, &mut cx, icons[1]);
+        if popup.popup.lucky {
+            icon(
+                out,
+                &mut cx,
+                &Some("assets/textures/icons/luck_icon.png".to_owned()),
+            );
+        }
     }
 }
 
@@ -2869,50 +2944,7 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     // ---- popups ----
     // `EnemyPopupLabel`: rises 10px over 0.6s (cubic ease-out) and fades out
     // over 0.5s after 0.3s; the icons follow the amount, 3px apart.
-    for popup in &ui.popups {
-        let age = (ui.time - popup.at) as f32;
-        let ease_out = |t: f32| 1.0 - (1.0 - t.clamp(0.0, 1.0)).powi(3);
-        let alpha = 1.0 - ease_out((age - 0.3) / 0.5);
-        let [x, y] = popup.origin;
-        let mut color = popup.popup.color;
-        color[3] = alpha;
-        let size = 16.0 * popup.popup.size;
-        let text_w = popup.popup.text.chars().count() as f32 * CHAR_W * popup.popup.size;
-        let icon_w = 9.0 * popup.popup.size.min(1.0);
-        let icons = [&popup.popup.left_icon, &popup.popup.right_icon];
-        let icon_count =
-            icons.iter().filter(|i| i.is_some()).count() as f32 + f32::from(popup.popup.lucky);
-        let width = text_w + icon_count * (icon_w + 3.0);
-        let top = y - ease_out(age / 0.6) * 10.0;
-        let mut cx = x - width / 2.0;
-        let icon = |out: &mut Vec<Draw>, cx: &mut f32, path: &Option<String>| {
-            if let Some(path) = path {
-                out.push(tinted(
-                    [*cx, top + 2.0, icon_w, icon_w],
-                    path.trim_start_matches("res://"),
-                    color,
-                ));
-                *cx += icon_w + 3.0;
-            }
-        };
-        icon(&mut out, &mut cx, icons[0]);
-        out.push(Draw::Text {
-            rect: [cx, top, text_w + 2.0, 14.0 * popup.popup.size],
-            text: popup.popup.text.clone(),
-            size,
-            color,
-            align: Align::Left,
-        });
-        cx += text_w + 3.0;
-        icon(&mut out, &mut cx, icons[1]);
-        if popup.popup.lucky {
-            icon(
-                &mut out,
-                &mut cx,
-                &Some("assets/textures/icons/luck_icon.png".to_owned()),
-            );
-        }
-    }
+    popup_draws(ui, &mut out);
 
     // ---- dragged item / tooltip ----
     if let (Some(dragged), Some([cx, cy])) = (ui.dragged, ui.cursor) {
@@ -3278,7 +3310,7 @@ mod tooltip_tests {
 
     #[test]
     fn translated_text_resolves_battle_actions_and_draws_them() {
-        let game = Game::new(NewRun::default_for("Fren", 1));
+        let game = Game::new(NewRun::default_for("Kestrel", 1));
         let piece = lookup_piece(&game, "DODGE", false);
         assert_eq!(
             piece,

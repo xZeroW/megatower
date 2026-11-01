@@ -37,10 +37,19 @@ fn main() {
             GameAudioPlugin,
             (RoomRenderPlugin, HudLayoutPlugin),
             UiPlugin,
+            labyrinth_rules,
             DevPlugin,
         ))
         .add_plugins(dev_plugins)
         .run();
+}
+
+/// Keep the recovered presentation, but drive new runs with the new game's
+/// rules. The old simulation remains available for source-parity tooling.
+fn labyrinth_rules(app: &mut App) {
+    if std::env::var_os("MEGATOWER_LEGACY").is_none() {
+        app.add_plugins(megatower_ui::labyrinth::LabyrinthPlugin);
+    }
 }
 
 /// `--features dev`: Bevy Remote Protocol with the brp_extras methods

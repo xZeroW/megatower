@@ -54,6 +54,7 @@ fn start_from_env(
     mut script: ResMut<ScriptDriver>,
     mut ui: ResMut<UiRes>,
     mut slot: ResMut<GameSlot>,
+    labyrinth: Option<Res<megatower_ui::labyrinth::Labyrinth>>,
 ) {
     let ui = &mut ui.0;
     if !script.started {
@@ -63,7 +64,7 @@ fn start_from_env(
             .map(|v| v.split(',').map(str::to_owned).collect())
             .unwrap_or_default();
     }
-    if slot.0.is_some() {
+    if slot.0.is_some() || labyrinth.is_some() {
         return;
     }
     let Ok(name) = std::env::var("MEGALOOT_AUTOSTART") else {

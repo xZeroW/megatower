@@ -207,14 +207,14 @@ mod tests {
     fn urls_and_parsing() {
         let vars = vec![
             json!({"name":"Version","id":"v1","values":{"choices":{"c1":"1.23.1","c2":"1.0"}}}),
-            json!({"name":"Adventurer","id":"a1","values":{"choices":{"x":"Sid","y":"Arthur"}}}),
+            json!({"name":"Adventurer","id":"a1","values":{"choices":{"x":"Rethan","y":"Arthur"}}}),
         ];
         let url = leaderboard_url("Any Percent", &vars, "1.23.1", "ARTHUR");
         assert_eq!(
             url,
             "https://www.speedrun.com/api/v1/leaderboards/megaloot/category/any-percent?top=100&var-v1=c1&var-a1=y&embed=players"
         );
-        assert_eq!(adventurer_name_from_id(&vars, "x"), "Sid");
+        assert_eq!(adventurer_name_from_id(&vars, "x"), "Rethan");
         assert_eq!(adventurer_name_from_id(&vars, "z"), "");
         assert_eq!(
             category_name_from_id(&[json!({"id":"k","name":"Any %"})], "k"),

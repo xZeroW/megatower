@@ -1,0 +1,37 @@
+// Shrine boons: permanent for the run. Shape: `BoonDef` in
+// crates/megatower-sim/src/rooms.rs.
+[
+    (id: "vitality", name: "Blessing of Vitality", mods: [
+        (stat: Life, kind: Increased, value: 15.0),
+    ]),
+    (id: "fury", name: "Blessing of Fury", mods: [
+        (stat: Damage, kind: Increased, value: 20.0),
+    ]),
+    (id: "warding", name: "Blessing of Warding", mods: [
+        (stat: Resistance(Fire), kind: Flat, value: 12.0),
+        (stat: Resistance(Cold), kind: Flat, value: 12.0),
+        (stat: Resistance(Lightning), kind: Flat, value: 12.0),
+    ]),
+    (id: "stone", name: "Blessing of Stone", mods: [
+        (stat: Armour, kind: Flat, value: 50.0),
+        (stat: Armour, kind: Increased, value: 20.0),
+    ]),
+    (id: "wind", name: "Blessing of Wind", mods: [
+        (stat: Evasion, kind: Flat, value: 8.0),
+    ]),
+    (id: "insight", name: "Blessing of Insight", mods: [
+        (stat: Mana, kind: Flat, value: 15.0),
+        (stat: ManaRegen, kind: Flat, value: 2.0),
+    ]),
+    (id: "precision", name: "Blessing of Precision", mods: [
+        (stat: CritChance, kind: Increased, value: 30.0),
+        (stat: CritMultiplier, kind: Flat, value: 15.0),
+    ]),
+    (id: "malice", name: "Blessing of Malice", mods: [
+        (stat: AilmentChance(Ignite), kind: Flat, value: 10.0),
+        (stat: AilmentChance(Bleed), kind: Flat, value: 10.0),
+        (stat: AilmentChance(Poison), kind: Flat, value: 10.0),
+        (stat: AilmentChance(Shock), kind: Flat, value: 10.0),
+        (stat: AilmentChance(Chill), kind: Flat, value: 10.0),
+    ]),
+]

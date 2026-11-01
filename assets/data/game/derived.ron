@@ -1,0 +1,13 @@
+// Stats computed from other stats, applied to the hero (see megatower-sim `derived`).
+// Each rule gives `stat` a modifier of `kind` whose value is an expression over
+// other stats by name, e.g. "Strength" or "ResistanceFire". The start nodes grant
+// the attributes; Strength, Dexterity and Intelligence do nothing on their own.
+[
+    // Strength: sturdiness.
+    (stat: Life, kind: Flat, value: "Strength / 2.0"),
+    // Dexterity: dodging.
+    (stat: Evasion, kind: Flat, value: "Dexterity / 5.0"),
+    // Intelligence: mana and spell power.
+    (stat: Mana, kind: Flat, value: "Intelligence / 2.0"),
+    (stat: Damage, kind: Increased, value: "Intelligence / 5.0", requires: [Spell]),
+]

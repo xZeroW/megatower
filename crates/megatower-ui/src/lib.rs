@@ -26,6 +26,7 @@ pub mod hover_manager;
 pub mod hover_rules;
 pub mod hud_rules;
 pub mod item_visual;
+pub mod labyrinth;
 pub mod library;
 pub mod library_planner;
 pub mod library_state;
@@ -129,7 +130,7 @@ mod tests {
     #[test]
     fn hud_composes_for_every_state_of_bot_runs() {
         let rects = Rects::from_layout(&recovered_layout());
-        for (n, name) in ["Fren", "Pyry", "Elys", "Tyr", "Amon", "Jace"]
+        for (n, name) in ["Kestrel", "Umbrath", "Elaris", "Gorix", "Orvian", "Nivor"]
             .into_iter()
             .enumerate()
         {
@@ -181,7 +182,7 @@ mod tests {
 
     #[test]
     fn market_item_tooltips_follow_the_source_structure() {
-        let mut game = Game::new(NewRun::default_for("Fren", 5));
+        let mut game = Game::new(NewRun::default_for("Kestrel", 5));
         let market = market_container(&game).unwrap();
         let mut seen = 0;
         for i in 0..4 {
@@ -215,7 +216,7 @@ mod tests {
 
     #[test]
     fn every_status_effect_has_a_tooltip_with_footer() {
-        let game = Game::new(NewRun::default_for("Fren", 5));
+        let game = Game::new(NewRun::default_for("Kestrel", 5));
         for policy in &game.rules.status_policies.0 {
             let tip =
                 compose::status_tip(&game, policy.id).unwrap_or_else(|| panic!("{:?}", policy.id));
@@ -240,7 +241,7 @@ mod tests {
         let draws = select_draws(&rects, &catalog, 0);
         let names = draws
             .iter()
-            .filter(|d| matches!(d, Draw::Text { text, .. } if text == "JACE"))
+            .filter(|d| matches!(d, Draw::Text { text, .. } if text == "NIVOR"))
             .count();
         assert_eq!(names, 1);
         assert_eq!(adventurer_cells(11).len(), 11);
@@ -251,7 +252,7 @@ mod tests {
     #[test]
     fn merchant_room_buying_and_refreshing() {
         use megatower_core::game_mode::Room;
-        let mut game = Game::new(NewRun::default_for("Fren", 7));
+        let mut game = Game::new(NewRun::default_for("Kestrel", 7));
         game.setup_room_of_type(Room::Merchant);
         let local = game.local();
         game.char_state_mut(local).gold_coins = 10_000.0;
@@ -280,7 +281,7 @@ mod tests {
     fn next_rooms_ui_waits_for_the_room_change() {
         use megatower_core::game_mode::Room;
         let rects = Rects::from_layout(&recovered_layout());
-        let mut game = Game::new(NewRun::default_for("Fren", 7));
+        let mut game = Game::new(NewRun::default_for("Kestrel", 7));
         game.battle_speed = 1.0;
         // Floor 1's last room is the merchant.
         game.memory.room_idx = 3;
@@ -309,7 +310,7 @@ mod tests {
     /// stays empty.
     #[test]
     fn waves_start_with_full_bars() {
-        let mut game = Game::new(NewRun::default_for("Fren", 7));
+        let mut game = Game::new(NewRun::default_for("Kestrel", 7));
         game.battle_speed = 1.0;
         let mut ui = UiState::default();
         ui.screen = Screen::Playing;
@@ -360,7 +361,7 @@ mod tests {
     #[test]
     fn dying_shows_the_death_screen() {
         let rects = Rects::from_layout(&recovered_layout());
-        let mut game = Game::new(NewRun::default_for("Fren", 7));
+        let mut game = Game::new(NewRun::default_for("Kestrel", 7));
         game.battle_speed = 1.0;
         let mut ui = UiState::default();
         ui.screen = Screen::Playing;
