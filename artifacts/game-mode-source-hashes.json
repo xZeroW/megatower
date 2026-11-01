@@ -1,6 +1,0 @@
-{
-  "classes/objects/game_mode_script.gd": "104a660bdfbfacb121d68d2b9e20943029c1e00be6373eafc1420d674913fa92",
-  "resources/game_mode_scripts/challenge.gd": "1b848bc75433cb9735be81a757491f546ae416e47fa0653a695bc0805002ee91",
-  "resources/game_mode_scripts/practice.gd": "537c4ff136425879cc72acd30be807271ad3c1e33aa426599b8d2426e0c9fa51",
-  "classes/utils/stat_utils.gd": "56fe7eefb4735f2a36740309a4a8dfe460da239973660992164517ec2ec9fe8f"
-}
