@@ -380,10 +380,11 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
         }
         Fx::RoomChanged => {
             ui.presented_room = None;
-            if game.memory.room_type == megatower_core::game_mode::Room::Battle {
-                ui.log_pages.reset_for_new_battle();
-                ui.log_scroll = 0;
-            }
+            // Logs are emptied once a battle is over, not kept as "last battle".
+            ui.log_pages = Default::default();
+            ui.log.clear();
+            ui.log_scroll = 0;
+            game.battle_log.clear();
         }
         Fx::GameEnded | Fx::PhantomRevived => {
             if matches!(fx, Fx::GameEnded) {

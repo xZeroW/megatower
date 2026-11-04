@@ -145,30 +145,40 @@ fn event_line(event: &CombatEvent, names: &[String]) -> String {
             .cloned()
             .unwrap_or_else(|| format!("Enemy {}", i + 1)),
     };
+    // "You were" / "Stone Golem was".
+    let was = |a: Actor| if a == Actor::Hero { "were" } else { "was" };
     match event {
-        CombatEvent::Action { actor, name } => format!("{}: {name}", who(*actor)),
+        CombatEvent::Action { actor, name } => format!("{} used {name}", who(*actor)),
         CombatEvent::Hit {
             target,
             damage,
             crit,
             kind,
         } => format!(
-            "{}: {damage:.0} {kind:?}{}",
+            "{} took {damage:.0} {kind:?} damage{}",
             who(*target),
-            if *crit { " critical" } else { "" }
+            if *crit { " (critical hit)" } else { "" }
         ),
         CombatEvent::Dot {
             target,
             damage,
             ailment,
-        } => format!("{}: {damage:.0} {ailment:?}", who(*target)),
-        CombatEvent::Dodge { target } => format!("{} dodged", who(*target)),
-        CombatEvent::Inflict { target, ailment } => format!("{}: {ailment:?}", who(*target)),
-        CombatEvent::Guard { actor, armour } => format!("{}: +{armour:.0} armour", who(*actor)),
-        CombatEvent::Heal { actor, amount } => format!("{}: +{amount:.0} life", who(*actor)),
-        CombatEvent::Frozen { actor } => format!("{} frozen", who(*actor)),
-        CombatEvent::Death { actor } => format!("{} defeated", who(*actor)),
-        CombatEvent::Repeat => "Skill repeats".into(),
+        } => format!("{} took {damage:.0} damage from {ailment:?}", who(*target)),
+        CombatEvent::Dodge { target } => format!("{} dodged the attack", who(*target)),
+        CombatEvent::Inflict { target, ailment } => {
+            format!("{} {} afflicted with {ailment:?}", who(*target), was(*target))
+        }
+        CombatEvent::Guard { actor, armour } => {
+            format!("{} gained {armour:.0} armour", who(*actor))
+        }
+        CombatEvent::Heal { actor, amount } => format!("{} healed {amount:.0} life", who(*actor)),
+        CombatEvent::Frozen { actor } => {
+            format!("{} {} frozen and cannot act", who(*actor), was(*actor))
+        }
+        CombatEvent::Death { actor } => format!("{} {} defeated", who(*actor), was(*actor)),
+        CombatEvent::Repeat => "The skill repeats".into(),
+        CombatEvent::TurnStart { turn } => format!("--- Turn {turn} begins ---"),
+        CombatEvent::TurnEnd { turn } => format!("--- Turn {turn} ends ---"),
     }
 }
 
@@ -508,6 +518,7 @@ impl Labyrinth {
         {
             self.game_mut().step_turn(turn);
             self.walk = None;
+            self.log.clear();
             ui.transition = Some(Transition {
                 start: false,
                 at: ui.time,
@@ -863,6 +874,9 @@ impl Labyrinth {
         let mut timed = Vec::new();
         let mut at = 0.0;
         for event in events {
+            if matches!(event, CombatEvent::TurnStart { turn: 1 }) {
+                self.log.clear();
+            }
             self.log.push(event_line(&event, &names));
             let critical = matches!(&event, CombatEvent::Hit { crit: true, .. });
             let mut fx = Vec::new();
@@ -1115,14 +1129,14 @@ mod tests {
             },
             &names,
         );
-        assert_eq!(line, "Tunnel Rat dodged");
+        assert_eq!(line, "Tunnel Rat dodged the attack");
         let unknown = event_line(
             &CombatEvent::Dodge {
                 target: Actor::Enemy(2),
             },
             &names,
         );
-        assert_eq!(unknown, "Enemy 3 dodged");
+        assert_eq!(unknown, "Enemy 3 dodged the attack");
     }
 
     #[test]

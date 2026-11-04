@@ -161,6 +161,13 @@ pub enum CombatEvent {
     Death {
         actor: Actor,
     },
+    TurnStart {
+        turn: u32,
+    },
+    /// Only logged when the fight goes on past the turn's end.
+    TurnEnd {
+        turn: u32,
+    },
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -333,6 +340,7 @@ impl Battle {
                 return Err(ActionError::NotEnoughMana);
             }
         }
+        self.log.push(CombatEvent::TurnStart { turn: self.turn });
         if self.hero.afflictions.take_frozen() {
             self.log.push(CombatEvent::Frozen { actor: Actor::Hero });
         } else if let HeroAction::Skill { index, target } = action {
@@ -482,6 +490,7 @@ impl Battle {
             .mods
             .total(Stat::ManaRegen, HERO_MANA_REGEN, Tags::NONE);
         self.hero.mana = (self.hero.mana + regen).min(self.hero.max_mana);
+        self.log.push(CombatEvent::TurnEnd { turn: self.turn });
         self.turn += 1;
     }
 }
