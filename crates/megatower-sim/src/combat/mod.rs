@@ -251,7 +251,9 @@ impl Strike<'_> {
         if !self.no_ailments && target.alive() {
             for ailment in Ailment::ALL {
                 let source = ailment.source_damage(&hit.damage);
-                let chance = self.mods.flat(Stat::AilmentChance(ailment), self.spec.tags | self.state);
+                let chance = self
+                    .mods
+                    .flat(Stat::AilmentChance(ailment), self.spec.tags | self.state);
                 if source > 0.0 && chance > 0.0 && rng.chance(chance) {
                     target.afflictions.inflict(ailment, source);
                     log.push(CombatEvent::Inflict {

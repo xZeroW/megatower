@@ -1,6 +1,5 @@
 use std::collections::{HashMap, HashSet};
 
-
 /// A bitmask representing a set of tags on a modifier or a tag query.
 ///
 /// Tags enable filtered attribute evaluation - e.g., "fire sword damage" uses
@@ -157,7 +156,8 @@ impl TagResolver {
         }
 
         if mask.0.count_ones() == 1 {
-            self.reverse_tags.insert(mask.0.trailing_zeros(), upper_name);
+            self.reverse_tags
+                .insert(mask.0.trailing_zeros(), upper_name);
         }
     }
 
@@ -422,7 +422,9 @@ mod tests {
         assert_eq!(s, "{FIRE}");
 
         // Multi-tag
-        let s = resolver.tag_suffix(TagMask::bit(0) | TagMask::bit(2)).unwrap();
+        let s = resolver
+            .tag_suffix(TagMask::bit(0) | TagMask::bit(2))
+            .unwrap();
         assert!(s.starts_with('{') && s.ends_with('}'));
         assert!(s.contains("FIRE") && s.contains("MELEE"));
 

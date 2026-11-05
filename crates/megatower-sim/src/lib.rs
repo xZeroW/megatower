@@ -9,6 +9,7 @@
 //! - [`gems`]: skill and support gems, rarity, and the skill a socket group makes.
 //! - [`items`]: gear bases, affixes, rarity and uniques.
 //! - [`character`]: equipment, the bag and socketing.
+//! - [`orbs`]: crafting currency that rerolls, adds to or upgrades gear.
 //! - [`passives`]: the passive tree, experience and levels.
 //! - [`merchant`]: the gem shop, prices, refreshes and selling.
 //! - [`rooms`]: shrine boons, events and gold rewards.
@@ -34,6 +35,7 @@ pub mod labyrinth;
 pub mod loot;
 pub mod merchant;
 pub mod modifier;
+pub mod orbs;
 pub mod passives;
 pub mod rng;
 pub mod rooms;

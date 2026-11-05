@@ -23,7 +23,11 @@ fn life_scales_with_strength_and_updates_live() {
     s.complex_attribute(
         HERO,
         "Life",
-        &[("base", ReduceFn::Sum), ("increased", ReduceFn::Sum), ("more", ReduceFn::Product)],
+        &[
+            ("base", ReduceFn::Sum),
+            ("increased", ReduceFn::Sum),
+            ("more", ReduceFn::Product),
+        ],
         "(base + Strength / 2.0) * (1.0 + increased) * more",
     )
     .unwrap();
@@ -41,7 +45,8 @@ fn resistance_is_capped_but_overcap_is_kept() {
     let mut s = stats();
     s.add_modifier(HERO, "FireResUncapped", 60.0);
     s.add_modifier(HERO, "FireResCap", 75.0);
-    s.add_expr_modifier(HERO, "FireRes", "min(FireResUncapped, FireResCap)").unwrap();
+    s.add_expr_modifier(HERO, "FireRes", "min(FireResUncapped, FireResCap)")
+        .unwrap();
     assert_eq!(s.value(HERO, "FireRes"), 60.0);
 
     s.add_modifier(HERO, "FireResUncapped", 40.0);
@@ -58,7 +63,8 @@ fn conditional_modifier_while_at_full_life() {
     let mut s = stats();
     s.add_modifier(HERO, "MaxLife", 100.0);
     s.set_base(HERO, "CurrentLife", 100.0);
-    s.add_expr_modifier(HERO, "FullLife", "CurrentLife >= MaxLife").unwrap();
+    s.add_expr_modifier(HERO, "FullLife", "CurrentLife >= MaxLife")
+        .unwrap();
     s.complex_attribute(
         HERO,
         "Damage",
@@ -68,7 +74,8 @@ fn conditional_modifier_while_at_full_life() {
     .unwrap();
     s.add_modifier(HERO, "Damage.base", 100.0);
     // "30% increased damage while at full life"
-    s.add_expr_modifier(HERO, "Damage.increased", "0.3 * FullLife").unwrap();
+    s.add_expr_modifier(HERO, "Damage.increased", "0.3 * FullLife")
+        .unwrap();
     assert_eq!(s.value(HERO, "Damage"), 130.0);
 
     s.set_base(HERO, "CurrentLife", 99.0);
@@ -80,7 +87,8 @@ fn cross_entity_source_for_minions_and_auras() {
     let mut s = stats();
     s.add_modifier(HERO, "Strength", 40.0);
     s.register_source(ENEMY, "Owner", HERO);
-    s.add_expr_modifier(ENEMY, "Damage", "Strength@Owner * 0.5").unwrap();
+    s.add_expr_modifier(ENEMY, "Damage", "Strength@Owner * 0.5")
+        .unwrap();
     assert_eq!(s.value(ENEMY, "Damage"), 20.0);
     s.add_modifier(HERO, "Strength", 20.0);
     assert_eq!(s.value(ENEMY, "Damage"), 30.0);

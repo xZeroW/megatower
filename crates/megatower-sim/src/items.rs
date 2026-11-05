@@ -160,7 +160,7 @@ impl Item {
 }
 
 /// Socket links for a new item: 1 is common, the maximum is rare.
-fn roll_links(max: u8, rng: &mut Rng) -> u8 {
+pub(crate) fn roll_links(max: u8, rng: &mut Rng) -> u8 {
     let mut links = 1;
     while links < max && rng.chance(45.0) {
         links += 1;
@@ -258,6 +258,23 @@ fn magic_name(db: &ItemDb, item: &Item, base_name: &str) -> String {
     name
 }
 
+/// Gives a rare a fresh random name.
+pub(crate) fn rare_name(rng: &mut Rng) -> String {
+    format!(
+        "{} {}",
+        rng.pick(&RARE_FIRST).unwrap(),
+        rng.pick(&RARE_SECOND).unwrap()
+    )
+}
+
+/// The name a magic item shows for its current affixes.
+pub(crate) fn name_magic(db: &ItemDb, item: &Item) -> String {
+    let base = db
+        .base(&item.base)
+        .map_or(item.base.as_str(), |b| b.name.as_str());
+    magic_name(db, item, base)
+}
+
 /// Rolls a whole item of `base` at `rarity` (uniques: one of the base's
 /// uniques, falling back to rare when it has none).
 pub fn roll_item(
@@ -284,11 +301,7 @@ pub fn roll_item(
             for _ in 0..count {
                 add_affix(db, &mut item, rng);
             }
-            item.name = format!(
-                "{} {}",
-                rng.pick(&RARE_FIRST).unwrap(),
-                rng.pick(&RARE_SECOND).unwrap()
-            );
+            item.name = rare_name(rng);
         }
         ItemRarity::Unique => {
             let uniques: Vec<&UniqueDef> =

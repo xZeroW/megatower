@@ -91,7 +91,10 @@ impl AttributeNode {
 
     /// Evaluate this node: evaluate **all** modifiers (ignoring tags), then reduce.
     pub fn evaluate(&self, context: &AttributeContext) -> f64 {
-        let iter = self.modifiers.iter().map(|tm| tm.modifier.evaluate(context));
+        let iter = self
+            .modifiers
+            .iter()
+            .map(|tm| tm.modifier.evaluate(context));
         self.reduce_iter(iter)
     }
 
@@ -121,7 +124,11 @@ impl AttributeNode {
             ReduceFn::Sum => values.iter().sum(),
             ReduceFn::Product => values.iter().map(|v| 1.0 + v).product(),
             ReduceFn::Custom(f) => {
-                if values.is_empty() { 0.0 } else { f(values) }
+                if values.is_empty() {
+                    0.0
+                } else {
+                    f(values)
+                }
             }
         })
     }
@@ -149,7 +156,11 @@ fn with_canonical_order<R>(iter: impl Iterator<Item = f64>, reduce: impl FnOnce(
             spilled.push(value);
         }
     }
-    let values: &mut [f64] = if spilled.is_empty() { &mut inline[..len] } else { &mut spilled };
+    let values: &mut [f64] = if spilled.is_empty() {
+        &mut inline[..len]
+    } else {
+        &mut spilled
+    };
     values.sort_unstable_by(f64::total_cmp);
     reduce(values)
 }
@@ -314,10 +325,7 @@ mod tests {
         assert_eq!(node.evaluate_tagged(&ctx, melee), 5.0);
 
         // FIRE|PHYSICAL|MELEE: all three match = 25 + 10 + 5 = 40
-        assert_eq!(
-            node.evaluate_tagged(&ctx, fire | physical | melee),
-            40.0
-        );
+        assert_eq!(node.evaluate_tagged(&ctx, fire | physical | melee), 40.0);
     }
 
     #[test]

@@ -1,12 +1,13 @@
 //! A whole run: the floor being explored, the hero, and what each room does
 //! when entered. Screens and bots drive it through these commands.
 
-use crate::character::{Character, GemSpot, Loot};
+use crate::character::{Character, GemSpot, ItemSpot, Loot};
 use crate::combat::{Battle, CombatEvent, HeroAction, Outcome, encounter};
 use crate::content;
 use crate::labyrinth::{self, Dir, Floor, MoveError, Pos, RoomKind, Turn};
-use crate::loot::{room_loot, starting_character};
+use crate::loot::{room_loot, room_orbs, starting_character};
 use crate::merchant::{Shop, sell as sell_gem};
+use crate::orbs::{Orb, OrbError};
 use crate::passives::enemy_xp;
 use crate::rng::Rng;
 use crate::rooms::{battle_gold, resolve_event, shrine_offers, treasure_gold};
@@ -386,6 +387,22 @@ impl Run {
         for item in room_loot(kind, self.floor.number, content::get(), &mut self.rng) {
             let _ = self.character.add_loot(item);
         }
+        for orb in room_orbs(kind, self.floor.number, &mut self.rng) {
+            self.character.orbs.add(orb, 1);
+        }
+    }
+
+    /// Spends an orb on an item; only between fights.
+    pub fn use_orb(&mut self, orb: Orb, spot: ItemSpot) -> Result<(), OrbError> {
+        if self.battle.is_some() {
+            return Err(OrbError::NoTarget);
+        }
+        self.character.use_orb(orb, spot, &mut self.rng)
+    }
+
+    /// Spends a Regret orb to refund a passive.
+    pub fn regret(&mut self, id: &str) -> bool {
+        self.battle.is_none() && self.character.use_regret(id).is_ok()
     }
 
     pub fn allocate(&mut self, id: &str) -> bool {

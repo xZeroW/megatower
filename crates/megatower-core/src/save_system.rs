@@ -4,7 +4,12 @@
 //! Original save files cannot be read, and native saves are plain JSON.
 
 use serde_json::{Map, Value};
-use std::{fs, io, io::Write, path::Path, sync::atomic::{AtomicU64, Ordering}};
+use std::{
+    fs, io,
+    io::Write,
+    path::Path,
+    sync::atomic::{AtomicU64, Ordering},
+};
 
 static TEMP_SEQUENCE: AtomicU64 = AtomicU64::new(0);
 
@@ -12,20 +17,42 @@ static TEMP_SEQUENCE: AtomicU64 = AtomicU64::new(0);
 /// The temporary file is created beside the destination so rename is atomic
 /// on filesystems that support atomic replacement.
 pub fn write_atomic(path: &Path, bytes: &[u8]) -> io::Result<()> {
-    let parent = path.parent().filter(|p| !p.as_os_str().is_empty()).unwrap_or(Path::new("."));
+    let parent = path
+        .parent()
+        .filter(|p| !p.as_os_str().is_empty())
+        .unwrap_or(Path::new("."));
     fs::create_dir_all(parent)?;
-    let name = path.file_name().ok_or_else(|| io::Error::new(io::ErrorKind::InvalidInput, "missing file name"))?;
+    let name = path
+        .file_name()
+        .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidInput, "missing file name"))?;
     let mut temporary = None;
     for _ in 0..32 {
         let n = TEMP_SEQUENCE.fetch_add(1, Ordering::Relaxed);
-        let candidate = parent.join(format!(".{}.{}.{}.tmp", name.to_string_lossy(), std::process::id(), n));
-        match fs::OpenOptions::new().write(true).create_new(true).open(&candidate) {
-            Ok(file) => { temporary = Some((candidate, file)); break; }
+        let candidate = parent.join(format!(
+            ".{}.{}.{}.tmp",
+            name.to_string_lossy(),
+            std::process::id(),
+            n
+        ));
+        match fs::OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .open(&candidate)
+        {
+            Ok(file) => {
+                temporary = Some((candidate, file));
+                break;
+            }
             Err(e) if e.kind() == io::ErrorKind::AlreadyExists => continue,
             Err(e) => return Err(e),
         }
     }
-    let (temporary_path, mut file) = temporary.ok_or_else(|| io::Error::new(io::ErrorKind::AlreadyExists, "could not allocate temporary save file"))?;
+    let (temporary_path, mut file) = temporary.ok_or_else(|| {
+        io::Error::new(
+            io::ErrorKind::AlreadyExists,
+            "could not allocate temporary save file",
+        )
+    })?;
     let result = (|| {
         file.write_all(bytes)?;
         file.sync_all()?;
@@ -36,10 +63,11 @@ pub fn write_atomic(path: &Path, bytes: &[u8]) -> io::Result<()> {
         fs::File::open(parent)?.sync_all()?;
         Ok(())
     })();
-    if result.is_err() { let _ = fs::remove_file(&temporary_path); }
+    if result.is_err() {
+        let _ = fs::remove_file(&temporary_path);
+    }
     result
 }
-
 
 /// `get_value` for floats: negative infinity is stored as the string "-inf".
 pub fn encode_float(value: f64) -> Value {
@@ -139,7 +167,11 @@ mod tests {
 
     #[test]
     fn atomic_write_replaces_valid_data_and_preserves_it_on_failure() {
-        let dir = std::env::temp_dir().join(format!("megatower-atomic-{}-{}", std::process::id(), TEMP_SEQUENCE.fetch_add(1, Ordering::Relaxed)));
+        let dir = std::env::temp_dir().join(format!(
+            "megatower-atomic-{}-{}",
+            std::process::id(),
+            TEMP_SEQUENCE.fetch_add(1, Ordering::Relaxed)
+        ));
         fs::create_dir_all(&dir).unwrap();
         let path = dir.join("profile.json");
         write_atomic(&path, b"first").unwrap();

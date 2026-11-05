@@ -158,7 +158,7 @@ Converted damage keeps the modifiers of the types it passed through.
   15% more life), Steady Hand (no crits, 30% more damage), Spellweaver (spells 25% repeat
   chance, 40% more mana cost). Levels: XP to next = 10·L + 5·L²; an enemy gives
   6 + 4·floor XP (elites ×3, bosses ×8); each level adds 1 point, +5 life, +2 mana.
-  Refunds exist in the sim but no screen or currency uses them yet.
+  Refunds cost an Orb of Regret (R on the tree screen).
 
 ### Gem Altar
 A special room that upgrades a gem's rarity by one tier for free. Each altar has
@@ -198,7 +198,11 @@ gems and items), so selling is the main way to free room and get gold from extra
   gear is swapped. Drops: fights 40% item / 30% gem, elites 1 magic+ item / 60% gem,
   bosses and treasure 2 items + 1 gem; 70% of gem drops are supports, gem level up to
   1 + floor / 2. Runs start with a 2-link Worn Blade (attack starters) or Gnarled Wand
-  (spells) and a Leather Vest. Crafting orbs are not in yet.
+  (spells) and a Leather Vest. Crafting orbs (`megatower-sim/src/orbs.rs`) are
+  in: Reforge, Augment, Ascend, Relink and Regret (the respec currency). They sit in a stash
+  beside the bag, drop from fights (7%), elites (35%), treasure (1) and bosses (2), and work
+  between fights on bag or worn items. The bot spends Ascend/Augment on worn gear and Relink
+  on 1-link pieces; with that, floor-9 clears moved from ~70–81% to ~77–90%.
 
 ## Architecture
 

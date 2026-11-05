@@ -5,6 +5,7 @@ use crate::content::Content;
 use crate::gems::{Gem, GemDb, GemRarity, SocketGroup};
 use crate::items::{RarityWeights, normal_item, random_item};
 use crate::labyrinth::RoomKind;
+use crate::orbs::{Orb, random_orb};
 use crate::passives::Progress;
 use crate::rng::Rng;
 use crate::tags::Tag;
@@ -67,6 +68,33 @@ pub fn room_loot(kind: RoomKind, floor: u32, content: &Content, rng: &mut Rng) -
         }
     }
     loot
+}
+
+/// (chance %, orb count) a cleared room pays in crafting orbs.
+fn orb_table(kind: RoomKind) -> (f64, u32) {
+    match kind {
+        RoomKind::Fight => (7.0, 1),
+        RoomKind::Elite => (35.0, 1),
+        RoomKind::Stairs { boss: true } => (100.0, 2),
+        RoomKind::Treasure => (100.0, 1),
+        _ => (0.0, 0),
+    }
+}
+
+/// Crafting orbs for clearing a room on `floor`. Ascension waits for floor 2.
+pub fn room_orbs(kind: RoomKind, floor: u32, rng: &mut Rng) -> Vec<Orb> {
+    let (chance, count) = orb_table(kind);
+    let mut orbs = Vec::new();
+    for _ in 0..count {
+        if rng.chance(chance) {
+            let mut orb = random_orb(rng);
+            if floor < 2 && orb == Orb::Ascend {
+                orb = Orb::Augment;
+            }
+            orbs.push(orb);
+        }
+    }
+    orbs
 }
 
 /// Where on the passive tree a starter gem begins: spells in Intelligence,
@@ -136,6 +164,26 @@ mod tests {
             let treasure = room_loot(RoomKind::Treasure, 1, content::get(), &mut rng);
             assert_eq!(treasure.len(), 3);
         }
+    }
+
+    #[test]
+    fn orbs_drop_from_fighting_rooms_only() {
+        let mut rng = Rng::seeded(6);
+        for kind in [RoomKind::Rest, RoomKind::Merchant, RoomKind::Start] {
+            assert!(room_orbs(kind, 3, &mut rng).is_empty());
+        }
+        for _ in 0..50 {
+            assert_eq!(room_orbs(RoomKind::Treasure, 1, &mut rng).len(), 1);
+            assert_eq!(
+                room_orbs(RoomKind::Stairs { boss: true }, 3, &mut rng).len(),
+                2
+            );
+            assert!(!room_orbs(RoomKind::Fight, 1, &mut rng).contains(&Orb::Ascend));
+        }
+        let fights = (0..1000)
+            .map(|_| room_orbs(RoomKind::Fight, 3, &mut rng).len())
+            .sum::<usize>();
+        assert!((30..120).contains(&fights), "{fights}");
     }
 
     #[test]

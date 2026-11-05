@@ -1021,6 +1021,17 @@ impl Labyrinth {
             palette(8),
             Align::Left,
         ));
+        if game.character.orbs.total() > 0 {
+            let mut below = rects.diamonds;
+            below[1] += below[3];
+            below[2] *= 4.0;
+            out.push(text(
+                below,
+                orb_summary(&game.character.orbs),
+                palette(8),
+                Align::Left,
+            ));
+        }
         let v = &frame.player;
         // Use the original animated bars, numerical panels and segmented mana
         // pip. Armour here is only megatower-sim's temporary guard, not a new rule.
@@ -1798,4 +1809,22 @@ mod tests {
             .gems[0];
         assert_eq!(gem.rarity, GemRarity::Uncommon);
     }
+}
+
+/// "Rf 2  Au 1  As 0  Rl 1  Rg 0": the orbs in stock, in key order.
+fn orb_summary(orbs: &megatower_sim::orbs::Orbs) -> String {
+    use megatower_sim::orbs::Orb;
+    let tag = |o: Orb| match o {
+        Orb::Reforge => "Rf",
+        Orb::Augment => "Au",
+        Orb::Ascend => "As",
+        Orb::Relink => "Rl",
+        Orb::Regret => "Rg",
+    };
+    Orb::ALL
+        .into_iter()
+        .filter(|&o| orbs.count(o) > 0)
+        .map(|o| format!("{} {}", tag(o), orbs.count(o)))
+        .collect::<Vec<_>>()
+        .join("  ")
 }

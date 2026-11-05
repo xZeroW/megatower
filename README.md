@@ -25,6 +25,10 @@ reference/parity work: `MEGATOWER_LEGACY=1 cargo run -p megatower-client`.
 - Equipment and all 20 bag slots stay in Megatower's HUD. Right-click gear to
   equip/unequip. Select a gem, then click equipment to socket it; linked gems
   appear in the original bottom-left slots (right-click to unsocket).
+- Crafting orbs (shown under the level as `Rf Au As Rl Rg`) drop from fights, elites, treasure
+  and bosses. Select a bag or worn item, then press 1 Reforge (reroll affixes), 2 Augment
+  (add an affix), 3 Ascend (normal → magic → rare) or 4 Relink (reroll links). On the passive
+  tree (P) select an allocated node and press R to spend a Regret orb and refund its point.
 - At a merchant, click stock to buy, right-click stock to lock it, and
   right-click bag gems to sell. At an altar, select a bag gem and upgrade it,
   or click a socketed gem below the equipment. Escape leaves room choices or

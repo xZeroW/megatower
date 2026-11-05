@@ -4,7 +4,7 @@
 //! fitting supports, buy supports, take the best-looking passives).
 //! `cargo run -p megatower-sim --example bot --release` prints a report.
 
-use crate::character::{EquipSlot, Loot};
+use crate::character::{EquipSlot, ItemSpot, Loot};
 use crate::combat::{Battle, HeroAction};
 use crate::content;
 use crate::gems::{Skill, Targeting};
@@ -12,6 +12,7 @@ use crate::items::Item;
 use crate::labyrinth::{Dir, Floor, Pos, Visibility};
 use crate::merchant::gem_price;
 use crate::modifier::{ModKind, Modifier, Stat};
+use crate::orbs::Orb;
 use crate::passives::NodeKind;
 use crate::run::{Mode, Run};
 use crate::tags::{DamageType, Tag, Tags};
@@ -284,8 +285,27 @@ fn item_score(item: &Item, tags: Tags) -> f64 {
     item.mods().iter().map(|m| mod_score(&m, tags)).sum::<f64>() + links
 }
 
+/// Spends orbs on worn gear: Ascend and Augment while they work, Relink on
+/// weapons and armour stuck at one link (it can only help there).
+fn spend_orbs(run: &mut Run) {
+    for slot in EquipSlot::ALL {
+        let spot = ItemSpot::Worn(slot);
+        while run.use_orb(Orb::Ascend, spot).is_ok() {}
+        while run.use_orb(Orb::Augment, spot).is_ok() {}
+        let links = run
+            .character
+            .equipped(slot)
+            .and_then(|i| i.sockets.as_ref())
+            .map_or(u8::MAX, |s| s.links);
+        if links == 1 {
+            let _ = run.use_orb(Orb::Relink, spot);
+        }
+    }
+}
+
 /// Equips upgrades, sockets gems, spends passive points and clears junk.
 fn manage(run: &mut Run) {
+    spend_orbs(run);
     let tags = build_tags(run);
     let gems = &content::get().gems;
     // Gear upgrades.

@@ -6,6 +6,7 @@ use crate::combat::Fighter;
 use crate::gems::{Gem, GemDb, Skill};
 use crate::items::{Item, Slot};
 use crate::modifier::ModSet;
+use crate::orbs::{self, Orb, OrbError, Orbs};
 use crate::passives::Progress;
 use serde::{Deserialize, Serialize};
 
@@ -86,6 +87,13 @@ pub enum GemSpot {
     Socket(EquipSlot, usize),
 }
 
+/// Where an item sits: loose in the bag or worn.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ItemSpot {
+    Bag(usize),
+    Worn(EquipSlot),
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Character {
     equipment: [Option<Item>; 8],
@@ -97,6 +105,9 @@ pub struct Character {
     pub gold: u32,
     /// Shrine boon ids taken this run.
     pub boons: Vec<String>,
+    /// Crafting orbs in stock.
+    #[serde(default)]
+    pub orbs: Orbs,
 }
 
 impl Character {
@@ -108,6 +119,7 @@ impl Character {
             progress: Progress::default(),
             gold: 0,
             boons: Vec::new(),
+            orbs: Orbs::default(),
         };
         for (slot, item) in equipment {
             c.equipment[slot.index()] = Some(item);
@@ -312,6 +324,40 @@ impl Character {
         Ok(next)
     }
 
+    /// Spends one `orb` on the item at `spot`; the orb is kept if it fails.
+    pub fn use_orb(
+        &mut self,
+        orb: Orb,
+        spot: ItemSpot,
+        rng: &mut crate::rng::Rng,
+    ) -> Result<(), OrbError> {
+        if self.orbs.count(orb) == 0 {
+            return Err(OrbError::NoOrb);
+        }
+        let item = match spot {
+            ItemSpot::Bag(i) => match self.inventory.get_mut(i) {
+                Some(Loot::Item(item)) => item,
+                _ => return Err(OrbError::NoTarget),
+            },
+            ItemSpot::Worn(slot) => self.equipment[slot.index()]
+                .as_mut()
+                .ok_or(OrbError::NoTarget)?,
+        };
+        orbs::apply(orb, &crate::content::get().items, item, rng)?;
+        self.orbs.take(orb)
+    }
+
+    /// Spends a Regret orb to take back the point in passive `id`.
+    pub fn use_regret(&mut self, id: &str) -> Result<(), crate::passives::PassiveError> {
+        use crate::passives::PassiveError;
+        if self.orbs.count(Orb::Regret) == 0 {
+            return Err(PassiveError::UnknownNode);
+        }
+        self.progress.refund(&crate::content::get().tree, id)?;
+        let _ = self.orbs.take(Orb::Regret);
+        Ok(())
+    }
+
     /// Takes the `gem`-th gem out of the item in `slot` into the bag.
     pub fn unsocket(&mut self, slot: EquipSlot, gem: usize) -> Result<(), GearError> {
         if !self.has_room() {
@@ -454,6 +500,63 @@ mod tests {
         }
         assert_eq!(c.upgrade_gem(GemSpot::Bag(0)), Err(GearError::MaxRarity));
         assert_eq!(c.upgrade_gem(GemSpot::Bag(5)), Err(GearError::Empty));
+    }
+
+    #[test]
+    fn orbs_work_on_worn_and_bagged_items_and_are_kept_on_failure() {
+        let mut c = Character::new([(EquipSlot::Weapon, item("gnarled_wand"))]);
+        c.add_loot(Loot::Item(item("iron_ring"))).unwrap();
+        c.add_loot(gem("echo")).unwrap();
+        let rng = &mut Rng::seeded(8);
+        // Nothing in stock.
+        assert_eq!(
+            c.use_orb(Orb::Ascend, ItemSpot::Bag(0), rng),
+            Err(OrbError::NoOrb)
+        );
+        c.orbs.add(Orb::Ascend, 2);
+        c.orbs.add(Orb::Reforge, 1);
+        assert_eq!(
+            c.use_orb(Orb::Ascend, ItemSpot::Bag(1), rng),
+            Err(OrbError::NoTarget)
+        );
+        assert_eq!(
+            c.use_orb(Orb::Ascend, ItemSpot::Worn(EquipSlot::Body), rng),
+            Err(OrbError::NoTarget)
+        );
+        assert_eq!(
+            c.use_orb(Orb::Reforge, ItemSpot::Bag(0), rng),
+            Err(OrbError::WrongRarity)
+        );
+        assert_eq!(c.orbs.total(), 3);
+        c.use_orb(Orb::Ascend, ItemSpot::Bag(0), rng).unwrap();
+        c.use_orb(Orb::Ascend, ItemSpot::Worn(EquipSlot::Weapon), rng)
+            .unwrap();
+        assert_eq!(c.orbs.count(Orb::Ascend), 0);
+        assert_eq!(
+            c.equipped(EquipSlot::Weapon).unwrap().rarity,
+            ItemRarity::Magic
+        );
+    }
+
+    #[test]
+    fn regret_refunds_a_passive_point() {
+        let mut c = Character::new([]);
+        c.progress = crate::passives::Progress::new("str_start");
+        c.progress.points = 1;
+        let neighbour = content::get()
+            .tree
+            .neighbours("str_start")
+            .next()
+            .unwrap()
+            .to_string();
+        c.progress
+            .allocate(&content::get().tree, &neighbour)
+            .unwrap();
+        assert!(c.use_regret(&neighbour).is_err());
+        c.orbs.add(Orb::Regret, 1);
+        c.use_regret(&neighbour).unwrap();
+        assert_eq!(c.progress.points, 1);
+        assert_eq!(c.orbs.count(Orb::Regret), 0);
     }
 
     #[test]

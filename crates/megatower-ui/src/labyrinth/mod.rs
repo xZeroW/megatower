@@ -166,7 +166,11 @@ fn event_line(event: &CombatEvent, names: &[String]) -> String {
         } => format!("{} took {damage:.0} damage from {ailment:?}", who(*target)),
         CombatEvent::Dodge { target } => format!("{} dodged the attack", who(*target)),
         CombatEvent::Inflict { target, ailment } => {
-            format!("{} {} afflicted with {ailment:?}", who(*target), was(*target))
+            format!(
+                "{} {} afflicted with {ailment:?}",
+                who(*target),
+                was(*target)
+            )
         }
         CombatEvent::Guard { actor, armour } => {
             format!("{} gained {armour:.0} armour", who(*actor))
@@ -184,6 +188,7 @@ fn event_line(event: &CombatEvent, names: &[String]) -> String {
 
 /// What a character had before a fight, to tell what it won.
 struct Gains {
+    orbs: u32,
     gold: u32,
     level: u32,
     xp: u32,
@@ -193,6 +198,7 @@ struct Gains {
 impl Gains {
     fn of(character: &megatower_sim::character::Character) -> Self {
         Self {
+            orbs: character.orbs.total(),
             gold: character.gold,
             level: character.progress.level,
             xp: character.progress.xp,
@@ -254,6 +260,9 @@ fn win_popups(before: &Gains, character: &megatower_sim::character::Character) -
         popup.size = 1.5;
         popups.push(popup);
     }
+    if character.orbs.total() > before.orbs {
+        popups.push(Popup::new("Crafting orb".to_string(), hex(0xbf73f2)));
+    }
     for loot in character.inventory.iter().skip(before.bag).take(2) {
         let color = match loot {
             Loot::Item(item) => item_color(item.rarity),
@@ -272,7 +281,7 @@ fn win_popups(before: &Gains, character: &megatower_sim::character::Character) -
 ///   once (no wipe); `*` walks to the stairs, `M` / `H` / `V` / `A` / `T` to the
 ///   merchant, shrine, event, Gem Altar or treasure room, entering it without
 ///   fighting on the way; `x` leaves a room screen; `>` descends; `g` gives
-///   100 gold; `$` a treasure room's loot; `+` a level; `^` takes the first
+///   100 gold; `o` two of every crafting orb; `$` a treasure room's loot; `+` a level; `^` takes the first
 ///   passive node allowed; `m` / `p` toggle the map and the tree.
 /// - `GAME_LATE_MOVES`: more commands, played once `GAME_LATE_AT` (default 1)
 ///   seconds have passed, so effects like combat text are in flight when a
@@ -433,6 +442,11 @@ impl Labyrinth {
                 'x' => self.act(ui, Action::Leave),
                 '>' => self.act(ui, Action::Descend),
                 'g' => self.game_mut().character.gold += 100,
+                'o' => {
+                    for orb in megatower_sim::orbs::Orb::ALL {
+                        self.game_mut().character.orbs.add(orb, 2);
+                    }
+                }
                 '$' => self.game_mut().debug_loot(),
                 '+' => {
                     let progress = &mut self.game_mut().character.progress;
@@ -657,6 +671,25 @@ impl Labyrinth {
             {
                 let _ = self.game_mut().character.discard(i);
                 self.selection = None;
+                return;
+            }
+            if self.view == View::Tree && keys.just_pressed(KeyCode::KeyR) {
+                if let Some(id) = self.tree_selection.clone() {
+                    self.game_mut().regret(&id);
+                }
+                return;
+            }
+            if self.view != View::Tree
+                && let Some(selection) = self.selection
+                && let Some(i) = number
+            {
+                use megatower_sim::orbs::Orb;
+                let spot = match selection {
+                    Selection::Bag(i) => megatower_sim::character::ItemSpot::Bag(i),
+                    Selection::Worn(slot) => megatower_sim::character::ItemSpot::Worn(slot),
+                };
+                let orb = [Orb::Reforge, Orb::Augment, Orb::Ascend, Orb::Relink][i];
+                let _ = self.game_mut().use_orb(orb, spot);
                 return;
             }
             if self.view == View::Tree {
@@ -1110,6 +1143,7 @@ mod tests {
     #[test]
     fn experience_counts_every_level_crossed() {
         let before = Gains {
+            orbs: 0,
             gold: 0,
             level: 1,
             xp: 10,
