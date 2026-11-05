@@ -94,17 +94,18 @@ cargo run -p megatower-sim --example bot --release -- 300 9
 ```
 
 prints, per starter gem over 300 seeds, how often the bot dies on floor 1, beats the
-floor 3 / 6 / 9 bosses, and its average depth and level. Baseline after the first pass
-(300 runs, stop after floor 9):
+floor 3 / 6 / 9 bosses, and its average depth and level. Current numbers, after orbs and the content pass
+(600 runs, stop after floor 9; the report also lists deaths per floor and the enemies
+standing when the hero died):
 
 | Starter | dies f1 | f3 boss | f6 boss | f9 boss | avg level |
 | --- | --- | --- | --- | --- | --- |
-| Heavy Strike | 1% | 89% | 83% | 77% | 20.3 |
-| Split Shot | 3% | 82% | 73% | 67% | 19.0 |
-| Fireball | 1% | 85% | 79% | 77% | 19.7 |
-| Frost Nova | 2% | 80% | 71% | 70% | 18.7 |
-| Arc | 1% | 86% | 80% | 79% | 20.0 |
-| Venom Dart | 0% | 85% | 76% | 70% | 19.5 |
+| Heavy Strike | 0% | 97% | 91% | 86% | 21.5 |
+| Split Shot | 2% | 90% | 83% | 80% | 20.4 |
+| Fireball | 0% | 94% | 86% | 84% | 21.0 |
+| Frost Nova | 1% | 87% | 82% | 80% | 20.2 |
+| Arc | 1% | 87% | 83% | 81% | 20.3 |
+| Venom Dart | 0% | 92% | 83% | 80% | 20.6 |
 
 The bot full-clears every floor, so it out-levels a player who skips rooms; most of its
 deaths come at the floor-3 boss. Changes in this pass: 15% life back after a win (floor-1
@@ -178,7 +179,10 @@ which gem to upgrade is a real build decision.
   some results give orbs (`Orb`).
 - Boons: 12 (adds Ferocity, Bulwark, Thirst, Echoes). Uniques: 7 (Gravewatch, Rimeheart,
   Warden's Plate, Windrunners and Leechtooth join Emberheart and Tempest Loop).
-- With these in, the bot's floor-9 clear rate is about 74–86% across the starters.
+- With these in and the second balance pass, the bot's floor-9 clear rate is 80–86% across the starters.
+  Second pass: Magma Golem fire resistance 75 → 55 and life 55 → 50 (it killed more than any
+  other enemy), Warden life 160 → 150, Cinder Drake life 175 → 190 and breath 16–23 → 18–26
+  (it was the easiest boss), Arc 3–21 → 3–19.
 
 ### Merchant
 Reuses the existing Merchant room (`Room::Merchant`, `refresh_merchant` in

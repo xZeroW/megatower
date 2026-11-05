@@ -26,6 +26,8 @@ pub struct BotResult {
     pub level: u32,
     pub bosses: u32,
     pub fights: u32,
+    /// Ids of the enemies still standing when the hero died; empty if alive.
+    pub killers: Vec<String>,
 }
 
 /// Plays one run with `starter` until death or past `last_floor`.
@@ -34,6 +36,7 @@ pub fn play(seed: u64, starter: &str, last_floor: u32) -> BotResult {
     run.start_with(starter);
     let mut bosses = 0;
     let mut fights = 0;
+    let mut standing: Vec<String> = Vec::new();
     for _ in 0..50_000 {
         match run.mode.clone() {
             Mode::Map => {
@@ -62,6 +65,14 @@ pub fn play(seed: u64, starter: &str, last_floor: u32) -> BotResult {
                 }
             }
             Mode::Combat => {
+                if let Some(battle) = &run.battle {
+                    standing = battle
+                        .enemies
+                        .iter()
+                        .filter(|e| e.fighter.alive())
+                        .map(|e| e.id.clone())
+                        .collect();
+                }
                 let action = run.battle.as_ref().map_or(HeroAction::Pass, choose_action);
                 if run.combat_act(action).is_none() {
                     run.combat_act(HeroAction::Pass);
@@ -105,6 +116,11 @@ pub fn play(seed: u64, starter: &str, last_floor: u32) -> BotResult {
         level: run.character.progress.level,
         bosses,
         fights,
+        killers: if run.mode == Mode::Dead {
+            standing
+        } else {
+            Vec::new()
+        },
     }
 }
 
