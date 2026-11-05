@@ -14,7 +14,7 @@ fn main() {
         "starter", "dies f1", "f3 boss", "f6 boss", "f9 boss", "cleared", "avg floor", "avg lvl"
     );
     let mut deaths: std::collections::BTreeMap<String, u32> = Default::default();
-    let mut by_floor = [0u32; 16];
+    let mut by_floor = [0u32; 64];
     let mut total_runs = 0;
     let mut danger_runs = 0;
     let mut peak_ratio = 0.0f64;
@@ -26,7 +26,7 @@ fn main() {
             .iter()
             .fold(peak_ratio, |m, r| m.max(r.peak_doors_per_room));
         for r in results.iter().filter(|r| r.died) {
-            by_floor[(r.floor as usize).min(15)] += 1;
+            by_floor[(r.floor as usize).min(63)] += 1;
             for id in &r.killers {
                 *deaths.entry(id.clone()).or_default() += 1;
             }
