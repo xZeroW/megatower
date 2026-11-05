@@ -142,7 +142,9 @@ view). At the end of each turn, waiting enemies step up into free places and act
 (`CombatEvent::Arrive`). Indices never change: a fallen enemy keeps its place in the list and
 newcomers are added at the end. The fight is won when the field is empty and the queue is too.
 In the room, one to three enemies stand in a row; four are packed closer and five stand in a
-zig-zag, every other one a step in front (`enemy_place`). Crowds favour area and chain skills, so
+zig-zag, every other one a step in front (`enemy_place`). Each waiting enemy shows as a dark
+silhouette behind a fighter (the original's next-enemy layer), so ten enemies read as five in front and
+five shadows behind. Crowds favour area and chain skills, so
 single-target starters got a nudge (Venom Dart's chaos hit 5–8 → 6–9). The bot's floor-9 clear is
 75–80% for every starter.
 

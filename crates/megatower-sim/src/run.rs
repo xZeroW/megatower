@@ -555,7 +555,7 @@ impl Run {
         self.pick_starter(0);
     }
 
-    /// QA: a fight against `n` enemies right now (five at once, the rest queue).
+    /// QA: a fight against `n` enemies right now (five at once, the rest queue); the QA move uses ten.
     pub fn debug_crowd(&mut self, n: usize) {
         let c = content::get();
         let floor = self.floor.number;

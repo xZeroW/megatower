@@ -142,6 +142,14 @@ fn statuses(f: &megatower_sim::combat::Fighter) -> Vec<StatusView> {
 }
 
 /// The enemies' names for a fight's log lines, taken before the fight can end.
+fn sprite_of(e: &megatower_sim::combat::Enemy) -> Option<String> {
+    content::get()
+        .enemies
+        .iter()
+        .find(|d| d.id == e.id)
+        .and_then(|d| d.sprite.clone())
+}
+
 fn vitals_of(f: &megatower_sim::combat::Fighter) -> VitalsView {
     VitalsView {
         health: f.life.max(0.0).ceil(),
@@ -317,7 +325,7 @@ fn win_popups(before: &Gains, character: &megatower_sim::character::Character) -
 /// - `GAME_MOVES`: commands played as soon as the run exists. `1`-`4` pick a
 ///   starter gem, use a skill, take a boon or make an event choice; `_` passes
 ///   a combat turn; `f` / `a` / `d` / `z` walk ahead / left / right / back at
-///   once (no wipe); `*` walks to the stairs, `C` starts a fight against seven (five at once); `F` / `M` / `H` / `V` / `A` / `T` to the first fight, the
+///   once (no wipe); `*` walks to the stairs, `C` starts a fight against ten (five fighting, five waiting); `F` / `M` / `H` / `V` / `A` / `T` to the first fight, the
 ///   merchant, shrine, event, Gem Altar or treasure room, entering it without
 ///   fighting on the way; `x` leaves a room screen; `>` descends; `g` gives
 ///   100 gold; `k` thirty doors on the danger clock; `o` two of every crafting orb; `$` a treasure room's loot; `+` a level; `^` takes the first
@@ -624,7 +632,7 @@ impl Labyrinth {
                 'T' => self
                     .game_mut()
                     .debug_walk_to_kind(|k| k == RoomKind::Treasure),
-                'C' => self.game_mut().debug_crowd(7),
+                'C' => self.game_mut().debug_crowd(10),
                 'F' => self.game_mut().debug_walk_to_kind(|k| k == RoomKind::Fight),
                 'x' => self.act(ui, Action::Leave),
                 '>' => self.act(ui, Action::Descend),
@@ -1032,11 +1040,7 @@ impl Labyrinth {
     fn enemy_view(&self, i: usize, e: &megatower_sim::combat::Enemy) -> EnemyView {
         EnemyView {
             name: e.fighter.name.clone(),
-            texture: content::get()
-                .enemies
-                .iter()
-                .find(|d| d.id == e.id)
-                .and_then(|d| d.sprite.clone()),
+            texture: sprite_of(e),
             next_texture: None,
             flying: false,
             next_flying: false,
@@ -1069,11 +1073,21 @@ impl Labyrinth {
             turn: game.battle.as_ref().map_or(0, |b| b.turn as i32),
             player: vitals(&hero),
             enemies: game.battle.as_ref().map_or_else(Vec::new, |b| {
-                b.enemies
+                let mut views: Vec<Option<EnemyView>> = b
+                    .enemies
                     .iter()
                     .enumerate()
                     .map(|(i, e)| Some(self.enemy_view(i, e)))
-                    .collect()
+                    .collect();
+                // The queue waits behind the fighters as silhouettes (the
+                // original's next-enemy layer): the first in line behind the
+                // first fighter, and so on.
+                let mut waiting = b.queue();
+                for view in views.iter_mut().flatten().filter(|v| !v.out_of_combat) {
+                    let Some(next) = waiting.next() else { break };
+                    view.next_texture = sprite_of(next);
+                }
+                views
             }),
         }
     }
