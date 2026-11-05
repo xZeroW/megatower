@@ -2,7 +2,7 @@
 //! when entered. Screens and bots drive it through these commands.
 
 use crate::character::{Character, GemSpot, ItemSpot, Loot};
-use crate::combat::{Battle, CombatEvent, HeroAction, Outcome, encounter};
+use crate::combat::{Battle, CombatEvent, HeroAction, Outcome, encounter_scaled};
 use crate::content;
 use crate::labyrinth::{self, Dir, Floor, MoveError, Pos, RoomKind, Turn};
 use crate::legacy::Legacy;
@@ -315,7 +315,8 @@ impl Run {
             }
             _ => {}
         }
-        let Some(enemies) = encounter(kind, floor, &c.enemies, &mut self.rng) else {
+        let danger = self.floor.danger();
+        let Some(enemies) = encounter_scaled(kind, floor, danger, &c.enemies, &mut self.rng) else {
             self.floor.resolve_current();
             return;
         };
@@ -746,6 +747,33 @@ mod tests {
         let mid = run.save_signature();
         run.debug_loot();
         assert_ne!(run.save_signature(), mid);
+    }
+
+    #[test]
+    fn wandering_a_floor_raises_its_danger() {
+        let mut run = started(21);
+        assert_eq!(run.floor.danger(), 0);
+        // Pacing between two cleared rooms burns doors without finding anything.
+        let (dir, _) = run.floor.linked(run.floor.start).next().unwrap();
+        for _ in 0..200 {
+            run.floor.resolve_current();
+            run.mode = Mode::Map;
+            run.floor.move_to(dir).ok();
+            run.floor.resolve_current();
+            let back = run.floor.linked(run.floor.current).next().unwrap().0;
+            run.floor.move_to(back).ok();
+        }
+        assert_eq!(run.floor.danger(), crate::labyrinth::MAX_DANGER);
+        // A new floor starts calm again.
+        run.floor.resolve_current();
+        run.debug_walk_to_stairs();
+        run.descend();
+        assert_eq!(run.floor.danger(), 0);
+        // Danger survives a save.
+        run.floor.steps = 99;
+        run.mode = Mode::Map;
+        let back = Run::load(&run.save().unwrap()).unwrap();
+        assert_eq!(back.floor.steps, 99);
     }
 
     #[test]

@@ -177,9 +177,26 @@ pub struct Floor {
     pub current: Pos,
     /// The way the hero faces: the direction of the last move.
     pub facing: Dir,
+    /// Doors walked through on this floor; the danger clock counts them.
+    #[serde(default)]
+    pub steps: u32,
 }
 
+/// Doors a floor lets you walk through per room before danger starts to rise.
+pub const DANGER_GRACE_PER_ROOM: f64 = 1.0;
+/// Doors per level of danger once past the grace.
+pub const DANGER_STEPS: u32 = 5;
+pub const MAX_DANGER: u32 = 10;
+
 impl Floor {
+    /// How long the floor has been wandered: 0 while you are quick, then one
+    /// level per [`DANGER_STEPS`] doors beyond 1.0 per room, up to [`MAX_DANGER`].
+    /// Enemies met on the floor grow stronger with it.
+    pub fn danger(&self) -> u32 {
+        let grace = (DANGER_GRACE_PER_ROOM * f64::from(self.width) * f64::from(self.height)) as u32;
+        (self.steps.saturating_sub(grace) / DANGER_STEPS).min(MAX_DANGER)
+    }
+
     fn index(&self, pos: Pos) -> usize {
         usize::from(pos.y) * usize::from(self.width) + usize::from(pos.x)
     }
@@ -319,6 +336,7 @@ impl Floor {
             return Err(MoveError::NoDoor);
         };
         self.facing = dir;
+        self.steps += 1;
         let first_visit = self.room(pos).visibility != Visibility::Visited;
         if first_visit {
             self.reveal(pos);

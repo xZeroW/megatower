@@ -1060,6 +1060,18 @@ impl Labyrinth {
                 Align::Left,
             ));
         }
+        if game.floor.danger() > 0 {
+            // Right of the level counter: the floor has been wandered too long.
+            let mut at = rects.diamonds;
+            at[0] += 70.0;
+            at[2] *= 3.0;
+            out.push(text(
+                at,
+                format!("Danger {}", game.floor.danger()),
+                hex(0xff6a4d),
+                Align::Left,
+            ));
+        }
         let v = &frame.player;
         // Use the original animated bars, numerical panels and segmented mana
         // pip. Armour here is only megatower-sim's temporary guard, not a new rule.

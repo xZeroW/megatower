@@ -58,15 +58,29 @@ fn first_floor() -> u32 {
 pub const LIFE_PER_FLOOR: f64 = 60.0;
 pub const ELITE_LIFE: f64 = 2.0;
 
+/// Percent more life and damage per level of the floor's danger clock.
+pub const DANGER_LIFE: f64 = 6.0;
+pub const DANGER_DAMAGE: f64 = 5.0;
+
 pub fn spawn(def: &EnemyDef, floor: u32, elite: bool) -> Enemy {
+    spawn_scaled(def, floor, elite, 0)
+}
+
+/// [`spawn`] with the floor's danger level on top.
+pub fn spawn_scaled(def: &EnemyDef, floor: u32, elite: bool, danger: u32) -> Enemy {
     let depth = f64::from(floor.max(1) - 1);
-    let mut life = def.life * (1.0 + LIFE_PER_FLOOR * depth / 100.0);
+    let danger = f64::from(danger);
+    let mut life =
+        def.life * (1.0 + LIFE_PER_FLOOR * depth / 100.0) * (1.0 + DANGER_LIFE * danger / 100.0);
     let mut mods = ModSet::new();
     mods.push(Modifier::flat(Stat::Armour, def.armour));
     for &(t, value) in &def.resistances {
         mods.push(Modifier::flat(Stat::Resistance(t), value));
     }
     mods.push(Modifier::flat(Stat::Depth, depth));
+    if danger > 0.0 {
+        mods.push(Modifier::more(Stat::Damage, DANGER_DAMAGE * danger));
+    }
     let mut name = def.name.clone();
     if elite {
         life *= ELITE_LIFE;
@@ -91,6 +105,17 @@ pub fn encounter(
     defs: &[EnemyDef],
     rng: &mut Rng,
 ) -> Option<Vec<Enemy>> {
+    encounter_scaled(kind, floor, 0, defs, rng)
+}
+
+/// [`encounter`] at a danger level.
+pub fn encounter_scaled(
+    kind: RoomKind,
+    floor: u32,
+    danger: u32,
+    defs: &[EnemyDef],
+    rng: &mut Rng,
+) -> Option<Vec<Enemy>> {
     let normals: Vec<&EnemyDef> = defs
         .iter()
         .filter(|d| !d.boss && d.min_floor <= floor)
@@ -100,12 +125,16 @@ pub fn encounter(
         RoomKind::Fight => {
             let max = (1 + floor / 2).min(3);
             let count = 1 + rng.below(max);
-            Some((0..count).map(|_| spawn(pick(rng), floor, false)).collect())
+            Some(
+                (0..count)
+                    .map(|_| spawn_scaled(pick(rng), floor, false, danger))
+                    .collect(),
+            )
         }
         RoomKind::Elite => {
-            let mut enemies = vec![spawn(pick(rng), floor, true)];
+            let mut enemies = vec![spawn_scaled(pick(rng), floor, true, danger)];
             if rng.chance(50.0) {
-                enemies.push(spawn(pick(rng), floor, false));
+                enemies.push(spawn_scaled(pick(rng), floor, false, danger));
             }
             Some(enemies)
         }
@@ -115,7 +144,7 @@ pub fn encounter(
                 .filter(|d| d.boss && d.min_floor <= floor)
                 .collect();
             let boss = *rng.pick(&bosses).expect("at least one boss");
-            Some(vec![spawn(boss, floor, false)])
+            Some(vec![spawn_scaled(boss, floor, false, danger)])
         }
         _ => None,
     }
@@ -137,6 +166,18 @@ mod tests {
         let f4 = spawn(rat, 4, false);
         assert!(f4.fighter.max_life > f1.fighter.max_life);
         assert!(f4.fighter.mods.more(Stat::Damage, Default::default()) > 1.0);
+    }
+
+    #[test]
+    fn danger_makes_enemies_tougher() {
+        let rat = &defs()[0];
+        let calm = spawn_scaled(rat, 2, false, 0);
+        let hunted = spawn_scaled(rat, 2, false, 5);
+        assert!(hunted.fighter.max_life > calm.fighter.max_life);
+        assert_eq!(hunted.fighter.max_life, hunted.fighter.max_life.round());
+        let dmg = |e: &Enemy| e.fighter.mods.more(Stat::Damage, crate::tags::Tags::NONE);
+        assert!(dmg(&hunted) > dmg(&calm) * 1.2);
+        assert_eq!(spawn(rat, 2, false).fighter.max_life, calm.fighter.max_life);
     }
 
     #[test]

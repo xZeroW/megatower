@@ -42,6 +42,11 @@ reference/parity work: `MEGATOWER_LEGACY=1 cargo run -p megatower-client`.
 cargo test -p megatower-client -p megatower-ui -p megatower-sim
 ```
 
+### Danger
+
+Wandering a floor too long raises Danger (shown under the life bar): enemies you meet grow
+stronger until you take the stairs.
+
 ### Saving
 
 The run is saved automatically on the map between rooms (never mid-fight or in a shop, shrine,

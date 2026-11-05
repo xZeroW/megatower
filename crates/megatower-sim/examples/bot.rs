@@ -16,9 +16,15 @@ fn main() {
     let mut deaths: std::collections::BTreeMap<String, u32> = Default::default();
     let mut by_floor = [0u32; 16];
     let mut total_runs = 0;
+    let mut danger_runs = 0;
+    let mut peak_ratio = 0.0f64;
     for gem in content::get().gems.starters() {
         let results: Vec<_> = (0..runs).map(|seed| play(seed, &gem.id, last)).collect();
         total_runs += runs;
+        danger_runs += results.iter().filter(|r| r.max_danger > 0).count();
+        peak_ratio = results
+            .iter()
+            .fold(peak_ratio, |m, r| m.max(r.peak_doors_per_room));
         for r in results.iter().filter(|r| r.died) {
             by_floor[(r.floor as usize).min(15)] += 1;
             for id in &r.killers {
@@ -43,6 +49,11 @@ fn main() {
             avg(&|r| f64::from(r.level)),
         );
     }
+    println!(
+        "\ndanger: {:.0}% of runs reached level 1+, peak {:.2} doors per room",
+        100.0 * danger_runs as f64 / total_runs as f64,
+        peak_ratio
+    );
     println!("\ndeaths by floor (all starters, {total_runs} runs):");
     for (floor, n) in by_floor.iter().enumerate().filter(|(_, n)| **n > 0) {
         println!("  floor {floor:>2}: {n}");

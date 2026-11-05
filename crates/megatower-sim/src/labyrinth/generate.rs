@@ -40,6 +40,7 @@ pub fn generate(number: u32, rng: &mut Rng) -> Floor {
         start,
         current: start,
         facing: Dir::North,
+        steps: 0,
     };
     carve_tree(&mut floor, rng);
     add_loops(&mut floor, rng);

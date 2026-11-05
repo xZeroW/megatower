@@ -61,8 +61,12 @@ builds), exploring hidden labyrinth floors.
   Life bars animate like megatower's (`game-client/src/ (removed) bars.rs`, from `resource_bar.rs`):
   a hit drops the main fill at once while an orange trail keeps the old value, waits
   0.25s, then drains at 2.5x the maximum per second; the hero's life bar does the same.
-- Later options: scouting items that reveal room types, a danger clock that makes fights
-  harder the longer you wander.
+- **Danger clock** (`Floor::danger`): every door walked on a floor counts. Past 1 door per room,
+  each 5 more doors add a level of danger (max 10); enemies met after that have +6% life and
+  +5% more damage per level. It shows as "Danger N" in the HUD, resets on each new floor and is
+  saved with the run. A bot that clears every room hits level 1+ on 99% of runs, which costs it
+  2–3 points of floor-9 clear rate; players who skip rooms avoid it.
+- Later option: scouting items that reveal room types.
 
 ## Combat
 

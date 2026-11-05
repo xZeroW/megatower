@@ -6,7 +6,10 @@
 
 mod encounter;
 
-pub use encounter::{ELITE_LIFE, EnemyDef, Intent, IntentKind, LIFE_PER_FLOOR, encounter, spawn};
+pub use encounter::{
+    ELITE_LIFE, EnemyDef, Intent, IntentKind, LIFE_PER_FLOOR, encounter, encounter_scaled, spawn,
+    spawn_scaled,
+};
 
 use crate::ailment::{Afflictions, Ailment};
 use crate::damage::{Defence, HitSpec, resolve_hit};

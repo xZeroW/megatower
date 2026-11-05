@@ -292,7 +292,7 @@ fn win_popups(before: &Gains, character: &megatower_sim::character::Character) -
 ///   once (no wipe); `*` walks to the stairs, `M` / `H` / `V` / `A` / `T` to the
 ///   merchant, shrine, event, Gem Altar or treasure room, entering it without
 ///   fighting on the way; `x` leaves a room screen; `>` descends; `g` gives
-///   100 gold; `o` two of every crafting orb; `$` a treasure room's loot; `+` a level; `^` takes the first
+///   100 gold; `k` thirty doors on the danger clock; `o` two of every crafting orb; `$` a treasure room's loot; `+` a level; `^` takes the first
 ///   passive node allowed; `m` / `p` toggle the map and the tree.
 /// - `GAME_LATE_MOVES`: more commands, played once `GAME_LATE_AT` (default 1)
 ///   seconds have passed, so effects like combat text are in flight when a
@@ -593,6 +593,7 @@ impl Labyrinth {
                 'x' => self.act(ui, Action::Leave),
                 '>' => self.act(ui, Action::Descend),
                 'g' => self.game_mut().character.gold += 100,
+                'k' => self.game_mut().floor.steps += 30,
                 'o' => {
                     for orb in megatower_sim::orbs::Orb::ALL {
                         self.game_mut().character.orbs.add(orb, 2);

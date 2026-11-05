@@ -28,6 +28,10 @@ pub struct BotResult {
     pub fights: u32,
     /// Ids of the enemies still standing when the hero died; empty if alive.
     pub killers: Vec<String>,
+    /// Highest danger level reached on any floor.
+    pub max_danger: u32,
+    /// Most doors per room used on any floor (danger starts above 1.0).
+    pub peak_doors_per_room: f64,
 }
 
 /// Plays one run with `starter` until death or past `last_floor`.
@@ -37,9 +41,14 @@ pub fn play(seed: u64, starter: &str, last_floor: u32) -> BotResult {
     let mut bosses = 0;
     let mut fights = 0;
     let mut standing: Vec<String> = Vec::new();
+    let mut max_danger = 0;
+    let mut peak = 0.0f64;
     for _ in 0..50_000 {
         match run.mode.clone() {
             Mode::Map => {
+                max_danger = max_danger.max(run.floor.danger());
+                let rooms = f64::from(run.floor.width) * f64::from(run.floor.height);
+                peak = peak.max(f64::from(run.floor.steps) / rooms);
                 manage(&mut run);
                 if run.floor.can_descend() && !has_unexplored(&run.floor) {
                     if run.floor.current_room().kind
@@ -121,6 +130,8 @@ pub fn play(seed: u64, starter: &str, last_floor: u32) -> BotResult {
         } else {
             Vec::new()
         },
+        max_danger,
+        peak_doors_per_room: peak,
     }
 }
 
