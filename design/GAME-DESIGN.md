@@ -211,6 +211,13 @@ bought once, not affected by refreshes).
 ### Loot
 - Rarity: Normal (0 affixes), Magic (1–2), Rare (3–6), Unique (fixed mods).
 - Affixes are prefixes/suffixes with tiers gated by item level (= floor depth).
+  - **Prefixes** are what the hero is and hits with: life, mana, armour, evasion, added damage
+    and increased damage (`AffixKind::of_stat`; a test keeps `items.ron` to this rule).
+  - **Suffixes** are how it behaves: resistances, crit chance and multiplier, mana regen, leech,
+    conversion, penetration, ailments and attributes.
+  - An item holds at most one modifier of each type (stat, kind and tag condition), counting its
+    implicit: a Bone Amulet's implicit life rules out a Sturdy (life) prefix.
+  - Max life and mana are whole numbers (55, not 55.2).
 - 4 crafting orbs: reroll affixes, add an affix, upgrade rarity, reroll sockets/links.
 - Current implementation (`megatower-sim/src/items.rs`, `character.rs`, `loot.rs`, data in
   `assets/data/game/items.ron`): 19 bases, 20 affixes with level-gated tiers, 2 uniques.

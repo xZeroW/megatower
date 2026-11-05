@@ -37,8 +37,15 @@ pub struct Fighter {
 impl Fighter {
     /// `base_life` and `base_mana` before the fighter's own modifiers.
     pub fn new(name: impl Into<String>, base_life: f64, base_mana: f64, mods: ModSet) -> Self {
-        let max_life = mods.total(Stat::Life, base_life, Tags::NONE).max(1.0);
-        let max_mana = mods.total(Stat::Mana, base_mana, Tags::NONE).max(0.0);
+        // Whole numbers read better on bars: 55 life, not 55.2.
+        let max_life = mods
+            .total(Stat::Life, base_life, Tags::NONE)
+            .round()
+            .max(1.0);
+        let max_mana = mods
+            .total(Stat::Mana, base_mana, Tags::NONE)
+            .round()
+            .max(0.0);
         Self {
             name: name.into(),
             life: max_life,

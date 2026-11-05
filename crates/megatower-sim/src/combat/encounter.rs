@@ -140,6 +140,19 @@ mod tests {
     }
 
     #[test]
+    fn enemy_life_is_a_whole_number() {
+        for def in defs() {
+            for floor in 1..=12 {
+                for elite in [false, true] {
+                    let e = spawn(def, floor, elite);
+                    assert_eq!(e.fighter.max_life, e.fighter.max_life.round(), "{}", def.id);
+                    assert_eq!(e.fighter.life, e.fighter.max_life);
+                }
+            }
+        }
+    }
+
+    #[test]
     fn elites_have_more_life_and_a_title() {
         let rat = &defs()[0];
         let elite = spawn(rat, 1, true);

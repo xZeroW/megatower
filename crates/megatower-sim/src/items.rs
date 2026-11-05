@@ -6,6 +6,13 @@
 //!   suffixes), uniques have fixed modifiers.
 //! - An affix tier and a base can roll only when the item level (the floor it
 //!   dropped on) reaches theirs.
+//! - An item never carries two modifiers of the same type (stat, kind and
+//!   tag condition), implicit or affix: no second maximum life on a bone
+//!   amulet that already has one.
+//! - Prefixes are what the hero is and hits with (see [`AffixKind::of_stat`]):
+//!   life, mana, armour, evasion, added damage and increased damage.
+//!   Suffixes are how it behaves: resistances, crit, regeneration, leech,
+//!   conversion, penetration, ailments and attributes.
 //! - Weapons, body armours and helmets carry linked sockets for gems.
 
 use crate::gems::SocketGroup;
@@ -37,6 +44,27 @@ pub enum ItemRarity {
 pub enum AffixKind {
     Prefix,
     Suffix,
+}
+
+impl AffixKind {
+    /// The kind every affix granting `stat` belongs to.
+    ///
+    /// Prefixes: the life, mana, shield, armour and evasion pools, and
+    /// damage (added and increased). Suffixes: everything that shapes how
+    /// those behave.
+    pub fn of_stat(stat: Stat) -> AffixKind {
+        match stat {
+            Stat::Life
+            | Stat::Mana
+            | Stat::EnergyShield
+            | Stat::Armour
+            | Stat::Evasion
+            | Stat::Damage
+            | Stat::AddedMin(_)
+            | Stat::AddedMax(_) => AffixKind::Prefix,
+            _ => AffixKind::Suffix,
+        }
+    }
 }
 
 pub const MAX_PREFIXES: usize = 3;
@@ -207,11 +235,25 @@ pub fn add_affix(db: &ItemDb, item: &mut Item, rng: &mut Rng) -> bool {
         AffixKind::Prefix => item.count(kind) < if magic { 1 } else { MAX_PREFIXES },
         AffixKind::Suffix => item.count(kind) < if magic { 1 } else { MAX_SUFFIXES },
     };
+    // What the item already grants: its implicits and every rolled affix.
+    let held: Vec<(Stat, ModKind, Tags)> = item
+        .implicit
+        .iter()
+        .chain(item.affixes.iter().flat_map(|a| &a.mods))
+        .map(|m| (m.stat, m.kind, m.requires))
+        .collect();
+    let overlaps = |a: &AffixDef| {
+        a.tiers
+            .iter()
+            .flat_map(|t| &t.mods)
+            .any(|r| held.contains(&(r.stat, r.kind, r.requires)))
+    };
     let candidates: Vec<&AffixDef> = db
         .affixes
         .iter()
         .filter(|a| a.slots.contains(&item.slot) && room(a.kind))
         .filter(|a| item.affixes.iter().all(|r| r.id != a.id))
+        .filter(|a| !overlaps(a))
         .filter(|a| a.tiers.first().is_some_and(|t| t.level <= item.level))
         .collect();
     let Some(def) = rng.pick(&candidates) else {
@@ -408,6 +450,60 @@ mod tests {
                 item.name
             );
         }
+    }
+
+    #[test]
+    fn no_item_holds_two_modifiers_of_one_type() {
+        for level in [1, 5, 9] {
+            for rarity in [ItemRarity::Magic, ItemRarity::Rare] {
+                for item in items(rarity, level) {
+                    let keys: Vec<_> = item
+                        .implicit
+                        .iter()
+                        .chain(item.affixes.iter().flat_map(|a| &a.mods))
+                        .map(|m| (m.stat, m.kind, m.requires))
+                        .collect();
+                    for (i, a) in keys.iter().enumerate() {
+                        assert!(
+                            keys.iter().skip(i + 1).all(|b| b != a),
+                            "{} holds {a:?} twice",
+                            item.name
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn bone_amulets_never_roll_a_second_life_modifier() {
+        let base = db().base("bone_amulet").unwrap();
+        let mut rng = Rng::seeded(4);
+        for _ in 0..300 {
+            let item = roll_item(db(), base, ItemRarity::Rare, 9, &mut rng);
+            assert!(item.affixes.iter().all(|a| a.id != "life"), "{}", item.name);
+        }
+    }
+
+    #[test]
+    fn prefixes_and_suffixes_follow_the_stat_rule() {
+        for affix in &db().affixes {
+            for tier in &affix.tiers {
+                for m in &tier.mods {
+                    assert_eq!(
+                        AffixKind::of_stat(m.stat),
+                        affix.kind,
+                        "{} grants {:?}",
+                        affix.id,
+                        m.stat
+                    );
+                }
+            }
+        }
+        let prefixes = db().affixes.iter().filter(|a| a.kind == AffixKind::Prefix);
+        let suffixes = db().affixes.iter().filter(|a| a.kind == AffixKind::Suffix);
+        assert!(prefixes.count() >= MAX_PREFIXES * 2);
+        assert!(suffixes.count() >= MAX_SUFFIXES * 2);
     }
 
     #[test]
