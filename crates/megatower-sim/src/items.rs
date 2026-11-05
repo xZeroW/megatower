@@ -462,6 +462,18 @@ mod tests {
     }
 
     #[test]
+    fn every_unique_rolls_on_its_base() {
+        assert!(db().uniques.len() >= 7);
+        for unique in &db().uniques {
+            let base = db().base(&unique.base).unwrap();
+            let item = roll_item(db(), base, ItemRarity::Unique, 10, &mut Rng::seeded(2));
+            assert_eq!(item.rarity, ItemRarity::Unique);
+            assert!(!unique.mods.is_empty());
+            assert_eq!(item.slot, base.slot);
+        }
+    }
+
+    #[test]
     fn bases_wait_for_their_level() {
         let mut rng = Rng::seeded(5);
         for _ in 0..200 {

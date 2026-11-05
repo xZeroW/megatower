@@ -60,4 +60,82 @@
             ]),
         ],
     ),
+    (
+        id: "alchemist_table",
+        name: "Abandoned Alchemy Table",
+        text: "Flasks of strange liquid still glow faintly on a cracked table.",
+        choices: [
+            (label: "Mix a draught", results: [
+                (weight: 55, text: "The mixture crystallises into a small orb.", effects: [Orb]),
+                (weight: 45, text: "It fizzes and burns your hands.", effects: [Hurt(12.0)]),
+            ]),
+            (label: "Drink a vial", results: [
+                (weight: 1, text: "Bitter, but restoring.", effects: [Heal(30.0)]),
+            ]),
+        ],
+    ),
+    (
+        id: "cursed_chest",
+        name: "Chained Chest",
+        text: "A chest wrapped in rusting chains. Something whispers from within.",
+        choices: [
+            (label: "Break the chains", results: [
+                (weight: 50, text: "The lid bursts open.", effects: [Item, Orb]),
+                (weight: 50, text: "A curse lashes out as the chains fall.", effects: [Hurt(30.0), Gold(20)]),
+            ]),
+            (label: "Pick the lock", results: [
+                (weight: 1, text: "Patience pays.", effects: [Gold(30)]),
+            ]),
+            (label: "Leave it", results: [
+                (weight: 1, text: "You leave it chained.", effects: []),
+            ]),
+        ],
+    ),
+    (
+        id: "wandering_trader",
+        name: "Wandering Peddler",
+        text: "A hooded peddler sits among crates, humming, and spreads their wares.",
+        choices: [
+            (label: "Buy a curiosity", cost: 35, results: [
+                (weight: 1, text: "Wrapped in cloth, a small orb.", effects: [Orb]),
+            ]),
+            (label: "Buy a gem", cost: 50, results: [
+                (weight: 1, text: "A gem that glints from within a pouch.", effects: [Gem]),
+            ]),
+            (label: "Chat", results: [
+                (weight: 1, text: "The peddler shares a few tips.", effects: [Xp(8)]),
+            ]),
+        ],
+    ),
+    (
+        id: "bone_shrine",
+        name: "Shrine of Bones",
+        text: "Skulls ring a pool of black water. A voice offers a trade.",
+        choices: [
+            (label: "Offer blood", results: [
+                (weight: 1, text: "The pool drinks, and shows you the way.", effects: [Hurt(20.0), Xp(25)]),
+            ]),
+            (label: "Offer coin", cost: 25, results: [
+                (weight: 1, text: "The skulls clatter in approval.", effects: [Heal(60.0)]),
+            ]),
+            (label: "Leave", results: [
+                (weight: 1, text: "You back away from the pool.", effects: []),
+            ]),
+        ],
+    ),
+    (
+        id: "collapsed_library",
+        name: "Collapsed Library",
+        text: "Shelves lie toppled over scattered tomes. One book is unharmed.",
+        choices: [
+            (label: "Read the book", results: [
+                (weight: 70, text: "Dense, but you take something away.", effects: [Xp(15)]),
+                (weight: 30, text: "A gem was pressed between the pages.", effects: [Gem, Xp(5)]),
+            ]),
+            (label: "Search the rubble", results: [
+                (weight: 60, text: "Coins, dust and a few scratches.", effects: [Gold(18), Hurt(8.0)]),
+                (weight: 40, text: "A tarnished piece of gear.", effects: [Item]),
+            ]),
+        ],
+    ),
 ]

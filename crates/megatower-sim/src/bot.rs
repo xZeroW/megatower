@@ -72,7 +72,17 @@ pub fn play(seed: u64, starter: &str, last_floor: u32) -> BotResult {
                 run.leave_room();
             }
             Mode::Shrine(_) => run.take_boon(0),
-            Mode::Event { outcome: None, .. } => run.choose(0),
+            Mode::Event { id, outcome: None } => {
+                // The first choice it can pay for.
+                let gold = run.character.gold;
+                let pick = content::get()
+                    .events
+                    .iter()
+                    .find(|e| e.id == id)
+                    .and_then(|e| e.choices.iter().position(|c| c.cost <= gold))
+                    .unwrap_or(0);
+                run.choose(pick);
+            }
             Mode::Event { .. } => run.leave_room(),
             Mode::Altar => {
                 let spot = run.character.gem_spots().into_iter().find(|&s| {

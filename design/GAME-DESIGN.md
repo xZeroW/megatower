@@ -169,6 +169,17 @@ limited uses (1 use, maybe 2 on deeper floors), then it is spent; revisiting a s
 altar does nothing. About one altar per floor, rarer than Rest/Treasure, so choosing
 which gem to upgrade is a real build decision.
 
+### Content
+- Enemies (`enemies.ron`): 13 normal enemies with a `min_floor`, so tougher ones (Blood Ghoul,
+  Snow Wraith, Shadow Ghost, Iron and Magma Golem) only show from floor 3–6 on. Bosses: the
+  Warden (any boss floor), the Ruined King (from floor 3) and the Cinder Drake and Stormwing
+  (from floor 6, resistant to fire and lightning). Elites and fights pick among what has unlocked.
+- Events: 9 scenes. Choices may cost gold (`cost`); the Peddler sells orbs and gems, and
+  some results give orbs (`Orb`).
+- Boons: 12 (adds Ferocity, Bulwark, Thirst, Echoes). Uniques: 7 (Gravewatch, Rimeheart,
+  Warden's Plate, Windrunners and Leechtooth join Emberheart and Tempest Loop).
+- With these in, the bot's floor-9 clear rate is about 74–86% across the starters.
+
 ### Merchant
 Reuses the existing Merchant room (`Room::Merchant`, `refresh_merchant` in
 `megatower-core/src/run/market.rs`): a 5-slot shop with paid refreshes whose price

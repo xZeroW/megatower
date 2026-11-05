@@ -47,6 +47,8 @@ pub enum Effect {
     Boon,
     /// This much times the floor.
     Xp(u32),
+    /// A random crafting orb (Ascension only from floor 2).
+    Orb,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -59,6 +61,9 @@ pub struct EventResult {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EventChoice {
     pub label: String,
+    /// Gold paid before the result rolls; the choice needs that much.
+    #[serde(default)]
+    pub cost: u32,
     pub results: Vec<EventResult>,
 }
 
@@ -94,6 +99,10 @@ pub fn resolve_event(
         })
         .unwrap_or(&choice.results[0]);
     let mut lines = vec![result.text.clone()];
+    if choice.cost > 0 {
+        character.gold = character.gold.saturating_sub(choice.cost);
+        lines.push(format!("-{} gold", choice.cost));
+    }
     let max_life = character.max_life();
     for effect in &result.effects {
         lines.push(match *effect {
@@ -134,6 +143,14 @@ pub fn resolve_event(
                 }
                 None => "Nothing more to gain".into(),
             },
+            Effect::Orb => {
+                let mut orb = crate::orbs::random_orb(rng);
+                if floor < 2 && orb == crate::orbs::Orb::Ascend {
+                    orb = crate::orbs::Orb::Augment;
+                }
+                character.orbs.add(orb, 1);
+                format!("Found {}", orb.name())
+            }
             Effect::Xp(per_floor) => {
                 let xp = per_floor * floor;
                 let levels = character.progress.gain_xp(xp);
@@ -231,11 +248,52 @@ mod tests {
     }
 
     #[test]
+    fn paid_choices_cost_gold_and_orbs_arrive() {
+        let c = content::get();
+        let mut rng = Rng::seeded(5);
+        let choice = EventChoice {
+            label: "buy".into(),
+            cost: 35,
+            results: vec![EventResult {
+                weight: 1,
+                text: "ok".into(),
+                effects: vec![Effect::Orb],
+            }],
+        };
+        let mut hero = Character::new([]);
+        hero.gold = 100;
+        let lines = resolve_event(&choice, &mut hero, 1, c, &mut rng);
+        assert_eq!(hero.gold, 65);
+        assert_eq!(hero.orbs.total(), 1);
+        assert!(lines.iter().any(|l| l.contains("35 gold")));
+    }
+
+    #[test]
+    fn event_content_is_playable() {
+        let c = content::get();
+        assert!(c.events.len() >= 9);
+        for event in &c.events {
+            assert!(!event.choices.is_empty(), "{}", event.id);
+            // One free choice, so a broke hero is never stuck.
+            assert!(event.choices.iter().any(|ch| ch.cost == 0), "{}", event.id);
+            for choice in &event.choices {
+                assert!(!choice.results.is_empty());
+                assert!(choice.results.iter().all(|r| r.weight > 0));
+            }
+        }
+        let mut ids: Vec<&str> = c.boons.iter().map(|b| b.id.as_str()).collect();
+        ids.sort();
+        ids.dedup();
+        assert_eq!(ids.len(), c.boons.len());
+    }
+
+    #[test]
     fn hurt_never_kills_and_heal_caps() {
         let c = content::get();
         let mut rng = Rng::seeded(3);
         let choice = EventChoice {
             label: "x".into(),
+            cost: 0,
             results: vec![EventResult {
                 weight: 1,
                 text: "ow".into(),

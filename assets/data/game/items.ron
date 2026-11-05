@@ -230,5 +230,31 @@
             (stat: AddedMax(Lightning), kind: Flat, value: 12.0),
             (stat: AilmentChance(Shock), kind: Flat, value: 15.0),
         ]),
+        (id: "gravewatch", name: "Gravewatch", base: "war_axe", mods: [
+            (stat: AddedMin(Physical), kind: Flat, value: 5.0),
+            (stat: AddedMax(Physical), kind: Flat, value: 13.0),
+            (stat: LifeLeech, kind: Flat, value: 3.0),
+            (stat: Life, kind: Flat, value: 15.0),
+        ]),
+        (id: "rimeheart", name: "Rimeheart", base: "crystal_staff", mods: [
+            (stat: Convert(Physical, Cold), kind: Flat, value: 50.0),
+            (stat: AddedMin(Cold), kind: Flat, value: 3.0),
+            (stat: AddedMax(Cold), kind: Flat, value: 10.0),
+            (stat: Resistance(Cold), kind: Flat, value: 20.0),
+        ]),
+        (id: "wardens_plate", name: "Warden's Plate", base: "chainmail", mods: [
+            (stat: Armour, kind: Flat, value: 150.0),
+            (stat: Life, kind: Flat, value: 30.0),
+            (stat: Resistance(Fire), kind: Flat, value: 15.0),
+            (stat: Resistance(Lightning), kind: Flat, value: 15.0),
+        ]),
+        (id: "windrunners", name: "Windrunners", base: "sandals", mods: [
+            (stat: Evasion, kind: Flat, value: 15.0),
+            (stat: ManaRegen, kind: Flat, value: 2.0),
+        ]),
+        (id: "leechtooth", name: "Leechtooth", base: "bone_amulet", mods: [
+            (stat: LifeLeech, kind: Flat, value: 2.0),
+            (stat: CritMultiplier, kind: Flat, value: 20.0),
+        ]),
     ],
 )

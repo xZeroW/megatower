@@ -40,11 +40,18 @@ pub struct EnemyDef {
     pub resistances: Vec<(DamageType, f64)>,
     #[serde(default)]
     pub boss: bool,
+    /// Shallowest floor it shows up on.
+    #[serde(default = "first_floor")]
+    pub min_floor: u32,
     /// Picture for the room view (an asset path).
     #[serde(default)]
     pub sprite: Option<String>,
     /// Repeated in order.
     pub intents: Vec<Intent>,
+}
+
+fn first_floor() -> u32 {
+    1
 }
 
 /// Percent more life per floor below the first.
@@ -84,7 +91,10 @@ pub fn encounter(
     defs: &[EnemyDef],
     rng: &mut Rng,
 ) -> Option<Vec<Enemy>> {
-    let normals: Vec<&EnemyDef> = defs.iter().filter(|d| !d.boss).collect();
+    let normals: Vec<&EnemyDef> = defs
+        .iter()
+        .filter(|d| !d.boss && d.min_floor <= floor)
+        .collect();
     let pick = |rng: &mut Rng| *rng.pick(&normals).expect("at least one normal enemy");
     match kind {
         RoomKind::Fight => {
@@ -100,7 +110,10 @@ pub fn encounter(
             Some(enemies)
         }
         RoomKind::Stairs { boss: true } => {
-            let bosses: Vec<&EnemyDef> = defs.iter().filter(|d| d.boss).collect();
+            let bosses: Vec<&EnemyDef> = defs
+                .iter()
+                .filter(|d| d.boss && d.min_floor <= floor)
+                .collect();
             let boss = *rng.pick(&bosses).expect("at least one boss");
             Some(vec![spawn(boss, floor, false)])
         }
@@ -154,6 +167,42 @@ mod tests {
         ] {
             assert!(encounter(kind, 1, defs(), &mut rng).is_none());
         }
+    }
+
+    #[test]
+    fn enemies_wait_for_their_floor() {
+        let mut rng = Rng::seeded(9);
+        for floor in 1..=9 {
+            for _ in 0..60 {
+                for kind in [
+                    RoomKind::Fight,
+                    RoomKind::Elite,
+                    RoomKind::Stairs { boss: true },
+                ] {
+                    let room = encounter(kind, floor, defs(), &mut rng).unwrap();
+                    for e in room {
+                        let def = defs().iter().find(|d| d.id == e.id).unwrap();
+                        assert!(def.min_floor <= floor, "{} on floor {floor}", def.id);
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn every_boss_depth_has_a_boss() {
+        for floor in [3, 6, 9, 12] {
+            assert!(defs().iter().any(|d| d.boss && d.min_floor <= floor));
+        }
+        let early: Vec<_> = defs()
+            .iter()
+            .filter(|d| d.boss && d.min_floor <= 3)
+            .collect();
+        let late: Vec<_> = defs()
+            .iter()
+            .filter(|d| d.boss && d.min_floor <= 6)
+            .collect();
+        assert!(early.len() >= 2 && late.len() > early.len());
     }
 
     #[test]

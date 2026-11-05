@@ -520,12 +520,17 @@ impl Labyrinth {
                     ));
                 } else if let Some(event) = content::get().events.iter().find(|e| e.id == *id) {
                     for (i, c) in event.choices.iter().enumerate() {
-                        out.push(choice(
+                        let mut button = choice(
                             in_action_area([365.0 + i as f32 * 80.0, 313.0, 72.0, 29.0]),
                             Action::Event(i),
                             format!("{}", i + 1),
                             c.label.clone(),
-                        ));
+                        );
+                        if c.cost > 0 {
+                            button.tip.push(format!("{} gold", c.cost));
+                            button.enabled = game.character.gold >= c.cost;
+                        }
+                        out.push(button);
                     }
                 }
             }

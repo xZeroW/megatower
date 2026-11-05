@@ -314,6 +314,9 @@ impl Run {
         else {
             return;
         };
+        if self.character.gold < choice.cost {
+            return;
+        }
         let id = id.clone();
         let lines = resolve_event(
             choice,

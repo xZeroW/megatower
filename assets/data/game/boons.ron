@@ -34,4 +34,18 @@
         (stat: AilmentChance(Shock), kind: Flat, value: 10.0),
         (stat: AilmentChance(Chill), kind: Flat, value: 10.0),
     ]),
+    (id: "ferocity", name: "Blessing of Ferocity", mods: [
+        (stat: Damage, kind: More, value: 10.0),
+        (stat: CritChance, kind: Increased, value: 15.0),
+    ]),
+    (id: "bulwark", name: "Blessing of the Bulwark", mods: [
+        (stat: Life, kind: Flat, value: 25.0),
+        (stat: Armour, kind: Flat, value: 40.0),
+    ]),
+    (id: "thirst", name: "Blessing of Thirst", mods: [
+        (stat: LifeLeech, kind: Flat, value: 3.0),
+    ]),
+    (id: "echoes", name: "Blessing of Echoes", mods: [
+        (stat: RepeatChance, kind: Flat, value: 8.0),
+    ]),
 ]
