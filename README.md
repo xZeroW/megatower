@@ -42,6 +42,13 @@ reference/parity work: `MEGATOWER_LEGACY=1 cargo run -p megatower-client`.
 cargo test -p megatower-client -p megatower-ui -p megatower-sim
 ```
 
+### Saving
+
+The run is saved automatically on the map between rooms (never mid-fight or in a shop, shrine,
+event or altar: those reopen from the last map state). With a save, Enter the Tower offers
+Continue or New run. Dying, or starting a new run, deletes it. The save is `run.ron` beside the
+profile.
+
 ### Meta progression
 
 Dying pays Legacy points (1, plus 3 per floor beaten and 5 per boss). On the main menu's

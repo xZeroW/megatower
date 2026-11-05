@@ -372,6 +372,8 @@ pub struct UiState {
     pub library_open: bool,
     pub profile_open: bool,
     pub legacy_open: bool,
+    /// The Continue / New run prompt shown when a saved run exists.
+    pub continue_open: bool,
     /// Index in the profile grid's name order of the open popup.
     pub profile_popup: Option<usize>,
     pub reward_scroll: f32,
@@ -420,6 +422,7 @@ impl Default for UiState {
             library_open: false,
             profile_open: false,
             legacy_open: false,
+            continue_open: false,
             profile_popup: None,
             reward_scroll: 0.0,
             popup_tab: 0,

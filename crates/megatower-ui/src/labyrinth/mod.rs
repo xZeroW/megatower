@@ -1,6 +1,7 @@
 //! The new rules inside the recovered Megatower client. This module adapts
 //! megatower-sim to the existing HUD, widgets, timeline, audio and room renderer;
 //! it never creates or advances a Megatower `Game`.
+mod continue_menu;
 mod doors;
 mod legacy_menu;
 mod stats;
@@ -67,6 +68,9 @@ pub struct Labyrinth {
     pub(super) legacy: megatower_sim::legacy::Legacy,
     persist: bool,
     last_reward: Option<u32>,
+    /// The run on disk, if any, and what was last written (to save only on change).
+    saved: Option<megatower_sim::run::SaveInfo>,
+    saved_signature: Option<u64>,
 }
 
 #[derive(Clone, Debug)]
@@ -394,8 +398,15 @@ fn legacy_path() -> std::path::PathBuf {
     megatower_core::save_system::user_file_dir().join("legacy.json")
 }
 
+fn run_path() -> std::path::PathBuf {
+    megatower_core::save_system::user_file_dir().join("run.ron")
+}
+
 fn load_legacy(mut session: ResMut<Labyrinth>) {
     session.persist = true;
+    session.saved = std::fs::read_to_string(run_path())
+        .ok()
+        .and_then(|text| Run::save_info(text.split_once('\n')?.1));
     session.legacy = std::fs::read(legacy_path())
         .ok()
         .and_then(|bytes| serde_json::from_slice(&bytes).ok())
@@ -418,6 +429,8 @@ impl Labyrinth {
             .max(1);
         let legacy = std::mem::take(&mut self.legacy);
         let persist = self.persist;
+        // Starting over abandons the saved run.
+        self.clear_save();
         *self = Self {
             run: Some(Run::with_legacy(seed(), floor, legacy.clone())),
             legacy,
@@ -443,17 +456,104 @@ impl Labyrinth {
         }
     }
 
-    /// Takes the run's Legacy changes (unlocks bought, points paid out at
-    /// death) into the saved copy.
+    /// Pays the Legacy points of a dead run into the saved copy, once. The
+    /// session's copy is the master: unlocks bought in the menu meanwhile stay.
     fn sync_legacy(&mut self) {
         let Some(run) = self.run.as_mut() else { return };
+        if run.mode != Mode::Dead {
+            return;
+        }
+        run.legacy = self.legacy.clone();
         if let Some(earned) = run.finish() {
             self.last_reward = Some(earned);
-        }
-        if run.legacy != self.legacy {
             self.legacy = run.legacy.clone();
             self.save_legacy();
         }
+    }
+
+    pub(super) fn has_save(&self) -> bool {
+        self.saved.is_some()
+    }
+
+    fn clear_save(&mut self) {
+        if self.persist {
+            self.clear_save_at(&run_path());
+        }
+        self.saved = None;
+        self.saved_signature = None;
+    }
+
+    fn clear_save_at(&mut self, path: &std::path::Path) {
+        let _ = std::fs::remove_file(path);
+        self.saved = None;
+        self.saved_signature = None;
+    }
+
+    /// Writes the run whenever it changes on the map; deletes the save when
+    /// the run ends. The first line holds the portrait.
+    fn autosave(&mut self) {
+        if self.persist {
+            self.autosave_to(&run_path());
+        }
+    }
+
+    fn autosave_to(&mut self, path: &std::path::Path) {
+        let Some(run) = self.run.as_ref() else { return };
+        if run.mode == Mode::Dead {
+            if self.saved.is_some() {
+                self.clear_save_at(path);
+            }
+            return;
+        }
+        let signature = run.save_signature();
+        if run.mode != Mode::Map || self.saved_signature == Some(signature) {
+            return;
+        }
+        let Some(text) = run.save() else { return };
+        let body = format!("{}\n{text}", self.portrait.as_deref().unwrap_or(""));
+        match megatower_core::save_system::write_atomic(path, body.as_bytes()) {
+            Ok(()) => {
+                self.saved = Run::save_info(&text);
+                self.saved_signature = Some(signature);
+            }
+            Err(err) => eprintln!("Failed to save run at {}: {err}", path.display()),
+        }
+    }
+
+    /// Loads the saved run and makes it the current one; `false` if it is gone
+    /// or unreadable (and then the save is dropped).
+    pub(super) fn resume(&mut self) -> bool {
+        self.resume_from(&run_path())
+    }
+
+    fn resume_from(&mut self, path: &std::path::Path) -> bool {
+        let loaded = std::fs::read_to_string(path).ok().and_then(|text| {
+            let (portrait, rest) = text.split_once('\n')?;
+            let mut run = Run::load(rest)?;
+            run.legacy = self.legacy.clone();
+            Some((portrait.to_string(), run))
+        });
+        let Some((portrait, run)) = loaded else {
+            self.clear_save_at(path);
+            return false;
+        };
+        let signature = run.save_signature();
+        let (legacy, persist, saved) = (
+            std::mem::take(&mut self.legacy),
+            self.persist,
+            self.saved.take(),
+        );
+        *self = Self {
+            run: Some(run),
+            portrait: (!portrait.is_empty()).then_some(portrait),
+            policies: Some(megatower_core::combat::profile::StatusPolicies::recovered()),
+            legacy,
+            persist,
+            saved,
+            saved_signature: Some(signature),
+            ..default()
+        };
+        true
     }
 
     /// Plays `GAME_MOVES`-style commands (see [`scripted_moves`]).
@@ -603,6 +703,7 @@ impl Labyrinth {
             }
         }
         self.sync_legacy();
+        self.autosave();
         if self.game().character.gold != gold {
             ui.audio.push((
                 format!(
@@ -1283,6 +1384,59 @@ mod tests {
         session.sync_legacy();
         assert_eq!(session.legacy.points, earned);
         assert!(!session.persist);
+    }
+
+    #[test]
+    fn a_run_is_saved_on_the_map_and_resumed_where_it_was() {
+        let dir = std::env::temp_dir().join(format!("megatower-save-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("run.ron");
+        let mut session = fixture(6, 1);
+        session.portrait = Some("assets/textures/portraits/kestrel.png".into());
+        session.autosave_to(&path);
+        assert_eq!(session.saved.as_ref().map(|i| i.floor), Some(1));
+        // No change, no rewrite.
+        let stamp = std::fs::metadata(&path).unwrap().modified().unwrap();
+        session.autosave_to(&path);
+        assert_eq!(std::fs::metadata(&path).unwrap().modified().unwrap(), stamp);
+        // Progress is saved, and a fresh session resumes it.
+        session.game_mut().character.gold = 123;
+        session.autosave_to(&path);
+        let mut other = Labyrinth::default();
+        assert!(other.resume_from(&path));
+        assert_eq!(other.game().character.gold, 123);
+        assert_eq!(other.game().mode, Mode::Map);
+        assert_eq!(
+            other.portrait.as_deref(),
+            Some("assets/textures/portraits/kestrel.png")
+        );
+        // A fight is not saved: the map state stays on disk.
+        session.game_mut().mode = Mode::Shop;
+        session.game_mut().character.gold = 5;
+        session.autosave_to(&path);
+        let mut third = Labyrinth::default();
+        assert!(third.resume_from(&path));
+        assert_eq!(third.game().character.gold, 123);
+        // Death ends the save.
+        session.game_mut().mode = Mode::Dead;
+        session.autosave_to(&path);
+        assert!(!path.exists());
+        assert!(!Labyrinth::default().resume_from(&path));
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn menu_unlocks_survive_a_dead_run() {
+        let mut session = fixture(2, 3);
+        session.legacy.points = 40;
+        assert!(session.legacy.buy("purse"));
+        session.game_mut().mode = Mode::Dead;
+        session.sync_legacy();
+        assert!(session.legacy.owns("purse"));
+        assert_eq!(
+            session.legacy.points,
+            30 + megatower_sim::legacy::run_reward(3)
+        );
     }
 
     fn rects() -> Rects {

@@ -12,6 +12,7 @@ use crate::orbs::{Orb, OrbError};
 use crate::passives::enemy_xp;
 use crate::rng::Rng;
 use crate::rooms::{battle_gold, resolve_event, shrine_offers, treasure_gold};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 /// Starter gems offered at the start of a run.
@@ -19,7 +20,7 @@ pub const STARTER_OFFERS: usize = 3;
 /// Percent of maximum life recovered after winning a fight.
 pub const VICTORY_HEAL: f64 = 15.0;
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Mode {
     /// Choosing the starting gem among these ids.
     Starter(Vec<String>),
@@ -49,6 +50,29 @@ pub struct Run {
     pub legacy: Legacy,
     /// Points already paid out for this run's end.
     rewarded: bool,
+}
+
+/// What a saved run keeps. Only the map between rooms is saved: no fight,
+/// shop or event in progress.
+#[derive(Serialize, Deserialize)]
+struct SavedRun {
+    version: u32,
+    floor: Floor,
+    rng: Rng,
+    character: Character,
+    /// Merchant stock per room (a list, since a position is not a text key).
+    shops: Vec<(Pos, Shop)>,
+    legacy: Legacy,
+}
+
+/// Bumped when the saved shape changes so an old save is dropped, not misread.
+pub const SAVE_VERSION: u32 = 1;
+
+/// A short line for the Continue prompt.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct SaveInfo {
+    pub floor: u32,
+    pub level: u32,
 }
 
 pub fn loot_name(loot: &Loot) -> String {
@@ -119,6 +143,83 @@ impl Run {
         }
         self.rewarded = true;
         Some(self.legacy.finish_run(self.floor.number))
+    }
+
+    /// The run as text, or `None` unless it is on the map between rooms.
+    pub fn save(&self) -> Option<String> {
+        if self.mode != Mode::Map {
+            return None;
+        }
+        let mut shops: Vec<(Pos, Shop)> = self.shops.iter().map(|(p, s)| (*p, s.clone())).collect();
+        shops.sort_by_key(|(p, _)| (p.y, p.x));
+        ron::to_string(&SavedRun {
+            version: SAVE_VERSION,
+            floor: self.floor.clone(),
+            rng: self.rng.clone(),
+            character: self.character.clone(),
+            shops,
+            legacy: self.legacy.clone(),
+        })
+        .ok()
+    }
+
+    /// Restores a run from [`Run::save`]; `None` for anything unreadable or
+    /// from another version.
+    pub fn load(text: &str) -> Option<Run> {
+        let saved: SavedRun = ron::from_str(text).ok()?;
+        if saved.version != SAVE_VERSION {
+            return None;
+        }
+        Some(Run {
+            mode: Mode::Map,
+            floor: saved.floor,
+            rng: saved.rng,
+            character: saved.character,
+            shops: saved.shops.into_iter().collect(),
+            battle: None,
+            legacy: saved.legacy,
+            rewarded: false,
+        })
+    }
+
+    pub fn save_info(text: &str) -> Option<SaveInfo> {
+        let run = Run::load(text)?;
+        Some(SaveInfo {
+            floor: run.floor.number,
+            level: run.character.progress.level,
+        })
+    }
+
+    /// Changes whenever something worth saving does, cheap enough to compare
+    /// every frame.
+    pub fn save_signature(&self) -> u64 {
+        use std::hash::{Hash, Hasher};
+        let mut h = std::collections::hash_map::DefaultHasher::new();
+        let c = &self.character;
+        (
+            self.floor.number,
+            self.floor.current,
+            c.gold,
+            c.progress.level,
+            c.progress.xp,
+            c.progress.points,
+            c.progress.allocated.len(),
+            c.inventory.len(),
+            c.orbs.total(),
+            c.boons.len(),
+        )
+            .hash(&mut h);
+        for slot in crate::character::EquipSlot::ALL {
+            if let Some(item) = c.equipped(slot) {
+                (
+                    &item.name,
+                    item.affixes.len(),
+                    item.sockets.as_ref().map(|s| (s.links, s.gems.len())),
+                )
+                    .hash(&mut h);
+            }
+        }
+        h.finish()
     }
 
     pub fn pick_starter(&mut self, index: usize) {
@@ -598,6 +699,53 @@ mod tests {
         assert_eq!(offers.len(), STARTER_OFFERS);
         next.pick_starter(0);
         assert_eq!(next.character.gold, 40);
+    }
+
+    #[test]
+    fn a_saved_run_comes_back_the_same() {
+        let mut run = started(11);
+        run.debug_loot();
+        run.character.gold = 77;
+        run.debug_walk_to_kind(|k| k == RoomKind::Merchant);
+        assert_eq!(run.mode, Mode::Shop);
+        // Only the map is saved.
+        assert_eq!(run.save(), None);
+        run.leave_room();
+        let text = run.save().expect("on the map");
+        let back = Run::load(&text).expect("loads");
+        assert_eq!(back.mode, Mode::Map);
+        assert_eq!(back.floor, run.floor);
+        assert_eq!(back.character, run.character);
+        assert_eq!(back.shops, run.shops);
+        assert_eq!(back.legacy, run.legacy);
+        assert_eq!(back.save_signature(), run.save_signature());
+        let info = Run::save_info(&text).unwrap();
+        assert_eq!(info.floor, 1);
+        // The same rolls come next.
+        let (mut a, mut b) = (run, back);
+        assert_eq!(a.rng.next_u32(), b.rng.next_u32());
+    }
+
+    #[test]
+    fn bad_or_old_saves_are_refused() {
+        assert!(Run::load("").is_none());
+        assert!(Run::load("not a run").is_none());
+        let run = started(12);
+        let text = run.save().unwrap();
+        let old = text.replacen("version:1", "version:0", 1);
+        assert_ne!(old, text);
+        assert!(Run::load(&old).is_none());
+    }
+
+    #[test]
+    fn the_signature_follows_changes() {
+        let mut run = started(13);
+        let before = run.save_signature();
+        run.character.gold += 1;
+        assert_ne!(run.save_signature(), before);
+        let mid = run.save_signature();
+        run.debug_loot();
+        assert_ne!(run.save_signature(), mid);
     }
 
     #[test]

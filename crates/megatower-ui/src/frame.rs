@@ -32,7 +32,11 @@ fn update_screens(
         down: input.held,
     });
     let catalog = megatower_core::adventurers::AdventurerCatalog::recovered();
-    let overlay = if ui.legacy_open
+    let overlay = if ui.continue_open
+        && let Some(labyrinth) = labyrinth.as_deref_mut()
+    {
+        Some(labyrinth.continue_frame(ui, rects, &keys, click))
+    } else if ui.legacy_open
         && let Some(labyrinth) = labyrinth.as_deref_mut()
     {
         Some(labyrinth.legacy_frame(ui, rects, &keys, click))
@@ -89,7 +93,13 @@ fn update_screens(
                 let layout = megatower_assets::ui_layout::main_menu_layout();
                 if let (true, Some([x, y])) = (click, ui.cursor) {
                     match screens::main_menu_hit(&layout, x, y) {
-                        Some(screens::MenuButton::EnterTheTower) => ui.screen = Screen::Select,
+                        Some(screens::MenuButton::EnterTheTower) => {
+                            if labyrinth.as_ref().is_some_and(|l| l.has_save()) {
+                                ui.continue_open = true;
+                            } else {
+                                ui.screen = Screen::Select;
+                            }
+                        }
                         Some(screens::MenuButton::Options) => ui.options_open = true,
                         Some(screens::MenuButton::Library) => ui.library_open = true,
                         Some(screens::MenuButton::Profile) => ui.profile_open = true,
