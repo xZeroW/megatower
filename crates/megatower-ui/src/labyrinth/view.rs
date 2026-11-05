@@ -1480,18 +1480,16 @@ mod tests {
 
     #[test]
     fn enemy_intents_show_their_numbers() {
-        use megatower_sim::combat::{encounter, spawn};
+        use megatower_sim::combat::spawn;
         let content = content::get();
         let rat = spawn(&content.enemies[0], 1, false);
         assert_eq!(intent_amount(&rat), "3-5");
-        let mut rng = megatower_sim::rng::Rng::seeded(1);
-        let boss = encounter(
-            RoomKind::Stairs { boss: true },
-            3,
-            &content.enemies,
-            &mut rng,
-        )
-        .unwrap();
+        let warden = content
+            .enemies
+            .iter()
+            .find(|e| e.id == "stair_warden")
+            .unwrap();
+        let boss = [spawn(warden, 3, false)];
         let first = intent_amount(&boss[0]);
         assert!(
             first.contains('-'),
