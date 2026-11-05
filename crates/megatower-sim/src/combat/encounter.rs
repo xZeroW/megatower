@@ -54,6 +54,9 @@ fn first_floor() -> u32 {
     1
 }
 
+/// Most enemies a room adds beyond the first group.
+const MAX_QUEUE: u32 = 3;
+
 /// Percent more life per floor below the first.
 pub const LIFE_PER_FLOOR: f64 = 60.0;
 pub const ELITE_LIFE: f64 = 2.0;
@@ -123,8 +126,10 @@ pub fn encounter_scaled(
     let pick = |rng: &mut Rng| *rng.pick(&normals).expect("at least one normal enemy");
     match kind {
         RoomKind::Fight => {
-            let max = (1 + floor / 2).min(3);
-            let count = 1 + rng.below(max);
+            // Up to MAX_FIELD at once, and from the mid floors some more
+            // waiting behind them.
+            let max = (1 + floor / 3).min(super::MAX_FIELD as u32);
+            let count = 1 + rng.below(max) + rng.below(1 + floor / 6).min(MAX_QUEUE);
             Some(
                 (0..count)
                     .map(|_| spawn_scaled(pick(rng), floor, false, danger))
@@ -133,7 +138,8 @@ pub fn encounter_scaled(
         }
         RoomKind::Elite => {
             let mut enemies = vec![spawn_scaled(pick(rng), floor, true, danger)];
-            if rng.chance(50.0) {
+            let companions = rng.below(2 + floor / 6).min(MAX_QUEUE + 1);
+            for _ in 0..companions {
                 enemies.push(spawn_scaled(pick(rng), floor, false, danger));
             }
             Some(enemies)
@@ -144,7 +150,12 @@ pub fn encounter_scaled(
                 .filter(|d| d.boss && d.min_floor <= floor)
                 .collect();
             let boss = *rng.pick(&bosses).expect("at least one boss");
-            Some(vec![spawn_scaled(boss, floor, false, danger)])
+            let mut enemies = vec![spawn_scaled(boss, floor, false, danger)];
+            // Deeper bosses bring helpers.
+            for _ in 0..(rng.below(1 + floor / 6).min(MAX_QUEUE)) {
+                enemies.push(spawn_scaled(pick(rng), floor, false, danger));
+            }
+            Some(enemies)
         }
         _ => None,
     }
@@ -206,12 +217,18 @@ mod tests {
         let mut rng = Rng::seeded(3);
         for floor in 1..=9 {
             let fight = encounter(RoomKind::Fight, floor, defs(), &mut rng).unwrap();
-            assert!((1..=3).contains(&fight.len()));
+            let cap = (1 + floor / 3).min(5) + (floor / 6).min(3);
+            assert!(
+                (1..=cap as usize).contains(&fight.len()),
+                "{floor}: {}",
+                fight.len()
+            );
             assert!(fight.iter().all(|e| !e.boss));
             let elite = encounter(RoomKind::Elite, floor, defs(), &mut rng).unwrap();
             assert!(elite[0].fighter.name.starts_with("Elite "));
             let boss = encounter(RoomKind::Stairs { boss: true }, floor, defs(), &mut rng).unwrap();
-            assert!(boss.len() == 1 && boss[0].boss);
+            assert!(boss[0].boss && boss[1..].iter().all(|e| !e.boss));
+            assert!(boss.len() <= 1 + (floor / 6).min(3) as usize);
         }
         for kind in [
             RoomKind::Start,
@@ -221,6 +238,25 @@ mod tests {
         ] {
             assert!(encounter(kind, 1, defs(), &mut rng).is_none());
         }
+    }
+
+    #[test]
+    fn deeper_fights_hold_more_enemies() {
+        let mut rng = Rng::seeded(12);
+        let mut biggest = |floor| {
+            (0..400)
+                .map(|_| {
+                    encounter(RoomKind::Fight, floor, defs(), &mut rng)
+                        .unwrap()
+                        .len()
+                })
+                .max()
+                .unwrap()
+        };
+        assert_eq!(biggest(1), 1);
+        assert!(biggest(6) >= 3);
+        // More than fit on the field: the rest queue.
+        assert!(biggest(18) > super::super::MAX_FIELD);
     }
 
     #[test]

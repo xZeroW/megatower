@@ -142,6 +142,18 @@ fn statuses(f: &megatower_sim::combat::Fighter) -> Vec<StatusView> {
 }
 
 /// The enemies' names for a fight's log lines, taken before the fight can end.
+fn vitals_of(f: &megatower_sim::combat::Fighter) -> VitalsView {
+    VitalsView {
+        health: f.life.max(0.0).ceil(),
+        max_health: f.max_life,
+        armor: f.guard,
+        max_armor: f.guard,
+        mana: f.mana as i64,
+        max_mana: f.max_mana as i64,
+        statuses: statuses(f),
+    }
+}
+
 fn enemy_names(run: &Run) -> Vec<String> {
     run.battle.as_ref().map_or_else(Vec::new, |b| {
         b.enemies.iter().map(|e| e.fighter.name.clone()).collect()
@@ -199,6 +211,13 @@ fn event_line(event: &CombatEvent, names: &[String]) -> String {
             } else {
                 "was"
             }
+        ),
+        CombatEvent::Arrive { enemy } => format!(
+            "{} steps up to fight",
+            names
+                .get(*enemy)
+                .cloned()
+                .unwrap_or_else(|| format!("Enemy {}", enemy + 1))
         ),
         CombatEvent::Repeat => "The skill repeats".into(),
         CombatEvent::TurnStart { turn } => format!("--- Turn {turn} begins ---"),
@@ -298,7 +317,7 @@ fn win_popups(before: &Gains, character: &megatower_sim::character::Character) -
 /// - `GAME_MOVES`: commands played as soon as the run exists. `1`-`4` pick a
 ///   starter gem, use a skill, take a boon or make an event choice; `_` passes
 ///   a combat turn; `f` / `a` / `d` / `z` walk ahead / left / right / back at
-///   once (no wipe); `*` walks to the stairs, `M` / `H` / `V` / `A` / `T` to the
+///   once (no wipe); `*` walks to the stairs, `C` starts a fight against seven (five at once); `F` / `M` / `H` / `V` / `A` / `T` to the first fight, the
 ///   merchant, shrine, event, Gem Altar or treasure room, entering it without
 ///   fighting on the way; `x` leaves a room screen; `>` descends; `g` gives
 ///   100 gold; `k` thirty doors on the danger clock; `o` two of every crafting orb; `$` a treasure room's loot; `+` a level; `^` takes the first
@@ -605,6 +624,8 @@ impl Labyrinth {
                 'T' => self
                     .game_mut()
                     .debug_walk_to_kind(|k| k == RoomKind::Treasure),
+                'C' => self.game_mut().debug_crowd(7),
+                'F' => self.game_mut().debug_walk_to_kind(|k| k == RoomKind::Fight),
                 'x' => self.act(ui, Action::Leave),
                 '>' => self.act(ui, Action::Descend),
                 'g' => self.game_mut().character.gold += 100,
@@ -1008,6 +1029,30 @@ impl Labyrinth {
         }
     }
 
+    fn enemy_view(&self, i: usize, e: &megatower_sim::combat::Enemy) -> EnemyView {
+        EnemyView {
+            name: e.fighter.name.clone(),
+            texture: content::get()
+                .enemies
+                .iter()
+                .find(|d| d.id == e.id)
+                .and_then(|d| d.sprite.clone()),
+            next_texture: None,
+            flying: false,
+            next_flying: false,
+            level: self.game().floor.number as i32,
+            out_of_combat: !e.fighter.alive(),
+            selected: i == self.target,
+            vitals: vitals_of(&e.fighter),
+            attack: 0.0,
+            attack_stat: megatower_core::stats::StatId::PhysicalAttack,
+            total_attacks: 1.0,
+            ability: None,
+            hide_stats: false,
+            ability_preview: None,
+        }
+    }
+
     fn snapshot(&self) -> Frame {
         let game = self.game();
         let hero = game
@@ -1015,15 +1060,7 @@ impl Labyrinth {
             .as_ref()
             .map(|b| b.hero.clone())
             .unwrap_or_else(|| game.character.fighter());
-        let vitals = |f: &megatower_sim::combat::Fighter| VitalsView {
-            health: f.life.max(0.0).ceil(),
-            max_health: f.max_life,
-            armor: f.guard,
-            max_armor: f.guard,
-            mana: f.mana as i64,
-            max_mana: f.max_mana as i64,
-            statuses: statuses(f),
-        };
+        let vitals = vitals_of;
         Frame {
             gold: game.character.gold as f64,
             diamonds: 0.0,
@@ -1035,29 +1072,7 @@ impl Labyrinth {
                 b.enemies
                     .iter()
                     .enumerate()
-                    .map(|(i, e)| {
-                        Some(EnemyView {
-                            name: e.fighter.name.clone(),
-                            texture: content::get()
-                                .enemies
-                                .iter()
-                                .find(|d| d.id == e.id)
-                                .and_then(|d| d.sprite.clone()),
-                            next_texture: None,
-                            flying: false,
-                            next_flying: false,
-                            level: game.floor.number as i32,
-                            out_of_combat: !e.fighter.alive(),
-                            selected: i == self.target,
-                            vitals: vitals(&e.fighter),
-                            attack: 0.0,
-                            attack_stat: megatower_core::stats::StatId::PhysicalAttack,
-                            total_attacks: 1.0,
-                            ability: None,
-                            hide_stats: false,
-                            ability_preview: None,
-                        })
-                    })
+                    .map(|(i, e)| Some(self.enemy_view(i, e)))
                     .collect()
             }),
         }
@@ -1065,7 +1080,7 @@ impl Labyrinth {
 
     fn combat(&mut self, ui: &mut UiState, action: HeroAction) {
         let mut frame = self.snapshot();
-        let names = enemy_names(self.game());
+        let before_names = enemy_names(self.game());
         let before = Gains::of(&self.game().character);
         let mut events = Vec::new();
         let outcome = self
@@ -1074,6 +1089,12 @@ impl Labyrinth {
         if outcome.is_none() {
             return;
         }
+        // Enemies that stepped up during the turn are named too.
+        let names = if self.game().battle.is_some() {
+            enemy_names(self.game())
+        } else {
+            before_names
+        };
         let mut timed = Vec::new();
         let mut at = 0.0;
         for event in events {
@@ -1164,6 +1185,22 @@ impl Labyrinth {
                         e.out_of_combat = true;
                     }
                 }
+                CombatEvent::Arrive { enemy } => {
+                    if let Some(e) = self
+                        .game()
+                        .battle
+                        .as_ref()
+                        .and_then(|b| b.enemies.get(enemy))
+                    {
+                        let view = self.enemy_view(enemy, e);
+                        while frame.enemies.len() < enemy {
+                            frame.enemies.push(None);
+                        }
+                        if frame.enemies.len() == enemy {
+                            frame.enemies.push(Some(view));
+                        }
+                    }
+                }
                 CombatEvent::Death { actor: Actor::Hero } => fx.push(Fx::Sfx {
                     name: "player_death",
                     volume_db: 0.0,
@@ -1214,9 +1251,15 @@ impl Labyrinth {
     fn effect(&self, ui: &mut UiState, fx: Fx) {
         match fx {
             Fx::Frame(frame) => ui.timeline.frame = Some(*frame),
-            Fx::PlayerAttack { enemy_idx } => ui.enemy_hit[enemy_idx.min(2)] = ui.time,
-            Fx::EnemyAttack { enemy_idx } => ui.enemy_lunge[enemy_idx.min(2)] = ui.time,
-            Fx::EnemyDodge { enemy_idx } => ui.enemy_dodge[enemy_idx.min(2)] = ui.time,
+            Fx::PlayerAttack { enemy_idx } => {
+                ui.enemy_hit[enemy_idx.min(crate::compose::ENEMY_SLOTS - 1)] = ui.time
+            }
+            Fx::EnemyAttack { enemy_idx } => {
+                ui.enemy_lunge[enemy_idx.min(crate::compose::ENEMY_SLOTS - 1)] = ui.time
+            }
+            Fx::EnemyDodge { enemy_idx } => {
+                ui.enemy_dodge[enemy_idx.min(crate::compose::ENEMY_SLOTS - 1)] = ui.time
+            }
             Fx::Sfx { name, volume_db } => {
                 ui.audio.push((format!("assets/sfx/{name}.wav"), volume_db))
             }
@@ -1226,15 +1269,16 @@ impl Labyrinth {
                 origin: [474.0, 110.0],
             }),
             Fx::EnemyPopup { enemy_idx, popup } => {
-                let cx = ui
-                    .timeline
-                    .frame
-                    .as_ref()
-                    .map_or(474.0, |f| crate::frame::enemy_cx(f, enemy_idx));
+                let (cx, dy) = ui.timeline.frame.as_ref().map_or((474.0, 0.0), |f| {
+                    (
+                        crate::frame::enemy_cx(f, enemy_idx),
+                        crate::frame::enemy_dy(f, enemy_idx),
+                    )
+                });
                 ui.popups.push(LivePopup {
                     popup,
                     at: ui.time,
-                    origin: [cx, 186.5],
+                    origin: [cx, 186.5 + dy],
                 });
             }
             _ => {}

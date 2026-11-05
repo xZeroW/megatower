@@ -17,6 +17,7 @@ use crate::gems::{Skill, Targeting};
 use crate::modifier::{ModSet, Stat};
 use crate::rng::Rng;
 use crate::tags::{DamageType, Tag, Tags};
+use std::collections::VecDeque;
 
 pub const HERO_LIFE: f64 = 100.0;
 pub const HERO_MANA: f64 = 40.0;
@@ -163,6 +164,10 @@ pub enum CombatEvent {
         actor: Actor,
         amount: f64,
     },
+    /// A waiting enemy steps up to the front to replace a fallen one.
+    Arrive {
+        enemy: usize,
+    },
     /// A payoff skill found its target primed and cashed in this ailment.
     Payoff {
         target: Actor,
@@ -208,10 +213,17 @@ pub enum ActionError {
     NotEnoughLife,
 }
 
+/// Enemies that fight at once; any more wait in a queue and step up as
+/// others fall.
+pub const MAX_FIELD: usize = 5;
+
 pub struct Battle {
     pub hero: Fighter,
     pub skills: Vec<Skill>,
+    /// Everyone who has taken the field, fallen ones included; a newcomer is
+    /// added at the end, so indices never change.
     pub enemies: Vec<Enemy>,
+    queue: VecDeque<Enemy>,
     pub turn: u32,
     /// Everything that happened, oldest first.
     pub log: Vec<CombatEvent>,
@@ -315,11 +327,14 @@ impl Strike<'_> {
 }
 
 impl Battle {
-    pub fn new(hero: Fighter, skills: Vec<Skill>, enemies: Vec<Enemy>, rng: Rng) -> Self {
+    /// The first [`MAX_FIELD`] enemies take the field, the rest wait in order.
+    pub fn new(hero: Fighter, skills: Vec<Skill>, mut enemies: Vec<Enemy>, rng: Rng) -> Self {
+        let queue: VecDeque<Enemy> = enemies.split_off(enemies.len().min(MAX_FIELD)).into();
         Self {
             hero,
             skills,
             enemies,
+            queue,
             turn: 1,
             log: Vec::new(),
             rng,
@@ -329,10 +344,33 @@ impl Battle {
     pub fn outcome(&self) -> Outcome {
         if !self.hero.alive() {
             Outcome::Lost
-        } else if self.enemies.iter().all(|e| !e.fighter.alive()) {
+        } else if self.queue.is_empty() && self.enemies.iter().all(|e| !e.fighter.alive()) {
             Outcome::Won
         } else {
             Outcome::Ongoing
+        }
+    }
+
+    /// Enemies still waiting for a place on the field.
+    pub fn waiting(&self) -> usize {
+        self.queue.len()
+    }
+
+    /// The enemies in the queue, next one first.
+    pub fn queue(&self) -> impl Iterator<Item = &Enemy> {
+        self.queue.iter()
+    }
+
+    /// Lets waiting enemies fill the places of fallen ones.
+    fn reinforce(&mut self) {
+        while self.living().len() < MAX_FIELD {
+            let Some(enemy) = self.queue.pop_front() else {
+                break;
+            };
+            self.enemies.push(enemy);
+            self.log.push(CombatEvent::Arrive {
+                enemy: self.enemies.len() - 1,
+            });
         }
     }
 
@@ -533,6 +571,7 @@ impl Battle {
                 }
             }
         }
+        self.reinforce();
         let regen = self
             .hero
             .mods
@@ -1131,6 +1170,89 @@ mod tests {
         .unwrap();
         let plain_hit = cold.enemies[0].fighter.max_life - cold.enemies[0].fighter.life;
         assert!(payoff_hit > plain_hit * 1.8, "{payoff_hit} vs {plain_hit}");
+    }
+
+    fn dummies(n: usize, life: f64) -> Vec<Enemy> {
+        (0..n).map(|_| idle(life)).collect()
+    }
+
+    #[test]
+    fn only_five_fight_at_once_and_the_rest_wait() {
+        let b = battle(vec![skill(Fire, 10.0, Targeting::All)], dummies(8, 1000.0));
+        assert_eq!(b.enemies.len(), MAX_FIELD);
+        assert_eq!(b.waiting(), 3);
+        // An area skill hits only those on the field.
+        let mut b = b;
+        b.act(HeroAction::Skill {
+            index: 0,
+            target: 0,
+        })
+        .unwrap();
+        assert_eq!(hits(&b), MAX_FIELD);
+    }
+
+    #[test]
+    fn fallen_enemies_are_replaced_from_the_queue() {
+        let mut b = battle(vec![skill(Fire, 1000.0, Targeting::All)], dummies(7, 10.0));
+        assert_eq!(b.waiting(), 2);
+        let outcome = b
+            .act(HeroAction::Skill {
+                index: 0,
+                target: 0,
+            })
+            .unwrap();
+        // All five on the field fell, but two more are coming.
+        assert_eq!(outcome, Outcome::Ongoing);
+        assert_eq!(b.waiting(), 0);
+        assert_eq!(b.enemies.len(), 7);
+        assert!(
+            b.log
+                .iter()
+                .any(|e| matches!(e, CombatEvent::Arrive { enemy: 5 }))
+        );
+        assert!(
+            b.log
+                .iter()
+                .any(|e| matches!(e, CombatEvent::Arrive { enemy: 6 }))
+        );
+        let living: Vec<_> = b.enemies.iter().filter(|e| e.fighter.alive()).collect();
+        assert_eq!(living.len(), 2);
+        // Indices never move: the fallen stay where they were.
+        assert!(!b.enemies[0].fighter.alive());
+        assert_eq!(
+            b.act(HeroAction::Skill {
+                index: 0,
+                target: 5
+            }),
+            Err(ActionError::NotEnoughMana).or(Ok(Outcome::Won)),
+        );
+    }
+
+    #[test]
+    fn the_fight_is_won_only_when_the_queue_is_empty() {
+        let mut b = battle(vec![skill(Fire, 1000.0, Targeting::All)], dummies(6, 10.0));
+        assert_eq!(
+            b.act(HeroAction::Skill {
+                index: 0,
+                target: 0
+            }),
+            Ok(Outcome::Ongoing)
+        );
+        // The last enemy arrives at the end of the turn and has not acted.
+        assert_eq!(b.enemies.iter().filter(|e| e.fighter.alive()).count(), 1);
+        assert_eq!(b.act(HeroAction::Pass).map(|_| ()), Ok(()));
+        let mut b = battle(vec![skill(Fire, 1000.0, Targeting::All)], dummies(6, 10.0));
+        b.act(HeroAction::Skill {
+            index: 0,
+            target: 0,
+        })
+        .unwrap();
+        let target = b.enemies.iter().position(|e| e.fighter.alive()).unwrap();
+        b.hero.mana = 100.0;
+        assert_eq!(
+            b.act(HeroAction::Skill { index: 0, target }),
+            Ok(Outcome::Won)
+        );
     }
 
     #[test]

@@ -64,7 +64,7 @@
             id: "venom_dart",
             name: "Venom Dart",
             tags: [Attack, Projectile, Chaos],
-            base: [(Chaos, (min: 5.0, max: 8.0)), (Physical, (min: 3.0, max: 5.0))],
+            base: [(Chaos, (min: 6.0, max: 9.0)), (Physical, (min: 3.0, max: 5.0))],
             base_crit: 5.0,
             cost: 4.0,
             targeting: Single,

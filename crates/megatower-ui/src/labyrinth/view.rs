@@ -835,21 +835,38 @@ impl Labyrinth {
             View::Profile if ui.tab == Tab::Profile => self.profile(&mut out, ui, rects, &frame),
             View::Profile => self.information(&mut out, ui, rects),
         }
-        for (i, enemy) in frame
+        // The back row first, so the enemies in front overlap it.
+        let mut standing: Vec<(usize, f32)> = frame
             .enemies
             .iter()
             .enumerate()
-            .filter_map(|(i, e)| e.as_ref().map(|e| (i, e)))
-        {
-            if enemy.out_of_combat {
+            .filter(|(_, e)| e.as_ref().is_some_and(|e| !e.out_of_combat))
+            .map(|(i, _)| (i, crate::frame::enemy_dy(&frame, i)))
+            .collect();
+        standing.sort_by(|a, b| a.1.total_cmp(&b.1));
+        for (i, dy) in standing {
+            let Some(Some(enemy)) = frame.enemies.get(i) else {
                 continue;
-            }
+            };
             let mut enemy = enemy.clone();
             enemy.selected = i == self.target;
             let cx = crate::frame::enemy_cx(&frame, i);
             if let Some(policies) = &self.policies {
-                compose::enemy_widget(rects, policies, &enemy, cx, ui, i, &mut out);
+                compose::enemy_widget(rects, policies, &enemy, cx, dy, ui, i, &mut out);
             }
+        }
+        if let Some(battle) = &game.battle
+            && battle.waiting() > 0
+        {
+            // Enemies queued behind the ones fighting.
+            let mut at = rects.turn_label;
+            at[1] += 14.0;
+            out.push(text(
+                at,
+                format!("+{} waiting", battle.waiting()),
+                palette(4),
+                Align::Center,
+            ));
         }
         if frame.turn > 0 {
             out.push(text(

@@ -1305,6 +1305,25 @@ pub(crate) fn enemy_tip(game: &Game, entity: Entity, show_extra: bool) -> Option
     })
 }
 
+/// Where the `order`-th of `n` visible enemies stands: the centre x and how
+/// far it steps forward. Three or fewer stand in a line; more are packed
+/// closer into the room, and where they would overlap every other one stands
+/// a little in front so each stays readable.
+pub(crate) fn enemy_place(order: usize, n: usize) -> (f32, f32) {
+    let count = n as f32;
+    let spacing = if n <= 3 {
+        96.0
+    } else {
+        (244.0 / (count - 1.0)).min(96.0)
+    };
+    let dy = if spacing < 76.0 && order % 2 == 1 {
+        26.0
+    } else {
+        0.0
+    };
+    (474.0 + (order as f32 - (count - 1.0) / 2.0) * spacing, dy)
+}
+
 /// Which visible enemy slot (index into the battle) is under the cursor.
 pub(crate) fn hit_enemy(frame: &Frame, x: f32, y: f32) -> Option<usize> {
     let visible: Vec<usize> = frame
@@ -1315,11 +1334,16 @@ pub(crate) fn hit_enemy(frame: &Frame, x: f32, y: f32) -> Option<usize> {
         .filter(|(_, e)| !e.out_of_combat || e.next_texture.is_some())
         .map(|(i, _)| i)
         .collect();
-    let n = visible.len() as f32;
-    visible.iter().enumerate().find_map(|(order, idx)| {
-        let cx = 474.0 + (order as f32 - (n - 1.0) / 2.0) * 96.0;
-        (x >= cx - 38.0 && x <= cx + 38.0 && (110.0..260.0).contains(&y)).then_some(*idx)
-    })
+    // The ones in front are drawn last, so they are hit first.
+    let mut found: Option<(f32, usize)> = None;
+    for (order, idx) in visible.iter().enumerate() {
+        let (cx, dy) = enemy_place(order, visible.len());
+        let inside = x >= cx - 38.0 && x <= cx + 38.0 && (110.0 + dy..260.0 + dy).contains(&y);
+        if inside && found.is_none_or(|(front, _)| dy >= front) {
+            found = Some((dy, *idx));
+        }
+    }
+    found.map(|(_, idx)| idx)
 }
 
 /// Maximum tooltip text width before a row wraps (logical pixels).
@@ -1815,12 +1839,15 @@ pub(super) fn button(
 /// Top of the enemy containers (`EnemyContainerHolder` y in the room's
 /// SubViewport, which starts at the screen's top).
 pub(super) const ENEMY_TOP: f32 = 138.0;
+/// Animation slots (hit, lunge, dodge) kept per enemy of a fight.
+pub(crate) const ENEMY_SLOTS: usize = 16;
 
 pub(super) fn enemy_widget(
     rects: &Rects,
     policies: &megatower_core::combat::profile::StatusPolicies,
     view: &EnemyView,
     cx: f32,
+    dy: f32,
     ui: &UiState,
     idx: usize,
     out: &mut Vec<Draw>,
@@ -1829,7 +1856,7 @@ pub(super) fn enemy_widget(
     // rects are relative to the container's top-left corner.
     let l = megatower_assets::ui_layout::enemy_container_layout();
     let ox = cx - l.size[0] / 2.0;
-    let oy = ENEMY_TOP;
+    let oy = ENEMY_TOP + dy;
     if !view.hide_stats {
         enemy_stats(rects, l, view, ox, oy, ui, idx, out);
     }
@@ -2211,7 +2238,7 @@ fn enemy_visuals(
                 w[0].1 + (w[1].1 - w[0].1) * f
             })
     };
-    let slot = idx.min(2);
+    let slot = idx.min(ENEMY_SLOTS - 1);
     let hit = (ui.time - ui.enemy_hit[slot]).max(0.0) as f32;
     let lunge = (ui.time - ui.enemy_lunge[slot]).max(0.0) as f32;
     let dodge = (ui.time - ui.enemy_dodge[slot]).max(0.0) as f32;
@@ -2904,16 +2931,25 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         .filter_map(|(i, e)| e.as_ref().map(|e| (i, e)))
         .filter(|(_, e)| !e.out_of_combat || e.next_texture.is_some())
         .collect();
-    let n = visible.len() as f32;
-    for (order, (idx, view)) in visible.iter().enumerate() {
-        let cx = 474.0 + (order as f32 - (n - 1.0) / 2.0) * 96.0;
+    let mut placed: Vec<(usize, f32, f32, &EnemyView)> = visible
+        .iter()
+        .enumerate()
+        .map(|(order, (idx, view))| {
+            let (cx, dy) = enemy_place(order, visible.len());
+            (*idx, cx, dy, *view)
+        })
+        .collect();
+    // Back row first, so the ones in front overlap them.
+    placed.sort_by(|a, b| a.2.total_cmp(&b.2));
+    for (idx, cx, dy, view) in placed {
         enemy_widget(
             rects,
             &game.rules.status_policies,
             view,
             cx,
+            dy,
             ui,
-            *idx,
+            idx,
             &mut out,
         );
     }
@@ -3013,7 +3049,7 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
                     &mut out,
                     TipAnchor::Above {
                         cx: super::frame::enemy_cx(&frame, idx),
-                        bottom: ENEMY_TOP + 5.5,
+                        bottom: ENEMY_TOP + 5.5 + super::frame::enemy_dy(&frame, idx),
                     },
                     tip,
                 );

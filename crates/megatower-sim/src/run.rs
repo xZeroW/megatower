@@ -555,6 +555,27 @@ impl Run {
         self.pick_starter(0);
     }
 
+    /// QA: a fight against `n` enemies right now (five at once, the rest queue).
+    pub fn debug_crowd(&mut self, n: usize) {
+        let c = content::get();
+        let floor = self.floor.number;
+        let normals: Vec<_> = c
+            .enemies
+            .iter()
+            .filter(|d| !d.boss && d.min_floor <= floor)
+            .collect();
+        let enemies = (0..n)
+            .map(|_| {
+                let def = *self.rng.pick(&normals).expect("normal enemies");
+                crate::combat::spawn(def, floor, false)
+            })
+            .collect();
+        let skills = self.character.skills(&c.gems);
+        let rng = Rng::seeded(u64::from(self.rng.next_u32()));
+        self.battle = Some(Battle::new(self.character.fighter(), skills, enemies, rng));
+        self.mode = Mode::Combat;
+    }
+
     /// QA: a treasure room's loot straight into the bag.
     pub fn debug_loot(&mut self) {
         self.take_loot(RoomKind::Treasure);

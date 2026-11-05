@@ -70,7 +70,8 @@ builds), exploring hidden labyrinth floors.
 
 ## Combat
 
-- Hero vs. 1–4 enemies. Each turn the hero uses one skill or a flask; enemies then act.
+- Hero vs. up to 5 enemies on the field at once, with more waiting in a queue (see below). Each turn
+  the hero uses one skill or a flask; enemies then act.
 - Enemies telegraph their next action (intent) so builds/defences can be planned.
 - Resources: Life, Mana (skill costs, regenerates per turn), optional Energy Shield.
 - Turn-based reading of ARPG mechanics: "cast speed" → chance to act twice / repeat,
@@ -78,9 +79,11 @@ builds), exploring hidden labyrinth floors.
 - Current implementation (`megatower-sim/src/combat`, data in `assets/data/game/`):
   - Hero starts at 100 life, 40 mana, 6 mana regen per turn. Enemies repeat their
     intents (Attack / Guard / Heal) in order; guard lasts until their next action.
-  - Fights hold 1 enemy on floor 1, up to 3 deeper; elite rooms add an Elite (×2 life,
-    30% more damage) and maybe a normal; boss stairs hold the boss. Enemies get 60%
-    more life and 35% more damage per floor. Winning a fight restores 15% of life.
+  - Fights hold 1 enemy on floor 1 and grow with depth: 1 to 1 + floor/3 on the field (at most 5,
+    `MAX_FIELD`) plus up to floor/6 more waiting behind them (at most 3). An elite room holds an
+    Elite (×2 life, 30% more damage) and up to 1 + floor/6 normal companions; boss stairs hold the
+    boss, with up to floor/6 helpers. Enemies get 60% more life and 35% more damage per floor.
+    Winning a fight restores 15% of life.
   - Evasion dodges attacks only, capped at 75%. Damage over time ignores mitigation.
   - Ailment numbers are in `megatower-sim/src/ailment.rs`.
   - `cargo test -p megatower-sim --test balance -- --ignored --nocapture` prints how each
@@ -132,6 +135,16 @@ Damage pipeline (one function, fully unit-tested):
 `base → added flat → conversion (Phys → Lightning → Cold → Fire → Chaos, capped 100%)
 → "increased" (summed) → "more" (multiplied) → crit → mitigation (armour / resist)`.
 Converted damage keeps the modifiers of the types it passed through.
+
+### Crowds and the queue
+Up to five enemies fight at once; the rest of a fight waits in a queue (`+N waiting` in the room
+view). At the end of each turn, waiting enemies step up into free places and act from the next turn
+(`CombatEvent::Arrive`). Indices never change: a fallen enemy keeps its place in the list and
+newcomers are added at the end. The fight is won when the field is empty and the queue is too.
+In the room, one to three enemies stand in a row; four are packed closer and five stand in a
+zig-zag, every other one a step in front (`enemy_place`). Crowds favour area and chain skills, so
+single-target starters got a nudge (Venom Dart's chaos hit 5–8 → 6–9). The bot's floor-9 clear is
+75–80% for every starter.
 
 ### Combos: setup and payoff
 Ailments are the setup; **payoff skills** cash them in. A payoff gem (`payoff:` in `gems.ron`)

@@ -338,7 +338,8 @@ mod labyrinth_routing_tests {
     }
 }
 
-pub(super) fn enemy_cx(frame: &megatower_core::run::events::Frame, idx: usize) -> f32 {
+/// Index among the visible enemies, and how many are visible.
+fn enemy_order(frame: &megatower_core::run::events::Frame, idx: usize) -> (usize, usize) {
     let visible: Vec<usize> = frame
         .enemies
         .iter()
@@ -349,8 +350,21 @@ pub(super) fn enemy_cx(frame: &megatower_core::run::events::Frame, idx: usize) -
         })
         .map(|(i, _)| i)
         .collect();
-    let order = visible.iter().position(|i| *i == idx).unwrap_or(0) as f32;
-    474.0 + (order - (visible.len() as f32 - 1.0) / 2.0) * 96.0
+    (
+        visible.iter().position(|i| *i == idx).unwrap_or(0),
+        visible.len(),
+    )
+}
+
+pub(super) fn enemy_cx(frame: &megatower_core::run::events::Frame, idx: usize) -> f32 {
+    let (order, n) = enemy_order(frame, idx);
+    compose::enemy_place(order, n).0
+}
+
+/// How far in front of the back row an enemy stands.
+pub(super) fn enemy_dy(frame: &megatower_core::run::events::Frame, idx: usize) -> f32 {
+    let (order, n) = enemy_order(frame, idx);
+    compose::enemy_place(order, n).1
 }
 
 pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
@@ -374,12 +388,21 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
             ui.popups.push(LivePopup {
                 popup,
                 at: now,
-                origin: [enemy_cx(&frame, enemy_idx) + jitter, 186.5 + jitter / 2.0],
+                origin: [
+                    enemy_cx(&frame, enemy_idx) + jitter,
+                    186.5 + enemy_dy(&frame, enemy_idx) + jitter / 2.0,
+                ],
             });
         }
-        Fx::PlayerAttack { enemy_idx } => ui.enemy_hit[enemy_idx.min(2)] = now,
-        Fx::EnemyDodge { enemy_idx } => ui.enemy_dodge[enemy_idx.min(2)] = now,
-        Fx::EnemyAttack { enemy_idx } => ui.enemy_lunge[enemy_idx.min(2)] = now,
+        Fx::PlayerAttack { enemy_idx } => {
+            ui.enemy_hit[enemy_idx.min(compose::ENEMY_SLOTS - 1)] = now
+        }
+        Fx::EnemyDodge { enemy_idx } => {
+            ui.enemy_dodge[enemy_idx.min(compose::ENEMY_SLOTS - 1)] = now
+        }
+        Fx::EnemyAttack { enemy_idx } => {
+            ui.enemy_lunge[enemy_idx.min(compose::ENEMY_SLOTS - 1)] = now
+        }
         Fx::ScreenTransition { start, seconds } => {
             ui.transition = Some(Transition {
                 start,
