@@ -215,8 +215,9 @@ bought once, not affected by refreshes).
     and increased damage (`AffixKind::of_stat`; a test keeps `items.ron` to this rule).
   - **Suffixes** are how it behaves: resistances, crit chance and multiplier, mana regen, leech,
     conversion, penetration, ailments and attributes.
-  - An item holds at most one modifier of each type (stat, kind and tag condition), counting its
-    implicit: a Bone Amulet's implicit life rules out a Sturdy (life) prefix.
+  - Implicits come with the base and are separate from affixes (as in PoE; the tooltip lists them
+    first, above a rule): a Bone Amulet's implicit life still allows a Sturdy (life) prefix.
+    Among its affixes an item holds at most one modifier of each type (stat, kind and tag condition).
   - Max life and mana are whole numbers (55, not 55.2).
 - 4 crafting orbs: reroll affixes, add an affix, upgrade rarity, reroll sockets/links.
 - Current implementation (`megatower-sim/src/items.rs`, `character.rs`, `loot.rs`, data in

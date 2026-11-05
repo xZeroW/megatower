@@ -245,14 +245,19 @@ fn tip_lines(loot: &Loot) -> Vec<String> {
         Loot::Item(item) => {
             // The slot is told by the item's look, so only its level is listed.
             let mut lines = vec![item.name.clone(), format!("Level {}", item.level)];
-            let mods: Vec<_> = item
-                .implicit
+            // The base's implicits first, then a rule, then affixes or unique mods.
+            lines.extend(megatower_sim::describe::mod_lines(&item.implicit));
+            let rest: Vec<_> = item
+                .affixes
                 .iter()
-                .chain(item.affixes.iter().flat_map(|a| a.mods.iter()))
+                .flat_map(|a| a.mods.iter())
                 .chain(item.fixed.iter())
                 .copied()
                 .collect();
-            lines.extend(megatower_sim::describe::mod_lines(&mods));
+            if !item.implicit.is_empty() && !rest.is_empty() {
+                lines.push("-----".into());
+            }
+            lines.extend(megatower_sim::describe::mod_lines(&rest));
             if let Some(s) = &item.sockets {
                 lines.push(format!("{} linked sockets", s.links));
                 lines.extend(s.gems.iter().map(|g| megatower_sim::run::gem_name(&g.id)));

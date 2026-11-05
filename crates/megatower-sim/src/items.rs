@@ -6,9 +6,10 @@
 //!   suffixes), uniques have fixed modifiers.
 //! - An affix tier and a base can roll only when the item level (the floor it
 //!   dropped on) reaches theirs.
-//! - An item never carries two modifiers of the same type (stat, kind and
-//!   tag condition), implicit or affix: no second maximum life on a bone
-//!   amulet that already has one.
+//! - Implicits come with the base and are separate from affixes, as in PoE: a
+//!   bone amulet's implicit life does not stop it rolling a life affix.
+//! - Among its affixes an item never carries two modifiers of the same type
+//!   (stat, kind and tag condition).
 //! - Prefixes are what the hero is and hits with (see [`AffixKind::of_stat`]):
 //!   life, mana, armour, evasion, added damage and increased damage.
 //!   Suffixes are how it behaves: resistances, crit, regeneration, leech,
@@ -235,11 +236,11 @@ pub fn add_affix(db: &ItemDb, item: &mut Item, rng: &mut Rng) -> bool {
         AffixKind::Prefix => item.count(kind) < if magic { 1 } else { MAX_PREFIXES },
         AffixKind::Suffix => item.count(kind) < if magic { 1 } else { MAX_SUFFIXES },
     };
-    // What the item already grants: its implicits and every rolled affix.
+    // What its affixes already grant; implicits are a separate group.
     let held: Vec<(Stat, ModKind, Tags)> = item
-        .implicit
+        .affixes
         .iter()
-        .chain(item.affixes.iter().flat_map(|a| &a.mods))
+        .flat_map(|a| &a.mods)
         .map(|m| (m.stat, m.kind, m.requires))
         .collect();
     let overlaps = |a: &AffixDef| {
@@ -458,9 +459,9 @@ mod tests {
             for rarity in [ItemRarity::Magic, ItemRarity::Rare] {
                 for item in items(rarity, level) {
                     let keys: Vec<_> = item
-                        .implicit
+                        .affixes
                         .iter()
-                        .chain(item.affixes.iter().flat_map(|a| &a.mods))
+                        .flat_map(|a| &a.mods)
                         .map(|m| (m.stat, m.kind, m.requires))
                         .collect();
                     for (i, a) in keys.iter().enumerate() {
@@ -476,13 +477,16 @@ mod tests {
     }
 
     #[test]
-    fn bone_amulets_never_roll_a_second_life_modifier() {
+    fn implicits_do_not_block_a_matching_affix() {
+        // The bone amulet's implicit is life; a life affix may still roll.
         let base = db().base("bone_amulet").unwrap();
         let mut rng = Rng::seeded(4);
-        for _ in 0..300 {
+        let rolled = (0..300).any(|_| {
             let item = roll_item(db(), base, ItemRarity::Rare, 9, &mut rng);
-            assert!(item.affixes.iter().all(|a| a.id != "life"), "{}", item.name);
-        }
+            assert!(!item.implicit.is_empty());
+            item.affixes.iter().any(|a| a.id == "life")
+        });
+        assert!(rolled);
     }
 
     #[test]
