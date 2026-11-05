@@ -239,7 +239,24 @@ fn choose_action(battle: &Battle) -> HeroAction {
             let value = |i: usize| {
                 let s = &battle.skills[i];
                 let mid: f64 = s.hit.base.iter().map(|(_, r)| (r.min + r.max) / 2.0).sum();
-                (mid + 5.0) * expected_hits(s, living.len())
+                let mut value = (mid + 5.0) * expected_hits(s, living.len());
+                if let Some(payoff) = &s.payoff {
+                    // Cash in when primed, otherwise keep setting up.
+                    let afflictions = &battle.enemies[target].fighter.afflictions;
+                    let primed: Vec<_> = payoff
+                        .needs
+                        .iter()
+                        .filter(|&&a| afflictions.has(a))
+                        .collect();
+                    if primed.is_empty() {
+                        value *= 0.4;
+                    } else {
+                        let left: f64 = primed.iter().map(|&&a| afflictions.remaining(a)).sum();
+                        value = value * (1.0 + payoff.more_damage / 100.0)
+                            + left * payoff.burst / 100.0;
+                    }
+                }
+                value
             };
             value(a).total_cmp(&value(b))
         });

@@ -95,6 +95,37 @@ fn line(m: &Modifier) -> String {
         + condition_words(m.requires)
 }
 
+/// What a payoff skill cashes in, e.g. "Cashes in Chill or Freeze: +120% damage, uses it up".
+pub fn payoff_line(payoff: &crate::gems::Payoff) -> String {
+    let needs: Vec<String> = payoff.needs.iter().map(|a| format!("{a:?}")).collect();
+    let mut effects = Vec::new();
+    if payoff.more_damage > 0.0 {
+        effects.push(format!("+{:.0}% damage", payoff.more_damage));
+    }
+    if payoff.burst > 0.0 {
+        effects.push(format!(
+            "{:.0}% of its remaining damage at once",
+            payoff.burst
+        ));
+    }
+    if payoff.consume {
+        effects.push("uses it up".into());
+    }
+    format!("Cashes in {}: {}", needs.join(" or "), effects.join(", "))
+}
+
+/// The word shown when a payoff lands on `ailment`.
+pub fn payoff_word(ailment: crate::ailment::Ailment) -> &'static str {
+    use crate::ailment::Ailment;
+    match ailment {
+        Ailment::Chill | Ailment::Freeze => "Shatter!",
+        Ailment::Ignite => "Detonate!",
+        Ailment::Bleed => "Rupture!",
+        Ailment::Poison => "Toxic Burst!",
+        Ailment::Shock => "Overload!",
+    }
+}
+
 /// One line per modifier; added min/max pairs read as one "Adds X-Y" line.
 pub fn mod_lines(mods: &[Modifier]) -> Vec<String> {
     let mut lines = Vec::new();
@@ -129,6 +160,30 @@ pub fn mod_lines(mods: &[Modifier]) -> Vec<String> {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn payoffs_read_plainly() {
+        use crate::ailment::Ailment;
+        use crate::gems::Payoff;
+        let p = Payoff {
+            needs: vec![Ailment::Chill, Ailment::Freeze],
+            more_damage: 120.0,
+            burst: 0.0,
+            consume: true,
+        };
+        assert_eq!(
+            super::payoff_line(&p),
+            "Cashes in Chill or Freeze: +120% damage, uses it up"
+        );
+        let burst = Payoff {
+            needs: vec![Ailment::Ignite],
+            more_damage: 0.0,
+            burst: 150.0,
+            consume: false,
+        };
+        assert!(super::payoff_line(&burst).contains("150% of its remaining damage"));
+        assert_eq!(super::payoff_word(Ailment::Freeze), "Shatter!");
+    }
+
     use super::*;
     use crate::tags::DamageType;
 

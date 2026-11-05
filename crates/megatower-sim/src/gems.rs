@@ -5,6 +5,7 @@
 //! Level scales an active's base damage; rarity strengthens both kinds
 //! (see [`GemRarity`]). Copies never merge: rarity only rises at a Gem Altar.
 
+use crate::ailment::Ailment;
 use crate::damage::{DamageRange, HitSpec};
 use crate::modifier::{ModSet, Modifier, Stat};
 use crate::tags::{DamageType, Tags};
@@ -60,6 +61,28 @@ fn hundred() -> f64 {
     100.0
 }
 
+fn yes() -> bool {
+    true
+}
+
+/// A skill that cashes in ailments: against a target that has one of
+/// `needs` it hits harder, may deal the ailment's remaining damage at once,
+/// and uses the ailment up.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Payoff {
+    /// Ailments that prime the skill; any one will do, all of them are used.
+    pub needs: Vec<Ailment>,
+    /// Percent more damage against a primed target.
+    #[serde(default)]
+    pub more_damage: f64,
+    /// Percent of the used-up ailments' remaining damage dealt at once.
+    #[serde(default)]
+    pub burst: f64,
+    /// The ailments are removed when the skill cashes them in.
+    #[serde(default = "yes")]
+    pub consume: bool,
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ActiveDef {
     pub id: String,
@@ -78,6 +101,9 @@ pub struct ActiveDef {
     /// Offered as a starting gem.
     #[serde(default)]
     pub starter: bool,
+    /// Cashes in ailments (see [`Payoff`]).
+    #[serde(default)]
+    pub payoff: Option<Payoff>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -162,6 +188,7 @@ pub struct Skill {
     pub mods: ModSet,
     pub repeat_chance: f64,
     pub no_ailments: bool,
+    pub payoff: Option<Payoff>,
     /// Names of the supports that apply.
     pub supports: Vec<String>,
 }
@@ -209,6 +236,7 @@ pub fn build_skill(db: &GemDb, active: &Gem, supports: &[Gem]) -> Result<Skill, 
         mods: def.mods.iter().copied().collect(),
         repeat_chance: 0.0,
         no_ailments: false,
+        payoff: def.payoff.clone(),
         supports: Vec::new(),
     };
     let rarity_more = active.rarity.active_more_damage();

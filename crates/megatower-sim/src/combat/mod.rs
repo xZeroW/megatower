@@ -163,6 +163,11 @@ pub enum CombatEvent {
         actor: Actor,
         amount: f64,
     },
+    /// A payoff skill found its target primed and cashed in this ailment.
+    Payoff {
+        target: Actor,
+        ailment: Ailment,
+    },
     /// The skill fires again for free.
     Repeat,
     Frozen {
@@ -221,6 +226,8 @@ struct Strike<'a> {
     state: Tags,
     dealt_multiplier: f64,
     no_ailments: bool,
+    /// What the skill cashes in, if anything.
+    payoff: Option<&'a crate::gems::Payoff>,
 }
 
 impl Strike<'_> {
@@ -245,7 +252,34 @@ impl Strike<'_> {
         for t in crate::tags::DamageType::ALL {
             hit.damage[t] *= multiplier;
         }
-        let total = hit.damage.total();
+        // A primed target pays: more damage now, its ailments' damage at once.
+        let mut burst = 0.0;
+        if let Some(payoff) = self.payoff {
+            let primed: Vec<Ailment> = payoff
+                .needs
+                .iter()
+                .copied()
+                .filter(|&a| target.afflictions.has(a))
+                .collect();
+            if let Some(&first) = primed.first() {
+                for t in crate::tags::DamageType::ALL {
+                    hit.damage[t] *= 1.0 + payoff.more_damage / 100.0;
+                }
+                for ailment in primed {
+                    let left = if payoff.consume {
+                        target.afflictions.consume(ailment)
+                    } else {
+                        target.afflictions.remaining(ailment)
+                    };
+                    burst += left * payoff.burst / 100.0;
+                }
+                log.push(CombatEvent::Payoff {
+                    target: actor,
+                    ailment: first,
+                });
+            }
+        }
+        let total = hit.damage.total() + burst;
         let kind = hit
             .damage
             .iter()
@@ -401,6 +435,7 @@ impl Battle {
             state: self.hero.state_tags(),
             dealt_multiplier: self.hero.afflictions.damage_dealt_multiplier(),
             no_ailments: skill.no_ailments,
+            payoff: skill.payoff.as_ref(),
         };
         let mut dealt = 0.0;
         let mut primary = primary;
@@ -461,6 +496,7 @@ impl Battle {
                         state: enemy.fighter.state_tags(),
                         dealt_multiplier: enemy.fighter.afflictions.damage_dealt_multiplier(),
                         no_ailments: false,
+                        payoff: None,
                     };
                     strike.land(&mut self.hero, Actor::Hero, &mut self.rng, &mut self.log);
                 }
@@ -553,6 +589,7 @@ mod tests {
             mods: ModSet::new(),
             repeat_chance: 0.0,
             no_ailments: false,
+            payoff: None,
             supports: Vec::new(),
         }
     }
@@ -903,6 +940,197 @@ mod tests {
             .filter(|e| matches!(e, CombatEvent::Dodge { .. }))
             .count();
         assert!((15..40).contains(&dodged), "{dodged}");
+    }
+
+    fn payoff_skill(needs: &[Ailment], more: f64, burst: f64, consume: bool) -> Skill {
+        let mut s = skill(Fire, 10.0, Targeting::Single);
+        s.payoff = Some(crate::gems::Payoff {
+            needs: needs.to_vec(),
+            more_damage: more,
+            burst,
+            consume,
+        });
+        s
+    }
+
+    fn damage_to(b: &Battle, i: usize) -> f64 {
+        b.enemies[i].fighter.max_life - b.enemies[i].fighter.life
+    }
+
+    #[test]
+    fn a_payoff_does_nothing_extra_to_an_unprimed_target() {
+        let mut b = battle(
+            vec![payoff_skill(&[Ailment::Ignite], 100.0, 100.0, true)],
+            vec![idle(1000.0)],
+        );
+        b.act(HeroAction::Skill {
+            index: 0,
+            target: 0,
+        })
+        .unwrap();
+        approx(damage_to(&b, 0), 10.0);
+        assert!(
+            !b.log
+                .iter()
+                .any(|e| matches!(e, CombatEvent::Payoff { .. }))
+        );
+    }
+
+    #[test]
+    fn a_primed_target_takes_more_and_loses_the_ailment() {
+        let mut b = battle(
+            vec![payoff_skill(
+                &[Ailment::Chill, Ailment::Freeze],
+                120.0,
+                0.0,
+                true,
+            )],
+            vec![idle(1000.0)],
+        );
+        b.enemies[0]
+            .fighter
+            .afflictions
+            .inflict(Ailment::Chill, 1.0);
+        b.enemies[0]
+            .fighter
+            .afflictions
+            .inflict(Ailment::Freeze, 1.0);
+        b.act(HeroAction::Skill {
+            index: 0,
+            target: 0,
+        })
+        .unwrap();
+        approx(damage_to(&b, 0), 22.0);
+        let afflictions = &b.enemies[0].fighter.afflictions;
+        assert!(!afflictions.has(Ailment::Chill) && !afflictions.has(Ailment::Freeze));
+        assert!(b.log.iter().any(|e| matches!(
+            e,
+            CombatEvent::Payoff {
+                target: Actor::Enemy(0),
+                ailment: Ailment::Chill
+            }
+        )));
+    }
+
+    #[test]
+    fn a_burst_deals_the_remaining_damage_over_time_at_once() {
+        let mut b = battle(
+            vec![payoff_skill(&[Ailment::Ignite], 0.0, 150.0, true)],
+            vec![idle(1000.0)],
+        );
+        // 50 fire in: 20 a turn for two turns, 40 left.
+        b.enemies[0]
+            .fighter
+            .afflictions
+            .inflict(Ailment::Ignite, 50.0);
+        b.act(HeroAction::Skill {
+            index: 0,
+            target: 0,
+        })
+        .unwrap();
+        // 10 for the hit and 60 for the burst; the ignite is gone before it ticks.
+        approx(damage_to(&b, 0), 70.0);
+        assert!(!b.enemies[0].fighter.afflictions.has(Ailment::Ignite));
+    }
+
+    #[test]
+    fn a_payoff_that_does_not_consume_leaves_the_ailment() {
+        let mut b = battle(
+            vec![payoff_skill(&[Ailment::Shock], 100.0, 0.0, false)],
+            vec![idle(1000.0)],
+        );
+        b.enemies[0]
+            .fighter
+            .afflictions
+            .inflict(Ailment::Shock, 1.0);
+        b.act(HeroAction::Skill {
+            index: 0,
+            target: 0,
+        })
+        .unwrap();
+        // 10 doubled, and the shock still adds its 20%.
+        approx(damage_to(&b, 0), 24.0);
+        assert!(b.enemies[0].fighter.afflictions.has(Ailment::Shock));
+    }
+
+    #[test]
+    fn payoff_gems_come_from_the_content() {
+        let content = crate::content::get();
+        let mut ids = Vec::new();
+        for def in content.gems.actives.iter().filter(|a| a.payoff.is_some()) {
+            assert!(!def.starter, "{}", def.id);
+            let p = def.payoff.as_ref().unwrap();
+            assert!(!p.needs.is_empty());
+            assert!(p.more_damage > 0.0 || p.burst > 0.0, "{}", def.id);
+            ids.push(def.id.as_str());
+            let gem = crate::gems::Gem::new(def.id.clone(), 1, crate::gems::GemRarity::Common);
+            let skill = crate::gems::build_skill(&content.gems, &gem, &[]).unwrap();
+            assert_eq!(skill.payoff.as_ref(), Some(p));
+        }
+        // One cash-in for each way of setting a target up.
+        assert!(ids.len() >= 5);
+        for ailment in [
+            Ailment::Ignite,
+            Ailment::Bleed,
+            Ailment::Poison,
+            Ailment::Shock,
+            Ailment::Chill,
+        ] {
+            assert!(
+                content.gems.actives.iter().any(|a| a
+                    .payoff
+                    .as_ref()
+                    .is_some_and(|p| p.needs.contains(&ailment))),
+                "{ailment:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn fireball_into_detonate_is_a_real_combo() {
+        use crate::gems::{Gem, GemRarity, build_skill};
+        let content = crate::content::get();
+        let make = |id: &str| {
+            build_skill(&content.gems, &Gem::new(id, 1, GemRarity::Common), &[]).unwrap()
+        };
+        // Fireball always ignites for this test.
+        let fireball = with_mods(
+            make("fireball"),
+            &[Modifier::flat(Stat::AilmentChance(Ailment::Ignite), 100.0)],
+        );
+        let mut combo = battle(vec![fireball.clone(), make("detonate")], vec![idle(5000.0)]);
+        combo
+            .act(HeroAction::Skill {
+                index: 0,
+                target: 0,
+            })
+            .unwrap();
+        assert!(combo.enemies[0].fighter.afflictions.has(Ailment::Ignite));
+        let before = combo.enemies[0].fighter.life;
+        combo
+            .act(HeroAction::Skill {
+                index: 1,
+                target: 0,
+            })
+            .unwrap();
+        let payoff_hit = before - combo.enemies[0].fighter.life;
+        assert!(combo.log.iter().any(|e| matches!(
+            e,
+            CombatEvent::Payoff {
+                ailment: Ailment::Ignite,
+                ..
+            }
+        )));
+        assert!(!combo.enemies[0].fighter.afflictions.has(Ailment::Ignite));
+        // The same Detonate on a cold target is far weaker.
+        let mut cold = battle(vec![make("detonate")], vec![idle(5000.0)]);
+        cold.act(HeroAction::Skill {
+            index: 0,
+            target: 0,
+        })
+        .unwrap();
+        let plain_hit = cold.enemies[0].fighter.max_life - cold.enemies[0].fighter.life;
+        assert!(payoff_hit > plain_hit * 1.8, "{payoff_hit} vs {plain_hit}");
     }
 
     #[test]

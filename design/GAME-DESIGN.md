@@ -133,6 +133,26 @@ Damage pipeline (one function, fully unit-tested):
 → "increased" (summed) → "more" (multiplied) → crit → mitigation (armour / resist)`.
 Converted damage keeps the modifiers of the types it passed through.
 
+### Combos: setup and payoff
+Ailments are the setup; **payoff skills** cash them in. A payoff gem (`payoff:` in `gems.ron`)
+hits a target that has one of its `needs` for more damage (`more_damage`), may deal the
+ailment's remaining damage at once (`burst`) and uses the ailment up (`consume`). Against an
+unprimed target it is a weak plain hit, so you pair it with a setup skill in another socket group
+(only weapon, body and helm carry skills, so a combo build is two or three groups):
+
+| Payoff | Needs | Cashes in |
+| --- | --- | --- |
+| Shatter | Chill or Freeze | +120% damage, uses both up |
+| Detonate | Ignite | +50% damage and 150% of the burn left |
+| Rupture | Bleed | +25% damage and 200% of the bleed left |
+| Toxic Burst | Poison | 130% of every poison stack left |
+| Overload | Shock | +100% damage, uses the shock up |
+
+The skill tooltip says what a payoff needs and shows PRIMED when the selected target will pay;
+a cash-in pops its name over the enemy and is logged. Payoff gems drop and sell like other
+actives; they are never starters. The bot cashes in when primed and sets up otherwise
+(80–86% floor-9 clears).
+
 ### Skill gems + supports
 - Only weapon, body and helm have sockets (all linked within the piece): weapon & body up
   to 4, helm up to 2. Gloves, boots, rings and amulet are pure stat items. That caps a

@@ -42,6 +42,13 @@ reference/parity work: `MEGATOWER_LEGACY=1 cargo run -p megatower-client`.
 cargo test -p megatower-client -p megatower-ui -p megatower-sim
 ```
 
+### Combos
+
+Skills like Shatter, Detonate, Rupture, Toxic Burst and Overload cash in ailments: they hit
+hard (and burst the ailment's damage) on a target that is chilled, ignited, bleeding, poisoned or
+shocked, and use it up. Set a target up with one skill, then pay it off with another. The skill
+tooltip shows PRIMED when the selected target is ready.
+
 ### Danger
 
 Wandering a floor too long raises Danger (shown under the life bar): enemies you meet grow

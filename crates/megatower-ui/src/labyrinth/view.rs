@@ -271,6 +271,9 @@ fn tip_lines(loot: &Loot) -> Vec<String> {
             ];
             if let Some(def) = content::get().gems.active(&g.id) {
                 lines.push(format!("{:.0} mana / {:?}", def.cost, def.targeting));
+                if let Some(payoff) = &def.payoff {
+                    lines.push(megatower_sim::describe::payoff_line(payoff));
+                }
                 lines.extend(
                     def.base
                         .iter()
@@ -435,6 +438,15 @@ impl Labyrinth {
                         });
                         c.tip
                             .extend([format!("{cost:.0} {resource}"), skill.supports.join(", ")]);
+                        if let Some(payoff) = &skill.payoff {
+                            c.tip.push(megatower_sim::describe::payoff_line(payoff));
+                            let primed = battle.enemies.get(self.target).is_some_and(|e| {
+                                payoff.needs.iter().any(|&a| e.fighter.afflictions.has(a))
+                            });
+                            if primed {
+                                c.tip.push("PRIMED: the target will pay".into());
+                            }
+                        }
                         c.enabled = if battle.pays_with_life() {
                             battle.hero.life > cost
                         } else {
@@ -1494,6 +1506,20 @@ impl Labyrinth {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn payoff_gems_say_what_they_cash_in() {
+        let gem = Loot::Gem(Gem::new("shatter", 1, GemRarity::Common));
+        let lines = tip_lines(&gem);
+        assert!(
+            lines
+                .iter()
+                .any(|l| l.starts_with("Cashes in Chill or Freeze")),
+            "{lines:?}"
+        );
+        let plain = tip_lines(&Loot::Gem(Gem::new("fireball", 1, GemRarity::Common)));
+        assert!(!plain.iter().any(|l| l.starts_with("Cashes in")));
+    }
 
     #[test]
     fn enemy_intents_show_their_numbers() {

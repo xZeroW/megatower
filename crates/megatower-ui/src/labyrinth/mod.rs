@@ -191,6 +191,15 @@ fn event_line(event: &CombatEvent, names: &[String]) -> String {
             format!("{} {} frozen and cannot act", who(*actor), was(*actor))
         }
         CombatEvent::Death { actor } => format!("{} {} defeated", who(*actor), was(*actor)),
+        CombatEvent::Payoff { target, ailment } => format!(
+            "{} {} cashed in ({ailment:?})",
+            who(*target),
+            if *target == Actor::Hero {
+                "were"
+            } else {
+                "was"
+            }
+        ),
         CombatEvent::Repeat => "The skill repeats".into(),
         CombatEvent::TurnStart { turn } => format!("--- Turn {turn} begins ---"),
         CombatEvent::TurnEnd { turn } => format!("--- Turn {turn} ends ---"),
@@ -390,6 +399,12 @@ fn popup_for(event: &CombatEvent) -> Option<(Actor, Popup)> {
         )),
         CombatEvent::Frozen { actor } => Some((actor, Popup::new("Frozen", hex(0x5aa6ff)))),
         CombatEvent::Repeat => Some((Actor::Hero, Popup::new("Repeat", hex(0xffe14d)))),
+        CombatEvent::Payoff { target, ailment } => {
+            let (color, _) = ailment_look(ailment);
+            let mut popup = Popup::new(megatower_sim::describe::payoff_word(ailment), hex(color));
+            popup.size = 1.5;
+            Some((target, popup))
+        }
         _ => None,
     }
 }

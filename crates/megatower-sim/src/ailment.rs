@@ -124,6 +124,32 @@ impl Afflictions {
         }
     }
 
+    /// Damage the ailment would still deal over time if left alone (0 for
+    /// ailments that do not burn).
+    pub fn remaining(&self, ailment: Ailment) -> f64 {
+        let left = |d: &Dot| d.per_turn * f64::from(d.turns);
+        match ailment {
+            Ailment::Ignite => self.ignite.as_ref().map_or(0.0, left),
+            Ailment::Bleed => self.bleed.as_ref().map_or(0.0, left),
+            Ailment::Poison => self.poison.iter().map(left).sum(),
+            Ailment::Shock | Ailment::Chill | Ailment::Freeze => 0.0,
+        }
+    }
+
+    /// Removes the ailment, returning the damage it had left to deal.
+    pub fn consume(&mut self, ailment: Ailment) -> f64 {
+        let left = self.remaining(ailment);
+        match ailment {
+            Ailment::Ignite => self.ignite = None,
+            Ailment::Bleed => self.bleed = None,
+            Ailment::Poison => self.poison.clear(),
+            Ailment::Shock => self.shock = 0,
+            Ailment::Chill => self.chill = 0,
+            Ailment::Freeze => self.frozen = false,
+        }
+        left
+    }
+
     pub fn damage_taken_multiplier(&self) -> f64 {
         if self.shock > 0 { SHOCK_TAKEN } else { 1.0 }
     }
@@ -223,6 +249,25 @@ mod tests {
         a.tick();
         approx(a.damage_taken_multiplier(), 1.0);
         approx(a.damage_dealt_multiplier(), 1.0);
+    }
+
+    #[test]
+    fn consuming_returns_what_was_left() {
+        let mut a = Afflictions::default();
+        a.inflict(Ailment::Ignite, 50.0);
+        approx(a.remaining(Ailment::Ignite), 40.0);
+        a.tick();
+        approx(a.remaining(Ailment::Ignite), 20.0);
+        approx(a.consume(Ailment::Ignite), 20.0);
+        assert!(!a.has(Ailment::Ignite));
+        a.inflict(Ailment::Poison, 10.0);
+        a.inflict(Ailment::Poison, 10.0);
+        approx(a.consume(Ailment::Poison), 12.0);
+        assert!(!a.has(Ailment::Poison));
+        a.inflict(Ailment::Shock, 1.0);
+        a.inflict(Ailment::Freeze, 1.0);
+        approx(a.consume(Ailment::Shock), 0.0);
+        assert!(a.consume(Ailment::Freeze) == 0.0 && !a.frozen && a.shock == 0);
     }
 
     #[test]
