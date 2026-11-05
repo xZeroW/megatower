@@ -19,7 +19,10 @@ builds), exploring hidden labyrinth floors.
    revealed rooms can be revisited freely.
 4. Find the **Stairs** room (guarded by a boss on every 3rd floor) to descend. Deeper
    floors are bigger and roll higher item levels.
-5. Death ends the run; meta progression (unlocks) is out of scope for the first slice.
+5. Death ends the run and pays Legacy points (`megatower-sim/src/legacy.rs`): 1 + 3 per floor
+   beaten + 5 per boss. They buy permanent unlocks on the starter screen: three more starter
+   gems (Arc, Venom Dart, Frost Nova; the first run offers Heavy Strike, Split Shot and
+   Fireball) and head starts (+40 / +80 gold, an Ascend and Augment orb, a passive point).
 
 ## Labyrinth
 

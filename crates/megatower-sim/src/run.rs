@@ -5,6 +5,7 @@ use crate::character::{Character, GemSpot, ItemSpot, Loot};
 use crate::combat::{Battle, CombatEvent, HeroAction, Outcome, encounter};
 use crate::content;
 use crate::labyrinth::{self, Dir, Floor, MoveError, Pos, RoomKind, Turn};
+use crate::legacy::Legacy;
 use crate::loot::{room_loot, room_orbs, starting_character};
 use crate::merchant::{Shop, sell as sell_gem};
 use crate::orbs::{Orb, OrbError};
@@ -44,6 +45,10 @@ pub struct Run {
     /// Merchant stock per room on this floor.
     pub shops: HashMap<Pos, Shop>,
     pub battle: Option<Battle>,
+    /// Unlocks that shape this run's start.
+    pub legacy: Legacy,
+    /// Points already paid out for this run's end.
+    rewarded: bool,
 }
 
 pub fn loot_name(loot: &Loot) -> String {
@@ -79,23 +84,51 @@ pub fn room_name(kind: RoomKind) -> &'static str {
 
 impl Run {
     pub fn new(seed: u64, floor_number: u32) -> Self {
+        Self::with_legacy(seed, floor_number, Legacy::default())
+    }
+
+    /// A run with the unlocks of a profile.
+    pub fn with_legacy(seed: u64, floor_number: u32, legacy: Legacy) -> Self {
         let mut rng = Rng::seeded(seed);
         let floor = labyrinth::generate(floor_number, &mut rng);
-        let mut offers: Vec<String> = content::get()
-            .gems
-            .starters()
-            .map(|g| g.id.clone())
-            .collect();
-        rng.shuffle(&mut offers);
-        offers.truncate(STARTER_OFFERS);
+        let offers = Self::roll_offers(&legacy, &mut rng);
         Self {
+            legacy,
             mode: Mode::Starter(offers),
             floor,
             rng,
             character: Character::new([]),
             shops: HashMap::new(),
             battle: None,
+            rewarded: false,
         }
+    }
+
+    fn roll_offers(legacy: &Legacy, rng: &mut Rng) -> Vec<String> {
+        let mut offers: Vec<String> = legacy.starters().into_iter().map(String::from).collect();
+        rng.shuffle(&mut offers);
+        offers.truncate(STARTER_OFFERS);
+        offers
+    }
+
+    /// Buys an unlock before the first pick; the offers are drawn again so a
+    /// new starter can show up at once.
+    pub fn unlock(&mut self, id: &str) -> bool {
+        if !matches!(self.mode, Mode::Starter(_)) || !self.legacy.buy(id) {
+            return false;
+        }
+        self.mode = Mode::Starter(Self::roll_offers(&self.legacy, &mut self.rng));
+        true
+    }
+
+    /// Pays out Legacy points for a dead run, once; `None` while alive or
+    /// already paid.
+    pub fn finish(&mut self) -> Option<u32> {
+        if self.mode != Mode::Dead || self.rewarded {
+            return None;
+        }
+        self.rewarded = true;
+        Some(self.legacy.finish_run(self.floor.number))
     }
 
     pub fn pick_starter(&mut self, index: usize) {
@@ -106,6 +139,7 @@ impl Run {
             return;
         };
         self.character = starting_character(&id, content::get(), &mut self.rng);
+        self.legacy.apply(&mut self.character);
         self.mode = Mode::Map;
     }
 
@@ -547,6 +581,34 @@ mod tests {
             }
         }
         panic!("no winnable first fight found");
+    }
+
+    #[test]
+    fn dying_pays_legacy_once_and_unlocks_change_the_start() {
+        let mut run = started(7);
+        assert_eq!(run.finish(), None);
+        run.mode = Mode::Dead;
+        let earned = run.finish().unwrap();
+        assert_eq!(earned, crate::legacy::run_reward(1));
+        assert_eq!(run.finish(), None);
+        assert_eq!(run.legacy.points, earned);
+
+        let mut legacy = run.legacy.clone();
+        legacy.points = 100;
+        let mut next = Run::with_legacy(8, 1, legacy);
+        assert!(next.unlock("purse"));
+        assert!(!next.unlock("purse"));
+        for id in ["arc", "venom_dart", "frost_nova"] {
+            assert!(next.unlock(id));
+        }
+        let Mode::Starter(offers) = &next.mode else {
+            panic!("still choosing");
+        };
+        assert_eq!(offers.len(), STARTER_OFFERS);
+        next.pick_starter(0);
+        assert_eq!(next.character.gold, 40);
+        // Unlocks only sell before the pick.
+        assert!(!next.unlock("scholar"));
     }
 
     #[test]

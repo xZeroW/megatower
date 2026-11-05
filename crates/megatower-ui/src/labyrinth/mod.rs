@@ -32,7 +32,7 @@ impl Plugin for LabyrinthPlugin {
         ))
         .init_resource::<Labyrinth>()
         .add_plugins(doors::DoorsPlugin)
-        .add_systems(Startup, autostart)
+        .add_systems(Startup, (load_legacy, autostart).chain())
         .add_systems(Update, scripted_moves);
     }
 }
@@ -61,6 +61,11 @@ pub struct Labyrinth {
     walk: Option<(Turn, f64)>,
     log: Vec<String>,
     policies: Option<megatower_core::combat::profile::StatusPolicies>,
+    /// Meta progression, kept between runs; saved only when `persist` is on
+    /// (the real app), so tests never touch the user's files.
+    legacy: megatower_sim::legacy::Legacy,
+    persist: bool,
+    last_reward: Option<u32>,
 }
 
 #[derive(Clone, Debug)]
@@ -73,6 +78,7 @@ pub(super) enum Action {
     Leave,
     Buy(usize),
     BuyOrb(usize),
+    Unlock(String),
     Refresh,
     Boon(usize),
     Event(usize),
@@ -384,6 +390,18 @@ fn popup_for(event: &CombatEvent) -> Option<(Actor, Popup)> {
     }
 }
 
+fn legacy_path() -> std::path::PathBuf {
+    megatower_core::save_system::user_file_dir().join("legacy.json")
+}
+
+fn load_legacy(mut session: ResMut<Labyrinth>) {
+    session.persist = true;
+    session.legacy = std::fs::read(legacy_path())
+        .ok()
+        .and_then(|bytes| serde_json::from_slice(&bytes).ok())
+        .unwrap_or_default();
+}
+
 fn autostart(mut session: ResMut<Labyrinth>, mut ui: ResMut<crate::UiRes>) {
     if std::env::var_os("GAME_AUTOSTART").is_some() {
         session.start(Some("assets/textures/portraits/kestrel.png".into()));
@@ -398,12 +416,44 @@ impl Labyrinth {
             .and_then(|s| s.parse().ok())
             .unwrap_or(1)
             .max(1);
+        let legacy = std::mem::take(&mut self.legacy);
+        let persist = self.persist;
         *self = Self {
-            run: Some(Run::new(seed(), floor)),
+            run: Some(Run::with_legacy(seed(), floor, legacy.clone())),
+            legacy,
+            persist,
             portrait,
             policies: Some(megatower_core::combat::profile::StatusPolicies::recovered()),
             ..default()
         };
+    }
+
+    fn save_legacy(&self) {
+        if !self.persist {
+            return;
+        }
+        let Ok(bytes) = serde_json::to_vec_pretty(&self.legacy) else {
+            return;
+        };
+        if let Err(err) = megatower_core::save_system::write_atomic(&legacy_path(), &bytes) {
+            eprintln!(
+                "Failed to save legacy at {}: {err}",
+                legacy_path().display()
+            );
+        }
+    }
+
+    /// Takes the run's Legacy changes (unlocks bought, points paid out at
+    /// death) into the saved copy.
+    fn sync_legacy(&mut self) {
+        let Some(run) = self.run.as_mut() else { return };
+        if let Some(earned) = run.finish() {
+            self.last_reward = Some(earned);
+        }
+        if run.legacy != self.legacy {
+            self.legacy = run.legacy.clone();
+            self.save_legacy();
+        }
     }
 
     /// Plays `GAME_MOVES`-style commands (see [`scripted_moves`]).
@@ -552,6 +602,7 @@ impl Labyrinth {
                 self.pointer(ui, rects, input);
             }
         }
+        self.sync_legacy();
         if self.game().character.gold != gold {
             ui.audio.push((
                 format!(
@@ -797,6 +848,9 @@ impl Labyrinth {
             Action::Leave => self.game_mut().leave_room(),
             Action::Buy(i) => {
                 self.game_mut().buy(i);
+            }
+            Action::Unlock(id) => {
+                self.game_mut().unlock(&id);
             }
             Action::BuyOrb(i) => {
                 self.game_mut().buy_orb(i);
@@ -1219,6 +1273,21 @@ mod tests {
             ..default()
         }
     }
+    #[test]
+    fn a_dead_run_pays_legacy_into_the_session_copy() {
+        let mut session = fixture(3, 4);
+        session.game_mut().mode = Mode::Dead;
+        session.sync_legacy();
+        let earned = megatower_sim::legacy::run_reward(4);
+        assert_eq!(session.last_reward, Some(earned));
+        assert_eq!(session.legacy.points, earned);
+        assert_eq!(session.legacy.best_floor, 4);
+        // Paid once, and a test session never writes the user's files.
+        session.sync_legacy();
+        assert_eq!(session.legacy.points, earned);
+        assert!(!session.persist);
+    }
+
     fn rects() -> Rects {
         Rects::from_layout(&megatower_assets::ui_layout::recovered_layout())
     }
