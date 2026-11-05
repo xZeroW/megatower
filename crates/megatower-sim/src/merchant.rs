@@ -5,6 +5,7 @@
 use crate::character::{Character, Loot};
 use crate::gems::{Gem, GemDb, GemRarity};
 use crate::loot::roll_gem;
+use crate::orbs::{Orb, random_orb};
 use crate::rng::Rng;
 use serde::{Deserialize, Serialize};
 
@@ -28,6 +29,21 @@ pub fn sell_price(db: &GemDb, gem: &Gem) -> u32 {
     ((f64::from(gem_price(db, gem)) * SELL_SHARE).round() as u32).max(1)
 }
 
+/// Gold for one crafting orb; prices creep up with depth.
+pub fn orb_price(orb: Orb, floor: u32) -> u32 {
+    let base = match orb {
+        Orb::Augment => 25.0,
+        Orb::Reforge => 35.0,
+        Orb::Relink => 40.0,
+        Orb::Regret => 50.0,
+        Orb::Ascend => 60.0,
+    };
+    (base * (1.0 + 0.15 * f64::from(floor.saturating_sub(1)))).round() as u32
+}
+
+/// Orbs on offer per merchant.
+pub const SHOP_ORBS: usize = 2;
+
 pub fn refresh_price(floor: u32, refreshes: u32) -> u32 {
     (4 + 2 * floor) * (refreshes + 1)
 }
@@ -46,6 +62,9 @@ pub struct Shop {
     pub locked: Vec<bool>,
     pub refreshes: u32,
     pub floor: u32,
+    /// Crafting orbs for sale; a refresh leaves them alone.
+    #[serde(default)]
+    pub orbs: Vec<Option<Orb>>,
 }
 
 impl Shop {
@@ -57,6 +76,15 @@ impl Shop {
             locked: vec![false; SHOP_SLOTS],
             refreshes: 0,
             floor,
+            orbs: (0..SHOP_ORBS)
+                .map(|_| {
+                    let mut orb = random_orb(rng);
+                    if floor < 2 && orb == Orb::Ascend {
+                        orb = Orb::Augment;
+                    }
+                    Some(orb)
+                })
+                .collect(),
         }
     }
 
@@ -89,6 +117,24 @@ impl Shop {
         if let Some(locked) = self.locked.get_mut(index) {
             *locked = !*locked;
         }
+    }
+
+    /// Buys the orb in slot `index` into the hero's stash.
+    pub fn buy_orb(&mut self, index: usize, character: &mut Character) -> Result<Orb, ShopError> {
+        let orb = self
+            .orbs
+            .get(index)
+            .copied()
+            .flatten()
+            .ok_or(ShopError::Empty)?;
+        let price = orb_price(orb, self.floor);
+        if character.gold < price {
+            return Err(ShopError::NotEnoughGold);
+        }
+        character.gold -= price;
+        character.orbs.add(orb, 1);
+        self.orbs[index] = None;
+        Ok(orb)
     }
 
     pub fn buy(
@@ -141,6 +187,21 @@ mod tests {
 
     fn db() -> &'static GemDb {
         &content::get().gems
+    }
+
+    #[test]
+    fn orbs_are_bought_once_with_gold() {
+        let mut rng = Rng::seeded(2);
+        let mut shop = Shop::new(3, &content::get().gems, &mut rng);
+        let mut hero = Character::new([]);
+        assert_eq!(shop.buy_orb(0, &mut hero), Err(ShopError::NotEnoughGold));
+        hero.gold = 1000;
+        let orb = shop.buy_orb(0, &mut hero).unwrap();
+        assert_eq!(hero.orbs.count(orb), 1);
+        assert_eq!(hero.gold, 1000 - orb_price(orb, 3));
+        assert_eq!(shop.buy_orb(0, &mut hero), Err(ShopError::Empty));
+        assert_eq!(shop.buy_orb(9, &mut hero), Err(ShopError::Empty));
+        assert!(orb_price(Orb::Ascend, 5) > orb_price(Orb::Ascend, 1));
     }
 
     #[test]

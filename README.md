@@ -29,6 +29,8 @@ reference/parity work: `MEGATOWER_LEGACY=1 cargo run -p megatower-client`.
   and bosses. Select a bag or worn item, then press 1 Reforge (reroll affixes), 2 Augment
   (add an affix), 3 Ascend (normal → magic → rare) or 4 Relink (reroll links). On the passive
   tree (P) select an allocated node and press R to spend a Regret orb and refund its point.
+- Merchants also sell two crafting orbs (buttons over the room view, or keys 1 and 2). Right-clicking
+  an allocated tree node to refund it now costs an Orb of Regret.
 - At a merchant, click stock to buy, right-click stock to lock it, and
   right-click bag gems to sell. At an altar, select a bag gem and upgrade it,
   or click a socketed gem below the equipment. Escape leaves room choices or

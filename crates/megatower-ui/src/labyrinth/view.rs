@@ -472,6 +472,22 @@ impl Labyrinth {
                     }
                 }
                 out.push(refresh);
+                if let Some(shop) = game.shop() {
+                    for (i, orb) in shop.orbs.iter().enumerate() {
+                        let Some(orb) = *orb else { continue };
+                        let price = megatower_sim::merchant::orb_price(orb, shop.floor);
+                        let mut c = choice(
+                            [340.0 + i as f32 * 150.0, 30.0, 140.0, 29.0],
+                            Action::BuyOrb(i),
+                            format!("{} {price}g [{}]", orb.short(), i + 1),
+                            orb.name(),
+                        );
+                        c.tip
+                            .extend([orb.describe().to_string(), format!("{price} gold")]);
+                        c.enabled = game.character.gold >= price;
+                        out.push(c);
+                    }
+                }
             }
             Mode::Shrine(offers) => {
                 out.push(icon(

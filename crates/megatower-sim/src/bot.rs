@@ -481,6 +481,19 @@ fn shop(run: &mut Run) {
     for i in wanted {
         run.buy(i);
     }
+    // Orbs the bot knows how to use, once the gems are paid for.
+    let orbs: Vec<usize> = run.shop().map_or_else(Vec::new, |shop| {
+        shop.orbs
+            .iter()
+            .enumerate()
+            .filter_map(|(i, o)| {
+                matches!(o, Some(Orb::Augment | Orb::Ascend | Orb::Relink)).then_some(i)
+            })
+            .collect()
+    });
+    for i in orbs {
+        run.buy_orb(i);
+    }
     manage(run);
 }
 

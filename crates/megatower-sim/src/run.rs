@@ -234,6 +234,14 @@ impl Run {
         result.is_ok()
     }
 
+    /// `true` if the orb was bought.
+    pub fn buy_orb(&mut self, index: usize) -> bool {
+        let Some(shop) = self.shops.get_mut(&self.floor.current) else {
+            return false;
+        };
+        shop.buy_orb(index, &mut self.character).is_ok()
+    }
+
     pub fn toggle_lock(&mut self, index: usize) {
         if let Some(shop) = self.shops.get_mut(&self.floor.current) {
             shop.toggle_lock(index);

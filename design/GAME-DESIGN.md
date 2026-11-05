@@ -187,6 +187,9 @@ gems and items), so selling is the main way to free room and get gold from extra
 - Rest, Treasure and plain Stairs resolve on entering; Merchant and Gem Altar resolve on
   entering but can be reopened by walking back in (the altar while it has uses).
 
+Each merchant also stocks 2 crafting orbs (25–60 gold, +15% per floor, Ascension from floor 2;
+bought once, not affected by refreshes).
+
 ### Loot
 - Rarity: Normal (0 affixes), Magic (1–2), Rare (3–6), Unique (fixed mods).
 - Affixes are prefixes/suffixes with tiers gated by item level (= floor depth).

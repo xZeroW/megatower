@@ -72,6 +72,7 @@ pub(super) enum Action {
     Descend,
     Leave,
     Buy(usize),
+    BuyOrb(usize),
     Refresh,
     Boon(usize),
     Event(usize),
@@ -724,6 +725,7 @@ impl Labyrinth {
                 Mode::Combat => Some(Action::Skill(i)),
                 Mode::Shrine(_) => Some(Action::Boon(i)),
                 Mode::Event { outcome: None, .. } => Some(Action::Event(i)),
+                Mode::Shop => Some(Action::BuyOrb(i)),
                 _ => None,
             };
             if let Some(action) = action {
@@ -796,6 +798,9 @@ impl Labyrinth {
             Action::Buy(i) => {
                 self.game_mut().buy(i);
             }
+            Action::BuyOrb(i) => {
+                self.game_mut().buy_orb(i);
+            }
             Action::Refresh => {
                 self.game_mut().refresh_shop();
             }
@@ -828,12 +833,9 @@ impl Labyrinth {
                 self.game_mut().allocate(&id);
             }
             Action::Refund(id) => {
-                // A refund that would cut off other nodes is simply refused.
-                let _ = self
-                    .game_mut()
-                    .character
-                    .progress
-                    .refund(&content::get().tree, &id);
+                // Costs an Orb of Regret; a refund that would cut off other
+                // nodes is refused and keeps the orb.
+                self.game_mut().regret(&id);
             }
         }
     }

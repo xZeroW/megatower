@@ -38,6 +38,17 @@ impl Orb {
         }
     }
 
+    /// A short label for buttons.
+    pub fn short(self) -> &'static str {
+        match self {
+            Orb::Reforge => "Reforge",
+            Orb::Augment => "Augment",
+            Orb::Ascend => "Ascend",
+            Orb::Relink => "Relink",
+            Orb::Regret => "Regret",
+        }
+    }
+
     pub fn describe(self) -> &'static str {
         match self {
             Orb::Reforge => "Rerolls all affixes of a magic or rare item.",
