@@ -373,18 +373,6 @@ impl Labyrinth {
                         "Choose this first skill gem",
                     ));
                 }
-                for (i, u) in game.legacy.available().iter().take(3).enumerate() {
-                    let short = u.name.split(" (").next().unwrap_or(u.name);
-                    let mut c = choice(
-                        [170.0 + i as f32 * 110.0, 300.0, 100.0, 29.0],
-                        Action::Unlock(u.id.to_string()),
-                        format!("{short} {}", u.cost),
-                        u.name,
-                    );
-                    c.tip.push(format!("{} Legacy", u.cost));
-                    c.enabled = game.legacy.points >= u.cost;
-                    out.push(c);
-                }
             }
             Mode::Map => {
                 for turn in [Turn::Ahead, Turn::Left, Turn::Back, Turn::Right] {
@@ -726,15 +714,6 @@ impl Labyrinth {
                 WHITE,
                 Align::Center,
             ));
-            out.push(text(
-                [120.0, 280.0, 400.0, 13.0],
-                format!(
-                    "Legacy {}  |  best floor {}  |  runs {}",
-                    game.legacy.points, game.legacy.best_floor, game.legacy.runs
-                ),
-                palette(8),
-                Align::Center,
-            ));
             for (i, id) in offers.iter().enumerate() {
                 let x = 194.0 + i as f32 * 110.0;
                 loot_draw(
@@ -789,11 +768,6 @@ impl Labyrinth {
                     palette(8),
                     Align::Center,
                 ));
-            }
-            for c in self.choices(rects) {
-                if matches!(c.action, Action::Unlock(_)) {
-                    compose::button(rects, c.rect, &c.label, c.icon, c.enabled, 4, &mut out);
-                }
             }
             return out;
         }

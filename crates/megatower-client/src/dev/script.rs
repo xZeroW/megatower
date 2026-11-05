@@ -101,7 +101,8 @@ fn apply_start_screen(ui: &mut UiState) {
     if screen != "menu"
         && !matches!(
             screen,
-            "profile"
+            "legacy"
+                | "profile"
                 | "profile-popup"
                 | "profile-records"
                 | "library"
@@ -133,6 +134,7 @@ fn apply_start_screen(ui: &mut UiState) {
                 _ => 0,
             };
         }
+        "legacy" => ui.legacy_open = true,
         "menu" => {}
         options => {
             ui.options_open = true;

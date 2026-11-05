@@ -406,20 +406,22 @@ pub enum MenuButton {
     EnterTheTower,
     Profile,
     Library,
+    Legacy,
     Options,
     Quit,
 }
 
-pub const MENU_BUTTONS: [(MenuButton, &str); 5] = [
+pub const MENU_BUTTONS: [(MenuButton, &str); 6] = [
     (MenuButton::EnterTheTower, "EnterTheTowerButton"),
     (MenuButton::Profile, "ProfileButton"),
     (MenuButton::Library, "LibraryButton"),
+    (MenuButton::Legacy, "WorkshopButton"),
     (MenuButton::Options, "OptionsButton"),
     (MenuButton::Quit, "QuitButton"),
 ];
 
 /// Buttons whose screens are not ported yet are drawn disabled.
-const MENU_DISABLED: [&str; 1] = ["WorkshopButton"];
+const MENU_DISABLED: [&str; 0] = [];
 
 pub fn main_menu_hit(layout: &Layout, x: f32, y: f32) -> Option<MenuButton> {
     MENU_BUTTONS.iter().find_map(|(b, name)| {

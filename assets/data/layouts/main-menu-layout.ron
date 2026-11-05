@@ -493,7 +493,7 @@
             region: None,
             margins: None,
             palette: Some(1),
-            text: Some("WORKSHOP"),
+            text: Some("LEGACY"),
             font_size: Some(16.0),
         ),
         (

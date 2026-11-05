@@ -15,7 +15,7 @@ pub(super) fn cue_for(ui: &UiState, slot: &GameSlot) -> MusicCue {
         path: path.to_owned(),
         fade: music::MENU_FADE_SECONDS,
     };
-    if ui.library_open || ui.profile_open {
+    if ui.library_open || ui.profile_open || ui.legacy_open {
         return menu(music::LIBRARY);
     }
     match (&slot.0, ui.screen) {

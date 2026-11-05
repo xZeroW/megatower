@@ -111,16 +111,6 @@ impl Run {
         offers
     }
 
-    /// Buys an unlock before the first pick; the offers are drawn again so a
-    /// new starter can show up at once.
-    pub fn unlock(&mut self, id: &str) -> bool {
-        if !matches!(self.mode, Mode::Starter(_)) || !self.legacy.buy(id) {
-            return false;
-        }
-        self.mode = Mode::Starter(Self::roll_offers(&self.legacy, &mut self.rng));
-        true
-    }
-
     /// Pays out Legacy points for a dead run, once; `None` while alive or
     /// already paid.
     pub fn finish(&mut self) -> Option<u32> {
@@ -595,20 +585,16 @@ mod tests {
 
         let mut legacy = run.legacy.clone();
         legacy.points = 100;
-        let mut next = Run::with_legacy(8, 1, legacy);
-        assert!(next.unlock("purse"));
-        assert!(!next.unlock("purse"));
-        for id in ["arc", "venom_dart", "frost_nova"] {
-            assert!(next.unlock(id));
+        for id in ["purse", "arc", "venom_dart", "frost_nova"] {
+            assert!(legacy.buy(id));
         }
+        let mut next = Run::with_legacy(8, 1, legacy);
         let Mode::Starter(offers) = &next.mode else {
             panic!("still choosing");
         };
         assert_eq!(offers.len(), STARTER_OFFERS);
         next.pick_starter(0);
         assert_eq!(next.character.gold, 40);
-        // Unlocks only sell before the pick.
-        assert!(!next.unlock("scholar"));
     }
 
     #[test]

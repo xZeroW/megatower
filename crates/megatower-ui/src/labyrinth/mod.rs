@@ -2,6 +2,7 @@
 //! megatower-sim to the existing HUD, widgets, timeline, audio and room renderer;
 //! it never creates or advances a Megatower `Game`.
 mod doors;
+mod legacy_menu;
 mod stats;
 mod view;
 
@@ -63,7 +64,7 @@ pub struct Labyrinth {
     policies: Option<megatower_core::combat::profile::StatusPolicies>,
     /// Meta progression, kept between runs; saved only when `persist` is on
     /// (the real app), so tests never touch the user's files.
-    legacy: megatower_sim::legacy::Legacy,
+    pub(super) legacy: megatower_sim::legacy::Legacy,
     persist: bool,
     last_reward: Option<u32>,
 }
@@ -78,7 +79,6 @@ pub(super) enum Action {
     Leave,
     Buy(usize),
     BuyOrb(usize),
-    Unlock(String),
     Refresh,
     Boon(usize),
     Event(usize),
@@ -428,7 +428,7 @@ impl Labyrinth {
         };
     }
 
-    fn save_legacy(&self) {
+    pub(super) fn save_legacy(&self) {
         if !self.persist {
             return;
         }
@@ -848,9 +848,6 @@ impl Labyrinth {
             Action::Leave => self.game_mut().leave_room(),
             Action::Buy(i) => {
                 self.game_mut().buy(i);
-            }
-            Action::Unlock(id) => {
-                self.game_mut().unlock(&id);
             }
             Action::BuyOrb(i) => {
                 self.game_mut().buy_orb(i);

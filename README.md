@@ -44,8 +44,8 @@ cargo test -p megatower-client -p megatower-ui -p megatower-sim
 
 ### Meta progression
 
-Dying pays Legacy points (1, plus 3 per floor beaten and 5 per boss). On the starter screen,
-spend them on unlocks: Arc, Venom Dart and Frost Nova join the offered starter gems, and Purse,
+Dying pays Legacy points (1, plus 3 per floor beaten and 5 per boss). On the main menu's
+Legacy screen, spend them on unlocks: Arc, Venom Dart and Frost Nova join the offered starter gems, and Purse,
 Hoarder, Alchemist and Scholar give a head start (gold, orbs, a passive point). Legacy is saved
 to `legacy.json` beside the profile.
 
