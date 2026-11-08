@@ -946,6 +946,7 @@ impl Labyrinth {
                 ));
             }
         }
+        compose::flash_draws(ui, rects.room_frame, &mut out);
         compose::vfx_draws(ui, &mut out);
         compose::popup_draws(ui, &mut out);
         if let Some(cursor) = ui.cursor {

@@ -2039,6 +2039,28 @@ fn unit(seed: u32, salt: u32) -> f32 {
 }
 
 /// `PhysicalImpactEffect`, `MagicImpactEffect` and `DeathParticles`.
+/// The screen flash over the room: red for damage, grey for stuns, gold for
+/// crits and payoffs.
+pub(crate) fn flash_draws(ui: &UiState, rect: [f32; 4], out: &mut Vec<Draw>) {
+    if let Some((kind, at)) = ui.flash {
+        let age = (ui.time - at) as f32;
+        if age < 0.5 {
+            let color = match kind {
+                megatower_core::run::events::FlashKind::Damage => {
+                    [1.0, 0.0, 0.0, 0.3 * (1.0 - age / 0.5)]
+                }
+                megatower_core::run::events::FlashKind::Gold => {
+                    [1.0, 0.75, 0.24, 0.25 * (1.0 - age / 0.5)]
+                }
+                megatower_core::run::events::FlashKind::Stun => {
+                    [0.6, 0.6, 0.6, 0.4 * (1.0 - age / 0.5)]
+                }
+            };
+            out.push(Draw::Fill { rect: rect, color });
+        }
+    }
+}
+
 pub(crate) fn vfx_draws(ui: &UiState, out: &mut Vec<Draw>) {
     for vfx in &ui.vfx {
         let age = (ui.time - vfx.at) as f32;
@@ -3116,26 +3138,7 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         }
     }
 
-    if let Some((kind, at)) = ui.flash {
-        let age = (ui.time - at) as f32;
-        if age < 0.5 {
-            let color = match kind {
-                megatower_core::run::events::FlashKind::Damage => {
-                    [1.0, 0.0, 0.0, 0.3 * (1.0 - age / 0.5)]
-                }
-                megatower_core::run::events::FlashKind::Gold => {
-                    [1.0, 0.75, 0.24, 0.25 * (1.0 - age / 0.5)]
-                }
-                megatower_core::run::events::FlashKind::Stun => {
-                    [0.6, 0.6, 0.6, 0.4 * (1.0 - age / 0.5)]
-                }
-            };
-            out.push(Draw::Fill {
-                rect: rects.room_frame,
-                color,
-            });
-        }
-    }
+    flash_draws(ui, rects.room_frame, &mut out);
     if let Some((msg, until)) = &ui.message
         && ui.time < *until
     {

@@ -520,7 +520,7 @@ fn popups_for(event: &CombatEvent, share: f64) -> Vec<(Actor, Popup)> {
         } => vec![(
             Actor::Enemy(i),
             icon(
-                Popup::callout("SLAIN", hex(0xe8d8a0), 1.4, 40.0),
+                Popup::callout("SLAIN", hex(0xe8d8a0), 1.4, 58.0),
                 "assets/textures/icons/dread.png",
             ),
         )],
