@@ -1531,9 +1531,7 @@ mod tests {
         let gem = Loot::Gem(Gem::new("shatter", 1, GemRarity::Common));
         let lines = tip_lines(&gem);
         assert!(
-            lines
-                .iter()
-                .any(|l| l.starts_with("Cashes in Freeze")),
+            lines.iter().any(|l| l.starts_with("Cashes in Freeze")),
             "{lines:?}"
         );
         let plain = tip_lines(&Loot::Gem(Gem::new("fireball", 1, GemRarity::Common)));

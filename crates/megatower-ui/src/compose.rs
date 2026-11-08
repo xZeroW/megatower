@@ -2442,16 +2442,11 @@ fn enemy_visuals(
 
     // Status effects flow above the stats panel (`EffectContainerHolder`).
     let mut x = ox;
-    let y = oy + l.rect("MarginContainer3/EffectContainerHolder")[1] - 3.0;
+    let y = oy + l.rect("MarginContainer3/EffectContainerHolder")[1] - 12.0;
     for status in v.statuses.iter().take(5) {
         let policy = policies.get(status.resource);
         let amount = number(status.amount);
         let width = 17.0 + amount.chars().count() as f32 * CHAR_W;
-        // A dark pill keeps the badge readable over the room.
-        out.push(Draw::Fill {
-            rect: [x - 1.0, y - 1.0, width + 2.0, 16.0],
-            color: [0.04, 0.05, 0.1, 0.8],
-        });
         if let Some(icon) = &policy.icon {
             out.push(tinted([x, y, 14.0, 14.0], icon, policy.color));
         }
