@@ -2442,7 +2442,14 @@ fn enemy_visuals(
 
     // Status effects flow above the stats panel (`EffectContainerHolder`).
     let mut x = ox;
-    let y = oy + l.rect("MarginContainer3/EffectContainerHolder")[1] + 2.0;
+    // The panel is taller by the armor row when the enemy has armor.
+    let armor_row = if v.max_armor > 0.0 {
+        l.rect("HealthBar/HBoxContainer/MarginContainer/BackPanel")[1]
+            - l.rect("ArmorBar/HBoxContainer/MarginContainer/BackPanel")[1]
+    } else {
+        0.0
+    };
+    let y = oy + l.rect("MarginContainer3/EffectContainerHolder")[1] + 2.0 - armor_row;
     for status in v.statuses.iter().take(5) {
         let policy = policies.get(status.resource);
         let amount = number(status.amount);
