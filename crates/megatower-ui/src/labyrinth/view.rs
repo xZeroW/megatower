@@ -1533,7 +1533,7 @@ mod tests {
         assert!(
             lines
                 .iter()
-                .any(|l| l.starts_with("Cashes in Chill or Freeze")),
+                .any(|l| l.starts_with("Cashes in Freeze")),
             "{lines:?}"
         );
         let plain = tip_lines(&Loot::Gem(Gem::new("fireball", 1, GemRarity::Common)));
