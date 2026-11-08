@@ -147,6 +147,17 @@ pub enum Fx {
     HeartParticles,
     ScreenFlash(FlashKind),
     CameraShake,
+    /// The enemy sprite tints this colour, fading in a third of a second.
+    EnemyFlash {
+        enemy_idx: usize,
+        color: Rgba,
+    },
+    /// A burst of sparks on the enemy in this colour.
+    Burst {
+        enemy_idx: usize,
+        color: Rgba,
+        big: bool,
+    },
     Log(LogEntry),
     RoomChanged,
     /// `GameplayScreenTransition.start/end`: the diamond wipe over the room

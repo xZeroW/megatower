@@ -946,6 +946,7 @@ impl Labyrinth {
                 ));
             }
         }
+        compose::vfx_draws(ui, &mut out);
         compose::popup_draws(ui, &mut out);
         if let Some(cursor) = ui.cursor {
             if let Some(c) = choices

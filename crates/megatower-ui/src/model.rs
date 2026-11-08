@@ -255,6 +255,8 @@ pub enum VfxKind {
     AbilityCast,
     Cinder,
     Hearts,
+    /// Sparks flying out of a hit; `seed` of 1 is the big one.
+    Burst,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -364,6 +366,8 @@ pub struct UiState {
     /// `ResourceBar` motion (main fill, trailing "under" fill) per bar.
     pub bars: std::collections::HashMap<BarKey, TrackedBar>,
     pub enemy_dodge: [f64; 16],
+    /// When and in what colour each enemy was last flashed.
+    pub enemy_flash: [(f64, [f32; 4]); 16],
     pub selected_adventurer: usize,
     pub message: Option<(String, f64)>,
     /// `EscMenuScreen` visible (the gameplay canvas is hidden and paused).
@@ -415,6 +419,7 @@ impl Default for UiState {
             enemy_lunge: [-10.0; 16],
             bars: Default::default(),
             enemy_dodge: [-10.0; 16],
+            enemy_flash: [(-10.0, [1.0; 4]); 16],
             selected_adventurer: 0,
             message: None,
             esc_open: false,

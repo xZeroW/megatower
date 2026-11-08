@@ -425,24 +425,33 @@ fn popups_for(event: &CombatEvent, share: f64) -> Vec<(Actor, Popup)> {
             let mut popup = icon(Popup::new(number(damage), hex(color)), path);
             let mut out = Vec::new();
             if damage <= 0.0 {
-                popup = Popup::callout("BLOCKED", hex(0xb8c4d8), 1.25, 0.0);
+                popup = icon(
+                    Popup::callout("BLOCKED", hex(0xb8c4d8), 1.25, 0.0),
+                    "assets/textures/icons/guard_icon.png",
+                );
             } else if crit {
                 popup.size = 2.0;
                 popup.punch = 0.5;
                 popup.hold = 0.2;
                 out.push((
                     target,
-                    Popup::callout("CRITICAL!", hex(0xffd23f), 1.5, 28.0),
+                    icon(
+                        Popup::callout("CRITICAL!", hex(0xffd23f), 1.5, 34.0),
+                        "assets/textures/icons/execution_icon.png",
+                    ),
                 ));
             } else if damage > 0.0 && share >= BIG_HIT_SHARE {
                 popup.size = 1.5;
                 popup.punch = 0.4;
-                let (word, color) = if target == Actor::Hero {
-                    ("OUCH!", 0xff4d4d)
+                let (word, color, path) = if target == Actor::Hero {
+                    ("OUCH!", 0xff4d4d, "assets/textures/icons/fury_icon.png")
                 } else {
-                    ("MASSIVE!", 0xff9a3d)
+                    ("MASSIVE!", 0xff9a3d, "assets/textures/icons/power_icon.png")
                 };
-                out.push((target, Popup::callout(word, hex(color), 1.4, 28.0)));
+                out.push((
+                    target,
+                    icon(Popup::callout(word, hex(color), 1.4, 40.0), path),
+                ));
             }
             out.insert(0, (target, popup));
             out
@@ -456,26 +465,32 @@ fn popups_for(event: &CombatEvent, share: f64) -> Vec<(Actor, Popup)> {
             vec![(target, icon(Popup::new(number(damage), hex(color)), path))]
         }
         CombatEvent::Inflict { target, ailment } => {
-            let (color, _) = ailment_look(ailment);
+            let (color, path) = ailment_look(ailment);
             vec![(
                 target,
-                Popup::callout(
-                    ailment_word(ailment),
-                    hex(color),
-                    1.25,
-                    // Ailments that land together stack instead of overprinting.
-                    match ailment {
-                        megatower_sim::ailment::Ailment::Freeze => 18.0,
-                        megatower_sim::ailment::Ailment::Shock
-                        | megatower_sim::ailment::Ailment::Poison => 9.0,
-                        _ => 0.0,
-                    },
+                icon(
+                    Popup::callout(
+                        ailment_word(ailment),
+                        hex(color),
+                        1.25,
+                        // Ailments that land together stack instead of overprinting.
+                        match ailment {
+                            megatower_sim::ailment::Ailment::Freeze => 24.0,
+                            megatower_sim::ailment::Ailment::Shock
+                            | megatower_sim::ailment::Ailment::Poison => 12.0,
+                            _ => 0.0,
+                        },
+                    ),
+                    path,
                 ),
             )]
         }
         CombatEvent::Dodge { target } => vec![(
             target,
-            Popup::callout("DODGE", crate::compose::palette(8), 1.25, 0.0),
+            icon(
+                Popup::callout("DODGE", crate::compose::palette(8), 1.25, 0.0),
+                "assets/textures/icons/elusive_icon.png",
+            ),
         )],
         CombatEvent::Heal { actor, amount } if amount >= 0.5 => vec![(
             actor,
@@ -483,36 +498,51 @@ fn popups_for(event: &CombatEvent, share: f64) -> Vec<(Actor, Popup)> {
         )],
         CombatEvent::Guard { actor, armour } if armour >= 0.5 => vec![(
             actor,
-            Popup::callout(
-                format!("+{} GUARD", number(armour)),
-                hex(0x7fb2ff),
-                1.1,
-                0.0,
+            icon(
+                Popup::callout(
+                    format!("+{} GUARD", number(armour)),
+                    hex(0x7fb2ff),
+                    1.1,
+                    0.0,
+                ),
+                "assets/textures/icons/guard_icon.png",
             ),
         )],
         CombatEvent::Frozen { actor } => vec![(
             actor,
-            Popup::callout("FROZEN SOLID", hex(0x5aa6ff), 1.4, 30.0),
+            icon(
+                Popup::callout("FROZEN SOLID", hex(0x5aa6ff), 1.4, 44.0),
+                "assets/textures/icons/freeze_icon.png",
+            ),
         )],
         CombatEvent::Death {
             actor: Actor::Enemy(i),
         } => vec![(
             Actor::Enemy(i),
-            Popup::callout("SLAIN", hex(0xe8d8a0), 1.4, 28.0),
+            icon(
+                Popup::callout("SLAIN", hex(0xe8d8a0), 1.4, 40.0),
+                "assets/textures/icons/dread.png",
+            ),
         )],
         CombatEvent::Repeat => vec![(
             Actor::Hero,
-            Popup::callout("REPEAT!", hex(0xffe14d), 1.4, 10.0),
+            icon(
+                Popup::callout("REPEAT!", hex(0xffe14d), 1.4, 10.0),
+                "assets/textures/icons/extra_attack_icon.png",
+            ),
         )],
         CombatEvent::Payoff { target, ailment } => {
-            let (color, _) = ailment_look(ailment);
+            let (color, path) = ailment_look(ailment);
             vec![(
                 target,
-                Popup::callout(
-                    megatower_sim::describe::payoff_word(ailment),
-                    hex(color),
-                    2.0,
-                    32.0,
+                icon(
+                    Popup::callout(
+                        megatower_sim::describe::payoff_word(ailment),
+                        hex(color),
+                        2.0,
+                        44.0,
+                    ),
+                    path,
                 ),
             )]
         }
@@ -1226,6 +1256,42 @@ impl Labyrinth {
                     }),
                 }
             }
+            // Sparks and a colour flash on the enemy for the moments that matter.
+            let gold = [1.0, 0.82, 0.25, 1.0];
+            let mut spark = |i: usize, color: [f32; 4], big: bool| {
+                fx.push(Fx::EnemyFlash {
+                    enemy_idx: i,
+                    color,
+                });
+                fx.push(Fx::Burst {
+                    enemy_idx: i,
+                    color,
+                    big,
+                });
+            };
+            match &event {
+                CombatEvent::Hit {
+                    crit: true,
+                    target: Actor::Enemy(i),
+                    ..
+                } => spark(*i, gold, true),
+                CombatEvent::Payoff {
+                    target: Actor::Enemy(i),
+                    ailment,
+                } => spark(*i, crate::compose::hex(ailment_look(*ailment).0), true),
+                CombatEvent::Inflict {
+                    target: Actor::Enemy(i),
+                    ailment,
+                } => spark(*i, crate::compose::hex(ailment_look(*ailment).0), false),
+                CombatEvent::Hit {
+                    target: Actor::Enemy(i),
+                    damage,
+                    ..
+                } if *damage > 0.0 && share >= BIG_HIT_SHARE => {
+                    spark(*i, [1.0, 0.6, 0.24, 1.0], false)
+                }
+                _ => {}
+            }
             // Screen feedback for the moments that matter.
             match &event {
                 CombatEvent::Hit {
@@ -1268,12 +1334,15 @@ impl Labyrinth {
                         let line = v.max_health * 0.25;
                         if target == Actor::Hero && was >= line && v.health < line && v.health > 0.0
                         {
-                            fx.push(Fx::Popup(Popup::callout(
-                                "DANGER!",
-                                crate::compose::hex(0xff4d4d),
-                                1.6,
-                                30.0,
-                            )));
+                            fx.push(Fx::Popup(Popup {
+                                left_icon: Some("assets/textures/icons/fear_icon.png".into()),
+                                ..Popup::callout(
+                                    "DANGER!",
+                                    crate::compose::hex(0xff4d4d),
+                                    1.6,
+                                    30.0,
+                                )
+                            }));
                         }
                     }
                     if let (Actor::Enemy(i), CombatEvent::Hit { .. }) = (target, &event) {
@@ -1423,6 +1492,27 @@ impl Labyrinth {
             }
             Fx::EnemyDodge { enemy_idx } => {
                 ui.enemy_dodge[enemy_idx.min(crate::compose::ENEMY_SLOTS - 1)] = ui.time
+            }
+            Fx::EnemyFlash { enemy_idx, color } => {
+                ui.enemy_flash[enemy_idx.min(crate::compose::ENEMY_SLOTS - 1)] = (ui.time, color)
+            }
+            Fx::Burst {
+                enemy_idx,
+                color,
+                big,
+            } => {
+                let cx = ui
+                    .timeline
+                    .frame
+                    .as_ref()
+                    .map_or(474.0, |f| crate::frame::enemy_cx(f, enemy_idx));
+                ui.vfx.push(crate::model::LiveVfx {
+                    kind: crate::model::VfxKind::Burst,
+                    at: ui.time,
+                    cx,
+                    seed: u32::from(big),
+                    color,
+                });
             }
             Fx::ScreenFlash(kind) => ui.flash = Some((kind, ui.time)),
             Fx::CameraShake => {

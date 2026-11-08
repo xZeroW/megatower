@@ -2039,7 +2039,7 @@ fn unit(seed: u32, salt: u32) -> f32 {
 }
 
 /// `PhysicalImpactEffect`, `MagicImpactEffect` and `DeathParticles`.
-fn vfx_draws(ui: &UiState, out: &mut Vec<Draw>) {
+pub(crate) fn vfx_draws(ui: &UiState, out: &mut Vec<Draw>) {
     for vfx in &ui.vfx {
         let age = (ui.time - vfx.at) as f32;
         let (cx, cy) = (vfx.cx, ENEMY_TOP + 36.0);
@@ -2095,6 +2095,35 @@ fn vfx_draws(ui: &UiState, out: &mut Vec<Draw>) {
                     "assets/vfx/star_08.png",
                     [0.637_481, 0.641_771, 0.986_377, 1.0],
                 ));
+            }
+            VfxKind::Burst if age < 0.6 => {
+                let big = vfx.seed == 1;
+                let t = age / 0.6;
+                // A flare at the point of impact, then sparks flying out.
+                let flare = (if big { 150.0 } else { 90.0 }) * (1.0 - t).powi(2);
+                out.push(tinted(
+                    [cx - flare / 2.0, cy - flare / 2.0, flare, flare],
+                    "assets/vfx/star_02.png",
+                    [vfx.color[0], vfx.color[1], vfx.color[2], 0.8 * (1.0 - t)],
+                ));
+                let count = if big { 14 } else { 8 };
+                for i in 0..count as u32 {
+                    let angle =
+                        (i as f32 / count as f32) * std::f32::consts::TAU + unit(i + 3, 5) * 0.6;
+                    let speed = 30.0 + 40.0 * unit(i + 3, 9);
+                    let dist = speed * (1.0 - (1.0 - t).powi(2));
+                    let size = 10.0 * (1.0 - t * 0.6);
+                    out.push(tinted(
+                        [
+                            cx + angle.cos() * dist - size / 2.0,
+                            cy + angle.sin() * dist - size / 2.0 + t * 8.0,
+                            size,
+                            size,
+                        ],
+                        "assets/textures/particles/star.png",
+                        [vfx.color[0], vfx.color[1], vfx.color[2], 1.0 - t * t],
+                    ));
+                }
             }
             VfxKind::DeathDust => {
                 for i in 0..25u32 {
@@ -2309,8 +2338,14 @@ fn enemy_visuals(
     let (tw, th) = texture_size(&texture);
     let frames = ((th / 64.0).floor() as i64).max(1);
     let frame_y = (((ui.time / 0.2).floor() as i64).rem_euclid(frames)) as f32 * 64.0;
+    let (flash_at, flash) = ui.enemy_flash[idx.min(ENEMY_SLOTS - 1)];
+    let flash_k = (1.0 - (ui.time - flash_at) as f32 / 0.35).clamp(0.0, 1.0);
     let tint = if view.out_of_combat {
         [1.0, 1.0, 1.0, 0.0]
+    } else if flash_k > 0.0 {
+        // Solid colour at the hit, easing back to the sprite's own.
+        let mix = |c: f32| 1.0 + (c - 1.0) * flash_k;
+        [mix(flash[0]), mix(flash[1]), mix(flash[2]), 1.0]
     } else {
         WHITE
     };
@@ -2385,20 +2420,26 @@ fn enemy_visuals(
 
     // Status effects flow above the stats panel (`EffectContainerHolder`).
     let mut x = ox;
-    let y = oy + l.rect("MarginContainer3/EffectContainerHolder")[1] - 14.0;
+    let y = oy + l.rect("MarginContainer3/EffectContainerHolder")[1] - 3.0;
     for status in v.statuses.iter().take(5) {
         let policy = policies.get(status.resource);
-        if let Some(icon) = &policy.icon {
-            out.push(tinted([x, y, 12.0, 12.0], icon, policy.color));
-        }
         let amount = number(status.amount);
+        let width = 17.0 + amount.chars().count() as f32 * CHAR_W;
+        // A dark pill keeps the badge readable over the room.
+        out.push(Draw::Fill {
+            rect: [x - 1.0, y - 1.0, width + 2.0, 16.0],
+            color: [0.04, 0.05, 0.1, 0.8],
+        });
+        if let Some(icon) = &policy.icon {
+            out.push(tinted([x, y, 14.0, 14.0], icon, policy.color));
+        }
         out.push(text(
-            [x + 13.0, y, 24.0, 13.0],
-            amount.clone(),
+            [x + 15.0, y + 1.0, 24.0, 13.0],
+            amount,
             policy.color,
             Align::Left,
         ));
-        x += 14.0 + amount.chars().count() as f32 * CHAR_W + 3.0;
+        x += width + 4.0;
     }
 
     if view.selected && !view.out_of_combat {
@@ -2474,7 +2515,12 @@ pub fn popup_draws(ui: &UiState, out: &mut Vec<Draw>) {
         let scale = popup.popup.size * (1.0 + popup.popup.punch * (1.0 - ease_out(age / 0.12)));
         let size = 16.0 * scale;
         let text_w = popup.popup.text.chars().count() as f32 * CHAR_W * scale;
-        let icon_w = 9.0 * scale.min(1.0);
+        // Callouts carry an icon as big as their letters.
+        let icon_w = if popup.popup.punch > 0.0 {
+            12.0 * scale
+        } else {
+            9.0 * scale.min(1.0)
+        };
         let icons = [&popup.popup.left_icon, &popup.popup.right_icon];
         let icon_count =
             icons.iter().filter(|i| i.is_some()).count() as f32 + f32::from(popup.popup.lucky);
