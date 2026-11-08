@@ -304,7 +304,9 @@ fn win_popups(before: &Gains, character: &megatower_sim::character::Character) -
             format!("Level {}", character.progress.level),
             crate::compose::palette(8),
         );
-        popup.size = 1.5;
+        popup.size = 2.0;
+        popup.punch = 0.6;
+        popup.hold = 0.5;
         popups.push(popup);
     }
     if character.orbs.total() > before.orbs {
@@ -385,10 +387,27 @@ fn ailment_look(ailment: megatower_sim::ailment::Ailment) -> (u32, &'static str)
     }
 }
 
+/// How much of its life a hit takes, for the "big hit" callout.
+const BIG_HIT_SHARE: f64 = 0.3;
+
+fn ailment_word(ailment: megatower_sim::ailment::Ailment) -> &'static str {
+    use megatower_sim::ailment::Ailment as A;
+    match ailment {
+        A::Ignite => "IGNITED!",
+        A::Bleed => "BLEEDING!",
+        A::Poison => "POISONED!",
+        A::Shock => "SHOCKED!",
+        A::Chill => "CHILLED!",
+        A::Freeze => "FROZEN!",
+    }
+}
+
 /// The floating text a combat event shows, and who it floats over: damage in
-/// its type's colour and icon (crits at double size), burn and bleed ticks,
-/// dodges, heals, freezes and repeats.
-fn popup_for(event: &CombatEvent) -> Option<(Actor, Popup)> {
+/// its type's colour and icon, burn and bleed ticks, dodges, heals, freezes
+/// and repeats, plus big callouts on the moments that matter: critical hits,
+/// hits that take a third of a life, new ailments, payoffs. `share` is the
+/// hit's size against the target's maximum life.
+fn popups_for(event: &CombatEvent, share: f64) -> Vec<(Actor, Popup)> {
     let hex = crate::compose::hex;
     let number = |v: f64| format!("{:.0}", v.max(0.0).ceil());
     let icon = |popup: Popup, path: &str| Popup {
@@ -404,10 +423,29 @@ fn popup_for(event: &CombatEvent) -> Option<(Actor, Popup)> {
         } => {
             let (color, path) = damage_look(kind);
             let mut popup = icon(Popup::new(number(damage), hex(color)), path);
-            if crit {
+            let mut out = Vec::new();
+            if damage <= 0.0 {
+                popup = Popup::callout("BLOCKED", hex(0xb8c4d8), 1.25, 0.0);
+            } else if crit {
                 popup.size = 2.0;
+                popup.punch = 0.5;
+                popup.hold = 0.2;
+                out.push((
+                    target,
+                    Popup::callout("CRITICAL!", hex(0xffd23f), 1.5, 28.0),
+                ));
+            } else if damage > 0.0 && share >= BIG_HIT_SHARE {
+                popup.size = 1.5;
+                popup.punch = 0.4;
+                let (word, color) = if target == Actor::Hero {
+                    ("OUCH!", 0xff4d4d)
+                } else {
+                    ("MASSIVE!", 0xff9a3d)
+                };
+                out.push((target, Popup::callout(word, hex(color), 1.4, 28.0)));
             }
-            Some((target, popup))
+            out.insert(0, (target, popup));
+            out
         }
         CombatEvent::Dot {
             target,
@@ -415,24 +453,70 @@ fn popup_for(event: &CombatEvent) -> Option<(Actor, Popup)> {
             damage,
         } => {
             let (color, path) = ailment_look(ailment);
-            Some((target, icon(Popup::new(number(damage), hex(color)), path)))
+            vec![(target, icon(Popup::new(number(damage), hex(color)), path))]
         }
-        CombatEvent::Dodge { target } => {
-            Some((target, Popup::new("Dodge", crate::compose::palette(8))))
+        CombatEvent::Inflict { target, ailment } => {
+            let (color, _) = ailment_look(ailment);
+            vec![(
+                target,
+                Popup::callout(
+                    ailment_word(ailment),
+                    hex(color),
+                    1.25,
+                    // Ailments that land together stack instead of overprinting.
+                    match ailment {
+                        megatower_sim::ailment::Ailment::Freeze => 18.0,
+                        megatower_sim::ailment::Ailment::Shock
+                        | megatower_sim::ailment::Ailment::Poison => 9.0,
+                        _ => 0.0,
+                    },
+                ),
+            )]
         }
-        CombatEvent::Heal { actor, amount } if amount >= 0.5 => Some((
+        CombatEvent::Dodge { target } => vec![(
+            target,
+            Popup::callout("DODGE", crate::compose::palette(8), 1.25, 0.0),
+        )],
+        CombatEvent::Heal { actor, amount } if amount >= 0.5 => vec![(
             actor,
             Popup::new(format!("+{}", number(amount)), hex(0x7ccf3b)),
-        )),
-        CombatEvent::Frozen { actor } => Some((actor, Popup::new("Frozen", hex(0x5aa6ff)))),
-        CombatEvent::Repeat => Some((Actor::Hero, Popup::new("Repeat", hex(0xffe14d)))),
+        )],
+        CombatEvent::Guard { actor, armour } if armour >= 0.5 => vec![(
+            actor,
+            Popup::callout(
+                format!("+{} GUARD", number(armour)),
+                hex(0x7fb2ff),
+                1.1,
+                0.0,
+            ),
+        )],
+        CombatEvent::Frozen { actor } => vec![(
+            actor,
+            Popup::callout("FROZEN SOLID", hex(0x5aa6ff), 1.4, 30.0),
+        )],
+        CombatEvent::Death {
+            actor: Actor::Enemy(i),
+        } => vec![(
+            Actor::Enemy(i),
+            Popup::callout("SLAIN", hex(0xe8d8a0), 1.4, 28.0),
+        )],
+        CombatEvent::Repeat => vec![(
+            Actor::Hero,
+            Popup::callout("REPEAT!", hex(0xffe14d), 1.4, 10.0),
+        )],
         CombatEvent::Payoff { target, ailment } => {
             let (color, _) = ailment_look(ailment);
-            let mut popup = Popup::new(megatower_sim::describe::payoff_word(ailment), hex(color));
-            popup.size = 1.5;
-            Some((target, popup))
+            vec![(
+                target,
+                Popup::callout(
+                    megatower_sim::describe::payoff_word(ailment),
+                    hex(color),
+                    2.0,
+                    32.0,
+                ),
+            )]
         }
-        _ => None,
+        _ => Vec::new(),
     }
 }
 
@@ -481,6 +565,10 @@ impl Labyrinth {
             policies: Some(megatower_core::combat::profile::StatusPolicies::recovered()),
             ..default()
         };
+        // QA: `GAME_STARTER=frost_nova` starts with that gem, offered or not.
+        if let (Ok(gem), Some(run)) = (std::env::var("GAME_STARTER"), self.run.as_mut()) {
+            run.start_with(&gem);
+        }
     }
 
     pub(super) fn save_legacy(&self) {
@@ -1118,7 +1206,18 @@ impl Labyrinth {
             self.log.push(event_line(&event, &names));
             let critical = matches!(&event, CombatEvent::Hit { crit: true, .. });
             let mut fx = Vec::new();
-            if let Some((actor, popup)) = popup_for(&event) {
+            let share = match &event {
+                CombatEvent::Hit { target, damage, .. } => actor_vitals(*target, &mut frame)
+                    .map_or(0.0, |v| {
+                        if v.max_health > 0.0 {
+                            damage / v.max_health
+                        } else {
+                            0.0
+                        }
+                    }),
+                _ => 0.0,
+            };
+            for (actor, popup) in popups_for(&event, share) {
                 match actor {
                     Actor::Hero => fx.push(Fx::Popup(popup)),
                     Actor::Enemy(i) => fx.push(Fx::EnemyPopup {
@@ -1127,11 +1226,55 @@ impl Labyrinth {
                     }),
                 }
             }
+            // Screen feedback for the moments that matter.
+            match &event {
+                CombatEvent::Hit {
+                    crit: true,
+                    target: Actor::Enemy(_),
+                    ..
+                }
+                | CombatEvent::Payoff {
+                    target: Actor::Enemy(_),
+                    ..
+                } => {
+                    fx.push(Fx::ScreenFlash(
+                        megatower_core::run::events::FlashKind::Gold,
+                    ));
+                    fx.push(Fx::CameraShake);
+                }
+                CombatEvent::Hit {
+                    target: Actor::Hero,
+                    damage,
+                    ..
+                } if *damage > 0.0 && share >= BIG_HIT_SHARE => {
+                    fx.push(Fx::ScreenFlash(
+                        megatower_core::run::events::FlashKind::Damage,
+                    ));
+                    fx.push(Fx::CameraShake);
+                }
+                CombatEvent::Frozen { actor: Actor::Hero } => {
+                    fx.push(Fx::ScreenFlash(
+                        megatower_core::run::events::FlashKind::Stun,
+                    ));
+                }
+                _ => {}
+            }
             match event {
                 CombatEvent::Hit { target, damage, .. }
                 | CombatEvent::Dot { target, damage, .. } => {
                     if let Some(v) = actor_vitals(target, &mut frame) {
+                        let was = v.health;
                         v.health = (v.health - damage).max(0.0).ceil();
+                        let line = v.max_health * 0.25;
+                        if target == Actor::Hero && was >= line && v.health < line && v.health > 0.0
+                        {
+                            fx.push(Fx::Popup(Popup::callout(
+                                "DANGER!",
+                                crate::compose::hex(0xff4d4d),
+                                1.6,
+                                30.0,
+                            )));
+                        }
                     }
                     if let (Actor::Enemy(i), CombatEvent::Hit { .. }) = (target, &event) {
                         fx.push(Fx::PlayerAttack { enemy_idx: i });
@@ -1221,11 +1364,18 @@ impl Labyrinth {
                 }),
                 _ => {}
             }
-            timed.push(Timed {
+            let frame_fx = Timed {
                 at,
                 fx: Fx::Frame(Box::new(frame.clone())),
-            });
-            timed.extend(fx.into_iter().map(|fx| Timed { at, fx }));
+            };
+            // A death's text anchors on the enemy's slot before it empties.
+            if matches!(event, CombatEvent::Death { .. }) {
+                timed.extend(fx.into_iter().map(|fx| Timed { at, fx }));
+                timed.push(frame_fx);
+            } else {
+                timed.push(frame_fx);
+                timed.extend(fx.into_iter().map(|fx| Timed { at, fx }));
+            }
             at += 0.16;
         }
         if self.game().battle.as_ref().is_some_and(|b| {
@@ -1274,6 +1424,12 @@ impl Labyrinth {
             Fx::EnemyDodge { enemy_idx } => {
                 ui.enemy_dodge[enemy_idx.min(crate::compose::ENEMY_SLOTS - 1)] = ui.time
             }
+            Fx::ScreenFlash(kind) => ui.flash = Some((kind, ui.time)),
+            Fx::CameraShake => {
+                if ui.options_ui.options.screen_shake {
+                    ui.shake_until = ui.time + 0.25
+                }
+            }
             Fx::Sfx { name, volume_db } => {
                 ui.audio.push((format!("assets/sfx/{name}.wav"), volume_db))
             }
@@ -1313,10 +1469,12 @@ mod tests {
             crit: true,
             kind: DamageType::Fire,
         };
-        let (actor, popup) = popup_for(&hit).unwrap();
+        let shown = popups_for(&hit, 0.0);
+        let (actor, popup) = shown[0].clone();
         assert_eq!(actor, Actor::Enemy(1));
         assert_eq!(popup.text, "13");
         assert_eq!(popup.size, 2.0, "crits are double size");
+        assert_eq!(shown[1].1.text, "CRITICAL!", "and are called out");
         assert!(popup.left_icon.unwrap().contains("magma"));
         assert_eq!(popup.color, crate::compose::hex(0xff8a30));
         let tick = CombatEvent::Dot {
@@ -1324,7 +1482,7 @@ mod tests {
             ailment: megatower_sim::ailment::Ailment::Bleed,
             damage: 3.0,
         };
-        let (actor, popup) = popup_for(&tick).unwrap();
+        let (actor, popup) = popups_for(&tick, 0.0).remove(0);
         assert_eq!((actor, popup.text.as_str()), (Actor::Hero, "3"));
         assert!(popup.left_icon.unwrap().contains("bleed"));
         for silent in [
@@ -1334,9 +1492,9 @@ mod tests {
                 amount: 0.2,
             },
         ] {
-            assert!(popup_for(&silent).is_none());
+            assert!(popups_for(&silent, 0.0).is_empty());
         }
-        assert!(popup_for(&CombatEvent::Repeat).is_some());
+        assert!(!popups_for(&CombatEvent::Repeat, 0.0).is_empty());
     }
 
     #[test]

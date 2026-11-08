@@ -62,7 +62,8 @@ fn collect_input(
         );
     }
     ui.time += f64::from(time.delta_secs());
-    ui.popups.retain(|p| ui.time - p.at < 1.2);
+    ui.popups
+        .retain(|p| ui.time - p.at < 1.2 + f64::from(p.popup.hold));
     ui.vfx.retain(|v| ui.time - v.at < 2.0);
     if ui
         .transition

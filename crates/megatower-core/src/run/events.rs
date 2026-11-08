@@ -15,6 +15,13 @@ pub struct Popup {
     /// `LuckTextureRect`: shown after the amount on lucky hits.
     pub lucky: bool,
     pub size: f32,
+    /// Extra scale at spawn that settles to 1 in a tenth of a second: the
+    /// "pop" of a callout.
+    pub punch: f32,
+    /// Seconds the text lingers before it starts to fade.
+    pub hold: f32,
+    /// Pixels above the usual spot, so callouts stack over the damage number.
+    pub lift: f32,
 }
 
 impl Popup {
@@ -26,6 +33,20 @@ impl Popup {
             right_icon: None,
             lucky: false,
             size: 1.0,
+            punch: 0.0,
+            hold: 0.0,
+            lift: 0.0,
+        }
+    }
+
+    /// A big callout: grown, popped in, held and lifted over the numbers.
+    pub fn callout(text: impl Into<String>, color: Rgba, size: f32, lift: f32) -> Self {
+        Self {
+            size,
+            punch: 0.6,
+            hold: 0.35,
+            lift,
+            ..Self::new(text, color)
         }
     }
 }
@@ -153,6 +174,8 @@ pub enum Fx {
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum FlashKind {
+    /// A gold flash for crits and payoffs.
+    Gold,
     Damage,
     Stun,
 }

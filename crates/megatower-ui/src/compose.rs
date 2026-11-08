@@ -2466,18 +2466,21 @@ pub fn popup_draws(ui: &UiState, out: &mut Vec<Draw>) {
     for popup in &ui.popups {
         let age = (ui.time - popup.at) as f32;
         let ease_out = |t: f32| 1.0 - (1.0 - t.clamp(0.0, 1.0)).powi(3);
-        let alpha = 1.0 - ease_out((age - 0.3) / 0.5);
         let [x, y] = popup.origin;
         let mut color = popup.popup.color;
+        let alpha = 1.0 - ease_out((age - 0.3 - popup.popup.hold) / 0.5);
         color[3] = alpha;
-        let size = 16.0 * popup.popup.size;
-        let text_w = popup.popup.text.chars().count() as f32 * CHAR_W * popup.popup.size;
-        let icon_w = 9.0 * popup.popup.size.min(1.0);
+        // Callouts pop in oversized and settle.
+        let scale = popup.popup.size * (1.0 + popup.popup.punch * (1.0 - ease_out(age / 0.12)));
+        let size = 16.0 * scale;
+        let text_w = popup.popup.text.chars().count() as f32 * CHAR_W * scale;
+        let icon_w = 9.0 * scale.min(1.0);
         let icons = [&popup.popup.left_icon, &popup.popup.right_icon];
         let icon_count =
             icons.iter().filter(|i| i.is_some()).count() as f32 + f32::from(popup.popup.lucky);
         let width = text_w + icon_count * (icon_w + 3.0);
-        let top = y - ease_out(age / 0.6) * 10.0;
+        let rise = if popup.popup.hold > 0.0 { 18.0 } else { 10.0 };
+        let top = y - popup.popup.lift - scale * 7.0 + 7.0 - ease_out(age / 0.6) * rise;
         let mut cx = x - width / 2.0;
         let icon = |out: &mut Vec<Draw>, cx: &mut f32, path: &Option<String>| {
             if let Some(path) = path {
@@ -2486,8 +2489,18 @@ pub fn popup_draws(ui: &UiState, out: &mut Vec<Draw>) {
             }
         };
         icon(out, &mut cx, icons[0]);
+        if popup.popup.size >= 1.25 {
+            // A dark drop shadow keeps big text readable on any sprite.
+            out.push(Draw::Text {
+                rect: [cx + 1.0, top + 1.0, text_w + 2.0, 14.0 * scale],
+                text: popup.popup.text.clone(),
+                size,
+                color: [0.0, 0.0, 0.0, alpha * 0.85],
+                align: Align::Left,
+            });
+        }
         out.push(Draw::Text {
-            rect: [cx, top, text_w + 2.0, 14.0 * popup.popup.size],
+            rect: [cx, top, text_w + 2.0, 14.0 * scale],
             text: popup.popup.text.clone(),
             size,
             color,
@@ -3063,6 +3076,9 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
             let color = match kind {
                 megatower_core::run::events::FlashKind::Damage => {
                     [1.0, 0.0, 0.0, 0.3 * (1.0 - age / 0.5)]
+                }
+                megatower_core::run::events::FlashKind::Gold => {
+                    [1.0, 0.75, 0.24, 0.25 * (1.0 - age / 0.5)]
                 }
                 megatower_core::run::events::FlashKind::Stun => {
                     [0.6, 0.6, 0.6, 0.4 * (1.0 - age / 0.5)]
