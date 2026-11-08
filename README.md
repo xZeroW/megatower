@@ -45,7 +45,7 @@ cargo test -p megatower-client -p megatower-ui -p megatower-sim
 ### Combos
 
 Skills like Shatter, Detonate, Rupture, Toxic Burst and Overload cash in ailments: they hit
-hard (and burst the ailment's damage) on a target that is chilled, ignited, bleeding, poisoned or
+hard (and burst the ailment's damage) on a target that is frozen (Shatter), ignited, bleeding, poisoned or
 shocked, and use it up. Set a target up with one skill, then pay it off with another. The skill
 tooltip shows PRIMED when the selected target is ready.
 

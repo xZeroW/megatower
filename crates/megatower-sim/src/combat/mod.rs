@@ -1113,7 +1113,7 @@ mod tests {
             Ailment::Bleed,
             Ailment::Poison,
             Ailment::Shock,
-            Ailment::Chill,
+            Ailment::Freeze,
         ] {
             assert!(
                 content.gems.actives.iter().any(|a| a

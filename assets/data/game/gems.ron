@@ -82,7 +82,7 @@
             base_crit: 5.0,
             cost: 5.0,
             targeting: Single,
-            payoff: Some((needs: [Chill, Freeze], more_damage: 120.0)),
+            payoff: Some((needs: [Freeze], more_damage: 120.0)),
         ),
         (
             id: "detonate",
