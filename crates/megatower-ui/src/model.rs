@@ -235,6 +235,22 @@ pub struct LivePopup {
     pub at: f64,
     /// Logical origin of the popup; enemy popups carry a random offset.
     pub origin: [f32; 2],
+    /// Sideways slide over the popup's life, in logical pixels.
+    pub drift: f32,
+}
+
+/// A repeatable pseudo-random value in -1..1 for visual-only variety. It
+/// never touches the sim's RNG, so fights and golden files stay exact.
+pub fn scatter(time: f64, count: usize, salt: u64) -> f32 {
+    let mut h = time
+        .to_bits()
+        .wrapping_add((count as u64).wrapping_mul(0x9E37_79B9_7F4A_7C15))
+        .wrapping_add(salt.wrapping_mul(0xBF58_476D_1CE4_E5B9))
+        .wrapping_mul(0x94D0_49BB_1331_11EB);
+    h ^= h >> 31;
+    h = h.wrapping_mul(0x9E37_79B9_7F4A_7C15);
+    h ^= h >> 29;
+    ((h % 2001) as f32) / 1000.0 - 1.0
 }
 
 /// A running `GameplayScreenTransition`: `start` wipes in (and the camera
@@ -391,6 +407,9 @@ pub struct UiState {
     pub log_pages: super::battle_log_pages::BattleLogPages,
     pub log_scroll: usize,
     pub last_turn: i32,
+    /// The latest combat lines shown over the battle view, oldest first;
+    /// they stay until newer lines push them off.
+    pub battle_log: Vec<(String, [f32; 4])>,
 }
 
 impl Default for UiState {
@@ -439,6 +458,7 @@ impl Default for UiState {
             log_pages: Default::default(),
             log_scroll: 0,
             last_turn: 0,
+            battle_log: Vec::new(),
         }
     }
 }
@@ -481,4 +501,17 @@ pub enum BarKey {
 pub struct TrackedBar {
     pub tag: u64,
     pub state: super::resource_bar::ResourceBarState,
+}
+
+#[cfg(test)]
+mod scatter_tests {
+    use super::scatter;
+
+    #[test]
+    fn scatter_varies_stays_in_range_and_repeats() {
+        let rolls: Vec<f32> = (0..50).map(|n| scatter(12.5, n, 1)).collect();
+        assert!(rolls.iter().all(|r| (-1.0..=1.0).contains(r)));
+        assert!(rolls.windows(2).any(|w| w[0] != w[1]));
+        assert_eq!(scatter(3.0, 4, 2), scatter(3.0, 4, 2));
+    }
 }

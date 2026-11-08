@@ -137,6 +137,14 @@ fn statuses(f: &megatower_sim::combat::Fighter) -> Vec<StatusView> {
         } else {
             1.0
         },
+        turns: match a {
+            A::Ignite => f.afflictions.ignite.map(|d| u32::from(d.turns)),
+            A::Bleed => f.afflictions.bleed.map(|d| u32::from(d.turns)),
+            A::Poison => f.afflictions.poison.iter().map(|d| u32::from(d.turns)).max(),
+            A::Shock | A::Chill | A::Freeze => None,
+        },
+        // Every ailment is a debuff; buffs set this when spells grant them.
+        beneficial: false,
     })
     .collect()
 }
@@ -230,6 +238,25 @@ fn event_line(event: &CombatEvent, names: &[String]) -> String {
         CombatEvent::Repeat => "The skill repeats".into(),
         CombatEvent::TurnStart { turn } => format!("--- Turn {turn} begins ---"),
         CombatEvent::TurnEnd { turn } => format!("--- Turn {turn} ends ---"),
+    }
+}
+
+/// The log line's colour: damage by its type, ailments by theirs, heals green,
+/// and the hero's own gains and losses easy to tell from the enemies'.
+fn event_color(event: &CombatEvent) -> u32 {
+    match *event {
+        CombatEvent::Hit { kind, .. } => damage_look(kind).0,
+        CombatEvent::Dot { ailment, .. }
+        | CombatEvent::Inflict { ailment, .. }
+        | CombatEvent::Payoff { ailment, .. } => ailment_look(ailment).0,
+        CombatEvent::Heal { .. } => 0x6fdc6f,
+        CombatEvent::Guard { .. } => 0xb8c4d8,
+        CombatEvent::Dodge { .. } => 0x9ad1ff,
+        CombatEvent::Frozen { .. } => 0x7fd8ff,
+        CombatEvent::Death { .. } => 0xff5d5d,
+        CombatEvent::Action { .. } | CombatEvent::Repeat => 0xf2d95a,
+        CombatEvent::Arrive { .. } => 0xc9a0ff,
+        CombatEvent::TurnStart { .. } | CombatEvent::TurnEnd { .. } => 0x8a93a6,
     }
 }
 
@@ -1233,9 +1260,16 @@ impl Labyrinth {
             if matches!(event, CombatEvent::TurnStart { turn: 1 }) {
                 self.log.clear();
             }
-            self.log.push(event_line(&event, &names));
+            let line = event_line(&event, &names);
+            self.log.push(line.clone());
             let critical = matches!(&event, CombatEvent::Hit { crit: true, .. });
             let mut fx = Vec::new();
+            if !matches!(event, CombatEvent::TurnEnd { .. }) {
+                fx.push(Fx::CombatLine {
+                    text: line,
+                    color: crate::compose::hex(event_color(&event)),
+                });
+            }
             let share = match &event {
                 CombatEvent::Hit { target, damage, .. } => actor_vitals(*target, &mut frame)
                     .map_or(0.0, |v| {
@@ -1523,11 +1557,16 @@ impl Labyrinth {
             Fx::Sfx { name, volume_db } => {
                 ui.audio.push((format!("assets/sfx/{name}.wav"), volume_db))
             }
-            Fx::Popup(popup) => ui.popups.push(LivePopup {
-                popup,
-                at: ui.time,
-                origin: [474.0, 110.0],
-            }),
+            Fx::Popup(popup) => {
+                let n = ui.popups.len();
+                let roll = |salt| crate::model::scatter(ui.time, n, salt);
+                ui.popups.push(LivePopup {
+                    popup,
+                    at: ui.time,
+                    origin: [474.0 + roll(1) * 22.0, 110.0 + roll(2) * 8.0],
+                    drift: roll(3) * 8.0,
+                })
+            }
             Fx::EnemyPopup { enemy_idx, popup } => {
                 let (cx, dy) = ui.timeline.frame.as_ref().map_or((474.0, 0.0), |f| {
                     (
@@ -1535,11 +1574,19 @@ impl Labyrinth {
                         crate::frame::enemy_dy(f, enemy_idx),
                     )
                 });
+                let n = ui.popups.len();
+                let roll = |salt| crate::model::scatter(ui.time, n, salt);
                 ui.popups.push(LivePopup {
                     popup,
                     at: ui.time,
-                    origin: [cx, 186.5 + dy],
+                    origin: [cx + roll(1) * 18.0, 186.5 + dy + roll(2) * 8.0],
+                    drift: roll(3) * 8.0,
                 });
+            }
+            Fx::CombatLine { text, color } => {
+                ui.battle_log.push((text, color));
+                let extra = ui.battle_log.len().saturating_sub(crate::compose::LOG_OVERLAY_LINES);
+                ui.battle_log.drain(..extra);
             }
             _ => {}
         }

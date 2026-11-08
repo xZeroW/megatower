@@ -26,6 +26,8 @@ impl Game {
                     s.resource.map(|resource| StatusView {
                         resource,
                         amount: s.amount,
+                        turns: None,
+                        beneficial: false,
                     })
                 })
                 .collect(),

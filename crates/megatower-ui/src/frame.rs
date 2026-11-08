@@ -381,6 +381,7 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
             popup,
             at: now,
             origin: [474.0, 110.0 + (ui.popups.len() % 3) as f32 * 14.0],
+            drift: 0.0,
         }),
         Fx::EnemyPopup { enemy_idx, popup } => {
             let frame = ui.timeline.frame.clone().unwrap_or_else(|| game.frame());
@@ -392,6 +393,7 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
                     enemy_cx(&frame, enemy_idx) + jitter,
                     186.5 + enemy_dy(&frame, enemy_idx) + jitter / 2.0,
                 ],
+                drift: 0.0,
             });
         }
         Fx::PlayerAttack { enemy_idx } => {

@@ -948,6 +948,7 @@ impl Labyrinth {
         }
         compose::flash_draws(ui, rects.room_frame, &mut out);
         compose::vfx_draws(ui, &mut out);
+        compose::log_overlay_draws(ui, &mut out);
         compose::popup_draws(ui, &mut out);
         if let Some(cursor) = ui.cursor {
             if let Some(c) = choices
@@ -1216,6 +1217,11 @@ impl Labyrinth {
                         policy.color,
                     ));
                 }
+                compose::status_marks(
+                    status,
+                    [120.0 + i as f32 * 24.0, 98.0, 16.0, 16.0],
+                    out,
+                );
             }
         }
         for (i, rect) in rects.equipment.iter().enumerate() {

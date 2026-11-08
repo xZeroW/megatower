@@ -390,6 +390,37 @@ fn socket_icon(rect: R, socket: megatower_core::items::definition::SocketType) -
 }
 
 /// One `EffectContainer`: a 16x16 icon and, when it has one, its amount.
+/// Duration and kind marks over a status icon: the turns left in its corner
+/// and a green (buff) or red (debuff) line under it.
+pub(crate) fn status_marks(status: &megatower_core::run::events::StatusView, rect: R, out: &mut Vec<Draw>) {
+    out.push(Draw::Fill {
+        rect: [rect[0] + 1.0, rect[1] + rect[3] - 1.0, rect[2].min(16.0) - 2.0, 1.0],
+        color: if status.beneficial {
+            hex(0x6fdc6f)
+        } else {
+            hex(0xff4d4d)
+        },
+    });
+    if let Some(turns) = status.turns {
+        let label = turns.to_string();
+        let w = label.chars().count() as f32 * CHAR_W;
+        out.push(Draw::Text {
+            rect: [rect[0] + 14.0 - w, rect[1] + 5.0, w + 2.0, 10.0],
+            text: label.clone(),
+            size: 10.0,
+            color: [0.0, 0.0, 0.0, 0.9],
+            align: Align::Left,
+        });
+        out.push(Draw::Text {
+            rect: [rect[0] + 13.0 - w, rect[1] + 4.0, w + 2.0, 10.0],
+            text: label,
+            size: 10.0,
+            color: hex(0xffffff),
+            align: Align::Left,
+        });
+    }
+}
+
 fn push_effect(
     out: &mut Vec<Draw>,
     x: &mut f32,
@@ -478,6 +509,7 @@ fn effect_row(
         if let Some(icon) = &policy.icon {
             let amount = (status.amount > 1.0).then(|| number(status.amount));
             let rect = push_effect(out, &mut x, y, icon, policy.color, amount);
+            status_marks(status, rect, out);
             hits.push((rect, EffectKind::Status(status.resource)));
         }
         if x > end - 30.0 {
@@ -2457,6 +2489,7 @@ fn enemy_visuals(
         if let Some(icon) = &policy.icon {
             out.push(tinted([x, y, 14.0, 14.0], icon, policy.color));
         }
+        status_marks(status, [x, y, 14.0, 14.0], out);
         out.push(text(
             [x + 15.0, y + 1.0, 24.0, 13.0],
             amount,
@@ -2524,6 +2557,30 @@ pub(super) fn draw_tabs(ui: &UiState, rects: &Rects, out: &mut Vec<Draw>) {
     }
 }
 
+/// How many combat lines the battle view keeps on screen.
+pub const LOG_OVERLAY_LINES: usize = 5;
+
+/// The latest combat lines at the bottom of the battle view, newest lowest.
+/// They stay until newer lines push them off; older ones dim.
+pub fn log_overlay_draws(ui: &UiState, out: &mut Vec<Draw>) {
+    const LINE_H: f32 = 12.0;
+    const BOTTOM: f32 = 290.0;
+    let count = ui.battle_log.len();
+    for (i, (line, color)) in ui.battle_log.iter().enumerate() {
+        let age = (count - 1 - i) as f32;
+        let alpha = (1.0 - age * 0.16).max(0.35);
+        let y = BOTTOM - (age + 1.0) * LINE_H;
+        let w = (line.chars().count() as f32 * CHAR_W + 8.0).min(322.0);
+        out.push(Draw::Fill {
+            rect: [312.0, y, w, LINE_H],
+            color: [0.02, 0.03, 0.06, 0.55 * alpha],
+        });
+        let mut color = *color;
+        color[3] = alpha;
+        out.push(text([316.0, y - 1.0, w, 13.0], line.clone(), color, Align::Left));
+    }
+}
+
 /// The floating popups: `EnemyPopupLabel` rises 10px over 0.6s (cubic
 /// ease-out) and fades out over 0.5s after 0.3s; the icons follow the amount,
 /// 3px apart.
@@ -2551,7 +2608,7 @@ pub fn popup_draws(ui: &UiState, out: &mut Vec<Draw>) {
         let width = text_w + icon_count * (icon_w + 3.0);
         let rise = if popup.popup.hold > 0.0 { 18.0 } else { 10.0 };
         let top = y - popup.popup.lift - scale * 7.0 + 7.0 - ease_out(age / 0.6) * rise;
-        let mut cx = x - width / 2.0;
+        let mut cx = x - width / 2.0 + popup.drift * ease_out(age / 0.6);
         let icon = |out: &mut Vec<Draw>, cx: &mut f32, path: &Option<String>| {
             if let Some(path) = path {
                 out.push(tinted([*cx, top + 2.0, icon_w, icon_w], path, color));

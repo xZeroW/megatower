@@ -55,6 +55,10 @@ impl Popup {
 pub struct StatusView {
     pub resource: StatusEffectId,
     pub amount: f64,
+    /// Turns left before it expires, when it runs out.
+    pub turns: Option<u32>,
+    /// A buff (true) or a debuff (false), for the badge's underline colour.
+    pub beneficial: bool,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -147,6 +151,11 @@ pub enum Fx {
     HeartParticles,
     ScreenFlash(FlashKind),
     CameraShake,
+    /// A line for the combat log over the battle view.
+    CombatLine {
+        text: String,
+        color: Rgba,
+    },
     /// The enemy sprite tints this colour, fading in a third of a second.
     EnemyFlash {
         enemy_idx: usize,
