@@ -3,21 +3,16 @@ use crate::modifier::{Modifier, TaggedModifier};
 use crate::tags::TagMask;
 
 /// How a attribute node's modifiers are reduced to produce a single value.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum ReduceFn {
     /// Sum all modifier values. Default for "added"/"flat" style attributes.
+    #[default]
     Sum,
     /// Multiply all modifier values. Default for "more"/"less" style multipliers.
     /// The base is 1.0; each modifier is treated as `(1 + modifier_value)`.
     Product,
     /// User-defined reduction function.
     Custom(fn(&[f64]) -> f64),
-}
-
-impl Default for ReduceFn {
-    fn default() -> Self {
-        ReduceFn::Sum
-    }
 }
 
 /// A attribute node - the fundamental unit of the attribute graph.

@@ -392,7 +392,11 @@ fn socket_icon(rect: R, socket: megatower_core::items::definition::SocketType) -
 /// One `EffectContainer`: a 16x16 icon and, when it has one, its amount.
 /// Duration and kind marks over a status icon: the turns left in its corner
 /// (the icon's tint already says buff or debuff).
-pub(crate) fn status_marks(status: &megatower_core::run::events::StatusView, rect: R, out: &mut Vec<Draw>) {
+pub(crate) fn status_marks(
+    status: &megatower_core::run::events::StatusView,
+    rect: R,
+    out: &mut Vec<Draw>,
+) {
     if let Some(turns) = status.turns {
         let label = turns.to_string();
         let w = label.chars().count() as f32 * CHAR_W;
@@ -1081,15 +1085,10 @@ fn rows_from_tip(game: &Game, tip: &crate::info_builders::Tip) -> Vec<TipRow> {
                             .expect("row")
                             .push(Seg::Icon(icon.to_owned(), dim(k.color)));
                     }
-                    let c = if k.color == [0.0, 0.0, 0.0, 1.0] {
-                        STEEL
-                    } else {
-                        STEEL
-                    };
                     push_text(
                         &mut rows,
                         &format!(" {}", translation::t(k.name, "Keyword Name")),
-                        dim(c),
+                        dim(STEEL),
                     );
                 }
             }
@@ -2090,7 +2089,7 @@ pub(crate) fn flash_draws(ui: &UiState, rect: [f32; 4], out: &mut Vec<Draw>) {
                     [0.6, 0.6, 0.6, 0.4 * (1.0 - age / 0.5)]
                 }
             };
-            out.push(Draw::Fill { rect: rect, color });
+            out.push(Draw::Fill { rect, color });
         }
     }
 }
@@ -2573,7 +2572,12 @@ pub fn log_overlay_draws(ui: &UiState, out: &mut Vec<Draw>) {
         });
         let mut color = *color;
         color[3] = alpha;
-        out.push(text([10.0, y - 1.0, w, 13.0], line.clone(), color, Align::Left));
+        out.push(text(
+            [10.0, y - 1.0, w, 13.0],
+            line.clone(),
+            color,
+            Align::Left,
+        ));
     }
 }
 

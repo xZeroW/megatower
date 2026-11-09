@@ -409,11 +409,7 @@ fn point(
                     // The drawer covers the left of the stage when open.
                     && (session.view == View::Stage || *x >= 308.0)
             })
-            .and_then(|[x, y]| {
-                camera
-                    .viewport_to_world(global, Vec2::new(x, y))
-                    .ok()
-            });
+            .and_then(|[x, y]| camera.viewport_to_world(global, Vec2::new(x, y)).ok());
     let hovered = ray.and_then(|r| doors.iter().find(|(d, _)| hit(d, r)).map(|(d, _)| d.turn));
     for (door, mut material) in &mut doors {
         let want = if Some(door.turn) == hovered {

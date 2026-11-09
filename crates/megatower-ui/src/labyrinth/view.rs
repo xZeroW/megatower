@@ -120,10 +120,6 @@ fn selection_outline(rect: R) -> Draw {
     }
 }
 
-/// What an enemy's next move does, in a few characters: "8-12" for an attack
-/// (with its damage modifiers and chill applied), "+100" for a guard, "20%"
-/// for a heal.
-
 /// Side of a passive node's square on the tree panel (canvas pixels).
 fn tree_node_size(id: &str) -> f32 {
     match content::get().tree.node(id).map(|n| n.kind) {
@@ -338,7 +334,12 @@ fn tooltip(out: &mut Vec<Draw>, rects: &Rects, cursor: [f32; 2], lines: Vec<Stri
 pub(super) const ACTION_GROWTH: f32 = 0.0;
 
 /// The action panel, canvas pixels.
-pub(super) const ACTION_AREA: R = [ACTIONS_LEFT, 295.0 - ACTION_GROWTH, 400.0, 63.0 + ACTION_GROWTH];
+pub(super) const ACTION_AREA: R = [
+    ACTIONS_LEFT,
+    295.0 - ACTION_GROWTH,
+    400.0,
+    63.0 + ACTION_GROWTH,
+];
 
 /// Buttons laid out for the original 63 px panel sit this much higher, to stay
 /// centred in the taller one.
@@ -611,7 +612,11 @@ impl Labyrinth {
             Mode::Shop | Mode::Shrine(_) | Mode::Event { .. } | Mode::Altar
         ) {
             let bar = |c: &Choice| c.rect[1] >= BAR_Y;
-            let min = out.iter().filter(|c| bar(c)).map(|c| c.rect[0]).reduce(f32::min);
+            let min = out
+                .iter()
+                .filter(|c| bar(c))
+                .map(|c| c.rect[0])
+                .reduce(f32::min);
             let max = out
                 .iter()
                 .filter(|c| bar(c))
@@ -1027,7 +1032,12 @@ impl Labyrinth {
             let lines: Vec<_> = lines.iter().flat_map(|s| wrap(s, 42)).collect();
             for (i, line) in lines.iter().take(8).enumerate() {
                 out.push(text(
-                    [compose::STAGE_CX - 150.0, 90.0 + i as f32 * 18.0, 300.0, 16.0],
+                    [
+                        compose::STAGE_CX - 150.0,
+                        90.0 + i as f32 * 18.0,
+                        300.0,
+                        16.0,
+                    ],
                     line,
                     WHITE,
                     Align::Center,
@@ -1156,7 +1166,12 @@ impl Labyrinth {
         let (x, y) = (cx - width / 2.0, compose::ENEMY_TOP + dy + 8.0);
         out.push(tinted([x, y, 14.0, 14.0], icon, tint));
         out.push(Draw::Text {
-            rect: [x + 17.0, y + 1.0, amount.chars().count() as f32 * 6.0 + 2.0, 12.0],
+            rect: [
+                x + 17.0,
+                y + 1.0,
+                amount.chars().count() as f32 * 6.0 + 2.0,
+                12.0,
+            ],
             text: amount,
             size: 12.0,
             color: tint,
@@ -1259,7 +1274,12 @@ impl Labyrinth {
         );
         if v.max_mana > 0 {
             // Mana ends level with the bottom of the portrait.
-            let mana = [life[0], portrait[1] + portrait[3] - life[3] - 4.0, life[2], life[3]];
+            let mana = [
+                life[0],
+                portrait[1] + portrait[3] - life[3] - 4.0,
+                life[2],
+                life[3],
+            ];
             compose::bar(
                 mana,
                 (v.mana as f32 / v.max_mana.max(1) as f32, None),
@@ -1461,11 +1481,7 @@ impl Labyrinth {
                         policy.color,
                     ));
                 }
-                compose::status_marks(
-                    status,
-                    [120.0 + i as f32 * 24.0, 98.0, 16.0, 16.0],
-                    out,
-                );
+                compose::status_marks(status, [120.0 + i as f32 * 24.0, 98.0, 16.0, 16.0], out);
             }
         }
         for (i, rect) in rects.equipment.iter().enumerate() {
@@ -1770,6 +1786,24 @@ impl Labyrinth {
             }
         }
     }
+}
+
+/// "Rf 2  Au 1  As 0  Rl 1  Rg 0": the orbs in stock, in key order.
+fn orb_summary(orbs: &megatower_sim::orbs::Orbs) -> String {
+    use megatower_sim::orbs::Orb;
+    let tag = |o: Orb| match o {
+        Orb::Reforge => "Rf",
+        Orb::Augment => "Au",
+        Orb::Ascend => "As",
+        Orb::Relink => "Rl",
+        Orb::Regret => "Rg",
+    };
+    Orb::ALL
+        .into_iter()
+        .filter(|&o| orbs.count(o) > 0)
+        .map(|o| format!("{} {}", tag(o), orbs.count(o)))
+        .collect::<Vec<_>>()
+        .join("  ")
 }
 
 #[cfg(test)]
@@ -2153,22 +2187,4 @@ mod tests {
             .gems[0];
         assert_eq!(gem.rarity, GemRarity::Uncommon);
     }
-}
-
-/// "Rf 2  Au 1  As 0  Rl 1  Rg 0": the orbs in stock, in key order.
-fn orb_summary(orbs: &megatower_sim::orbs::Orbs) -> String {
-    use megatower_sim::orbs::Orb;
-    let tag = |o: Orb| match o {
-        Orb::Reforge => "Rf",
-        Orb::Augment => "Au",
-        Orb::Ascend => "As",
-        Orb::Relink => "Rl",
-        Orb::Regret => "Rg",
-    };
-    Orb::ALL
-        .into_iter()
-        .filter(|&o| orbs.count(o) > 0)
-        .map(|o| format!("{} {}", tag(o), orbs.count(o)))
-        .collect::<Vec<_>>()
-        .join("  ")
 }

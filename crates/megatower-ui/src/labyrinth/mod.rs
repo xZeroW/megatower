@@ -35,7 +35,6 @@ impl Plugin for LabyrinthPlugin {
         .insert_resource(megatower_runtime::render::hud_layout::StageLayout)
         .init_resource::<Labyrinth>()
         .add_plugins(doors::DoorsPlugin)
-
         .add_systems(Startup, (load_legacy, autostart).chain())
         .add_systems(Update, scripted_moves);
     }
@@ -146,7 +145,12 @@ fn statuses(f: &megatower_sim::combat::Fighter) -> Vec<StatusView> {
         turns: match a {
             A::Ignite => f.afflictions.ignite.map(|d| u32::from(d.turns)),
             A::Bleed => f.afflictions.bleed.map(|d| u32::from(d.turns)),
-            A::Poison => f.afflictions.poison.iter().map(|d| u32::from(d.turns)).max(),
+            A::Poison => f
+                .afflictions
+                .poison
+                .iter()
+                .map(|d| u32::from(d.turns))
+                .max(),
             A::Shock | A::Chill | A::Freeze => None,
         },
         // Every ailment is a debuff; buffs set this when spells grant them.
@@ -1558,7 +1562,9 @@ impl Labyrinth {
                     .timeline
                     .frame
                     .as_ref()
-                    .map_or(crate::compose::STAGE_CX, |f| crate::frame::enemy_cx(f, enemy_idx));
+                    .map_or(crate::compose::STAGE_CX, |f| {
+                        crate::frame::enemy_cx(f, enemy_idx)
+                    });
                 ui.vfx.push(crate::model::LiveVfx {
                     kind: crate::model::VfxKind::Burst,
                     at: ui.time,
@@ -1582,17 +1588,24 @@ impl Labyrinth {
                 ui.popups.push(LivePopup {
                     popup,
                     at: ui.time,
-                    origin: [crate::compose::STAGE_CX + roll(1) * 22.0, 110.0 + roll(2) * 8.0],
+                    origin: [
+                        crate::compose::STAGE_CX + roll(1) * 22.0,
+                        110.0 + roll(2) * 8.0,
+                    ],
                     drift: roll(3) * 8.0,
                 })
             }
             Fx::EnemyPopup { enemy_idx, popup } => {
-                let (cx, dy) = ui.timeline.frame.as_ref().map_or((crate::compose::STAGE_CX, 0.0), |f| {
-                    (
-                        crate::frame::enemy_cx(f, enemy_idx),
-                        crate::frame::enemy_dy(f, enemy_idx),
-                    )
-                });
+                let (cx, dy) =
+                    ui.timeline
+                        .frame
+                        .as_ref()
+                        .map_or((crate::compose::STAGE_CX, 0.0), |f| {
+                            (
+                                crate::frame::enemy_cx(f, enemy_idx),
+                                crate::frame::enemy_dy(f, enemy_idx),
+                            )
+                        });
                 let n = ui.popups.len();
                 let roll = |salt| crate::model::scatter(ui.time, n, salt);
                 ui.popups.push(LivePopup {
@@ -1604,7 +1617,10 @@ impl Labyrinth {
             }
             Fx::CombatLine { text, color } => {
                 ui.battle_log.push((text, color));
-                let extra = ui.battle_log.len().saturating_sub(crate::compose::LOG_OVERLAY_LINES);
+                let extra = ui
+                    .battle_log
+                    .len()
+                    .saturating_sub(crate::compose::LOG_OVERLAY_LINES);
                 ui.battle_log.drain(..extra);
             }
             _ => {}

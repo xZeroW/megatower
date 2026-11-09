@@ -140,10 +140,11 @@ fn image_node(assets: &AssetServer, draw: &Draw) -> Option<ImageNode> {
     let mut image = ImageNode::new(assets.load(path.clone()));
     image.color = color(*tint);
     image.flip_x = *flip_x;
-    if let Some([x, y, w, h]) = region {
-        if *w > 0.0 && *h > 0.0 {
-            image.rect = Some(Rect::new(*x, *y, x + w, y + h));
-        }
+    if let Some([x, y, w, h]) = region
+        && *w > 0.0
+        && *h > 0.0
+    {
+        image.rect = Some(Rect::new(*x, *y, x + w, y + h));
     }
     if let Some([l, t, r, b]) = slice {
         image.image_mode = NodeImageMode::Sliced(TextureSlicer {

@@ -49,7 +49,7 @@ impl Default for AbilityDefinition {
 
 impl AbilityDefinition {
     pub fn file_name(&self) -> String {
-        self.id.replace("resources/abilities/", "").replace("", "")
+        self.id.replace("resources/abilities/", "")
     }
     pub fn preview_color(&self) -> Color {
         if self.quick_cast {

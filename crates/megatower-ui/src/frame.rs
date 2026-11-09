@@ -294,50 +294,6 @@ pub fn run_action(game: &mut Game, ui: &mut UiState, f: impl FnOnce(&mut Game)) 
     }
 }
 
-#[cfg(test)]
-mod labyrinth_routing_tests {
-    use super::*;
-
-    #[test]
-    fn the_original_selection_screen_starts_only_the_new_simulation() {
-        let mut app = App::new();
-        let cell = adventurer_cells(1)[0];
-        let mut ui = UiState {
-            screen: Screen::Select,
-            ..default()
-        };
-        ui.cursor = Some([cell[0] + cell[2] / 2.0, cell[1] + cell[3] / 2.0]);
-        app.insert_resource(Time::<()>::default())
-            .insert_resource(UiRes(ui))
-            .insert_resource(RectsRes(Rects::from_layout(
-                &megatower_assets::ui_layout::recovered_layout(),
-            )))
-            .insert_resource(FrameInput {
-                click: true,
-                ..default()
-            })
-            .init_resource::<GameSlot>()
-            .init_resource::<ButtonInput<KeyCode>>()
-            .init_resource::<crate::labyrinth::Labyrinth>()
-            .init_resource::<DrawState>()
-            .init_resource::<InputContext>()
-            .add_message::<AppExit>()
-            .add_systems(Update, update_screens);
-        app.world_mut().run_schedule(Update);
-        assert!(app.world().resource::<GameSlot>().0.is_none());
-        assert_eq!(app.world().resource::<UiRes>().0.screen, Screen::Playing);
-        assert!(matches!(
-            app.world()
-                .resource::<crate::labyrinth::Labyrinth>()
-                .run
-                .as_ref()
-                .unwrap()
-                .mode,
-            megatower_sim::run::Mode::Starter(_)
-        ));
-    }
-}
-
 /// Index among the visible enemies, and how many are visible.
 fn enemy_order(frame: &megatower_core::run::events::Frame, idx: usize) -> (usize, usize) {
     let visible: Vec<usize> = frame
@@ -380,7 +336,10 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
         Fx::Popup(popup) => ui.popups.push(LivePopup {
             popup,
             at: now,
-            origin: [crate::compose::STAGE_CX, 110.0 + (ui.popups.len() % 3) as f32 * 14.0],
+            origin: [
+                crate::compose::STAGE_CX,
+                110.0 + (ui.popups.len() % 3) as f32 * 14.0,
+            ],
             drift: 0.0,
         }),
         Fx::EnemyPopup { enemy_idx, popup } => {
@@ -664,4 +623,48 @@ pub(super) fn handle_input(
 
 pub fn refresh(game: &mut Game) {
     game.try_to_refresh_market();
+}
+
+#[cfg(test)]
+mod labyrinth_routing_tests {
+    use super::*;
+
+    #[test]
+    fn the_original_selection_screen_starts_only_the_new_simulation() {
+        let mut app = App::new();
+        let cell = adventurer_cells(1)[0];
+        let mut ui = UiState {
+            screen: Screen::Select,
+            ..default()
+        };
+        ui.cursor = Some([cell[0] + cell[2] / 2.0, cell[1] + cell[3] / 2.0]);
+        app.insert_resource(Time::<()>::default())
+            .insert_resource(UiRes(ui))
+            .insert_resource(RectsRes(Rects::from_layout(
+                &megatower_assets::ui_layout::recovered_layout(),
+            )))
+            .insert_resource(FrameInput {
+                click: true,
+                ..default()
+            })
+            .init_resource::<GameSlot>()
+            .init_resource::<ButtonInput<KeyCode>>()
+            .init_resource::<crate::labyrinth::Labyrinth>()
+            .init_resource::<DrawState>()
+            .init_resource::<InputContext>()
+            .add_message::<AppExit>()
+            .add_systems(Update, update_screens);
+        app.world_mut().run_schedule(Update);
+        assert!(app.world().resource::<GameSlot>().0.is_none());
+        assert_eq!(app.world().resource::<UiRes>().0.screen, Screen::Playing);
+        assert!(matches!(
+            app.world()
+                .resource::<crate::labyrinth::Labyrinth>()
+                .run
+                .as_ref()
+                .unwrap()
+                .mode,
+            megatower_sim::run::Mode::Starter(_)
+        ));
+    }
 }

@@ -811,21 +811,21 @@ impl Expr {
                     sp -= 1;
                     let b = stack[sp];
                     sp -= 1;
-                    stack[sp] = stack[sp] + b;
+                    stack[sp] += b;
                     sp += 1;
                 }
                 Op::Sub => {
                     sp -= 1;
                     let b = stack[sp];
                     sp -= 1;
-                    stack[sp] = stack[sp] - b;
+                    stack[sp] -= b;
                     sp += 1;
                 }
                 Op::Mul => {
                     sp -= 1;
                     let b = stack[sp];
                     sp -= 1;
-                    stack[sp] = stack[sp] * b;
+                    stack[sp] *= b;
                     sp += 1;
                 }
                 Op::Div => {

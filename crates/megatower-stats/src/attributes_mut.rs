@@ -235,10 +235,10 @@ impl AttributesMut {
             unregister_expr_deps(&mut self.graph, entity, attribute_id, expr.dependencies());
         }
 
-        if let Ok(attrs) = self.query.get_mut(entity) {
-            if let Some(node) = attrs.nodes.get_mut(&attribute_id) {
-                node.remove_modifier(modifier);
-            }
+        if let Ok(attrs) = self.query.get_mut(entity)
+            && let Some(node) = attrs.nodes.get_mut(&attribute_id)
+        {
+            node.remove_modifier(modifier);
         }
 
         self.evaluate_and_propagate(entity, attribute_id);
@@ -258,10 +258,10 @@ impl AttributesMut {
             unregister_expr_deps(&mut self.graph, entity, attribute_id, expr.dependencies());
         }
 
-        if let Ok(attrs) = self.query.get_mut(entity) {
-            if let Some(node) = attrs.nodes.get_mut(&attribute_id) {
-                node.remove_tagged_modifier(modifier, tag);
-            }
+        if let Ok(attrs) = self.query.get_mut(entity)
+            && let Some(node) = attrs.nodes.get_mut(&attribute_id)
+        {
+            node.remove_tagged_modifier(modifier, tag);
         }
 
         self.evaluate_and_propagate(entity, attribute_id);
@@ -603,10 +603,10 @@ impl AttributesMut {
         let _ = self.add_expr_modifier_tagged(entity, &name, &qualified, mask);
 
         // Mark this combo as materialized
-        if let Ok(attrs) = self.query.get_mut(entity) {
-            if let Some(tmpl) = attrs.templates.get_mut(&attribute_id) {
-                tmpl.materialized.insert(mask);
-            }
+        if let Ok(attrs) = self.query.get_mut(entity)
+            && let Some(tmpl) = attrs.templates.get_mut(&attribute_id)
+        {
+            tmpl.materialized.insert(mask);
         }
     }
 
@@ -623,10 +623,10 @@ impl AttributesMut {
         mask: TagMask,
     ) -> AttributeId {
         // Check if already registered
-        if let Ok(attrs) = self.query.get(entity) {
-            if let Some(existing) = attrs.tag_query_synthetic_id(parent_attribute_id, mask) {
-                return existing;
-            }
+        if let Ok(attrs) = self.query.get(entity)
+            && let Some(existing) = attrs.tag_query_synthetic_id(parent_attribute_id, mask)
+        {
+            return existing;
         }
 
         // Create synthetic AttributeId

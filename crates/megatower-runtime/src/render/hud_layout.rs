@@ -214,7 +214,11 @@ fn spawn_hud_layout(
     // The panels are inset by 2 px: the gaps show the border color.
     let border = absolute([0.0, 0.0, layout.viewport[0], layout.viewport[1]]);
     let border_fill = BackgroundColor(palette_color(Some(2)));
-    let mut frame_rect = if stage { STAGE_FRAME_RECT } else { ROOM_FRAME_RECT };
+    let mut frame_rect = if stage {
+        STAGE_FRAME_RECT
+    } else {
+        ROOM_FRAME_RECT
+    };
     frame_rect[3] -= grow;
     let mut frame_node = absolute(frame_rect);
     frame_node.overflow = Overflow::clip();

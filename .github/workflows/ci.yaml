@@ -40,8 +40,7 @@ jobs:
           save-if: ${{ github.ref == 'refs/heads/main' }}
       - name: Install build dependencies
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
-      # Existing clippy warnings are tolerated; tighten with `-- -D warnings` once they're fixed.
-      - run: cargo clippy --locked --workspace --all-targets
+      - run: cargo clippy --locked --workspace --all-targets -- -D warnings
 
   test:
     name: Tests

@@ -191,7 +191,7 @@ pub(super) fn esc_frame(
     if click
         && !ui.esc_open
         && ui.cursor.is_some_and(|[x, y]| {
-            x >= GEAR[0] && x < GEAR[0] + GEAR[2] && y >= GEAR[1] && y < GEAR[1] + GEAR[3]
+            (GEAR[0]..GEAR[0] + GEAR[2]).contains(&x) && (GEAR[1]..GEAR[1] + GEAR[3]).contains(&y)
         })
         && let Some((esc, _)) = crate::app_rules::toggle_esc_menu(true, false, false, false)
     {

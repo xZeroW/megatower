@@ -771,7 +771,7 @@ impl Game {
         }
         self.global.shuffle(&mut kinds);
         self.global.shuffle(&mut pool);
-        for idx in 0..size {
+        for (idx, kind) in kinds.iter().enumerate().take(size) {
             let locked = self
                 .world
                 .get::<ItemContainer>(trader)
@@ -783,7 +783,7 @@ impl Game {
             }
             let mut resource_id = pool.pop();
             let mut special = false;
-            match kinds[idx] {
+            match kind {
                 ShopType::StatAdapter => {
                     self.global.shuffle(&mut adapters);
                     resource_id = adapters.pop();

@@ -5,6 +5,7 @@
 //! `assets/data/rooms/room-scenes.ron`, per-mesh materials from
 //! `assets/data/rooms/room-materials.ron`.
 
+use super::hud_layout::StageLayout;
 use crate::render::{CaptureReadiness, palette_color};
 use bevy::world_serialization::WorldInstanceReady;
 use bevy::{
@@ -18,8 +19,9 @@ use bevy::{
 use bevy_auto_plugin::prelude::*;
 use megatower_assets::room_materials::{MeshMaterial, room_materials};
 use megatower_assets::room_scene::{RoomLight, scene};
-use megatower_assets::room_screen::{ROOM_CAMERA_FOV_DEGREES, ROOM_VIEWPORT_SIZE, STAGE_VIEWPORT_SIZE};
-use super::hud_layout::StageLayout;
+use megatower_assets::room_screen::{
+    ROOM_CAMERA_FOV_DEGREES, ROOM_VIEWPORT_SIZE, STAGE_VIEWPORT_SIZE,
+};
 
 /// The scene (`room_scene::scene_for`) the room view should show; `None`
 /// while there is no run.
@@ -143,7 +145,11 @@ pub fn setup_room(
     capture: Option<ResMut<CaptureReadiness>>,
     stage: Option<Res<StageLayout>>,
 ) {
-    let size = if stage.is_some() { STAGE_VIEWPORT_SIZE } else { ROOM_VIEWPORT_SIZE };
+    let size = if stage.is_some() {
+        STAGE_VIEWPORT_SIZE
+    } else {
+        ROOM_VIEWPORT_SIZE
+    };
     let target = images.add(Image::new_target_texture(
         size[0],
         size[1],
@@ -218,7 +224,7 @@ fn spawn_room_scene(
         .spawn((
             WorldAssetRoot(handle.clone()),
             RoomPart(scene_name),
-            Name::new(format!("{scene_name}")),
+            Name::new(scene_name.to_string()),
         ))
         .observe(texture_room);
     handle

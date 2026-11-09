@@ -323,11 +323,8 @@ pub fn apply_status_effect_host<H: StatusHost>(
         if resource == Effect::Stun {
             {
                 let world = host.parts().0;
-                let turns = if count(world, applier, "thunder")? >= 3 {
-                    2
-                } else {
-                    2
-                };
+                count(world, applier, "thunder")?;
+                let turns = 2;
                 let recipient_profile = profile_entity(world, recipient)?;
                 world
                     .get_mut::<BattleProfile>(recipient_profile)

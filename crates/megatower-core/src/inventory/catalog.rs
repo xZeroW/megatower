@@ -51,9 +51,7 @@ pub struct ContainerDefinition {
 
 impl ContainerDefinition {
     pub fn own_name(&self) -> String {
-        self.source_path
-            .replace("resources/item_containers/", "")
-            .replace("", "")
+        self.source_path.replace("resources/item_containers/", "")
     }
 }
 

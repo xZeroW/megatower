@@ -1,3 +1,9 @@
+#![allow(
+    clippy::too_many_arguments,
+    clippy::type_complexity,
+    clippy::drop_non_drop,
+    clippy::field_reassign_with_default
+)]
 pub mod abilities;
 pub mod adventurers;
 pub mod battle_actions;

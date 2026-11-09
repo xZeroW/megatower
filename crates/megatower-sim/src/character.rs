@@ -377,6 +377,36 @@ impl Character {
     }
 }
 
+/// QA only: `GAME_QA_MODS="crit=100,freeze=100"` adds flat crit chance and
+/// ailment chances (`ignite`, `bleed`, `poison`, `shock`, `chill`, `freeze`)
+/// to the hero, so effects that need luck can be screenshotted.
+fn qa_mods() -> &'static [Modifier] {
+    static MODS: std::sync::OnceLock<Vec<Modifier>> = std::sync::OnceLock::new();
+    MODS.get_or_init(|| {
+        use crate::{ailment::Ailment as A, modifier::Stat};
+        let Ok(spec) = std::env::var("GAME_QA_MODS") else {
+            return Vec::new();
+        };
+        spec.split(',')
+            .filter_map(|pair| {
+                let (name, value) = pair.split_once('=')?;
+                let value: f64 = value.trim().parse().ok()?;
+                let stat = match name.trim() {
+                    "crit" => Stat::CritChance,
+                    "ignite" => Stat::AilmentChance(A::Ignite),
+                    "bleed" => Stat::AilmentChance(A::Bleed),
+                    "poison" => Stat::AilmentChance(A::Poison),
+                    "shock" => Stat::AilmentChance(A::Shock),
+                    "chill" => Stat::AilmentChance(A::Chill),
+                    "freeze" => Stat::AilmentChance(A::Freeze),
+                    _ => return None,
+                };
+                Some(Modifier::flat(stat, value))
+            })
+            .collect()
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -597,34 +627,4 @@ mod tests {
         c.heal_full();
         assert_eq!(c.life, crate::combat::HERO_LIFE);
     }
-}
-
-/// QA only: `GAME_QA_MODS="crit=100,freeze=100"` adds flat crit chance and
-/// ailment chances (`ignite`, `bleed`, `poison`, `shock`, `chill`, `freeze`)
-/// to the hero, so effects that need luck can be screenshotted.
-fn qa_mods() -> &'static [Modifier] {
-    static MODS: std::sync::OnceLock<Vec<Modifier>> = std::sync::OnceLock::new();
-    MODS.get_or_init(|| {
-        use crate::{ailment::Ailment as A, modifier::Stat};
-        let Ok(spec) = std::env::var("GAME_QA_MODS") else {
-            return Vec::new();
-        };
-        spec.split(',')
-            .filter_map(|pair| {
-                let (name, value) = pair.split_once('=')?;
-                let value: f64 = value.trim().parse().ok()?;
-                let stat = match name.trim() {
-                    "crit" => Stat::CritChance,
-                    "ignite" => Stat::AilmentChance(A::Ignite),
-                    "bleed" => Stat::AilmentChance(A::Bleed),
-                    "poison" => Stat::AilmentChance(A::Poison),
-                    "shock" => Stat::AilmentChance(A::Shock),
-                    "chill" => Stat::AilmentChance(A::Chill),
-                    "freeze" => Stat::AilmentChance(A::Freeze),
-                    _ => return None,
-                };
-                Some(Modifier::flat(stat, value))
-            })
-            .collect()
-    })
 }

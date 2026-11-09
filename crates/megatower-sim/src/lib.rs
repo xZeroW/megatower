@@ -21,6 +21,12 @@
 //! - [`run`]: a whole run: rooms, fights, rewards and the commands on them.
 //! - [`bot`]: a heuristic player for balance reports.
 //! - [`rng`]: the seeded random stream every roll goes through.
+#![allow(
+    clippy::too_many_arguments,
+    clippy::type_complexity,
+    clippy::drop_non_drop,
+    clippy::field_reassign_with_default
+)]
 
 pub mod ailment;
 pub mod bot;

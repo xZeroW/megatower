@@ -78,10 +78,10 @@ impl ProfileStore {
 
     pub fn try_save(&self) -> std::io::Result<()> {
         let path = path();
-        if let Ok(previous) = std::fs::read(&path) {
-            if serde_json::from_slice::<Self>(&previous).is_ok() {
-                crate::save_system::write_atomic(&path.with_extension("json.bak"), &previous)?;
-            }
+        if let Ok(previous) = std::fs::read(&path)
+            && serde_json::from_slice::<Self>(&previous).is_ok()
+        {
+            crate::save_system::write_atomic(&path.with_extension("json.bak"), &previous)?;
         }
         let bytes = serde_json::to_vec_pretty(self)?;
         crate::save_system::write_atomic(&path, &bytes)

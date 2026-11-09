@@ -6,6 +6,12 @@
 //! script may act, the current screen updates and composes its draw list, the
 //! run's side effects (profile, sound) are applied, and the draw list is
 //! turned into UI nodes.
+#![allow(
+    clippy::too_many_arguments,
+    clippy::type_complexity,
+    clippy::drop_non_drop,
+    clippy::field_reassign_with_default
+)]
 
 pub mod adventurer_ui;
 pub mod bar_motion;
