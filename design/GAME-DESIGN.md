@@ -30,7 +30,7 @@ builds), exploring hidden labyrinth floors.
 - Floor = grid (5×5 on floor 1, growing to ~8×8). Generated as a random spanning tree
   (every room reachable) plus a few extra doors to create loops.
 - Visibility per room: `Hidden` → `Seen` (adjacent to a visited room: you see the door
-  and a `?`, not the type) → `Visited` (type and contents known).
+  and the room's type) → `Visited`.
 - Room types: Fight, Elite, Treasure, Merchant (sells gems, see below), Shrine (pick 1 of 3 boons), Rest
   (heal + refill flasks), Event, Gem Altar, Stairs/Boss. Start room is always empty.
 - Placement rules: Stairs far from start (BFS distance), at least one Rest and one

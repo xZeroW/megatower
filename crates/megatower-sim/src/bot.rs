@@ -262,7 +262,8 @@ fn choose_action(battle: &Battle) -> HeroAction {
         });
     match best {
         Some(index) => HeroAction::Skill { index, target },
-        None => HeroAction::Pass,
+        // Nothing affordable: wait for mana behind a guard.
+        None => HeroAction::Guard,
     }
 }
 

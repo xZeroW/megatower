@@ -237,8 +237,8 @@ fn combat_left(n: usize) -> f32 {
     let width = 52.0 + n as f32 * 56.0 - 12.0;
     (compose::STAGE_CX - width / 2.0).max(ACTIONS_LEFT)
 }
-/// Pass button, left of the skill slots.
-fn combat_pass(n: usize) -> R {
+/// Guard button, left of the skill slots.
+fn combat_guard(n: usize) -> R {
     [combat_left(n), 306.0, 40.0, 34.0]
 }
 /// Skill slot `i` of `n` in the bottom bar.
@@ -415,14 +415,19 @@ impl Labyrinth {
                 for turn in [Turn::Ahead, Turn::Left, Turn::Back, Turn::Right] {
                     let exit = game.floor.turns().into_iter().find(|(t, _)| *t == turn);
                     let (rect, arrow) = walk_button(turn);
-                    let mut c = choice(
-                        rect,
-                        Action::Walk(turn),
-                        "",
-                        exit.as_ref()
-                            .and_then(|(_, e)| e.known)
-                            .map_or("Unexplored room", megatower_sim::run::room_name),
+                    // What waits behind the door, so the route is a choice.
+                    let tip = exit.as_ref().map_or_else(
+                        || "No door".to_owned(),
+                        |(_, e)| {
+                            let name = e.known.map_or("Unknown", megatower_sim::run::room_name);
+                            if e.cleared {
+                                format!("{name} (cleared)")
+                            } else {
+                                name.to_owned()
+                            }
+                        },
                     );
+                    let mut c = choice(rect, Action::Walk(turn), "", tip);
                     c.icon = Some(arrow);
                     c.enabled = exit.is_some()
                         && game.floor.current_room().cleared
@@ -441,10 +446,10 @@ impl Labyrinth {
             Mode::Combat => {
                 let slots = game.battle.as_ref().map_or(1, |b| b.skills.len().max(1));
                 out.push(icon(
-                    combat_pass(slots),
-                    Action::Pass,
-                    "assets/textures/icons/timeout_icon.png",
-                    "Pass turn [Space]",
+                    combat_guard(slots),
+                    Action::Guard,
+                    "assets/textures/icons/guard_icon.png",
+                    "Guard [Space]: no skill this turn, enemy hits deal half damage",
                 ));
                 if let Some(battle) = &game.battle {
                     for (i, skill) in battle.skills.iter().enumerate() {
@@ -1013,10 +1018,10 @@ impl Labyrinth {
             );
             if let Action::Skill(i) = c.action {
                 self.skill_labels(&mut out, i, c);
-            } else if matches!(c.action, Action::Pass) {
+            } else if matches!(c.action, Action::Guard) {
                 out.push(Draw::Text {
                     rect: [c.rect[0], c.rect[1] + c.rect[3] + 1.0, c.rect[2], 12.0],
-                    text: "Pass".into(),
+                    text: "Guard".into(),
                     size: 12.0,
                     color: palette(4),
                     align: Align::Center,
@@ -1060,8 +1065,8 @@ impl Labyrinth {
                 .iter()
                 .find(|c| contains(c.rect, cursor[0], cursor[1]))
             {
-                // The movement, pass and skill buttons explain themselves.
-                if !matches!(c.action, Action::Walk(_) | Action::Pass) {
+                // A wall has nothing to say; a door names the room behind it.
+                if !matches!(c.action, Action::Walk(_)) || c.enabled {
                     tooltip(&mut out, rects, cursor, c.tip.clone());
                 }
             } else if (self.view == View::Stage || cursor[0] >= 308.0)
@@ -1623,12 +1628,21 @@ impl Labyrinth {
                     palette(2)
                 },
             });
-            let mark = room.known_kind().map_or("?", |k| match k {
+            // Places worth coming back to keep their mark; the rest only
+            // show one while they still hold something.
+            let mark = room.known_kind().map_or("", |k| match k {
                 RoomKind::Merchant => "$",
                 RoomKind::GemAltar { .. } => "G",
+                RoomKind::Stairs { boss: true } if !room.cleared => "B",
                 RoomKind::Stairs { .. } => ">",
                 RoomKind::Shrine => "+",
-                _ => "",
+                _ if room.cleared => "",
+                RoomKind::Fight => "x",
+                RoomKind::Elite => "E",
+                RoomKind::Treasure => "T",
+                RoomKind::Rest => "R",
+                RoomKind::Event => "?",
+                RoomKind::Start => "",
             });
             if p == floor.current {
                 // An arrow in the room you stand in, pointing the way you face.
@@ -2003,7 +2017,7 @@ mod tests {
     }
 
     #[test]
-    fn movement_pass_and_skill_buttons_have_no_tooltip() {
+    fn doors_name_their_room_and_combat_buttons_explain_themselves() {
         let shown = |session: &Labyrinth, ui: &mut UiState, rects: &Rects, at: [f32; 2]| {
             ui.cursor = Some(at);
             session
@@ -2030,18 +2044,20 @@ mod tests {
             [button[0] + button[2] / 2.0, button[1] + button[3] / 2.0],
         );
         assert!(map.iter().any(|t| t.contains("Floor map")), "{map:?}");
-        // Directions: nothing pops up over the walk buttons.
-        for i in 0..4 {
-            let at = [325.0 + i as f32 * 44.0 + 10.0, 320.0];
+        // Directions: a door names the room behind it, a wall says nothing.
+        let walks: Vec<_> = session
+            .choices(&rects)
+            .into_iter()
+            .filter(|c| matches!(c.action, Action::Walk(_)))
+            .collect();
+        assert!(walks.iter().any(|c| c.enabled));
+        for c in walks {
+            let at = [c.rect[0] + c.rect[2] / 2.0, c.rect[1] + c.rect[3] / 2.0];
             let text = shown(&session, &mut ui, &rects, at);
-            assert!(
-                !text
-                    .iter()
-                    .any(|t| t.contains("room") || t.contains("Unexplored")),
-                "{text:?}"
-            );
+            assert_eq!(text.contains(&c.tip[0]), c.enabled, "{text:?}");
+            assert_ne!(c.tip[0], "Unknown");
         }
-        // In a fight, pass is silent; the skill buttons name themselves.
+        // In a fight, guard and the skill buttons explain themselves.
         session
             .game_mut()
             .debug_walk_to_kind(|k| k == RoomKind::Fight);
@@ -2055,9 +2071,9 @@ mod tests {
                 .rect;
             [r[0] + r[2] / 2.0, r[1] + r[3] / 2.0]
         };
-        let at = centre(&session, |a| matches!(a, Action::Pass));
-        let pass = shown(&session, &mut ui, &rects, at);
-        assert!(!pass.iter().any(|t| t.contains("Pass turn")), "{pass:?}");
+        let at = centre(&session, |a| matches!(a, Action::Guard));
+        let guard = shown(&session, &mut ui, &rects, at);
+        assert!(guard.iter().any(|t| t.contains("half damage")), "{guard:?}");
         let at = centre(&session, |a| matches!(a, Action::Skill(0)));
         let skill = shown(&session, &mut ui, &rects, at);
         assert!(skill.iter().any(|t| t.contains("mana")), "{skill:?}");

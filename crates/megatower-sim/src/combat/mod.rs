@@ -1,6 +1,6 @@
 //! Turn-based combat: the hero against a group of enemies.
 //!
-//! A turn is: the hero uses a skill (or passes), every living enemy carries
+//! A turn is: the hero uses a skill (or guards, or passes), every living enemy carries
 //! out the intent it showed, then ailments tick, durations count down and the
 //! hero regains mana. A frozen actor loses its next action.
 
@@ -22,6 +22,8 @@ use std::collections::VecDeque;
 pub const HERO_LIFE: f64 = 100.0;
 pub const HERO_MANA: f64 = 40.0;
 pub const HERO_MANA_REGEN: f64 = 6.0;
+/// What hits deal to a hero who spent the turn on [`HeroAction::Guard`].
+pub const GUARD_DAMAGE_TAKEN: f64 = 0.5;
 /// Evasion (dodge chance against attacks) never goes above this.
 pub const MAX_EVASION: f64 = 75.0;
 
@@ -199,7 +201,13 @@ pub enum Outcome {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum HeroAction {
-    Skill { index: usize, target: usize },
+    Skill {
+        index: usize,
+        target: usize,
+    },
+    /// No skill this turn: enemy hits deal [`GUARD_DAMAGE_TAKEN`] of their
+    /// damage until the turn ends.
+    Guard,
     Pass,
 }
 
@@ -427,11 +435,24 @@ impl Battle {
         self.log.push(CombatEvent::TurnStart { turn: self.turn });
         if self.hero.afflictions.take_frozen() {
             self.log.push(CombatEvent::Frozen { actor: Actor::Hero });
-        } else if let HeroAction::Skill { index, target } = action {
-            self.use_skill(index, target);
-        }
-        if self.outcome() == Outcome::Ongoing {
-            self.enemies_act();
+            // A frozen hero cannot raise a guard either.
+            self.enemies_act(1.0);
+        } else {
+            let mut taken = 1.0;
+            match action {
+                HeroAction::Skill { index, target } => self.use_skill(index, target),
+                HeroAction::Guard => {
+                    taken = GUARD_DAMAGE_TAKEN;
+                    self.log.push(CombatEvent::Action {
+                        actor: Actor::Hero,
+                        name: "Guard".into(),
+                    });
+                }
+                HeroAction::Pass => {}
+            }
+            if self.outcome() == Outcome::Ongoing {
+                self.enemies_act(taken);
+            }
         }
         if self.outcome() == Outcome::Ongoing {
             self.end_of_turn();
@@ -508,7 +529,8 @@ impl Battle {
         }
     }
 
-    fn enemies_act(&mut self) {
+    /// `hero_taken` scales what enemy hits deal to the hero this turn.
+    fn enemies_act(&mut self, hero_taken: f64) {
         for i in 0..self.enemies.len() {
             if !self.enemies[i].fighter.alive() || !self.hero.alive() {
                 continue;
@@ -532,7 +554,8 @@ impl Battle {
                         spec: &spec,
                         mods: &enemy.fighter.mods,
                         state: enemy.fighter.state_tags(),
-                        dealt_multiplier: enemy.fighter.afflictions.damage_dealt_multiplier(),
+                        dealt_multiplier: enemy.fighter.afflictions.damage_dealt_multiplier()
+                            * hero_taken,
                         no_ailments: false,
                         payoff: None,
                     };
@@ -956,6 +979,28 @@ mod tests {
         let mut b = battle(vec![], vec![enemy(100.0, vec![punch(500.0)])]);
         assert_eq!(b.act(HeroAction::Pass), Ok(Outcome::Lost));
         assert!(b.log.contains(&CombatEvent::Death { actor: Actor::Hero }));
+    }
+
+    #[test]
+    fn guarding_halves_the_hits_of_that_turn_only() {
+        let mut b = battle(vec![], vec![enemy(100.0, vec![punch(20.0)])]);
+        b.act(HeroAction::Guard).unwrap();
+        approx(b.hero.life, HERO_LIFE - 20.0 * GUARD_DAMAGE_TAKEN);
+        assert!(b.log.contains(&CombatEvent::Action {
+            actor: Actor::Hero,
+            name: "Guard".into(),
+        }));
+        let before = b.hero.life;
+        b.act(HeroAction::Pass).unwrap();
+        approx(b.hero.life, before - 20.0);
+    }
+
+    #[test]
+    fn a_frozen_hero_cannot_guard() {
+        let mut b = battle(vec![], vec![enemy(100.0, vec![punch(20.0)])]);
+        b.hero.afflictions.inflict(Ailment::Freeze, 1.0);
+        b.act(HeroAction::Guard).unwrap();
+        approx(b.hero.life, HERO_LIFE - 20.0);
     }
 
     #[test]

@@ -19,9 +19,11 @@ reference/parity work: `MEGATOWER_LEGACY=1 cargo run -p megatower-client`.
 ### Controls
 
 - Choose a first gem with 1–3 or a click. In combat, 1–4 use linked skills;
-  Space passes and Left/Right/Tab changes target.
+  Space guards (no skill, enemy hits deal half damage that turn) and
+  Left/Right/Tab changes target.
 - Click a door or use W/A/D/S to move relative to your facing. Enter descends
   from resolved stairs. M shows the floor map; P shows the passive tree.
+  Hover a door arrow, or open the map, to see what the next room holds.
 - The room fills the screen above a bottom bar (hero, skills, actions). Equipment and all 20 bag slots are in a drawer over the left side: open it with I, Tab or the bag button, close it with Esc. Right-click gear to
   equip/unequip. Select a gem, then click equipment to socket it; linked gems
   appear in the original bottom-left slots (right-click to unsocket).

@@ -2,7 +2,7 @@
 //! time (see "Labyrinth" in `design/GAME-DESIGN.md`).
 //!
 //! Each room is [`Visibility::Hidden`] until a visited room has a door to it,
-//! then [`Visibility::Seen`] (the door and a `?`, not its kind), then
+//! then [`Visibility::Seen`] (the door and what the room holds), then
 //! [`Visibility::Visited`] once entered. The hero leaves a room only after it
 //! is resolved, and may walk back through any visited room.
 
@@ -137,9 +137,11 @@ impl Room {
         self.doors & dir.bit() != 0
     }
 
-    /// The kind as the player knows it: `None` until visited.
+    /// The kind as the player knows it: `None` while the room is hidden. A
+    /// room behind a door of a visited one shows what it holds, so the player
+    /// can choose which doors are worth the danger clock.
     pub fn known_kind(&self) -> Option<RoomKind> {
-        (self.visibility == Visibility::Visited).then_some(self.kind)
+        (self.visibility != Visibility::Hidden).then_some(self.kind)
     }
 }
 
@@ -410,12 +412,17 @@ mod tests {
     }
 
     #[test]
-    fn seen_rooms_hide_their_kind() {
+    fn seen_rooms_show_their_kind_hidden_ones_do_not() {
         let f = floor(1, 2);
         for exit in f.exits() {
-            assert_eq!(exit.known, None);
+            assert_eq!(exit.known, Some(f.room(exit.pos).kind));
             assert!(!exit.cleared);
         }
+        let hidden = f
+            .positions()
+            .find(|&p| f.room(p).visibility == Visibility::Hidden)
+            .unwrap();
+        assert_eq!(f.room(hidden).known_kind(), None);
     }
 
     #[test]
