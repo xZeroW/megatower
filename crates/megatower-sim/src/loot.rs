@@ -44,11 +44,27 @@ pub fn roll_gem(db: &GemDb, floor: u32, rng: &mut Rng) -> Gem {
 fn table(kind: RoomKind) -> Option<(f64, u32, RarityWeights, f64, u32)> {
     match kind {
         RoomKind::Fight => Some((40.0, 1, [55, 35, 9, 1], 30.0, 1)),
-        RoomKind::Elite => Some((100.0, 1, [0, 60, 35, 5], 60.0, 1)),
-        RoomKind::Stairs { boss: true } => Some((100.0, 2, [0, 30, 60, 10], 100.0, 1)),
         RoomKind::Treasure => Some((100.0, 2, [20, 50, 25, 5], 100.0, 1)),
         _ => None,
     }
+}
+
+/// Rewards shown after an elite or a boss; the player keeps one.
+pub const REWARD_OFFERS: usize = 3;
+
+/// The pick-one offers for clearing an elite or boss room: gear and one gem.
+/// Empty for every other room.
+pub fn reward_offers(kind: RoomKind, floor: u32, content: &Content, rng: &mut Rng) -> Vec<Loot> {
+    let weights: RarityWeights = match kind {
+        RoomKind::Elite => [0, 60, 35, 5],
+        RoomKind::Stairs { boss: true } => [0, 15, 65, 20],
+        _ => return Vec::new(),
+    };
+    let mut offers: Vec<Loot> = (1..REWARD_OFFERS)
+        .map(|_| Loot::Item(random_item(&content.items, floor, weights, rng)))
+        .collect();
+    offers.push(Loot::Gem(roll_gem(&content.gems, floor, rng)));
+    offers
 }
 
 /// Loot for clearing a room on `floor`.
@@ -160,11 +176,20 @@ mod tests {
     }
 
     #[test]
-    fn bosses_and_treasure_always_pay() {
+    fn elites_and_bosses_offer_a_choice_and_treasure_always_pays() {
         let mut rng = Rng::seeded(2);
         for _ in 0..50 {
-            let boss = room_loot(RoomKind::Stairs { boss: true }, 3, content::get(), &mut rng);
-            assert_eq!(boss.len(), 3);
+            for kind in [RoomKind::Elite, RoomKind::Stairs { boss: true }] {
+                assert!(room_loot(kind, 3, content::get(), &mut rng).is_empty());
+                let offers = reward_offers(kind, 3, content::get(), &mut rng);
+                assert_eq!(offers.len(), REWARD_OFFERS);
+                assert!(matches!(offers[REWARD_OFFERS - 1], Loot::Gem(_)));
+                assert!(offers.iter().all(|l| match l {
+                    Loot::Item(item) => item.rarity != crate::items::ItemRarity::Normal,
+                    Loot::Gem(_) => true,
+                }));
+            }
+            assert!(reward_offers(RoomKind::Fight, 3, content::get(), &mut rng).is_empty());
             let treasure = room_loot(RoomKind::Treasure, 1, content::get(), &mut rng);
             assert_eq!(treasure.len(), 3);
         }

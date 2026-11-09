@@ -45,11 +45,22 @@ AoE starters (Frost Nova, Arc) outscale single-target ones (Heavy Strike).
 
 ## Phase 2: loot choices
 
-- [ ] Pick 1 of 3 rewards after elites and bosses instead of auto-loot.
-- [ ] Sell or salvage gear (into gold or orbs). Today gear can only be
-      discarded.
-- [ ] Merchants sell gear, not only gems and orbs.
-- [ ] Prompt when the 20-slot bag is full instead of silently dropping loot.
+- [x] Pick 1 of 3 rewards after elites and bosses instead of auto-loot.
+      Done: 2 pieces of gear and 1 gem are offered, one is kept (keys 1-3,
+      Escape skips for nothing). Bosses roll better gear than elites (20%
+      unique). Gold, XP and orbs are still paid automatically.
+- [x] Sell or salvage gear (into gold or orbs). Done: merchants buy gear
+      and gems for 30% of their price; Delete salvages a bag slot anywhere
+      else for half of that. There is no free discard any more.
+- [x] Merchants sell gear, not only gems and orbs. Done: 3 pieces, magic
+      or better, 30-300 gold by rarity and +20% per item level.
+- [x] Prompt when the 20-slot bag is full instead of silently dropping loot.
+      Done: the loot waits in the reward screen; free a slot to take it,
+      or leave and it is salvaged.
+      Open: a boss used to drop 2 items and a gem and now gives 1 of 3, so
+      gear comes in slower; merchant gear and sale gold are the counterweight.
+      The reward cells are not dimmed when the bag is full (only the tooltip
+      and key label say so).
 
 ## Phase 3: enemies that ask questions
 
@@ -104,5 +115,8 @@ AoE starters (Frost Nova, Arc) outscale single-target ones (Heavy Strike).
 - After utility gems (the bot uses them only in plain cases): Heavy Strike
   59%, Split Shot 83%, Fireball 73%, Frost Nova 91%, Arc 91%, Venom Dart
   69%. Within noise of the flask numbers, Arc aside.
+- After loot choices (the bot takes the best-scoring gear offer and sells
+  spare gear): Heavy Strike 64%, Split Shot 81%, Fireball 79%, Frost Nova
+  92%, Arc 91%, Venom Dart 70%. Unchanged within noise.
 - Re-run `cargo run -p megatower-sim --example bot --release -- 150 12` after
   each phase.

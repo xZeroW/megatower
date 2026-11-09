@@ -6,8 +6,8 @@ use crate::combat::{Battle, CombatEvent, FLASK_CHARGES, HeroAction, Outcome, enc
 use crate::content;
 use crate::labyrinth::{self, Dir, Floor, MoveError, Pos, RoomKind, Turn};
 use crate::legacy::Legacy;
-use crate::loot::{room_loot, room_orbs, starting_character};
-use crate::merchant::{Shop, sell as sell_gem};
+use crate::loot::{reward_offers, room_loot, room_orbs, starting_character};
+use crate::merchant::{Shop, loot_sell_price, salvage, salvage_price, sell as sell_loot};
 use crate::orbs::{Orb, OrbError};
 use crate::passives::enemy_xp;
 use crate::rng::Rng;
@@ -35,7 +35,19 @@ pub enum Mode {
         outcome: Option<Vec<String>>,
     },
     Altar,
+    /// Loot to choose from; see [`Run::reward`].
+    Reward,
     Dead,
+}
+
+/// Loot waiting for a decision: the pick after an elite or a boss, or what
+/// did not fit in the bag.
+#[derive(Clone, Debug, PartialEq)]
+pub struct Reward {
+    pub offers: Vec<Loot>,
+    /// Taking one gives up the others. Otherwise all of it can be taken, and
+    /// what is left behind is salvaged for gold.
+    pub pick_one: bool,
 }
 
 pub struct Run {
@@ -46,6 +58,8 @@ pub struct Run {
     /// Merchant stock per room on this floor.
     pub shops: HashMap<Pos, Shop>,
     pub battle: Option<Battle>,
+    /// What [`Mode::Reward`] is showing.
+    pub reward: Option<Reward>,
     /// Unlocks that shape this run's start.
     pub legacy: Legacy,
     /// Points already paid out for this run's end.
@@ -124,6 +138,7 @@ impl Run {
             character: Character::new([]),
             shops: HashMap::new(),
             battle: None,
+            reward: None,
             rewarded: false,
         }
     }
@@ -177,6 +192,7 @@ impl Run {
             character: saved.character,
             shops: saved.shops.into_iter().collect(),
             battle: None,
+            reward: None,
             legacy: saved.legacy,
             rewarded: false,
         })
@@ -345,7 +361,7 @@ impl Run {
         let rng = &mut self.rng;
         self.shops
             .entry(pos)
-            .or_insert_with(|| Shop::new(floor, &content::get().gems, rng));
+            .or_insert_with(|| Shop::new(floor, content::get(), rng));
         self.mode = Mode::Shop;
     }
 
@@ -371,6 +387,17 @@ impl Run {
         shop.buy_orb(index, &mut self.character).is_ok()
     }
 
+    /// `true` if the piece of gear was bought.
+    pub fn buy_gear(&mut self, index: usize) -> bool {
+        if self.mode != Mode::Shop {
+            return false;
+        }
+        let Some(shop) = self.shops.get_mut(&self.floor.current) else {
+            return false;
+        };
+        shop.buy_gear(index, &mut self.character).is_ok()
+    }
+
     pub fn toggle_lock(&mut self, index: usize) {
         if let Some(shop) = self.shops.get_mut(&self.floor.current) {
             shop.toggle_lock(index);
@@ -391,7 +418,51 @@ impl Run {
             return false;
         }
         let gems = &content::get().gems;
-        sell_gem(&mut self.character, bag_index, gems).is_ok()
+        sell_loot(&mut self.character, bag_index, gems).is_ok()
+    }
+
+    /// Gold the bag slot would pay right now: a merchant's price in a shop,
+    /// the salvage price on the map or in front of a reward.
+    pub fn sale_value(&self, bag_index: usize) -> Option<u32> {
+        let gems = &content::get().gems;
+        let loot = self.character.inventory.get(bag_index)?;
+        match self.mode {
+            Mode::Shop => Some(loot_sell_price(gems, loot)),
+            Mode::Map | Mode::Reward => Some(salvage_price(gems, loot)),
+            _ => None,
+        }
+    }
+
+    /// Turns the bag slot into gold where [`Run::sale_value`] has a price;
+    /// returns the gold received.
+    pub fn sell_or_salvage(&mut self, bag_index: usize) -> Option<u32> {
+        let gems = &content::get().gems;
+        match self.mode {
+            Mode::Shop => sell_loot(&mut self.character, bag_index, gems).ok(),
+            Mode::Map | Mode::Reward => salvage(&mut self.character, bag_index, gems).ok(),
+            _ => None,
+        }
+    }
+
+    /// Moves a reward into the bag; `false` when the bag is full. A pick-one
+    /// reward ends there, the others once nothing is left.
+    pub fn take_reward(&mut self, index: usize) -> bool {
+        if self.mode != Mode::Reward || !self.character.has_room() {
+            return false;
+        }
+        let Some(reward) = &mut self.reward else {
+            return false;
+        };
+        if index >= reward.offers.len() {
+            return false;
+        }
+        let loot = reward.offers.remove(index);
+        self.character.inventory.push(loot);
+        if reward.pick_one || reward.offers.is_empty() {
+            self.reward = None;
+            self.mode = Mode::Map;
+        }
+        true
     }
 
     pub fn take_boon(&mut self, index: usize) {
@@ -453,10 +524,23 @@ impl Run {
     }
 
     /// Back to the map from a room screen; a shrine left without a boon is
-    /// still done with.
+    /// still done with. Loot left behind because the bag was full is
+    /// salvaged; a pick-one reward that is skipped pays nothing.
     pub fn leave_room(&mut self) {
         match &self.mode {
             Mode::Shop | Mode::Altar => {}
+            Mode::Reward => {
+                if let Some(reward) = self.reward.take()
+                    && !reward.pick_one
+                {
+                    let gems = &content::get().gems;
+                    self.character.gold += reward
+                        .offers
+                        .iter()
+                        .map(|l| salvage_price(gems, l))
+                        .sum::<u32>();
+                }
+            }
             Mode::Shrine(_) => self.floor.resolve_current(),
             Mode::Event {
                 outcome: Some(_), ..
@@ -525,14 +609,36 @@ impl Run {
         Some(outcome)
     }
 
-    /// Rolls the room's loot into the bag; what does not fit is left behind.
+    /// Rolls the room's loot into the bag. Elites and bosses offer a pick
+    /// instead, and what does not fit waits for a decision; both show as
+    /// [`Mode::Reward`].
     fn take_loot(&mut self, kind: RoomKind) {
-        for item in room_loot(kind, self.floor.number, content::get(), &mut self.rng) {
-            let _ = self.character.add_loot(item);
+        let floor = self.floor.number;
+        let mut left = Vec::new();
+        for item in room_loot(kind, floor, content::get(), &mut self.rng) {
+            if let Err(item) = self.character.add_loot(item) {
+                left.push(item);
+            }
         }
-        for orb in room_orbs(kind, self.floor.number, &mut self.rng) {
+        for orb in room_orbs(kind, floor, &mut self.rng) {
             self.character.orbs.add(orb, 1);
         }
+        let offers = reward_offers(kind, floor, content::get(), &mut self.rng);
+        let reward = if !offers.is_empty() {
+            Reward {
+                offers,
+                pick_one: true,
+            }
+        } else if !left.is_empty() {
+            Reward {
+                offers: left,
+                pick_one: false,
+            }
+        } else {
+            return;
+        };
+        self.reward = Some(reward);
+        self.mode = Mode::Reward;
     }
 
     /// Spends an orb on an item; only between fights.
@@ -586,6 +692,13 @@ impl Run {
     }
 
     /// QA: a treasure room's loot straight into the bag.
+    /// QA: an elite's pick-one reward, without the fight.
+    pub fn debug_reward(&mut self) {
+        if self.mode == Mode::Map {
+            self.take_loot(RoomKind::Elite);
+        }
+    }
+
     pub fn debug_loot(&mut self) {
         self.take_loot(RoomKind::Treasure);
     }
@@ -720,6 +833,146 @@ mod tests {
             }
         }
         panic!("no winnable first fight found");
+    }
+
+    /// Ends the fight in the hero's favour.
+    fn win_fight(run: &mut Run) {
+        for _ in 0..500 {
+            let Some(battle) = &mut run.battle else {
+                return;
+            };
+            for e in &mut battle.enemies {
+                e.fighter.life = e.fighter.life.min(1.0);
+            }
+            let target = battle
+                .enemies
+                .iter()
+                .position(|e| e.fighter.alive())
+                .unwrap();
+            let action = if battle.hero.mana >= battle.skill_cost(0).unwrap() {
+                HeroAction::Skill { index: 0, target }
+            } else {
+                HeroAction::Pass
+            };
+            run.combat_act(action);
+        }
+        panic!("the fight never ended");
+    }
+
+    #[test]
+    fn elites_offer_one_of_three_rewards() {
+        for seed in 0..80 {
+            let mut run = started(seed);
+            run.debug_walk_to_kind(|k| k == RoomKind::Elite);
+            if run.mode != Mode::Combat {
+                continue;
+            }
+            let bag = run.character.inventory.len();
+            win_fight(&mut run);
+            if run.mode == Mode::Dead {
+                continue;
+            }
+            assert_eq!(run.mode, Mode::Reward);
+            // Nothing is saved in front of a reward.
+            assert!(run.save().is_none());
+            let reward = run.reward.clone().unwrap();
+            assert!(reward.pick_one);
+            assert_eq!(reward.offers.len(), crate::loot::REWARD_OFFERS);
+            assert_eq!(run.character.inventory.len(), bag);
+            assert!(!run.take_reward(7));
+            assert!(run.take_reward(1));
+            assert_eq!(run.mode, Mode::Map);
+            assert!(run.reward.is_none());
+            assert_eq!(run.character.inventory.len(), bag + 1);
+            assert_eq!(run.character.inventory[bag], reward.offers[1]);
+            assert!(!run.take_reward(0));
+            return;
+        }
+        panic!("no elite room reached");
+    }
+
+    #[test]
+    fn a_skipped_pick_pays_nothing() {
+        let mut run = started(3);
+        run.reward = Some(Reward {
+            offers: vec![Loot::Gem(crate::gems::Gem::new(
+                "echo",
+                1,
+                crate::gems::GemRarity::Common,
+            ))],
+            pick_one: true,
+        });
+        run.mode = Mode::Reward;
+        let gold = run.character.gold;
+        run.leave_room();
+        assert_eq!(run.mode, Mode::Map);
+        assert_eq!(run.character.gold, gold);
+        assert!(run.reward.is_none());
+    }
+
+    #[test]
+    fn loot_that_does_not_fit_waits_and_is_salvaged_when_left() {
+        let gem = || {
+            Loot::Gem(crate::gems::Gem::new(
+                "echo",
+                1,
+                crate::gems::GemRarity::Common,
+            ))
+        };
+        let mut run = started(3);
+        while run.character.has_room() {
+            run.character.inventory.push(gem());
+        }
+        run.debug_loot();
+        assert_eq!(run.mode, Mode::Reward);
+        let reward = run.reward.clone().unwrap();
+        assert!(!reward.pick_one);
+        assert_eq!(reward.offers.len(), 3);
+        // No room: nothing can be taken until a slot is freed.
+        assert!(!run.take_reward(0));
+        let gold = run.character.gold;
+        let value = run.sale_value(0).unwrap();
+        assert_eq!(run.sell_or_salvage(0), Some(value));
+        assert_eq!(run.character.gold, gold + value);
+        assert!(run.take_reward(0));
+        assert_eq!(run.mode, Mode::Reward);
+        assert_eq!(run.reward.as_ref().unwrap().offers.len(), 2);
+        // Leaving salvages the rest.
+        let gems = &content::get().gems;
+        let rest: u32 = reward.offers[1..]
+            .iter()
+            .map(|l| salvage_price(gems, l))
+            .sum();
+        let gold = run.character.gold;
+        run.leave_room();
+        assert_eq!(run.mode, Mode::Map);
+        assert_eq!(run.character.gold, gold + rest);
+    }
+
+    #[test]
+    fn a_merchant_pays_more_than_salvage_and_sells_gear() {
+        let mut run = started(11);
+        run.character
+            .inventory
+            .push(Loot::Gem(crate::gems::Gem::new(
+                "echo",
+                1,
+                crate::gems::GemRarity::Common,
+            )));
+        let last = run.character.inventory.len() - 1;
+        let salvage = run.sale_value(last).unwrap();
+        assert!(!run.sell(last));
+        assert!(!run.buy_gear(0));
+        run.debug_walk_to_kind(|k| k == RoomKind::Merchant);
+        assert_eq!(run.mode, Mode::Shop);
+        assert!(run.sale_value(last).unwrap() > salvage);
+        run.character.gold = 5000;
+        let bag = run.character.inventory.len();
+        assert!(run.buy_gear(0));
+        assert_eq!(run.character.inventory.len(), bag + 1);
+        assert!(!run.buy_gear(0));
+        assert!(run.sell_or_salvage(bag).is_some());
+        assert_eq!(run.character.inventory.len(), bag);
     }
 
     #[test]

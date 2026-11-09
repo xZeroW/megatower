@@ -358,6 +358,12 @@ fn in_action_area(r: R) -> R {
     [r[0], r[1] + ACTION_SHIFT, r[2], r[3]]
 }
 
+/// Merchant gear sits right of the gem cells, a wider gap apart.
+fn gear_cell(rects: &Rects, i: usize) -> R {
+    let last = rects.merchant[rects.merchant.len() - 1];
+    in_action_area([last[0] + 42.0 + i as f32 * 38.0, last[1], 34.0, 34.0])
+}
+
 /// A button of the given size centred vertically in the action area.
 fn centred(x: f32, w: f32, h: f32) -> R {
     [
@@ -519,14 +525,17 @@ impl Labyrinth {
                 }
             }
             Mode::Shop => {
+                // Leave and refresh move closer to the gems so that the gear
+                // cells on the right stay clear of the screen edge.
+                let nudge = |r: R, dx: f32| in_action_area([r[0] + dx, r[1], r[2], r[3]]);
                 out.push(icon(
-                    in_action_area(rects.merchant_leave),
+                    nudge(rects.merchant_leave, 12.0),
                     Action::Leave,
                     "assets/textures/ui/leave_icon.png",
                     "Leave merchant [Esc]",
                 ));
                 let mut refresh = icon(
-                    in_action_area(rects.merchant_refresh),
+                    nudge(rects.merchant_refresh, 8.0),
                     Action::Refresh,
                     "assets/textures/icons/refresh_icon.png",
                     "Refresh unlocked gems",
@@ -551,6 +560,17 @@ impl Labyrinth {
                     }
                 }
                 out.push(refresh);
+                if let Some(shop) = game.shop() {
+                    for (i, item) in shop.gear.iter().enumerate() {
+                        let Some(item) = item else { continue };
+                        let price = megatower_sim::merchant::item_price(item);
+                        let mut c = choice(gear_cell(rects, i), Action::BuyGear(i), "", "");
+                        c.tip = tip_lines(&Loot::Item(item.clone()));
+                        c.tip.push(format!("{price} gold"));
+                        c.enabled = game.character.gold >= price && game.character.has_room();
+                        out.push(c);
+                    }
+                }
                 if let Some(shop) = game.shop() {
                     // The craft buttons sit in the middle of the stage.
                     let n = shop.orbs.len() as f32;
@@ -636,13 +656,49 @@ impl Labyrinth {
                     ));
                 }
             }
+            Mode::Reward => {
+                if let Some(reward) = &game.reward {
+                    let mut leave = icon(
+                        in_action_area(rects.merchant_leave),
+                        Action::Leave,
+                        "assets/textures/ui/leave_icon.png",
+                        if reward.pick_one {
+                            "Skip the reward [Esc]"
+                        } else {
+                            "Leave the rest [Esc]"
+                        },
+                    );
+                    if !reward.pick_one {
+                        let gems = &content::get().gems;
+                        let gold: u32 = reward
+                            .offers
+                            .iter()
+                            .map(|l| megatower_sim::merchant::salvage_price(gems, l))
+                            .sum();
+                        leave.tip.push(format!("Salvaged for {gold} gold"));
+                    }
+                    out.push(leave);
+                    let room = game.character.has_room();
+                    for (i, (rect, loot)) in rects.merchant.iter().zip(&reward.offers).enumerate() {
+                        let mut c = choice(in_action_area(*rect), Action::Reward(i), "", "");
+                        c.tip = tip_lines(loot);
+                        c.tip.push(if room {
+                            format!("Take [{}]", i + 1)
+                        } else {
+                            "The bag is full".into()
+                        });
+                        c.enabled = room;
+                        out.push(c);
+                    }
+                }
+            }
             Mode::Dead => {}
         }
         // Merchant, shrine, event and altar buttons are centred on the stage as
         // one group (the recovered layout keeps them in the right half).
         if matches!(
             game.mode,
-            Mode::Shop | Mode::Shrine(_) | Mode::Event { .. } | Mode::Altar
+            Mode::Shop | Mode::Shrine(_) | Mode::Event { .. } | Mode::Altar | Mode::Reward
         ) {
             let bar = |c: &Choice| c.rect[1] >= BAR_Y;
             let min = out
@@ -1007,6 +1063,68 @@ impl Labyrinth {
                 }
             }
         }
+        if game.mode == Mode::Shop
+            && let Some(shop) = game.shop()
+        {
+            let stock = self.choices(rects);
+            for (i, item) in shop.gear.iter().enumerate() {
+                let Some(item) = item else { continue };
+                let Some(c) = stock
+                    .iter()
+                    .find(|c| matches!(c.action, Action::BuyGear(n) if n == i))
+                else {
+                    continue;
+                };
+                loot_draw(&mut out, c.rect, &Loot::Item(item.clone()));
+                out.push(text(
+                    [c.rect[0], c.rect[1] + 34.0, 34.0, 13.0],
+                    megatower_sim::merchant::item_price(item).to_string(),
+                    palette(if c.enabled { 8 } else { 4 }),
+                    Align::Center,
+                ));
+            }
+        }
+        if game.mode == Mode::Reward
+            && let Some(reward) = &game.reward
+        {
+            let cells = self.choices(rects);
+            for (i, loot) in reward.offers.iter().enumerate() {
+                if let Some(c) = cells
+                    .iter()
+                    .find(|c| matches!(c.action, Action::Reward(n) if n == i))
+                {
+                    loot_draw(&mut out, c.rect, loot);
+                    out.push(text(
+                        [c.rect[0], c.rect[1] + 34.0, 34.0, 13.0],
+                        format!("[{}]", i + 1),
+                        palette(if c.enabled { 8 } else { 4 }),
+                        Align::Center,
+                    ));
+                }
+            }
+            let lines: [&str; 2] = if reward.pick_one {
+                ["Choose one reward", "The others are left behind"]
+            } else {
+                [
+                    "The bag is full",
+                    "Free a slot to take more, or leave to salvage",
+                ]
+            };
+            // Beside the drawer when the bag is open.
+            let centre = if self.view == View::Stage {
+                compose::STAGE_CX
+            } else {
+                455.0
+            };
+            for (i, line) in lines.into_iter().enumerate() {
+                out.push(text(
+                    [centre - 150.0, 110.0 + i as f32 * 18.0, 300.0, 16.0],
+                    line,
+                    if i == 0 { WHITE } else { palette(4) },
+                    Align::Center,
+                ));
+            }
+        }
         if self.view != View::Stage {
             // The drawer goes over the enemies, so it is drawn after them.
             for v in drawer_visuals() {
@@ -1040,7 +1158,10 @@ impl Labyrinth {
         }
         let choices = self.choices(rects);
         for c in &choices {
-            if matches!(c.action, Action::Buy(_)) {
+            if matches!(
+                c.action,
+                Action::Buy(_) | Action::BuyGear(_) | Action::Reward(_)
+            ) {
                 continue;
             }
             compose::button(
@@ -1153,10 +1274,12 @@ impl Labyrinth {
                 lines.extend(megatower_sim::describe::mod_lines(&node.mods));
                 tooltip(&mut out, rects, cursor, lines);
             } else if self.view == View::Profile && ui.tab == Tab::Profile {
-                let loot = rects
+                let bag = rects
                     .inventory
                     .iter()
                     .position(|r| contains(*r, cursor[0], cursor[1]))
+                    .filter(|&i| i < game.character.inventory.len());
+                let loot = bag
                     .and_then(|i| game.character.inventory.get(i).cloned())
                     .or_else(|| {
                         rects
@@ -1167,7 +1290,15 @@ impl Labyrinth {
                             .map(Loot::Item)
                     });
                 if let Some(loot) = loot {
-                    tooltip(&mut out, rects, cursor, tip_lines(&loot));
+                    let mut lines = tip_lines(&loot);
+                    if let Some(gold) = bag.and_then(|i| game.sale_value(i)) {
+                        lines.push(if game.mode == Mode::Shop {
+                            format!("Sell for {gold} gold [right-click]")
+                        } else {
+                            format!("Salvage for {gold} gold [Del]")
+                        });
+                    }
+                    tooltip(&mut out, rects, cursor, lines);
                 } else if let Some(i) = rects
                     .market
                     .iter()

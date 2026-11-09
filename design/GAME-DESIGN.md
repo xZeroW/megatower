@@ -240,6 +240,12 @@ a mix of actives and supports from a floor-gated pool, gem level scaling with de
 sockets must be removed first. Inventory is limited (a fixed grid of slots for unsocketed
 gems and items), so selling is the main way to free room and get gold from extra gems.
 
+Implemented (`megatower-sim/src/merchant.rs`): each merchant also stocks 3 pieces of gear,
+magic or better (60% / 35% / 5% magic / rare / unique), bought once and untouched by
+refreshes. Gear costs 30 / 60 / 130 / 300 gold for normal / magic / rare / unique, +20% per
+item level. A merchant buys bag gems and gear for 30% of the price (gear counts the gems
+socketed in it). Anywhere else on the map a bag slot can be salvaged for half of that.
+
 ### Current room implementation
 - Gold: 3 + 2·floor (+0–2) per enemy (elites ×3, bosses ×10); treasure chests hold
   15 + 8·floor plus their loot. Merchant prices: 30 (skills) / 40 (supports) gold, +35%
@@ -270,8 +276,12 @@ bought once, not affected by refreshes).
   `assets/data/game/items.ron`): 19 bases, 20 affixes with level-gated tiers, 2 uniques.
   Magic items hold at most 1 prefix + 1 suffix, rares 3–6 affixes (3 + 3 max). New items
   roll 1 link, each extra link at 45%. Bag holds 20 items/gems; gems stay socketed when
-  gear is swapped. Drops: fights 40% item / 30% gem, elites 1 magic+ item / 60% gem,
-  bosses and treasure 2 items + 1 gem; 70% of gem drops are supports, gem level up to
+  gear is swapped. Drops: fights 40% item / 30% gem, treasure 2 items + 1 gem.
+  Elites and bosses offer a pick instead: 2 pieces of gear (elites 60 / 35 / 5% magic / rare /
+  unique, bosses 15 / 65 / 20%) and 1 gem, of which the player keeps one (`Mode::Reward`,
+  `Run::take_reward`; skipping pays nothing). Loot that does not fit in the bag waits in the
+  same screen: every piece can be taken once a slot is free, and what is left is salvaged
+  for gold. 70% of gem drops are supports, gem level up to
   1 + floor / 2. Runs start with a 2-link Worn Blade (attack starters) or Gnarled Wand
   (spells) and a Leather Vest. Crafting orbs (`megatower-sim/src/orbs.rs`) are
   in: Reforge, Augment, Ascend, Relink and Regret (the respec currency). They sit in a stash

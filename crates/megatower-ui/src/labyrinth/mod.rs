@@ -89,6 +89,8 @@ pub(super) enum Action {
     Leave,
     Buy(usize),
     BuyOrb(usize),
+    BuyGear(usize),
+    Reward(usize),
     Refresh,
     Boon(usize),
     Event(usize),
@@ -381,7 +383,7 @@ fn win_popups(before: &Gains, character: &megatower_sim::character::Character) -
 ///   once (no wipe); `*` walks to the stairs, `C` starts a fight against ten (five fighting, five waiting); `F` / `M` / `H` / `V` / `A` / `T` to the first fight, the
 ///   merchant, shrine, event, Gem Altar or treasure room, entering it without
 ///   fighting on the way; `x` leaves a room screen; `>` descends; `g` gives
-///   100 gold; `k` thirty doors on the danger clock; `o` two of every crafting orb; `$` a treasure room's loot; `+` a level; `^` takes the first
+///   100 gold; `k` thirty doors on the danger clock; `o` two of every crafting orb; `$` a treasure room's loot; `R` an elite's pick-one reward; `+` a level; `^` takes the first
 ///   passive node allowed; `m` / `p` toggle the map and the tree.
 /// - `GAME_LATE_MOVES`: more commands, played once `GAME_LATE_AT` (default 1)
 ///   seconds have passed, so effects like combat text are in flight when a
@@ -778,6 +780,7 @@ impl Labyrinth {
                         Mode::Combat => Action::Skill(i),
                         Mode::Shrine(_) => Action::Boon(i),
                         Mode::Event { .. } => Action::Event(i),
+                        Mode::Reward => Action::Reward(i),
                         _ => continue,
                     };
                     self.act(ui, action);
@@ -814,6 +817,7 @@ impl Labyrinth {
                     }
                 }
                 '$' => self.game_mut().debug_loot(),
+                'R' => self.game_mut().debug_reward(),
                 '+' => {
                     let progress = &mut self.game_mut().character.progress;
                     progress.gain_xp(megatower_sim::passives::xp_to_next(progress.level));
@@ -963,6 +967,7 @@ impl Labyrinth {
                 Mode::Shop
                     | Mode::Shrine(_)
                     | Mode::Altar
+                    | Mode::Reward
                     | Mode::Event {
                         outcome: Some(_),
                         ..
@@ -1013,6 +1018,15 @@ impl Labyrinth {
         ]
         .iter()
         .position(|k| keys.just_pressed(*k));
+        // Delete turns the selected bag slot into gold: a merchant's price in
+        // a shop, the salvage price on the map or in front of a reward.
+        if keys.just_pressed(KeyCode::Delete)
+            && let Some(Selection::Bag(i)) = self.selection
+            && self.game_mut().sell_or_salvage(i).is_some()
+        {
+            self.selection = None;
+            return;
+        }
         if self.game().mode == Mode::Map {
             if keys.just_pressed(KeyCode::KeyM) {
                 self.view = if self.view == View::Map {
@@ -1037,13 +1051,6 @@ impl Labyrinth {
                     View::Profile
                 };
                 ui.tab = Tab::Profile;
-                return;
-            }
-            if keys.just_pressed(KeyCode::Delete)
-                && let Some(Selection::Bag(i)) = self.selection
-            {
-                let _ = self.game_mut().character.discard(i);
-                self.selection = None;
                 return;
             }
             if self.view == View::Tree && keys.just_pressed(KeyCode::KeyR) {
@@ -1098,6 +1105,7 @@ impl Labyrinth {
                 Mode::Shrine(_) => Some(Action::Boon(i)),
                 Mode::Event { outcome: None, .. } => Some(Action::Event(i)),
                 Mode::Shop => Some(Action::BuyOrb(i)),
+                Mode::Reward => Some(Action::Reward(i)),
                 _ => None,
             };
             if let Some(action) = action {
@@ -1176,6 +1184,12 @@ impl Labyrinth {
             }
             Action::BuyOrb(i) => {
                 self.game_mut().buy_orb(i);
+            }
+            Action::BuyGear(i) => {
+                self.game_mut().buy_gear(i);
+            }
+            Action::Reward(i) => {
+                self.game_mut().take_reward(i);
             }
             Action::Refresh => {
                 self.game_mut().refresh_shop();

@@ -35,8 +35,13 @@ reference/parity work: `MEGATOWER_LEGACY=1 cargo run -p megatower-client`.
   tree (P) select an allocated node and press R to spend a Regret orb and refund its point.
 - Merchants also sell two crafting orbs (buttons over the room view, or keys 1 and 2). Right-clicking
   an allocated tree node to refund it now costs an Orb of Regret.
-- At a merchant, click stock to buy, right-click stock to lock it, and
-  right-click bag gems to sell. At an altar, select a bag gem and upgrade it,
+- Elites and bosses end in a choice: three rewards appear in the bottom bar and you keep one
+  (click it or press 1-3; Escape skips). Loot that does not fit in the bag waits the same way:
+  free a slot and take it, or leave and it is salvaged for gold.
+- Select a bag slot and press Delete to salvage it for gold; a merchant pays twice as much.
+  The tooltip of a bag slot shows what it would pay.
+- At a merchant, click stock to buy (gems on the left, three pieces of gear on the right),
+  right-click a gem in stock to lock it, and right-click bag gems or gear to sell. At an altar, select a bag gem and upgrade it,
   or click a socketed gem below the equipment. Escape leaves room choices or
   opens the original pause/options menu.
 

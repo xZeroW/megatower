@@ -115,6 +115,7 @@ pub fn play(seed: u64, starter: &str, last_floor: u32) -> BotResult {
                 }
                 run.leave_room();
             }
+            Mode::Reward => take_reward(&mut run),
             Mode::Dead => break,
             Mode::Starter(_) => run.pick_starter(0),
         }
@@ -518,15 +519,45 @@ fn manage(run: &mut Run) {
 }
 
 /// Sells loose gems, then buys supports that fit a free link.
+/// Takes the best-scoring piece of a pick, or everything that was left on the
+/// floor; gear the bag holds is spare (upgrades are worn on the map), so it
+/// makes room.
+fn take_reward(run: &mut Run) {
+    let tags = build_tags(run);
+    while !run.character.has_room() {
+        let spare = run
+            .character
+            .inventory
+            .iter()
+            .position(|l| matches!(l, Loot::Item(_)));
+        if spare.and_then(|i| run.sell_or_salvage(i)).is_none() {
+            break;
+        }
+    }
+    let Some(reward) = &run.reward else {
+        run.leave_room();
+        return;
+    };
+    let best = reward
+        .offers
+        .iter()
+        .enumerate()
+        .filter_map(|(i, l)| match l {
+            Loot::Item(item) => Some((i, item_score(item, tags))),
+            Loot::Gem(_) => None,
+        })
+        .max_by(|a, b| a.1.total_cmp(&b.1))
+        .map_or(0, |(i, _)| i);
+    if !run.take_reward(best) {
+        run.leave_room();
+    }
+}
+
 fn shop(run: &mut Run) {
     let gems = &content::get().gems;
-    while let Some(i) = run
-        .character
-        .inventory
-        .iter()
-        .position(|l| matches!(l, Loot::Gem(_)))
-    {
-        if !run.sell(i) {
+    // Everything in the bag is spare: upgrades are worn on the map.
+    while !run.character.inventory.is_empty() {
+        if !run.sell(0) {
             break;
         }
     }
