@@ -911,6 +911,7 @@ impl Labyrinth {
             if let Some(policies) = &self.policies {
                 compose::enemy_widget(rects, policies, &enemy, cx, dy, ui, i, &mut out);
             }
+            self.intent_marker(&mut out, i, cx, dy);
         }
         if let Some(battle) = &game.battle
             && battle.waiting() > 0
@@ -1139,6 +1140,31 @@ impl Labyrinth {
             ));
         }
         out
+    }
+
+    /// What enemy `i` does next, under its health panel: an icon for the kind
+    /// of move and its amount.
+    fn intent_marker(&self, out: &mut Vec<Draw>, i: usize, cx: f32, dy: f32) {
+        use megatower_sim::combat::IntentKind;
+        let Some(enemy) = self.game().battle.as_ref().and_then(|b| b.enemies.get(i)) else {
+            return;
+        };
+        let (icon, tint) = match enemy.intent().kind {
+            IntentKind::Attack(_) => ("assets/textures/icons/attack_icon.png", hex(0xff6a6a)),
+            IntentKind::Guard { .. } => ("assets/textures/icons/guard_icon.png", hex(0x7ab4ff)),
+            IntentKind::Heal { .. } => ("assets/textures/icons/overheal_icon.png", hex(0x6fdc6f)),
+        };
+        let amount = intent_amount(enemy);
+        let width = 14.0 + 3.0 + amount.chars().count() as f32 * 6.0;
+        let (x, y) = (cx - width / 2.0, compose::ENEMY_TOP + dy + 8.0);
+        out.push(tinted([x, y, 14.0, 14.0], icon, tint));
+        out.push(Draw::Text {
+            rect: [x + 17.0, y + 1.0, amount.chars().count() as f32 * 6.0 + 2.0, 12.0],
+            text: amount,
+            size: 12.0,
+            color: tint,
+            align: Align::Left,
+        });
     }
 
     /// One thin line over the stage: floor and level, danger or rooms left,

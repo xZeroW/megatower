@@ -1872,7 +1872,7 @@ pub(super) fn button(
 
 /// Top of the enemy containers (`EnemyContainerHolder` y in the room's
 /// SubViewport, which starts at the screen's top).
-pub(super) const ENEMY_TOP: f32 = 138.0;
+pub(crate) const ENEMY_TOP: f32 = 138.0;
 /// Animation slots (hit, lunge, dodge) kept per enemy of a fight.
 pub(crate) const ENEMY_SLOTS: usize = 16;
 
