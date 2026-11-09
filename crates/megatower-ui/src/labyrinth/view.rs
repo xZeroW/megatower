@@ -228,17 +228,26 @@ pub(super) const OPTIONS_BUTTON: R = [609.0, 20.0, 26.0, 26.0];
 const BAR_Y: f32 = 295.0;
 /// "Turn N" under the status line, centred on the stage.
 const TURN_LABEL: R = [compose::STAGE_CX - 60.0, 20.0, 120.0, 13.0];
-/// Bag, floor map and passive tree buttons at the end of the hero strip.
+/// Bag, floor map and passive tree buttons: a column under the options gear.
 const MENU_BUTTONS: [R; 3] = [
-    [238.0, 299.0, 26.0, 26.0],
-    [268.0, 299.0, 26.0, 26.0],
-    [238.0, 328.0, 26.0, 26.0],
+    [609.0, 50.0, 26.0, 26.0],
+    [609.0, 80.0, 26.0, 26.0],
+    [609.0, 110.0, 26.0, 26.0],
 ];
+/// Left edge of the room actions: the hero strip ends before it.
+const ACTIONS_LEFT: f32 = 240.0;
+/// Left edge of the pass button and the `n` skill slots, centred on the stage.
+fn combat_left(n: usize) -> f32 {
+    let width = 52.0 + n as f32 * 56.0 - 12.0;
+    (compose::STAGE_CX - width / 2.0).max(ACTIONS_LEFT)
+}
 /// Pass button, left of the skill slots.
-const COMBAT_PASS: R = [326.0, 306.0, 40.0, 34.0];
-/// Skill slot `i` in the bottom bar: gem, key, mana cost.
-fn skill_slot(i: usize) -> R {
-    [374.0 + i as f32 * 56.0, 306.0, 44.0, 34.0]
+fn combat_pass(n: usize) -> R {
+    [combat_left(n), 306.0, 40.0, 34.0]
+}
+/// Skill slot `i` of `n` in the bottom bar.
+fn skill_slot(i: usize, n: usize) -> R {
+    [combat_left(n) + 52.0 + i as f32 * 56.0, 306.0, 44.0, 34.0]
 }
 
 fn intent_amount(enemy: &megatower_sim::combat::Enemy) -> String {
@@ -329,7 +338,7 @@ fn tooltip(out: &mut Vec<Draw>, rects: &Rects, cursor: [f32; 2], lines: Vec<Stri
 pub(super) const ACTION_GROWTH: f32 = 0.0;
 
 /// The action panel, canvas pixels.
-pub(super) const ACTION_AREA: R = [310.0, 295.0 - ACTION_GROWTH, 328.0, 63.0 + ACTION_GROWTH];
+pub(super) const ACTION_AREA: R = [ACTIONS_LEFT, 295.0 - ACTION_GROWTH, 400.0, 63.0 + ACTION_GROWTH];
 
 /// Buttons laid out for the original 63 px panel sit this much higher, to stay
 /// centred in the taller one.
@@ -359,7 +368,7 @@ fn walk_button(turn: Turn) -> (R, &'static str) {
     const H: f32 = 26.0;
     const GAP_X: f32 = 4.0;
     const GAP_Y: f32 = 2.0;
-    let centre = ACTION_AREA[0] + ACTION_AREA[2] / 2.0;
+    let centre = compose::STAGE_CX;
     let top = ACTION_AREA[1] + (ACTION_AREA[3] - (2.0 * H + GAP_Y)) / 2.0;
     let (col, row, icon) = match turn {
         Turn::Ahead => (0.0, 0.0, "assets/textures/ui/move_ahead.png"),
@@ -421,7 +430,7 @@ impl Labyrinth {
                 }
                 if matches!(game.floor.current_room().kind, RoomKind::Stairs { .. }) {
                     out.push(choice(
-                        centred(554.0, 76.0, 34.0),
+                        centred(400.0, 76.0, 34.0),
                         Action::Descend,
                         "Descend",
                         "Enter the next floor",
@@ -429,8 +438,9 @@ impl Labyrinth {
                 }
             }
             Mode::Combat => {
+                let slots = game.battle.as_ref().map_or(1, |b| b.skills.len().max(1));
                 out.push(icon(
-                    [COMBAT_PASS[0], COMBAT_PASS[1], COMBAT_PASS[2], COMBAT_PASS[3]],
+                    combat_pass(slots),
                     Action::Pass,
                     "assets/textures/icons/timeout_icon.png",
                     "Pass turn [Space]",
@@ -444,7 +454,7 @@ impl Labyrinth {
                             "mana"
                         };
                         let mut c = choice(
-                            skill_slot(i),
+                            skill_slot(i, battle.skills.len()),
                             Action::Skill(i),
                             format!("{}", i + 1),
                             skill.name.clone(),
@@ -594,7 +604,27 @@ impl Labyrinth {
             }
             Mode::Dead => {}
         }
-        // The bottom bar's menu buttons: bag, floor map and passive tree.
+        // Merchant, shrine, event and altar buttons are centred on the stage as
+        // one group (the recovered layout keeps them in the right half).
+        if matches!(
+            game.mode,
+            Mode::Shop | Mode::Shrine(_) | Mode::Event { .. } | Mode::Altar
+        ) {
+            let bar = |c: &Choice| c.rect[1] >= BAR_Y;
+            let min = out.iter().filter(|c| bar(c)).map(|c| c.rect[0]).reduce(f32::min);
+            let max = out
+                .iter()
+                .filter(|c| bar(c))
+                .map(|c| c.rect[0] + c.rect[2])
+                .reduce(f32::max);
+            if let (Some(min), Some(max)) = (min, max) {
+                let dx = (compose::STAGE_CX - (min + max) / 2.0).max(ACTIONS_LEFT - min);
+                for c in out.iter_mut().filter(|c| bar(c)) {
+                    c.rect[0] += dx;
+                }
+            }
+        }
+        // The menu buttons: bag, floor map and passive tree.
         let in_map = game.mode == Mode::Map;
         let mut bag = icon(
             MENU_BUTTONS[0],
@@ -906,8 +936,12 @@ impl Labyrinth {
         if game.mode == Mode::Shop
             && let Some(shop) = game.shop()
         {
+            let stock = self.choices(rects);
             for (i, (rect, gem)) in rects.merchant.iter().zip(&shop.stock).enumerate() {
-                let rect = &in_action_area(*rect);
+                let rect = &stock
+                    .iter()
+                    .find(|c| matches!(c.action, Action::Buy(n) if n == i))
+                    .map_or_else(|| in_action_area(*rect), |c| c.rect);
                 if let Some(g) = gem {
                     loot_draw(&mut out, *rect, &Loot::Gem(g.clone()));
                     out.push(text(
@@ -1955,9 +1989,20 @@ mod tests {
             .game_mut()
             .debug_walk_to_kind(|k| k == RoomKind::Fight);
         assert_eq!(session.game().mode, Mode::Combat);
-        let pass = shown(&session, &mut ui, &rects, [335.0, 320.0]);
+        let centre = |session: &Labyrinth, want: fn(&Action) -> bool| {
+            let r = session
+                .choices(&rects)
+                .into_iter()
+                .find(|c| want(&c.action))
+                .unwrap()
+                .rect;
+            [r[0] + r[2] / 2.0, r[1] + r[3] / 2.0]
+        };
+        let at = centre(&session, |a| matches!(a, Action::Pass));
+        let pass = shown(&session, &mut ui, &rects, at);
         assert!(!pass.iter().any(|t| t.contains("Pass turn")), "{pass:?}");
-        let skill = shown(&session, &mut ui, &rects, [390.0, 320.0]);
+        let at = centre(&session, |a| matches!(a, Action::Skill(0)));
+        let skill = shown(&session, &mut ui, &rects, at);
         assert!(skill.iter().any(|t| t.contains("mana")), "{skill:?}");
     }
 
@@ -2035,7 +2080,12 @@ mod tests {
             .game_mut()
             .debug_walk_to_kind(|k| k == RoomKind::Merchant);
         session.game_mut().character.gold = 1000;
-        let rect = in_action_area(rects.merchant[0]);
+        let rect = session
+            .choices(&rects)
+            .into_iter()
+            .find(|c| matches!(c.action, Action::Buy(0)))
+            .unwrap()
+            .rect;
         ui.cursor = Some([rect[0] + 17.0, rect[1] + 17.0]);
         session.pointer(
             &mut ui,
