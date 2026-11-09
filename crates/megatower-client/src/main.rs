@@ -39,16 +39,6 @@ fn main() {
         .run();
 }
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn cargo_uses_workspace_assets_with_bevy_defaults() {
-        let root = bevy::asset::io::file::FileAssetReader::get_base_path();
-        let asset_path = bevy::asset::AssetPlugin::default().file_path;
-        assert!(root.join(asset_path).join("textures/ui/logo.png").is_file());
-    }
-}
-
 /// Keep the recovered presentation, but drive new runs with the new game's
 /// rules. The old simulation remains available for source-parity tooling.
 fn labyrinth_rules(app: &mut App) {
@@ -62,4 +52,14 @@ fn labyrinth_rules(app: &mut App) {
 fn dev_plugins(_app: &mut App) {
     #[cfg(feature = "dev")]
     _app.add_plugins(bevy_brp_extras::BrpExtrasPlugin::new());
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn cargo_uses_workspace_assets_with_bevy_defaults() {
+        let root = bevy::asset::io::file::FileAssetReader::get_base_path();
+        let asset_path = bevy::asset::AssetPlugin::default().file_path;
+        assert!(root.join(asset_path).join("textures/ui/logo.png").is_file());
+    }
 }
