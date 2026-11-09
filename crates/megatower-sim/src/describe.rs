@@ -114,6 +114,23 @@ pub fn payoff_line(payoff: &crate::gems::Payoff) -> String {
     format!("Cashes in {}: {}", needs.join(" or "), effects.join(", "))
 }
 
+/// What a utility skill does, e.g. "Stuns the target: it loses its next action".
+pub fn effect_line(effect: &crate::gems::Effect) -> String {
+    use crate::gems::Effect;
+    match *effect {
+        Effect::Ward { percent } => {
+            format!("Enemy hits deal {percent:.0}% less to you this turn")
+        }
+        Effect::Stun => "Stuns the target: it loses its next action".into(),
+        Effect::Cleanse { heal } => {
+            format!("Removes your ailments and restores {heal:.0}% of your life")
+        }
+        Effect::Empower { more, turns } => {
+            format!("You deal {more:.0}% more damage for the next {turns} turns")
+        }
+    }
+}
+
 /// The word shown when a payoff lands on `ailment`.
 pub fn payoff_word(ailment: crate::ailment::Ailment) -> &'static str {
     use crate::ailment::Ailment;

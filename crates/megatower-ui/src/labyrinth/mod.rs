@@ -229,6 +229,18 @@ fn event_line(event: &CombatEvent, names: &[String]) -> String {
         CombatEvent::Frozen { actor } => {
             format!("{} {} frozen and cannot act", who(*actor), was(*actor))
         }
+        CombatEvent::Note { actor, note } => {
+            use megatower_sim::combat::Note;
+            let (who, was) = (who(*actor), was(*actor));
+            match note {
+                Note::Stunned => format!("{who} {was} stunned"),
+                Note::StunResisted => format!("{who} shrugged off the stun"),
+                Note::CannotAct => format!("{who} {was} stunned and cannot act"),
+                Note::Warded => format!("{who} braced behind a ward"),
+                Note::Cleansed => format!("{who} {was} cleansed of ailments"),
+                Note::Empowered => format!("{who} {was} empowered"),
+            }
+        }
         CombatEvent::Death { actor } => format!("{} {} defeated", who(*actor), was(*actor)),
         CombatEvent::Payoff { target, ailment } => format!(
             "{} {} cashed in ({ailment:?})",
@@ -264,6 +276,7 @@ fn event_color(event: &CombatEvent) -> u32 {
         CombatEvent::Guard { .. } => 0xb8c4d8,
         CombatEvent::Dodge { .. } => 0x9ad1ff,
         CombatEvent::Frozen { .. } => 0x7fd8ff,
+        CombatEvent::Note { .. } => 0xe8c27a,
         CombatEvent::Death { .. } => 0xff5d5d,
         CombatEvent::Action { .. } | CombatEvent::Repeat => 0xf2d95a,
         CombatEvent::Arrive { .. } => 0xc9a0ff,

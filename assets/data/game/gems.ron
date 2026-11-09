@@ -131,6 +131,45 @@
             targeting: Single,
             payoff: Some((needs: [Shock], more_damage: 100.0)),
         ),
+        // Utility skills: found as drops. `effect` is what they do; the ones
+        // without `base` deal no damage.
+        (
+            id: "iron_wall",
+            name: "Iron Wall",
+            tags: [Spell],
+            base: [],
+            cost: 5.0,
+            targeting: Single,
+            effect: Some(Ward(percent: 80.0)),
+        ),
+        (
+            id: "concussive_blow",
+            name: "Concussive Blow",
+            tags: [Attack, Melee, Physical],
+            base: [(Physical, (min: 4.0, max: 6.0))],
+            base_crit: 5.0,
+            cost: 7.0,
+            targeting: Single,
+            effect: Some(Stun),
+        ),
+        (
+            id: "second_wind",
+            name: "Second Wind",
+            tags: [Spell],
+            base: [],
+            cost: 8.0,
+            targeting: Single,
+            effect: Some(Cleanse(heal: 15.0)),
+        ),
+        (
+            id: "battle_cry",
+            name: "Battle Cry",
+            tags: [Spell],
+            base: [],
+            cost: 6.0,
+            targeting: Single,
+            effect: Some(Empower(more: 50.0, turns: 3)),
+        ),
     ],
     supports: [
         (

@@ -46,6 +46,10 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    env:
+      CARGO_PROFILE_TEST_DEBUG: 0
+      CARGO_INCREMENTAL: 0
+      CARGO_BUILD_JOBS: 2
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -56,3 +60,6 @@ jobs:
       - name: Install build dependencies
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
       - run: cargo test --locked --workspace --no-fail-fast
+      - name: Report disk usage
+        if: always()
+        run: df -h

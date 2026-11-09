@@ -83,6 +83,20 @@ pub struct Payoff {
     pub consume: bool,
 }
 
+/// What a utility skill does besides (or instead of) its hit.
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+pub enum Effect {
+    /// Enemy hits deal this percent less to the hero until the turn ends.
+    Ward { percent: f64 },
+    /// The target loses its next action; it cannot be stunned again until
+    /// it has acted.
+    Stun,
+    /// Removes the hero's ailments and restores this percent of maximum life.
+    Cleanse { heal: f64 },
+    /// The hero deals this percent more damage for the next `turns` turns.
+    Empower { more: f64, turns: u8 },
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ActiveDef {
     pub id: String,
@@ -107,6 +121,9 @@ pub struct ActiveDef {
     /// Cashes in ailments (see [`Payoff`]).
     #[serde(default)]
     pub payoff: Option<Payoff>,
+    /// Makes it a utility skill (see [`Effect`]).
+    #[serde(default)]
+    pub effect: Option<Effect>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -192,6 +209,7 @@ pub struct Skill {
     pub repeat_chance: f64,
     pub no_ailments: bool,
     pub payoff: Option<Payoff>,
+    pub effect: Option<Effect>,
     /// Names of the supports that apply.
     pub supports: Vec<String>,
 }
@@ -240,6 +258,7 @@ pub fn build_skill(db: &GemDb, active: &Gem, supports: &[Gem]) -> Result<Skill, 
         repeat_chance: 0.0,
         no_ailments: false,
         payoff: def.payoff.clone(),
+        effect: def.effect,
         supports: Vec::new(),
     };
     let rarity_more = active.rarity.active_more_damage();
@@ -297,6 +316,26 @@ mod tests {
 
     fn db() -> &'static GemDb {
         &content::get().gems
+    }
+
+    #[test]
+    fn utility_gems_carry_their_effect_and_are_never_starters() {
+        let utility: Vec<_> = db().actives.iter().filter(|a| a.effect.is_some()).collect();
+        assert!(utility.len() >= 4);
+        for kind in ["Ward", "Stun", "Cleanse", "Empower"] {
+            assert!(
+                utility
+                    .iter()
+                    .any(|a| format!("{:?}", a.effect).contains(kind)),
+                "{kind}"
+            );
+        }
+        for def in utility {
+            assert!(!def.starter && def.payoff.is_none(), "{}", def.id);
+            let skill = build_skill(db(), &Gem::new(&def.id, 1, GemRarity::Common), &[]).unwrap();
+            assert_eq!(skill.effect, def.effect);
+            assert!(!crate::describe::effect_line(&def.effect.unwrap()).is_empty());
+        }
     }
 
     fn approx(a: f64, b: f64) {

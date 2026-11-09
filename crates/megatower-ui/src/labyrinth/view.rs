@@ -303,6 +303,9 @@ fn tip_lines(loot: &Loot) -> Vec<String> {
                 if let Some(payoff) = &def.payoff {
                     lines.push(megatower_sim::describe::payoff_line(payoff));
                 }
+                if let Some(effect) = &def.effect {
+                    lines.push(megatower_sim::describe::effect_line(effect));
+                }
                 lines.extend(
                     def.base
                         .iter()
@@ -494,6 +497,9 @@ impl Labyrinth {
                             "assets/textures/icons/magic_damage_icon.png"
                         });
                         c.tip.push(format!("{cost:.0} {resource}"));
+                        if let Some(effect) = &skill.effect {
+                            c.tip.push(megatower_sim::describe::effect_line(effect));
+                        }
                         if let Some(payoff) = &skill.payoff {
                             c.tip.push(megatower_sim::describe::payoff_line(payoff));
                             let primed = battle.enemies.get(self.target).is_some_and(|e| {
@@ -1200,12 +1206,19 @@ impl Labyrinth {
         let Some(enemy) = self.game().battle.as_ref().and_then(|b| b.enemies.get(i)) else {
             return;
         };
+        let stunned = enemy.fighter.stunned || enemy.fighter.afflictions.frozen;
         let (icon, tint) = match enemy.intent().kind {
+            // It loses the action it was about to take.
+            _ if stunned => ("assets/textures/icons/stun_icon.png", hex(0xe8c27a)),
             IntentKind::Attack(_) => ("assets/textures/icons/attack_icon.png", hex(0xff6a6a)),
             IntentKind::Guard { .. } => ("assets/textures/icons/guard_icon.png", hex(0x7ab4ff)),
             IntentKind::Heal { .. } => ("assets/textures/icons/overheal_icon.png", hex(0x6fdc6f)),
         };
-        let amount = intent_amount(enemy);
+        let amount = if stunned {
+            "skip".to_string()
+        } else {
+            intent_amount(enemy)
+        };
         let width = 14.0 + 3.0 + amount.chars().count() as f32 * 6.0;
         let (x, y) = (cx - width / 2.0, compose::ENEMY_TOP + dy + 8.0);
         out.push(tinted([x, y, 14.0, 14.0], icon, tint));

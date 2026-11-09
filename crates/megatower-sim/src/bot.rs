@@ -7,7 +7,7 @@
 use crate::character::{EquipSlot, ItemSpot, Loot};
 use crate::combat::{Battle, HeroAction};
 use crate::content;
-use crate::gems::{Skill, Targeting};
+use crate::gems::{Effect, Skill, Targeting};
 use crate::items::Item;
 use crate::labyrinth::{Dir, Floor, Pos, Visibility};
 use crate::merchant::gem_price;
@@ -244,6 +244,24 @@ fn choose_action(battle: &Battle) -> HeroAction {
                 let s = &battle.skills[i];
                 let mid: f64 = s.hit.base.iter().map(|(_, r)| (r.min + r.max) / 2.0).sum();
                 let mut value = (mid + 5.0) * expected_hits(s, living.len());
+                // Utility skills: only the plain cases are worth a turn.
+                match s.effect {
+                    Some(Effect::Stun) => {
+                        let f = &battle.enemies[target].fighter;
+                        if !f.stunned && !f.stun_immune {
+                            value += 12.0;
+                        }
+                    }
+                    Some(Effect::Empower { .. }) if battle.hero.empower.is_none() => {
+                        value += 4.0 * living.len() as f64;
+                    }
+                    Some(Effect::Cleanse { .. })
+                        if battle.hero.life < battle.hero.max_life * 0.6 =>
+                    {
+                        value += 15.0;
+                    }
+                    _ => {}
+                }
                 if let Some(payoff) = &s.payoff {
                     // Cash in when primed, otherwise keep setting up.
                     let afflictions = &battle.enemies[target].fighter.afflictions;

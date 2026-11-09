@@ -26,7 +26,14 @@ AoE starters (Frost Nova, Arc) outscale single-target ones (Heavy Strike).
       Done: the hero carries 2 charges; drinking one in a fight restores 35%
       of maximum life and takes the turn (F). A Rest room refills both, each
       new floor gives one back. Flasks cannot be drunk outside a fight.
-- [ ] **Utility gems**: 3-4 non-damage actives (block, stun, cleanse, buff).
+- [x] **Utility gems**: 3-4 non-damage actives (block, stun, cleanse, buff).
+      Done as an `effect` on skill gems (gems.ron), found as drops: Iron Wall
+      (enemy hits deal 80% less this turn), Concussive Blow (small hit, the
+      target loses its next action and cannot be stunned again until it has
+      acted), Second Wind (removes ailments, restores 15% life) and Battle
+      Cry (50% more damage for 3 turns).
+      Open: Second Wind's cleanse does nothing until enemies inflict ailments
+      (Phase 3); bosses can be stunned like anyone else.
 - [x] **Early combat**: start with 2 skills, 2-enemy fights from floor 1, and
       make mana bind. Done: every starter gem has a `partner` gem that starts
       in the vest (its payoff skill; Split Shot gets Venom Dart), fights hold
@@ -94,5 +101,8 @@ AoE starters (Frost Nova, Arc) outscale single-target ones (Heavy Strike).
   Shot 81%, Fireball 75%, Frost Nova 90%, Arc 85%, Venom Dart 69%. Flasks
   add 8-18 points everywhere, so the Phase 4 scaling has more to push
   against.
+- After utility gems (the bot uses them only in plain cases): Heavy Strike
+  59%, Split Shot 83%, Fireball 73%, Frost Nova 91%, Arc 91%, Venom Dart
+  69%. Within noise of the flask numbers, Arc aside.
 - Re-run `cargo run -p megatower-sim --example bot --release -- 150 12` after
   each phase.

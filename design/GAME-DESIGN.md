@@ -81,7 +81,9 @@ builds), exploring hidden labyrinth floors.
     starter gem in the weapon and its `partner` (gems.ron) in the vest. A turn is a
     skill, Guard (enemy hits deal half damage that turn) or a flask (35% of
     maximum life; 2 charges, refilled at Rest rooms, one back per new floor,
-    `FLASK_CHARGES` / `FLASK_HEAL`). Enemies repeat their
+    `FLASK_CHARGES` / `FLASK_HEAL`). Utility skill gems carry an `effect`
+    (gems.ron) in place of, or on top of, damage: Ward (Iron Wall), Stun
+    (Concussive Blow), Cleanse (Second Wind), Empower (Battle Cry). Enemies repeat their
     intents (Attack / Guard / Heal) in order; guard lasts until their next action.
   - Fights hold 1 or 2 enemies on floor 1 and grow with depth: 1 to 1 + ceil(floor/3) on the field (at most 5,
     `MAX_FIELD`) plus up to floor/6 more waiting behind them (at most 3). An elite room holds an

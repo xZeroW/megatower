@@ -13,7 +13,7 @@ pub use encounter::{
 
 use crate::ailment::{Afflictions, Ailment};
 use crate::damage::{Defence, HitSpec, resolve_hit};
-use crate::gems::{Skill, Targeting};
+use crate::gems::{Effect, Skill, Targeting};
 use crate::modifier::{ModSet, Stat};
 use crate::rng::Rng;
 use crate::tags::{DamageType, Tag, Tags};
@@ -44,6 +44,12 @@ pub struct Fighter {
     pub afflictions: Afflictions,
     /// Temporary armour from a guard.
     pub guard: f64,
+    /// Loses its next action.
+    pub stunned: bool,
+    /// Just lost an action to a stun: cannot be stunned until it has acted.
+    pub stun_immune: bool,
+    /// Percent more damage dealt, and the turns it still lasts.
+    pub empower: Option<(f64, u8)>,
 }
 
 impl Fighter {
@@ -67,7 +73,16 @@ impl Fighter {
             mods,
             afflictions: Afflictions::default(),
             guard: 0.0,
+            stunned: false,
+            stun_immune: false,
+            empower: None,
         }
+    }
+
+    /// What the fighter's own state does to the damage it deals.
+    pub fn dealt_multiplier(&self) -> f64 {
+        let empower = self.empower.map_or(1.0, |(more, _)| 1.0 + more / 100.0);
+        self.afflictions.damage_dealt_multiplier() * empower
     }
 
     pub fn hero(mods: ModSet) -> Self {
@@ -186,6 +201,11 @@ pub enum CombatEvent {
     Frozen {
         actor: Actor,
     },
+    /// Something a utility skill did to `actor`.
+    Note {
+        actor: Actor,
+        note: Note,
+    },
     Death {
         actor: Actor,
     },
@@ -203,6 +223,19 @@ pub enum Outcome {
     Ongoing,
     Won,
     Lost,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Note {
+    /// Will lose its next action.
+    Stunned,
+    /// Was already stunned, or has not acted since the last stun.
+    StunResisted,
+    /// Lost its action to a stun.
+    CannotAct,
+    Warded,
+    Cleansed,
+    Empowered,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -425,6 +458,9 @@ impl Battle {
         Fighter {
             afflictions: Afflictions::default(),
             guard: 0.0,
+            stunned: false,
+            stun_immune: false,
+            empower: None,
             ..self.hero
         }
     }
@@ -469,7 +505,11 @@ impl Battle {
         } else {
             let mut taken = 1.0;
             match action {
-                HeroAction::Skill { index, target } => self.use_skill(index, target),
+                HeroAction::Skill { index, target } => {
+                    if let Some(percent) = self.use_skill(index, target) {
+                        taken = 1.0 - percent / 100.0;
+                    }
+                }
                 HeroAction::Guard => {
                     taken = GUARD_DAMAGE_TAKEN;
                     self.log.push(CombatEvent::Action {
@@ -516,7 +556,8 @@ impl Battle {
         targets
     }
 
-    fn use_skill(&mut self, index: usize, primary: usize) {
+    /// Returns the percent a [`Effect::Ward`] takes off this turn's hits.
+    fn use_skill(&mut self, index: usize, primary: usize) -> Option<f64> {
         let skill = self.skills[index].clone();
         let cost = self.skill_cost(index).unwrap_or(0.0);
         if self.pays_with_life() {
@@ -533,13 +574,15 @@ impl Battle {
             spec: &skill.hit,
             mods: &mods,
             state: self.hero.state_tags(),
-            dealt_multiplier: self.hero.afflictions.damage_dealt_multiplier(),
+            dealt_multiplier: self.hero.dealt_multiplier(),
             no_ailments: skill.no_ailments,
             payoff: skill.payoff.as_ref(),
         };
         let mut dealt = 0.0;
         let mut primary = primary;
-        for cast in 0..2 {
+        // A skill without damage is its effect alone.
+        let casts = if skill.hit.base.is_empty() { 0 } else { 2 };
+        for cast in 0..casts {
             if cast == 1 {
                 let chance =
                     skill.repeat_chance + self.hero.mods.flat(Stat::RepeatChance, skill.tags);
@@ -568,6 +611,54 @@ impl Battle {
                 });
             }
         }
+        let hero = Actor::Hero;
+        match skill.effect? {
+            Effect::Ward { percent } => {
+                self.log.push(CombatEvent::Note {
+                    actor: hero,
+                    note: Note::Warded,
+                });
+                return Some(percent.clamp(0.0, 100.0));
+            }
+            Effect::Stun => {
+                let target = &mut self.enemies[primary].fighter;
+                if target.alive() {
+                    let note = if target.stunned || target.stun_immune {
+                        Note::StunResisted
+                    } else {
+                        target.stunned = true;
+                        Note::Stunned
+                    };
+                    self.log.push(CombatEvent::Note {
+                        actor: Actor::Enemy(primary),
+                        note,
+                    });
+                }
+            }
+            Effect::Cleanse { heal } => {
+                self.hero.afflictions = Afflictions::default();
+                self.log.push(CombatEvent::Note {
+                    actor: hero,
+                    note: Note::Cleansed,
+                });
+                let amount = self.hero.heal(self.hero.max_life * heal / 100.0);
+                if amount > 0.0 {
+                    self.log.push(CombatEvent::Heal {
+                        actor: hero,
+                        amount,
+                    });
+                }
+            }
+            Effect::Empower { more, turns } => {
+                // One more than `turns`: this turn's end counts one down.
+                self.hero.empower = Some((more, turns + 1));
+                self.log.push(CombatEvent::Note {
+                    actor: hero,
+                    note: Note::Empowered,
+                });
+            }
+        }
+        None
     }
 
     /// `hero_taken` scales what enemy hits deal to the hero this turn.
@@ -583,6 +674,15 @@ impl Battle {
                 self.log.push(CombatEvent::Frozen { actor });
                 continue;
             }
+            if std::mem::take(&mut enemy.fighter.stunned) {
+                enemy.fighter.stun_immune = true;
+                self.log.push(CombatEvent::Note {
+                    actor,
+                    note: Note::CannotAct,
+                });
+                continue;
+            }
+            enemy.fighter.stun_immune = false;
             let intent = enemy.intent().clone();
             enemy.next += 1;
             self.log.push(CombatEvent::Action {
@@ -595,8 +695,7 @@ impl Battle {
                         spec: &spec,
                         mods: &enemy.fighter.mods,
                         state: enemy.fighter.state_tags(),
-                        dealt_multiplier: enemy.fighter.afflictions.damage_dealt_multiplier()
-                            * hero_taken,
+                        dealt_multiplier: enemy.fighter.dealt_multiplier() * hero_taken,
                         no_ailments: false,
                         payoff: None,
                     };
@@ -636,6 +735,12 @@ impl Battle {
             }
         }
         self.reinforce();
+        if let Some((_, turns)) = &mut self.hero.empower {
+            *turns -= 1;
+            if *turns == 0 {
+                self.hero.empower = None;
+            }
+        }
         let regen = self
             .hero
             .mods
@@ -693,8 +798,124 @@ mod tests {
             repeat_chance: 0.0,
             no_ailments: false,
             payoff: None,
+            effect: None,
             supports: Vec::new(),
         }
+    }
+
+    fn utility(effect: Effect) -> Skill {
+        let mut s = skill(Fire, 10.0, Targeting::Single);
+        s.hit.base.clear();
+        s.effect = Some(effect);
+        s
+    }
+
+    fn notes(b: &Battle) -> Vec<Note> {
+        b.log
+            .iter()
+            .filter_map(|e| match e {
+                CombatEvent::Note { note, .. } => Some(*note),
+                _ => None,
+            })
+            .collect()
+    }
+
+    #[test]
+    fn a_ward_takes_most_of_the_turns_hits() {
+        let mut b = battle(
+            vec![utility(Effect::Ward { percent: 80.0 })],
+            vec![enemy(100.0, vec![punch(20.0)])],
+        );
+        b.act(HeroAction::Skill {
+            index: 0,
+            target: 0,
+        })
+        .unwrap();
+        approx(b.hero.life, HERO_LIFE - 4.0);
+        // No damage of its own.
+        approx(b.enemies[0].fighter.life, 100.0);
+        b.act(HeroAction::Pass).unwrap();
+        approx(b.hero.life, HERO_LIFE - 24.0);
+    }
+
+    #[test]
+    fn a_stun_costs_one_action_and_cannot_chain() {
+        let mut b = battle(
+            vec![utility(Effect::Stun)],
+            vec![enemy(100.0, vec![punch(10.0)])],
+        );
+        let stun = HeroAction::Skill {
+            index: 0,
+            target: 0,
+        };
+        b.act(stun).unwrap();
+        approx(b.hero.life, HERO_LIFE);
+        // Stunned again before it acted: resisted, and it hits.
+        b.act(stun).unwrap();
+        approx(b.hero.life, HERO_LIFE - 10.0);
+        // It has acted, so the stun takes again.
+        b.act(stun).unwrap();
+        approx(b.hero.life, HERO_LIFE - 10.0);
+        assert_eq!(
+            notes(&b),
+            [
+                Note::Stunned,
+                Note::CannotAct,
+                Note::StunResisted,
+                Note::Stunned,
+                Note::CannotAct
+            ]
+        );
+    }
+
+    #[test]
+    fn a_cleanse_clears_ailments_and_heals() {
+        let mut b = battle(
+            vec![utility(Effect::Cleanse { heal: 15.0 })],
+            vec![enemy(100.0, vec![punch(0.0)])],
+        );
+        b.hero.life = 50.0;
+        b.hero.afflictions.inflict(Ailment::Ignite, 100.0);
+        b.hero.afflictions.inflict(Ailment::Chill, 1.0);
+        b.act(HeroAction::Skill {
+            index: 0,
+            target: 0,
+        })
+        .unwrap();
+        assert_eq!(b.hero.afflictions, Afflictions::default());
+        approx(b.hero.life, 65.0);
+    }
+
+    #[test]
+    fn empower_lasts_its_turns() {
+        let mut b = battle(
+            vec![
+                utility(Effect::Empower {
+                    more: 50.0,
+                    turns: 2,
+                }),
+                skill(Fire, 10.0, Targeting::Single),
+            ],
+            vec![enemy(1000.0, vec![punch(0.0)])],
+        );
+        b.hero.mana = 100.0;
+        b.hero.max_mana = 100.0;
+        let hit = HeroAction::Skill {
+            index: 1,
+            target: 0,
+        };
+        b.act(HeroAction::Skill {
+            index: 0,
+            target: 0,
+        })
+        .unwrap();
+        b.act(hit).unwrap();
+        approx(b.enemies[0].fighter.life, 985.0);
+        b.act(hit).unwrap();
+        approx(b.enemies[0].fighter.life, 970.0);
+        b.act(hit).unwrap();
+        approx(b.enemies[0].fighter.life, 960.0);
+        assert!(b.hero.empower.is_none());
     }
 
     fn with_mods(mut s: Skill, mods: &[Modifier]) -> Skill {
