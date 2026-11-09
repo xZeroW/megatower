@@ -77,9 +77,13 @@ builds), exploring hidden labyrinth floors.
 - Turn-based reading of ARPG mechanics: "cast speed" → chance to act twice / repeat,
   durations measured in turns, damage over time ticks at turn end.
 - Current implementation (`megatower-sim/src/combat`, data in `assets/data/game/`):
-  - Hero starts at 100 life, 40 mana, 6 mana regen per turn. Enemies repeat their
+  - Hero starts at 100 life, 24 mana, 3 mana regen per turn, with two skills: the
+    starter gem in the weapon and its `partner` (gems.ron) in the vest. A turn is a
+    skill, Guard (enemy hits deal half damage that turn) or a flask (35% of
+    maximum life; 2 charges, refilled at Rest rooms, one back per new floor,
+    `FLASK_CHARGES` / `FLASK_HEAL`). Enemies repeat their
     intents (Attack / Guard / Heal) in order; guard lasts until their next action.
-  - Fights hold 1 enemy on floor 1 and grow with depth: 1 to 1 + floor/3 on the field (at most 5,
+  - Fights hold 1 or 2 enemies on floor 1 and grow with depth: 1 to 1 + ceil(floor/3) on the field (at most 5,
     `MAX_FIELD`) plus up to floor/6 more waiting behind them (at most 3). An elite room holds an
     Elite (×2 life, 30% more damage) and up to 1 + floor/6 normal companions; boss stairs hold the
     boss, with up to floor/6 helpers. Enemies get 60% more life and 35% more damage per floor.

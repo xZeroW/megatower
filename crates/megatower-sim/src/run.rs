@@ -2,7 +2,7 @@
 //! when entered. Screens and bots drive it through these commands.
 
 use crate::character::{Character, GemSpot, ItemSpot, Loot};
-use crate::combat::{Battle, CombatEvent, HeroAction, Outcome, encounter_scaled};
+use crate::combat::{Battle, CombatEvent, FLASK_CHARGES, HeroAction, Outcome, encounter_scaled};
 use crate::content;
 use crate::labyrinth::{self, Dir, Floor, MoveError, Pos, RoomKind, Turn};
 use crate::legacy::Legacy;
@@ -300,7 +300,7 @@ impl Run {
             }
             RoomKind::Rest => {
                 self.floor.resolve_current();
-                self.character.heal_full();
+                self.character.rest();
                 return;
             }
             RoomKind::Treasure => {
@@ -323,7 +323,10 @@ impl Run {
         let skills = self.character.skills(&c.gems);
         let rng =
             Rng::seeded(u64::from(self.rng.next_u32()) << 32 | u64::from(self.rng.next_u32()));
-        self.battle = Some(Battle::new(self.character.fighter(), skills, enemies, rng));
+        self.battle = Some(
+            Battle::new(self.character.fighter(), skills, enemies, rng)
+                .with_flasks(self.character.flasks),
+        );
         self.mode = Mode::Combat;
     }
 
@@ -473,6 +476,8 @@ impl Run {
         let number = self.floor.number + 1;
         self.floor = labyrinth::generate(number, &mut self.rng);
         self.shops.clear();
+        // A new floor finds one more flask charge.
+        self.character.flasks = (self.character.flasks + 1).min(FLASK_CHARGES);
     }
 
     /// One combat turn; `None` when the action was refused (not enough mana,
@@ -493,6 +498,7 @@ impl Run {
             return None;
         };
         observe(&battle.log[seen..]);
+        self.character.flasks = battle.flasks;
         match outcome {
             Outcome::Ongoing => {}
             Outcome::Won => {
@@ -572,7 +578,10 @@ impl Run {
             .collect();
         let skills = self.character.skills(&c.gems);
         let rng = Rng::seeded(u64::from(self.rng.next_u32()));
-        self.battle = Some(Battle::new(self.character.fighter(), skills, enemies, rng));
+        self.battle = Some(
+            Battle::new(self.character.fighter(), skills, enemies, rng)
+                .with_flasks(self.character.flasks),
+        );
         self.mode = Mode::Combat;
     }
 
@@ -637,7 +646,21 @@ mod tests {
         assert_eq!(offers.len(), STARTER_OFFERS);
         let run = started(1);
         assert_eq!(run.mode, Mode::Map);
-        assert_eq!(run.character.skills(&content::get().gems).len(), 1);
+        assert_eq!(run.character.skills(&content::get().gems).len(), 2);
+    }
+
+    #[test]
+    fn flasks_are_spent_in_fights_and_refilled_by_rest_and_stairs() {
+        let mut run = started(4);
+        assert_eq!(run.character.flasks, FLASK_CHARGES);
+        run.debug_crowd(1);
+        run.battle.as_mut().unwrap().hero.life = 10.0;
+        assert!(run.combat_act(HeroAction::Flask).is_some());
+        assert_eq!(run.character.flasks, FLASK_CHARGES - 1);
+        run.character.flasks = 0;
+        run.character.rest();
+        assert_eq!(run.character.flasks, FLASK_CHARGES);
+        assert_eq!(run.character.life, run.character.max_life());
     }
 
     #[test]

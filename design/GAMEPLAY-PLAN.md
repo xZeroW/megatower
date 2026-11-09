@@ -22,10 +22,19 @@ AoE starters (Frost Nova, Arc) outscale single-target ones (Heavy Strike).
       pass. Add a defensive action that answers a telegraphed hit. Done as
       Guard: no skill this turn, enemy hits deal half damage. It replaces
       Pass in the UI.
-- [ ] **Flasks**, as promised in GAME-DESIGN.md (refilled at Rest rooms).
+- [x] **Flasks**, as promised in GAME-DESIGN.md (refilled at Rest rooms).
+      Done: the hero carries 2 charges; drinking one in a fight restores 35%
+      of maximum life and takes the turn (F). A Rest room refills both, each
+      new floor gives one back. Flasks cannot be drunk outside a fight.
 - [ ] **Utility gems**: 3-4 non-damage actives (block, stun, cleanse, buff).
-- [ ] **Early combat**: start with 2 skills, 2-enemy fights from floor 1, and
-      make mana bind (Heavy Strike costs 4 against 6 regen today).
+- [x] **Early combat**: start with 2 skills, 2-enemy fights from floor 1, and
+      make mana bind. Done: every starter gem has a `partner` gem that starts
+      in the vest (its payoff skill; Split Shot gets Venom Dart), fights hold
+      1 to 1 + ceil(floor/3) enemies, and the hero has 24 mana with 3 regen
+      (was 40 and 6). Shatter now also cashes in Chill, so Frost Nova's
+      partner is usable.
+      Open: Arc's partner Overload needs Shock, which Arc applies only 20% of
+      the time.
 
 ## Phase 2: loot choices
 
@@ -77,5 +86,13 @@ AoE starters (Frost Nova, Arc) outscale single-target ones (Heavy Strike).
 
 - Floor 6 is the wall (Cinder Drake / Stormwing, iron and magma golems).
 - AoE starters reach floor 12 far more often than single-target ones.
+- After the early-combat change (150 runs per starter, floor 12 cleared):
+  Heavy Strike 53%, Split Shot 69%, Fireball 59%, Frost Nova 81%, Arc 77%,
+  Venom Dart 51%. Floor-1 deaths stay at 0-1%. The bot barely notices the
+  smaller mana pool because it falls back to its cheaper skill.
+- After flasks (same bot, drinks below 40% life): Heavy Strike 65%, Split
+  Shot 81%, Fireball 75%, Frost Nova 90%, Arc 85%, Venom Dart 69%. Flasks
+  add 8-18 points everywhere, so the Phase 4 scaling has more to push
+  against.
 - Re-run `cargo run -p megatower-sim --example bot --release -- 150 12` after
   each phase.

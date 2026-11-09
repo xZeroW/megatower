@@ -101,6 +101,9 @@ pub struct ActiveDef {
     /// Offered as a starting gem.
     #[serde(default)]
     pub starter: bool,
+    /// The second skill gem a hero who starts with this one also gets.
+    #[serde(default)]
+    pub partner: Option<String>,
     /// Cashes in ailments (see [`Payoff`]).
     #[serde(default)]
     pub payoff: Option<Payoff>,

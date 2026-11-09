@@ -108,6 +108,13 @@ pub struct Character {
     /// Crafting orbs in stock.
     #[serde(default)]
     pub orbs: Orbs,
+    /// Flask charges left; a Rest room refills them.
+    #[serde(default = "full_flasks")]
+    pub flasks: u32,
+}
+
+fn full_flasks() -> u32 {
+    crate::combat::FLASK_CHARGES
 }
 
 impl Character {
@@ -120,6 +127,7 @@ impl Character {
             gold: 0,
             boons: Vec::new(),
             orbs: Orbs::default(),
+            flasks: full_flasks(),
         };
         for (slot, item) in equipment {
             c.equipment[slot.index()] = Some(item);
@@ -178,6 +186,12 @@ impl Character {
 
     pub fn heal_full(&mut self) {
         self.life = self.max_life();
+    }
+
+    /// A Rest room: full life and full flasks.
+    pub fn rest(&mut self) {
+        self.heal_full();
+        self.flasks = full_flasks();
     }
 
     pub fn has_room(&self) -> bool {

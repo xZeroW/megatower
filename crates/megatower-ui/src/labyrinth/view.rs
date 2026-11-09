@@ -232,18 +232,23 @@ const MENU_BUTTONS: [R; 3] = [
 ];
 /// Left edge of the room actions: the hero strip ends before it.
 const ACTIONS_LEFT: f32 = 240.0;
-/// Left edge of the pass button and the `n` skill slots, centred on the stage.
+/// Left edge of the flask and guard buttons and the `n` skill slots, centred
+/// on the stage.
 fn combat_left(n: usize) -> f32 {
-    let width = 52.0 + n as f32 * 56.0 - 12.0;
+    let width = 104.0 + n as f32 * 56.0 - 12.0;
     (compose::STAGE_CX - width / 2.0).max(ACTIONS_LEFT)
+}
+/// Flask button, first in the bottom bar.
+fn combat_flask(n: usize) -> R {
+    [combat_left(n), 306.0, 40.0, 34.0]
 }
 /// Guard button, left of the skill slots.
 fn combat_guard(n: usize) -> R {
-    [combat_left(n), 306.0, 40.0, 34.0]
+    [combat_left(n) + 52.0, 306.0, 40.0, 34.0]
 }
 /// Skill slot `i` of `n` in the bottom bar.
 fn skill_slot(i: usize, n: usize) -> R {
-    [combat_left(n) + 52.0 + i as f32 * 56.0, 306.0, 44.0, 34.0]
+    [combat_left(n) + 104.0 + i as f32 * 56.0, 306.0, 44.0, 34.0]
 }
 
 fn intent_amount(enemy: &megatower_sim::combat::Enemy) -> String {
@@ -407,7 +412,7 @@ impl Labyrinth {
                         [170.0 + i as f32 * 110.0, 138.0, 80.0, 70.0],
                         Action::Starter(i),
                         megatower_sim::run::gem_name(id),
-                        "Choose this first skill gem",
+                        "Start with this skill gem and its partner",
                     ));
                 }
             }
@@ -445,6 +450,23 @@ impl Labyrinth {
             }
             Mode::Combat => {
                 let slots = game.battle.as_ref().map_or(1, |b| b.skills.len().max(1));
+                let mut flask = icon(
+                    combat_flask(slots),
+                    Action::Flask,
+                    "assets/textures/icons/recovery.png",
+                    &format!(
+                        "Flask [F]: restores {:.0}% of your life and takes the turn",
+                        megatower_sim::combat::FLASK_HEAL
+                    ),
+                );
+                flask
+                    .tip
+                    .push("A Rest room refills them; each new floor gives one back".into());
+                flask.enabled = game
+                    .battle
+                    .as_ref()
+                    .is_some_and(|b| b.flasks > 0 && b.hero.life < b.hero.max_life);
+                out.push(flask);
                 out.push(icon(
                     combat_guard(slots),
                     Action::Guard,
@@ -807,7 +829,7 @@ impl Labyrinth {
             });
             out.push(text(
                 [120.0, 70.0, 400.0, 24.0],
-                "CHOOSE YOUR FIRST SKILL GEM",
+                "CHOOSE YOUR STARTING SKILLS",
                 WHITE,
                 Align::Center,
             ));
@@ -858,9 +880,17 @@ impl Labyrinth {
                         palette(4),
                         Align::Center,
                     ));
+                    if let Some(partner) = &def.partner {
+                        out.push(text(
+                            [x - 38.0, 226.0, 110.0, 13.0],
+                            format!("+ {}", megatower_sim::run::gem_name(partner)),
+                            WHITE,
+                            Align::Center,
+                        ));
+                    }
                 }
                 out.push(text(
-                    [x, 236.0, 34.0, 13.0],
+                    [x, 246.0, 34.0, 13.0],
                     format!("[{}]", i + 1),
                     palette(8),
                     Align::Center,
@@ -1018,10 +1048,19 @@ impl Labyrinth {
             );
             if let Action::Skill(i) = c.action {
                 self.skill_labels(&mut out, i, c);
-            } else if matches!(c.action, Action::Guard) {
+            } else if matches!(c.action, Action::Guard | Action::Flask) {
+                let text = match (&c.action, &game.battle) {
+                    (Action::Flask, Some(b)) => format!("Flask {}", b.flasks),
+                    _ => "Guard".into(),
+                };
                 out.push(Draw::Text {
-                    rect: [c.rect[0], c.rect[1] + c.rect[3] + 1.0, c.rect[2], 12.0],
-                    text: "Guard".into(),
+                    rect: [
+                        c.rect[0] - 6.0,
+                        c.rect[1] + c.rect[3] + 1.0,
+                        c.rect[2] + 12.0,
+                        12.0,
+                    ],
+                    text,
                     size: 12.0,
                     color: palette(4),
                     align: Align::Center,
@@ -2074,6 +2113,12 @@ mod tests {
         let at = centre(&session, |a| matches!(a, Action::Guard));
         let guard = shown(&session, &mut ui, &rects, at);
         assert!(guard.iter().any(|t| t.contains("half damage")), "{guard:?}");
+        let at = centre(&session, |a| matches!(a, Action::Flask));
+        let flask = shown(&session, &mut ui, &rects, at);
+        assert!(
+            flask.iter().any(|t| t.contains("takes the turn")),
+            "{flask:?}"
+        );
         let at = centre(&session, |a| matches!(a, Action::Skill(0)));
         let skill = shown(&session, &mut ui, &rects, at);
         assert!(skill.iter().any(|t| t.contains("mana")), "{skill:?}");

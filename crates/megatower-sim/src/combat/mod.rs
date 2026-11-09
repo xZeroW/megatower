@@ -20,10 +20,16 @@ use crate::tags::{DamageType, Tag, Tags};
 use std::collections::VecDeque;
 
 pub const HERO_LIFE: f64 = 100.0;
-pub const HERO_MANA: f64 = 40.0;
-pub const HERO_MANA_REGEN: f64 = 6.0;
+/// A small pool and a slow refill: spamming the dearest skill runs dry within
+/// a fight, so cheap skills and [`HeroAction::Guard`] turns have a place.
+pub const HERO_MANA: f64 = 24.0;
+pub const HERO_MANA_REGEN: f64 = 3.0;
 /// What hits deal to a hero who spent the turn on [`HeroAction::Guard`].
 pub const GUARD_DAMAGE_TAKEN: f64 = 0.5;
+/// Flask charges a hero carries at most.
+pub const FLASK_CHARGES: u32 = 2;
+/// Percent of maximum life one flask charge restores.
+pub const FLASK_HEAL: f64 = 35.0;
 /// Evasion (dodge chance against attacks) never goes above this.
 pub const MAX_EVASION: f64 = 75.0;
 
@@ -208,6 +214,9 @@ pub enum HeroAction {
     /// No skill this turn: enemy hits deal [`GUARD_DAMAGE_TAKEN`] of their
     /// damage until the turn ends.
     Guard,
+    /// Drinks a flask charge for [`FLASK_HEAL`] percent of maximum life; it
+    /// takes the turn.
+    Flask,
     Pass,
 }
 
@@ -219,6 +228,9 @@ pub enum ActionError {
     InvalidTarget,
     NotEnoughMana,
     NotEnoughLife,
+    NoFlask,
+    /// A flask would restore nothing.
+    FullLife,
 }
 
 /// Enemies that fight at once; any more wait in a queue and step up as
@@ -233,6 +245,8 @@ pub struct Battle {
     pub enemies: Vec<Enemy>,
     queue: VecDeque<Enemy>,
     pub turn: u32,
+    /// Flask charges left; see [`HeroAction::Flask`].
+    pub flasks: u32,
     /// Everything that happened, oldest first.
     pub log: Vec<CombatEvent>,
     rng: Rng,
@@ -344,9 +358,16 @@ impl Battle {
             enemies,
             queue,
             turn: 1,
+            flasks: 0,
             log: Vec::new(),
             rng,
         }
+    }
+
+    /// The same fight with `flasks` charges to drink.
+    pub fn with_flasks(mut self, flasks: u32) -> Self {
+        self.flasks = flasks;
+        self
     }
 
     pub fn outcome(&self) -> Outcome {
@@ -432,6 +453,14 @@ impl Battle {
                 return Err(ActionError::NotEnoughMana);
             }
         }
+        if action == HeroAction::Flask {
+            if self.flasks == 0 {
+                return Err(ActionError::NoFlask);
+            }
+            if self.hero.life >= self.hero.max_life {
+                return Err(ActionError::FullLife);
+            }
+        }
         self.log.push(CombatEvent::TurnStart { turn: self.turn });
         if self.hero.afflictions.take_frozen() {
             self.log.push(CombatEvent::Frozen { actor: Actor::Hero });
@@ -446,6 +475,18 @@ impl Battle {
                     self.log.push(CombatEvent::Action {
                         actor: Actor::Hero,
                         name: "Guard".into(),
+                    });
+                }
+                HeroAction::Flask => {
+                    self.flasks -= 1;
+                    self.log.push(CombatEvent::Action {
+                        actor: Actor::Hero,
+                        name: "Flask".into(),
+                    });
+                    let amount = self.hero.heal(self.hero.max_life * FLASK_HEAL / 100.0);
+                    self.log.push(CombatEvent::Heal {
+                        actor: Actor::Hero,
+                        amount,
                     });
                 }
                 HeroAction::Pass => {}
@@ -765,7 +806,7 @@ mod tests {
         .unwrap();
         approx(b.hero.mana, 10.0 - 5.0 + HERO_MANA_REGEN);
         b.act(HeroAction::Pass).unwrap();
-        approx(b.hero.mana, 11.0 + HERO_MANA_REGEN);
+        approx(b.hero.mana, 5.0 + 2.0 * HERO_MANA_REGEN);
     }
 
     #[test]
@@ -993,6 +1034,27 @@ mod tests {
         let before = b.hero.life;
         b.act(HeroAction::Pass).unwrap();
         approx(b.hero.life, before - 20.0);
+    }
+
+    #[test]
+    fn a_flask_heals_and_takes_the_turn() {
+        let mut b = battle(vec![], vec![enemy(100.0, vec![punch(10.0)])]).with_flasks(1);
+        assert_eq!(b.act(HeroAction::Flask), Err(ActionError::FullLife));
+        b.hero.life = 20.0;
+        b.act(HeroAction::Flask).unwrap();
+        approx(b.hero.life, 20.0 + HERO_LIFE * FLASK_HEAL / 100.0 - 10.0);
+        assert_eq!(b.flasks, 0);
+        assert_eq!(b.act(HeroAction::Flask), Err(ActionError::NoFlask));
+    }
+
+    #[test]
+    fn a_frozen_hero_keeps_the_flask() {
+        let mut b = battle(vec![], vec![enemy(100.0, vec![punch(10.0)])]).with_flasks(1);
+        b.hero.life = 50.0;
+        b.hero.afflictions.inflict(Ailment::Freeze, 1.0);
+        b.act(HeroAction::Flask).unwrap();
+        approx(b.hero.life, 40.0);
+        assert_eq!(b.flasks, 1);
     }
 
     #[test]

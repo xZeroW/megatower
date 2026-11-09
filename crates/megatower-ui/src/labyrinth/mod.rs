@@ -83,6 +83,7 @@ pub(super) enum Action {
     Starter(usize),
     Skill(usize),
     Guard,
+    Flask,
     Walk(Turn),
     Descend,
     Leave,
@@ -769,6 +770,7 @@ impl Labyrinth {
                     self.act(ui, action);
                 }
                 '_' => self.act(ui, Action::Guard),
+                'q' => self.act(ui, Action::Flask),
                 'f' => self.game_mut().step_turn(Turn::Ahead),
                 'a' => self.game_mut().step_turn(Turn::Left),
                 'd' => self.game_mut().step_turn(Turn::Right),
@@ -1092,6 +1094,9 @@ impl Labyrinth {
             if keys.just_pressed(KeyCode::Space) {
                 self.act(ui, Action::Guard);
             }
+            if keys.just_pressed(KeyCode::KeyF) {
+                self.act(ui, Action::Flask);
+            }
             if keys.any_just_pressed([KeyCode::Tab, KeyCode::ArrowRight, KeyCode::KeyD]) {
                 self.cycle_target(1);
             }
@@ -1136,6 +1141,7 @@ impl Labyrinth {
                 },
             ),
             Action::Guard => self.combat(ui, HeroAction::Guard),
+            Action::Flask => self.combat(ui, HeroAction::Flask),
             Action::Walk(turn) => {
                 if self.game().mode == Mode::Map
                     && self.game().floor.current_room().cleared

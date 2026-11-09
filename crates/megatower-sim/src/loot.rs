@@ -108,12 +108,11 @@ pub fn class_start(starter: &str, content: &Content) -> &'static str {
 }
 
 /// A blade for attack gems, a wand for spells, with the gem socketed in
-/// [`STARTING_LINKS`] links, plus a plain vest.
+/// [`STARTING_LINKS`] links, plus a plain vest holding the gem's partner, so
+/// the hero has two skills to choose between from the first fight.
 pub fn starting_character(starter: &str, content: &Content, rng: &mut Rng) -> Character {
-    let attack = content
-        .gems
-        .active(starter)
-        .is_some_and(|g| g.tags.has(Tag::Attack));
+    let def = content.gems.active(starter);
+    let attack = def.is_some_and(|g| g.tags.has(Tag::Attack));
     let weapon_base = if attack { "worn_blade" } else { "gnarled_wand" };
     let base = content
         .items
@@ -124,7 +123,7 @@ pub fn starting_character(starter: &str, content: &Content, rng: &mut Rng) -> Ch
         links: STARTING_LINKS,
         gems: vec![Gem::new(starter, 1, GemRarity::Common)],
     });
-    let vest = normal_item(
+    let mut vest = normal_item(
         content
             .items
             .base("leather_vest")
@@ -132,6 +131,11 @@ pub fn starting_character(starter: &str, content: &Content, rng: &mut Rng) -> Ch
         1,
         rng,
     );
+    if let (Some(partner), Some(sockets)) =
+        (def.and_then(|g| g.partner.as_deref()), &mut vest.sockets)
+    {
+        sockets.gems.push(Gem::new(partner, 1, GemRarity::Common));
+    }
     let mut character = Character::new([(EquipSlot::Weapon, weapon), (EquipSlot::Body, vest)]);
     character.progress = Progress::new(class_start(starter, content));
     character.heal_full();
@@ -204,6 +208,19 @@ mod tests {
     }
 
     #[test]
+    fn every_starter_has_a_partner_skill() {
+        let c = content::get();
+        for g in c.gems.starters() {
+            let partner = g.partner.as_deref().unwrap_or_else(|| panic!("{}", g.id));
+            assert!(c.gems.active(partner).is_some(), "{partner}");
+            assert_ne!(partner, g.id);
+            let ch = starting_character(&g.id, c, &mut Rng::seeded(1));
+            let names: Vec<String> = ch.skills(&c.gems).into_iter().map(|s| s.name).collect();
+            assert_eq!(names.len(), 2, "{names:?}");
+        }
+    }
+
+    #[test]
     fn starters_get_a_matching_weapon() {
         let c = content::get();
         let mut rng = Rng::seeded(4);
@@ -219,7 +236,7 @@ mod tests {
         );
         for ch in [striker, caster] {
             let skills = ch.skills(&c.gems);
-            assert_eq!(skills.len(), 1);
+            assert_eq!(skills.len(), 2);
             let sockets = ch
                 .equipped(EquipSlot::Weapon)
                 .unwrap()

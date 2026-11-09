@@ -225,6 +225,10 @@ fn choose_action(battle: &Battle) -> HeroAction {
     }) else {
         return HeroAction::Pass;
     };
+    // Drink when hurt, unless the fight is about to end anyway.
+    if battle.flasks > 0 && battle.hero.life < battle.hero.max_life * 0.4 {
+        return HeroAction::Flask;
+    }
     let life_paid = battle.pays_with_life();
     let best = (0..battle.skills.len())
         .filter(|&i| {

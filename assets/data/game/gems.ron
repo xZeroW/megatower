@@ -12,6 +12,7 @@
             targeting: Single,
             mods: [(stat: AilmentChance(Bleed), kind: Flat, value: 25.0)],
             starter: true,
+            partner: Some("rupture"),
         ),
         (
             id: "split_shot",
@@ -22,6 +23,7 @@
             cost: 5.0,
             targeting: Chain(2),
             starter: true,
+            partner: Some("venom_dart"),
         ),
         (
             id: "fireball",
@@ -33,6 +35,7 @@
             targeting: Single,
             mods: [(stat: AilmentChance(Ignite), kind: Flat, value: 30.0)],
             starter: true,
+            partner: Some("detonate"),
         ),
         (
             id: "frost_nova",
@@ -48,6 +51,7 @@
                 (stat: AilmentChance(Freeze), kind: Flat, value: 10.0),
             ],
             starter: true,
+            partner: Some("shatter"),
         ),
         (
             id: "arc",
@@ -59,6 +63,7 @@
             targeting: Chain(2),
             mods: [(stat: AilmentChance(Shock), kind: Flat, value: 20.0)],
             starter: true,
+            partner: Some("overload"),
         ),
         (
             id: "venom_dart",
@@ -70,10 +75,11 @@
             targeting: Single,
             mods: [(stat: AilmentChance(Poison), kind: Flat, value: 60.0)],
             starter: true,
+            partner: Some("toxic_burst"),
         ),
-        // Payoff skills: found as drops, not starters. Against a target with one of
-        // `needs` they hit harder and deal that ailment's remaining damage at once
-        // (`burst`), using it up.
+        // Payoff skills: found as drops, or as the `partner` of a starter. Against a
+        // target with one of `needs` they hit harder and deal that ailment's
+        // remaining damage at once (`burst`), using it up.
         (
             id: "shatter",
             name: "Shatter",
@@ -82,7 +88,8 @@
             base_crit: 5.0,
             cost: 5.0,
             targeting: Single,
-            payoff: Some((needs: [Freeze], more_damage: 120.0)),
+            // Chill counts too: cashing it in gives up its protection.
+            payoff: Some((needs: [Freeze, Chill], more_damage: 120.0)),
         ),
         (
             id: "detonate",

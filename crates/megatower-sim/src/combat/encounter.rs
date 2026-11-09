@@ -126,9 +126,10 @@ pub fn encounter_scaled(
     let pick = |rng: &mut Rng| *rng.pick(&normals).expect("at least one normal enemy");
     match kind {
         RoomKind::Fight => {
-            // Up to MAX_FIELD at once, and from the mid floors some more
-            // waiting behind them.
-            let max = (1 + floor / 3).min(super::MAX_FIELD as u32);
+            // One or two from the first floor, so target choice matters at
+            // once; up to MAX_FIELD at once deeper down, and from the mid
+            // floors some more waiting behind them.
+            let max = (1 + floor.div_ceil(3)).min(super::MAX_FIELD as u32);
             let count = 1 + rng.below(max) + rng.below(1 + floor / 6).min(MAX_QUEUE);
             Some(
                 (0..count)
@@ -217,7 +218,7 @@ mod tests {
         let mut rng = Rng::seeded(3);
         for floor in 1..=9 {
             let fight = encounter(RoomKind::Fight, floor, defs(), &mut rng).unwrap();
-            let cap = (1 + floor / 3).min(5) + (floor / 6).min(3);
+            let cap = (1 + floor.div_ceil(3)).min(5) + (floor / 6).min(3);
             assert!(
                 (1..=cap as usize).contains(&fight.len()),
                 "{floor}: {}",
@@ -253,7 +254,7 @@ mod tests {
                 .max()
                 .unwrap()
         };
-        assert_eq!(biggest(1), 1);
+        assert_eq!(biggest(1), 2);
         assert!(biggest(6) >= 3);
         // More than fit on the field: the rest queue.
         assert!(biggest(18) > super::super::MAX_FIELD);
@@ -296,15 +297,16 @@ mod tests {
     }
 
     #[test]
-    fn first_floor_fights_are_single_enemies() {
+    fn first_floor_fights_are_one_or_two_enemies() {
         let mut rng = Rng::seeded(1);
-        for _ in 0..50 {
-            assert_eq!(
+        let sizes: Vec<usize> = (0..50)
+            .map(|_| {
                 encounter(RoomKind::Fight, 1, defs(), &mut rng)
                     .unwrap()
-                    .len(),
-                1
-            );
-        }
+                    .len()
+            })
+            .collect();
+        assert!(sizes.iter().all(|n| (1..=2).contains(n)), "{sizes:?}");
+        assert!(sizes.contains(&1) && sizes.contains(&2), "{sizes:?}");
     }
 }
