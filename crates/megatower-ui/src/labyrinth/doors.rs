@@ -388,7 +388,7 @@ fn point(
     });
     transform.rotation = Quat::from_rotation_y(yaw) * rest;
     let active = run.mode == Mode::Map
-        && matches!(session.view, View::Profile | View::Map)
+        && matches!(session.view, View::Stage | View::Profile | View::Map)
         && ui.0.screen == Screen::Playing
         && !ui.0.esc_open
         && !ui.0.options_open
@@ -402,14 +402,16 @@ fn point(
             .filter(|[x, y]| {
                 active
                     && contains(
-                        [308.0, 0.0, 332.0, 295.0 - super::view::ACTION_GROWTH],
+                        [0.0, 0.0, 640.0, 295.0 - super::view::ACTION_GROWTH],
                         *x,
                         *y,
                     )
+                    // The drawer covers the left of the stage when open.
+                    && (session.view == View::Stage || *x >= 308.0)
             })
             .and_then(|[x, y]| {
                 camera
-                    .viewport_to_world(global, Vec2::new(x - 298.0, y + 10.0))
+                    .viewport_to_world(global, Vec2::new(x, y))
                     .ok()
             });
     let hovered = ray.and_then(|r| doors.iter().find(|(d, _)| hit(d, r)).map(|(d, _)| d.turn));

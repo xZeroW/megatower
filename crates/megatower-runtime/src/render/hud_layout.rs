@@ -8,7 +8,10 @@ use crate::render::{
 };
 use bevy::prelude::*;
 use bevy_auto_plugin::prelude::*;
-use megatower_assets::room_screen::{ROOM_FRAME_RECT, ROOM_VIEWPORT_OFFSET, ROOM_VIEWPORT_SIZE};
+use megatower_assets::room_screen::{
+    ROOM_FRAME_RECT, ROOM_VIEWPORT_OFFSET, ROOM_VIEWPORT_SIZE, STAGE_FRAME_RECT,
+    STAGE_VIEWPORT_OFFSET, STAGE_VIEWPORT_SIZE,
+};
 use megatower_assets::ui_layout::{Visual, recovered_layout};
 
 const FONT: &str = "assets/fonts/monogram-extended.ttf";
@@ -26,6 +29,29 @@ impl DynamicHudBranches {
     fn owns(&self, visual: &Visual) -> bool {
         visual.path.split('/').any(|part| self.0.contains(&part))
     }
+}
+
+/// Present when the HUD uses the full-width stage: the room fills the screen
+/// above the bottom bar, and none of the recovered panels are spawned. The UI draws
+/// the bottom bar itself, and the left-hand panel (see [`drawer_visuals`]) as a
+/// drawer over the room.
+#[derive(Resource, Default)]
+pub struct StageLayout;
+
+/// The recovered left-hand panel's static visuals (slots, panels, tab buttons).
+/// The stage HUD draws them itself, over the enemies, while its drawer is open.
+pub fn drawer_visuals() -> Vec<Visual> {
+    let owner = DynamicHudBranches(&[
+        "RoomActionContainerHolder",
+        "BattleSpeedContainer",
+        "MarketSlotContainer",
+    ]);
+    recovered_layout()
+        .visuals
+        .into_iter()
+        .filter(|v| v.path.contains("/MainScreen/Inventory"))
+        .filter(|v| !is_dynamic(v) && !owner.owns(v))
+        .collect()
 }
 
 /// Pixels the right-hand action panel grows upwards, taking them from the room
@@ -175,7 +201,9 @@ fn spawn_hud_layout(
     mut capture: Option<ResMut<CaptureReadiness>>,
     dynamic: Option<Res<DynamicHudBranches>>,
     growth: Option<Res<ActionAreaGrowth>>,
+    stage: Option<Res<StageLayout>>,
 ) {
+    let stage = stage.is_some();
     let grow = growth.map_or(0.0, |g| g.0);
     commands.spawn(Camera2d);
     let layout = recovered_layout();
@@ -186,20 +214,21 @@ fn spawn_hud_layout(
     // The panels are inset by 2 px: the gaps show the border color.
     let border = absolute([0.0, 0.0, layout.viewport[0], layout.viewport[1]]);
     let border_fill = BackgroundColor(palette_color(Some(2)));
-    let mut frame_rect = ROOM_FRAME_RECT;
+    let mut frame_rect = if stage { STAGE_FRAME_RECT } else { ROOM_FRAME_RECT };
     frame_rect[3] -= grow;
     let mut frame_node = absolute(frame_rect);
     frame_node.overflow = Overflow::clip();
-    let room = absolute([
-        ROOM_VIEWPORT_OFFSET[0],
-        ROOM_VIEWPORT_OFFSET[1],
-        ROOM_VIEWPORT_SIZE[0] as f32,
-        ROOM_VIEWPORT_SIZE[1] as f32,
-    ]);
+    let (offset, size) = if stage {
+        (STAGE_VIEWPORT_OFFSET, STAGE_VIEWPORT_SIZE)
+    } else {
+        (ROOM_VIEWPORT_OFFSET, ROOM_VIEWPORT_SIZE)
+    };
+    let room = absolute([offset[0], offset[1], size[0] as f32, size[1] as f32]);
     let room_target = target.0.clone();
     let visuals: Vec<Box<dyn Scene>> = layout
         .visuals
         .iter()
+        .filter(|_| !stage)
         .filter(|visual| !dynamic.as_ref().is_some_and(|owner| owner.owns(visual)))
         .filter_map(|visual| {
             layout_visual(&assets, &mut capture, &with_action_growth(visual, grow))

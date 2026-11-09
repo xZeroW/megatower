@@ -3,6 +3,11 @@
 pub const ROOM_VIEWPORT_SIZE: [u32; 2] = [352, 304];
 pub const ROOM_FRAME_RECT: [f32; 4] = [308.0, 0.0, 332.0, 295.0];
 pub const ROOM_VIEWPORT_OFFSET: [f32; 2] = [-10.0, -10.0];
+/// The full-width stage the labyrinth HUD uses: the room fills the screen above a
+/// 65 px bottom bar, and the old left-hand panel becomes a drawer over it.
+pub const STAGE_VIEWPORT_SIZE: [u32; 2] = [640, 295];
+pub const STAGE_FRAME_RECT: [f32; 4] = [0.0, 0.0, 640.0, 295.0];
+pub const STAGE_VIEWPORT_OFFSET: [f32; 2] = [0.0, 0.0];
 pub const ROOM_CAMERA_FOV_DEGREES: f32 = 45.0;
 
 /// Native state owned by `RoomScreen`. Scene nodes and animation playback stay

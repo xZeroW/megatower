@@ -289,7 +289,7 @@ fn ui_step(game: &mut Game, ui: &mut UiState, step: &str) -> bool {
             ui.vfx.push(LiveVfx {
                 kind,
                 at: ui.time,
-                cx: 474.0,
+                cx: megatower_ui::compose::STAGE_CX,
                 seed: 7,
                 color: [0.0, 0.46, 1.0, 1.0],
             });

@@ -380,7 +380,7 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
         Fx::Popup(popup) => ui.popups.push(LivePopup {
             popup,
             at: now,
-            origin: [474.0, 110.0 + (ui.popups.len() % 3) as f32 * 14.0],
+            origin: [crate::compose::STAGE_CX, 110.0 + (ui.popups.len() % 3) as f32 * 14.0],
             drift: 0.0,
         }),
         Fx::EnemyPopup { enemy_idx, popup } => {

@@ -1,6 +1,7 @@
 //! Populate Megatower's existing 640x360 HUD, not a second UI layout.
 use super::*;
 use crate::compose::{self, Align, Draw, Seg, TipView, WHITE, hex, image, palette, text, tinted};
+use megatower_runtime::render::hud_layout::drawer_visuals;
 use megatower_sim::labyrinth::Dir;
 use megatower_sim::passives::NodeKind;
 use megatower_sim::{
@@ -122,8 +123,6 @@ fn selection_outline(rect: R) -> Draw {
 /// What an enemy's next move does, in a few characters: "8-12" for an attack
 /// (with its damage modifiers and chill applied), "+100" for a guard, "20%"
 /// for a heal.
-/// Width of the hero's mana bar next to the health bar (canvas pixels).
-const MANA_BAR_WIDTH: f32 = 40.0;
 
 /// Side of a passive node's square on the tree panel (canvas pixels).
 fn tree_node_size(id: &str) -> f32 {
@@ -219,8 +218,28 @@ fn arrow_rects(facing: megatower_sim::labyrinth::Dir) -> Vec<R> {
         .collect()
 }
 
-/// The experience bar under the portrait (canvas pixels).
+/// The experience bar under the portrait (canvas pixels): in the drawer's header.
 const XP_BAR: R = [16.0, 87.0, 36.0, 5.0];
+
+/// The options gear, just under the status line.
+pub(super) const OPTIONS_BUTTON: R = [609.0, 20.0, 26.0, 26.0];
+
+/// The bottom bar: the hero strip on the left, the room's actions on the right.
+const BAR_Y: f32 = 295.0;
+/// "Turn N" under the status line, centred on the stage.
+const TURN_LABEL: R = [compose::STAGE_CX - 60.0, 20.0, 120.0, 13.0];
+/// Bag, floor map and passive tree buttons at the end of the hero strip.
+const MENU_BUTTONS: [R; 3] = [
+    [238.0, 299.0, 26.0, 26.0],
+    [268.0, 299.0, 26.0, 26.0],
+    [238.0, 328.0, 26.0, 26.0],
+];
+/// Pass button, left of the skill slots.
+const COMBAT_PASS: R = [326.0, 306.0, 40.0, 34.0];
+/// Skill slot `i` in the bottom bar: gem, key, mana cost.
+fn skill_slot(i: usize) -> R {
+    [374.0 + i as f32 * 56.0, 306.0, 44.0, 34.0]
+}
 
 fn intent_amount(enemy: &megatower_sim::combat::Enemy) -> String {
     use megatower_sim::combat::IntentKind;
@@ -397,7 +416,7 @@ impl Labyrinth {
                     c.icon = Some(arrow);
                     c.enabled = exit.is_some()
                         && game.floor.current_room().cleared
-                        && matches!(self.view, View::Profile | View::Map);
+                        && matches!(self.view, View::Stage | View::Profile | View::Map);
                     out.push(c);
                 }
                 if matches!(game.floor.current_room().kind, RoomKind::Stairs { .. }) {
@@ -411,7 +430,7 @@ impl Labyrinth {
             }
             Mode::Combat => {
                 out.push(icon(
-                    centred(322.0, 44.0, 34.0),
+                    [COMBAT_PASS[0], COMBAT_PASS[1], COMBAT_PASS[2], COMBAT_PASS[3]],
                     Action::Pass,
                     "assets/textures/icons/timeout_icon.png",
                     "Pass turn [Space]",
@@ -425,7 +444,7 @@ impl Labyrinth {
                             "mana"
                         };
                         let mut c = choice(
-                            centred(380.0 + i as f32 * 86.0, 78.0, 34.0),
+                            skill_slot(i),
                             Action::Skill(i),
                             format!("{}", i + 1),
                             skill.name.clone(),
@@ -436,8 +455,7 @@ impl Labyrinth {
                         } else {
                             "assets/textures/icons/magic_damage_icon.png"
                         });
-                        c.tip
-                            .extend([format!("{cost:.0} {resource}"), skill.supports.join(", ")]);
+                        c.tip.push(format!("{cost:.0} {resource}"));
                         if let Some(payoff) = &skill.payoff {
                             c.tip.push(megatower_sim::describe::payoff_line(payoff));
                             let primed = battle.enemies.get(self.target).is_some_and(|e| {
@@ -490,11 +508,14 @@ impl Labyrinth {
                 }
                 out.push(refresh);
                 if let Some(shop) = game.shop() {
+                    // The craft buttons sit in the middle of the stage.
+                    let n = shop.orbs.len() as f32;
+                    let left = compose::STAGE_CX - (n * 140.0 + (n - 1.0) * 10.0) / 2.0;
                     for (i, orb) in shop.orbs.iter().enumerate() {
                         let Some(orb) = *orb else { continue };
                         let price = megatower_sim::merchant::orb_price(orb, shop.floor);
                         let mut c = choice(
-                            [340.0 + i as f32 * 150.0, 30.0, 140.0, 29.0],
+                            [left + i as f32 * 150.0, 30.0, 140.0, 29.0],
                             Action::BuyOrb(i),
                             format!("{} {price}g [{}]", orb.short(), i + 1),
                             orb.name(),
@@ -573,21 +594,32 @@ impl Labyrinth {
             }
             Mode::Dead => {}
         }
-        if game.mode == Mode::Map {
-            out.push(icon(
-                rects.market_button,
-                Action::Tree,
-                "assets/textures/icons/wisdom_icon.png",
-                "Passive tree [P]",
-            ));
-            // At the left of the action area, where combat keeps its pass button.
-            out.push(icon(
-                centred(322.0, 44.0, 34.0),
-                Action::Map,
-                "assets/textures/icons/floor_icon.png",
-                "Floor map [M]",
-            ));
-        }
+        // The bottom bar's menu buttons: bag, floor map and passive tree.
+        let in_map = game.mode == Mode::Map;
+        let mut bag = icon(
+            MENU_BUTTONS[0],
+            Action::Bag,
+            "assets/textures/icons/adventurer_icon.png",
+            "Bag and gear [I]",
+        );
+        bag.enabled = !matches!(game.mode, Mode::Starter(_) | Mode::Dead);
+        out.push(bag);
+        let mut map = icon(
+            MENU_BUTTONS[1],
+            Action::Map,
+            "assets/textures/icons/floor_icon.png",
+            "Floor map [M]",
+        );
+        map.enabled = in_map;
+        out.push(map);
+        let mut tree = icon(
+            MENU_BUTTONS[2],
+            Action::Tree,
+            "assets/textures/icons/wisdom_icon.png",
+            "Passive tree [P]",
+        );
+        tree.enabled = in_map;
+        out.push(tree);
         out
     }
 
@@ -621,7 +653,9 @@ impl Labyrinth {
             return;
         }
         if input.click {
-            if let Some(i) = rects.tabs.iter().position(|r| contains(*r, x, y)) {
+            if self.view != View::Stage
+                && let Some(i) = rects.tabs.iter().position(|r| contains(*r, x, y))
+            {
                 ui.tab = [Tab::Profile, Tab::Stats, Tab::Log][i];
                 self.view = View::Profile;
                 return;
@@ -633,6 +667,7 @@ impl Labyrinth {
                 .cloned()
                 .unwrap_or_else(|| self.snapshot());
             if self.game().mode == Mode::Combat
+                && (self.view == View::Stage || x >= 308.0)
                 && let Some(i) = compose::hit_enemy(&frame, x, y)
             {
                 self.target = i;
@@ -793,47 +828,39 @@ impl Labyrinth {
             }
             return out;
         }
-        compose::draw_tabs(ui, rects, &mut out);
-        // Keep the original gear button and exact resolved control geometry.
-        out.extend(screens::layout_visuals(
-            &megatower_assets::ui_layout::Layout {
-                viewport: [640.0, 360.0],
-                visuals: rects
-                    .buttons
-                    .iter()
-                    .filter(|v| v.path.contains("OptionsButton"))
-                    .cloned()
-                    .collect(),
-            },
-            &[],
+        let (hovered, _) = screens::pointer_over(OPTIONS_BUTTON);
+        out.push(compose::nine_patch(
+            OPTIONS_BUTTON,
+            &rects.flat_button,
+            palette(if hovered { 8 } else { 4 }),
         ));
-        out.push(text(
-            rects.floor_label,
-            format!("{} | {}", game.floor.number, game.character.progress.level),
-            palette(2),
-            Align::Left,
-        ));
-        let remaining = game
-            .floor
-            .positions()
-            .filter(|p| !game.floor.room(*p).cleared)
-            .count();
-        out.push(text(
-            rects.rooms_label,
-            remaining.to_string(),
-            palette(2),
-            Align::Left,
+        out.push(Draw::Image {
+            rect: OPTIONS_BUTTON,
+            path: "assets/textures/icons/options_button.png".into(),
+            region: Some([0.0, 0.0, 26.0, 26.0]),
+            tint: palette(1),
+            slice: None,
+            flip_x: false,
+        });
+        if self.view == View::Stage {
+            self.status_line(&mut out);
+        }
+        out.push(Draw::Fill {
+            rect: [0.0, BAR_Y - 2.0, 640.0, 67.0],
+            color: palette(2),
+        });
+        out.push(compose::nine_patch(
+            [2.0, BAR_Y, 636.0, 63.0],
+            &rects.big_panel,
+            palette(1),
         ));
         let frame = if ui.timeline.busy() {
             ui.timeline.frame.clone().unwrap_or_else(|| self.snapshot())
         } else {
             self.snapshot()
         };
-        match self.view {
-            View::Map => self.draw_map(&mut out),
-            View::Tree => self.draw_tree(&mut out),
-            View::Profile if ui.tab == Tab::Profile => self.profile(&mut out, ui, rects, &frame),
-            View::Profile => self.information(&mut out, ui, rects),
+        if self.view == View::Stage {
+            self.hero_strip(&mut out, ui, rects, &frame);
         }
         // The back row first, so the enemies in front overlap it.
         let mut standing: Vec<(usize, f32)> = frame
@@ -859,7 +886,7 @@ impl Labyrinth {
             && battle.waiting() > 0
         {
             // Enemies queued behind the ones fighting.
-            let mut at = rects.turn_label;
+            let mut at = TURN_LABEL;
             at[1] += 14.0;
             out.push(text(
                 at,
@@ -870,7 +897,7 @@ impl Labyrinth {
         }
         if frame.turn > 0 {
             out.push(text(
-                rects.turn_label,
+                TURN_LABEL,
                 format!("Turn {}", frame.turn),
                 palette(4),
                 Align::Center,
@@ -899,6 +926,37 @@ impl Labyrinth {
                 }
             }
         }
+        if self.view != View::Stage {
+            // The drawer goes over the enemies, so it is drawn after them.
+            for v in drawer_visuals() {
+                if v.kind == "ColorRect"
+                    && let Some(shade) = v.palette
+                {
+                    // The slots' background blocks.
+                    out.push(Draw::Fill {
+                        rect: v.rect,
+                        color: palette(shade),
+                    });
+                    continue;
+                }
+                out.extend(screens::layout_visuals(
+                    &megatower_assets::ui_layout::Layout {
+                        viewport: [640.0, 360.0],
+                        visuals: vec![v],
+                    },
+                    &[],
+                ));
+            }
+            compose::draw_tabs(ui, rects, &mut out);
+            match self.view {
+                View::Map => self.draw_map(&mut out),
+                View::Tree => self.draw_tree(&mut out),
+                View::Profile if ui.tab == Tab::Profile => {
+                    self.profile(&mut out, ui, rects, &frame)
+                }
+                _ => self.information(&mut out, ui, rects),
+            }
+        }
         let choices = self.choices(rects);
         for c in &choices {
             if matches!(c.action, Action::Buy(_)) {
@@ -914,20 +972,15 @@ impl Labyrinth {
                 &mut out,
             );
             if let Action::Skill(i) = c.action {
-                // Just left of the centred icon, level with it.
-                out.push(text(
-                    [
-                        c.rect[0] + c.rect[2] / 2.0 - 22.0,
-                        // The glyph sits low in its 13px box: level its middle with
-                        // the icon's.
-                        c.rect[1] + ((c.rect[3] - 16.0) / 2.0).ceil() + 8.0 - 10.5,
-                        14.0,
-                        13.0,
-                    ],
-                    (i + 1).to_string(),
-                    palette(1),
-                    Align::Right,
-                ));
+                self.skill_labels(&mut out, i, c);
+            } else if matches!(c.action, Action::Pass) {
+                out.push(Draw::Text {
+                    rect: [c.rect[0], c.rect[1] + c.rect[3] + 1.0, c.rect[2], 12.0],
+                    text: "Pass".into(),
+                    size: 12.0,
+                    color: palette(4),
+                    align: Align::Center,
+                });
             }
         }
         if let Mode::Event { id, outcome } = &game.mode
@@ -939,7 +992,7 @@ impl Labyrinth {
             let lines: Vec<_> = lines.iter().flat_map(|s| wrap(s, 42)).collect();
             for (i, line) in lines.iter().take(8).enumerate() {
                 out.push(text(
-                    [335.0, 90.0 + i as f32 * 18.0, 270.0, 16.0],
+                    [compose::STAGE_CX - 150.0, 90.0 + i as f32 * 18.0, 300.0, 16.0],
                     line,
                     WHITE,
                     Align::Center,
@@ -947,19 +1000,27 @@ impl Labyrinth {
             }
         }
         compose::flash_draws(ui, rects.room_frame, &mut out);
-        compose::vfx_draws(ui, &mut out);
-        compose::log_overlay_draws(ui, &mut out);
-        compose::popup_draws(ui, &mut out);
+        if self.view == View::Stage {
+            compose::vfx_draws(ui, &mut out);
+        }
+        // The log only shows over the bare stage, never over the drawer.
+        if self.view == View::Stage {
+            compose::log_overlay_draws(ui, &mut out);
+        }
+        if self.view == View::Stage {
+            compose::popup_draws(ui, &mut out);
+        }
         if let Some(cursor) = ui.cursor {
             if let Some(c) = choices
                 .iter()
                 .find(|c| contains(c.rect, cursor[0], cursor[1]))
             {
                 // The movement, pass and skill buttons explain themselves.
-                if !matches!(c.action, Action::Walk(_) | Action::Pass | Action::Skill(_)) {
+                if !matches!(c.action, Action::Walk(_) | Action::Pass) {
                     tooltip(&mut out, rects, cursor, c.tip.clone());
                 }
-            } else if let Some(i) = compose::hit_enemy(&frame, cursor[0], cursor[1])
+            } else if (self.view == View::Stage || cursor[0] >= 308.0)
+                && let Some(i) = compose::hit_enemy(&frame, cursor[0], cursor[1])
                 && let Some(e) = game.battle.as_ref().and_then(|b| b.enemies.get(i))
             {
                 let mut lines = vec![
@@ -1046,6 +1107,235 @@ impl Labyrinth {
         out
     }
 
+    /// One thin line over the stage: floor and level, danger or rooms left,
+    /// gold and orbs.
+    fn status_line(&self, out: &mut Vec<Draw>) {
+        let game = self.game();
+        out.push(Draw::Fill {
+            rect: [0.0, 0.0, 640.0, 16.0],
+            color: [0.02, 0.03, 0.06, 0.7],
+        });
+        let remaining = game
+            .floor
+            .positions()
+            .filter(|p| !game.floor.room(*p).cleared)
+            .count();
+        out.push(text(
+            [8.0, 1.0, 190.0, 13.0],
+            format!(
+                "Floor {} | Lv {} | {remaining} rooms left",
+                game.floor.number, game.character.progress.level
+            ),
+            hex(0xcfd6ee),
+            Align::Left,
+        ));
+        if game.floor.danger() > 0 {
+            out.push(text(
+                [200.0, 1.0, 140.0, 13.0],
+                format!("Danger {}", game.floor.danger()),
+                hex(0xff6a4d),
+                Align::Left,
+            ));
+        }
+        // Right-aligned: gold (coin icon and amount), then the orbs.
+        const CHAR: f32 = 6.0;
+        let orbs = orb_summary(&game.character.orbs);
+        let orbs_w = orbs.chars().count() as f32 * CHAR;
+        let mut right = 632.0;
+        if !orbs.is_empty() {
+            out.push(text(
+                [right - orbs_w, 1.0, orbs_w, 13.0],
+                orbs,
+                hex(0xffaa00),
+                Align::Right,
+            ));
+            right -= orbs_w + 14.0;
+        }
+        let gold = game.character.gold.to_string();
+        let gold_w = gold.chars().count() as f32 * CHAR;
+        out.push(text(
+            [right - gold_w, 1.0, gold_w, 13.0],
+            gold,
+            hex(0xffaa00),
+            Align::Right,
+        ));
+        out.push(tinted(
+            [right - gold_w - 16.0, 2.0, 14.0, 14.0],
+            "assets/textures/icons/gold_coins_icon.png",
+            hex(0xffaa00),
+        ));
+    }
+
+    /// Life on top, level with the portrait's top, and mana under it, ending at
+    /// the portrait's bottom; a thin armour strip below. Used by the hero strip
+    /// and the drawer's header. Returns the life bar.
+    fn hero_bars(
+        out: &mut Vec<Draw>,
+        ui: &UiState,
+        rects: &Rects,
+        frame: &Frame,
+        portrait: R,
+        x: f32,
+        w: f32,
+    ) -> R {
+        let v = &frame.player;
+        let life = [x, portrait[1] + 2.0, w, rects.bar_second[3]];
+        compose::bar(
+            life,
+            compose::bar_fracs(
+                ui,
+                BarKey::PlayerHealth,
+                v.health,
+                v.max_health,
+                hex(0xff8700),
+            ),
+            hex(0x990f35),
+            out,
+        );
+        compose::label_panel(
+            rects,
+            life[0] + life[2] / 2.0,
+            life[1] - 9.0,
+            &format!("{:.0} / {:.0}", v.health, v.max_health),
+            hex(0xff4d85),
+            out,
+        );
+        if v.max_mana > 0 {
+            // Mana ends level with the bottom of the portrait.
+            let mana = [life[0], portrait[1] + portrait[3] - life[3] - 4.0, life[2], life[3]];
+            compose::bar(
+                mana,
+                (v.mana as f32 / v.max_mana.max(1) as f32, None),
+                hex(0x285cc4),
+                out,
+            );
+            compose::label_panel(
+                rects,
+                mana[0] + mana[2] / 2.0,
+                mana[1] - 9.0,
+                &format!("{} / {}", v.mana, v.max_mana),
+                hex(0x5b8def),
+                out,
+            );
+        }
+        if v.max_armor > 0.0 {
+            // Armour is a thin strip under the two bars.
+            let strip = [life[0], portrait[1] + portrait[3] + 4.0, life[2], 4.0];
+            out.push(Draw::Fill {
+                rect: strip,
+                color: palette(2),
+            });
+            let frac = (v.armor / v.max_armor).clamp(0.0, 1.0) as f32;
+            out.push(Draw::Fill {
+                rect: [strip[0], strip[1], strip[2] * frac, strip[3]],
+                color: hex(0x8b93af),
+            });
+        }
+        life
+    }
+
+    /// The hero strip at the left of the bottom bar: portrait, life and mana,
+    /// level and statuses.
+    fn hero_strip(&self, out: &mut Vec<Draw>, ui: &UiState, rects: &Rects, frame: &Frame) {
+        let game = self.game();
+        let portrait = [6.0, 299.0, 32.0, 32.0];
+        out.push(image(
+            portrait,
+            self.portrait
+                .as_deref()
+                .unwrap_or("assets/textures/portraits/kestrel.png"),
+        ));
+        out.push(image(
+            portrait,
+            megatower_core::definitions::BorderType::from_floor(true, game.floor.number as i32 - 1)
+                .texture(),
+        ));
+        // Experience toward the next level, under the portrait.
+        let progress = &game.character.progress;
+        let next = megatower_sim::passives::xp_to_next(progress.level).max(1);
+        let frac = (progress.xp as f32 / next as f32).clamp(0.0, 1.0);
+        let xp = [6.0, 334.0, 32.0, 5.0];
+        out.push(Draw::Fill {
+            rect: xp,
+            color: palette(2),
+        });
+        out.push(Draw::Fill {
+            rect: [xp[0] + 1.0, xp[1] + 1.0, xp[2] - 2.0, xp[3] - 2.0],
+            color: palette(1),
+        });
+        let fill = ((xp[2] - 2.0) * frac).round();
+        if fill > 0.0 {
+            out.push(Draw::Fill {
+                rect: [xp[0] + 1.0, xp[1] + 1.0, fill, xp[3] - 2.0],
+                color: hex(0x4d9fff),
+            });
+        }
+        out.push(Draw::Text {
+            rect: [2.0, 340.0, 40.0, 12.0],
+            text: format!("Lv {}", progress.level),
+            size: 12.0,
+            color: palette(8),
+            align: Align::Center,
+        });
+        let life = Self::hero_bars(out, ui, rects, frame, portrait, 46.0, 150.0);
+        let v = &frame.player;
+        if let Some(policies) = &self.policies {
+            // Status icons beside the bars, two to a row.
+            for (i, status) in v.statuses.iter().take(6).enumerate() {
+                let policy = policies.get(status.resource);
+                let at = [
+                    life[0] + life[2] + 6.0 + (i % 2) as f32 * 17.0,
+                    life[1] + (i / 2) as f32 * 18.0,
+                    16.0,
+                    16.0,
+                ];
+                if let Some(icon) = &policy.icon {
+                    out.push(tinted(at, icon, policy.color));
+                }
+                compose::status_marks(status, at, out);
+            }
+        }
+    }
+
+    /// The key in the corner of a skill button, amber when the target would pay
+    /// a combo, and the skill's name under it. The cost is in the tooltip.
+    fn skill_labels(&self, out: &mut Vec<Draw>, i: usize, c: &Choice) {
+        let Some(battle) = &self.game().battle else {
+            return;
+        };
+        let Some(skill) = battle.skills.get(i) else {
+            return;
+        };
+        let primed = skill.payoff.as_ref().is_some_and(|payoff| {
+            battle
+                .enemies
+                .get(self.target)
+                .is_some_and(|e| payoff.needs.iter().any(|&a| e.fighter.afflictions.has(a)))
+        });
+        let [x, y, w, h] = c.rect;
+        let name: String = skill.name.chars().take(9).collect();
+        out.push(Draw::Text {
+            rect: [x - 6.0, y + h + 1.0, w + 12.0, 12.0],
+            text: name,
+            size: 12.0,
+            color: if c.enabled { palette(8) } else { palette(4) },
+            align: Align::Center,
+        });
+        out.push(Draw::Text {
+            rect: [x + 4.0, y + 1.0, 10.0, 12.0],
+            text: (i + 1).to_string(),
+            size: 12.0,
+            color: if primed {
+                hex(0xffd27a)
+            } else if c.enabled {
+                palette(1)
+            } else {
+                palette(4)
+            },
+            align: Align::Left,
+        });
+    }
+
     fn profile(&self, out: &mut Vec<Draw>, ui: &UiState, rects: &Rects, frame: &Frame) {
         let game = self.game();
         out.push(image(
@@ -1059,119 +1349,16 @@ impl Labyrinth {
             megatower_core::definitions::BorderType::from_floor(true, game.floor.number as i32 - 1)
                 .texture(),
         ));
-        out.push(tinted(
-            rects.gold_icon,
-            "assets/textures/icons/gold_coins_icon.png",
-            hex(0xffaa00),
-        ));
-        out.push(text(
-            rects.gold,
-            game.character.gold.to_string(),
-            hex(0xffaa00),
-            Align::Left,
-        ));
-        out.push(tinted(
-            rects.diamond_icon,
-            "assets/textures/icons/trial_level_icon.png",
-            palette(8),
-        ));
-        out.push(text(
-            rects.diamonds,
-            game.character.progress.level.to_string(),
-            palette(8),
-            Align::Left,
-        ));
-        if game.character.orbs.total() > 0 {
-            let mut below = rects.diamonds;
-            below[1] += below[3];
-            below[2] *= 4.0;
-            out.push(text(
-                below,
-                orb_summary(&game.character.orbs),
-                palette(8),
-                Align::Left,
-            ));
-        }
-        if game.floor.danger() > 0 {
-            // Right of the level counter: the floor has been wandered too long.
-            let mut at = rects.diamonds;
-            at[0] += 70.0;
-            at[2] *= 3.0;
-            out.push(text(
-                at,
-                format!("Danger {}", game.floor.danger()),
-                hex(0xff6a4d),
-                Align::Left,
-            ));
-        }
         let v = &frame.player;
-        // Use the original animated bars, numerical panels and segmented mana
-        // pip. Armour here is only megatower-sim's temporary guard, not a new rule.
-        let mut health = rects.bar_second;
-        if v.max_armor > 0.0 {
-            compose::bar(
-                rects.bar_top,
-                compose::bar_fracs(ui, BarKey::PlayerArmor, v.armor, v.max_armor, hex(0x4a5462)),
-                hex(0x4a5462),
-                out,
-            );
-            compose::label_panel(
-                rects,
-                rects.bar_top[0] + rects.bar_top[2] / 2.0,
-                rects.bar_top[1] - 9.0,
-                &format!("{:.0} / {:.0}", v.armor, v.max_armor),
-                hex(0x8b93af),
-                out,
-            );
-        } else {
-            health[1] = ((rects.bar_top[1] + rects.bar_second[1]) / 2.0).round();
-        }
-        health[2] = if v.max_mana > 0 {
-            rects.bar_top[2] - MANA_BAR_WIDTH - 4.0
-        } else {
-            rects.bar_top[2]
-        };
-        compose::bar(
-            health,
-            compose::bar_fracs(
-                ui,
-                BarKey::PlayerHealth,
-                v.health,
-                v.max_health,
-                hex(0xff8700),
-            ),
-            hex(0x990f35),
+        Self::hero_bars(
             out,
-        );
-        compose::label_panel(
+            ui,
             rects,
-            health[0] + health[2] / 2.0,
-            health[1] - 9.0,
-            &format!("{:.0} / {:.0}", v.health, v.max_health),
-            hex(0xff4d85),
-            out,
+            frame,
+            rects.portrait,
+            rects.portrait[0] + rects.portrait[2] + 8.0,
+            170.0,
         );
-        if v.max_mana > 0 {
-            // The mana pool is large here (costs of 4-7 out of ~50), so it is
-            // a plain pill bar like health rather than megaloot's pips.
-            let right = rects.mana[0] + rects.mana[2] + 2.0;
-            let blue = hex(0x285cc4);
-            let rect = [right - MANA_BAR_WIDTH, health[1], MANA_BAR_WIDTH, health[3]];
-            compose::bar(
-                rect,
-                (v.mana as f32 / v.max_mana.max(1) as f32, None),
-                blue,
-                out,
-            );
-            compose::label_panel(
-                rects,
-                rect[0] + rect[2] / 2.0,
-                rect[1] - 9.0,
-                &format!("{} / {}", v.mana, v.max_mana),
-                hex(0x5b8def),
-                out,
-            );
-        }
         // Experience toward the next level: a thin bar under the portrait.
         let progress = &game.character.progress;
         let next = megatower_sim::passives::xp_to_next(progress.level).max(1);
@@ -1580,6 +1767,8 @@ mod tests {
         (
             Labyrinth {
                 run: Some(run),
+                // Most of these tests work on the drawer's gear and bag.
+                view: View::Profile,
                 ..default()
             },
             UiState {
@@ -1668,8 +1857,8 @@ mod tests {
                 std::mem::discriminant(&k) == std::mem::discriminant(&kind)
             });
             for c in session.choices(&rects) {
-                // The tree button lives in the left panel.
-                if matches!(c.action, Action::Tree) {
+                // The menu buttons live in the hero strip.
+                if matches!(c.action, Action::Tree | Action::Map | Action::Bag) {
                     continue;
                 }
                 let [x, y, w, h] = c.rect;
@@ -1761,20 +1950,15 @@ mod tests {
                 "{text:?}"
             );
         }
-        // In a fight, pass and the skill buttons are silent too.
+        // In a fight, pass is silent; the skill buttons name themselves.
         session
             .game_mut()
             .debug_walk_to_kind(|k| k == RoomKind::Fight);
         assert_eq!(session.game().mode, Mode::Combat);
-        for at in [[335.0, 320.0], [390.0, 320.0]] {
-            let text = shown(&session, &mut ui, &rects, at);
-            assert!(
-                !text
-                    .iter()
-                    .any(|t| t.contains("Pass turn") || t.contains("mana")),
-                "{text:?}"
-            );
-        }
+        let pass = shown(&session, &mut ui, &rects, [335.0, 320.0]);
+        assert!(!pass.iter().any(|t| t.contains("Pass turn")), "{pass:?}");
+        let skill = shown(&session, &mut ui, &rects, [390.0, 320.0]);
+        assert!(skill.iter().any(|t| t.contains("mana")), "{skill:?}");
     }
 
     #[test]

@@ -391,16 +391,8 @@ fn socket_icon(rect: R, socket: megatower_core::items::definition::SocketType) -
 
 /// One `EffectContainer`: a 16x16 icon and, when it has one, its amount.
 /// Duration and kind marks over a status icon: the turns left in its corner
-/// and a green (buff) or red (debuff) line under it.
+/// (the icon's tint already says buff or debuff).
 pub(crate) fn status_marks(status: &megatower_core::run::events::StatusView, rect: R, out: &mut Vec<Draw>) {
-    out.push(Draw::Fill {
-        rect: [rect[0] + 1.0, rect[1] + rect[3] - 1.0, rect[2].min(16.0) - 2.0, 1.0],
-        color: if status.beneficial {
-            hex(0x6fdc6f)
-        } else {
-            hex(0xff4d4d)
-        },
-    });
     if let Some(turns) = status.turns {
         let label = turns.to_string();
         let w = label.chars().count() as f32 * CHAR_W;
@@ -456,6 +448,8 @@ pub(crate) enum EffectKind {
 }
 
 const EFFECT_SEPARATION: f32 = 6.0;
+/// Distance between the status icons above an enemy.
+const ENEMY_STATUS_STEP: f32 = 18.0;
 
 /// `UIManager.update_effect_containers`: item sets without a specialization,
 /// the active specializations, a spacer, the status effects that do not
@@ -1337,23 +1331,32 @@ pub(crate) fn enemy_tip(game: &Game, entity: Entity, show_extra: bool) -> Option
     })
 }
 
+/// Horizontal centre of the stage, where the enemies stand.
+pub const STAGE_CX: f32 = 320.0;
+/// Enemies stand close together all the time, so a drawer laid over the
+/// stage covers them instead of pushing them aside.
+const STAGE_SPACING: f32 = 90.0;
+/// Width the line of enemies shares when there are more than three.
+const STAGE_ROOM: f32 = 250.0;
+
 /// Where the `order`-th of `n` visible enemies stands: the centre x and how
 /// far it steps forward. Three or fewer stand in a line; more are packed
 /// closer into the room, and where they would overlap every other one stands
 /// a little in front so each stays readable.
 pub(crate) fn enemy_place(order: usize, n: usize) -> (f32, f32) {
     let count = n as f32;
+    let (centre, base, room) = (STAGE_CX, STAGE_SPACING, STAGE_ROOM);
     let spacing = if n <= 3 {
-        96.0
+        base
     } else {
-        (244.0 / (count - 1.0)).min(96.0)
+        (room / (count - 1.0)).min(base)
     };
     let dy = if spacing < 76.0 && order % 2 == 1 {
         26.0
     } else {
         0.0
     };
-    (474.0 + (order as f32 - (count - 1.0) / 2.0) * spacing, dy)
+    (centre + (order as f32 - (count - 1.0) / 2.0) * spacing, dy)
 }
 
 /// Which visible enemy slot (index into the battle) is under the cursor.
@@ -1786,15 +1789,14 @@ pub(crate) fn hit_status(
         .filter_map(|e| e.as_ref())
         .filter(|e| !e.out_of_combat || e.next_texture.is_some())
         .collect();
-    let n = visible.len() as f32;
     for (order, view) in visible.iter().enumerate() {
-        let cx = 474.0 + (order as f32 - (n - 1.0) / 2.0) * 96.0;
+        let cx = enemy_place(order, visible.len()).0;
         let mut bx = cx - 36.0;
         for status in view.vitals.statuses.iter().take(5) {
             if inside([bx, 226.0, 14.0, 14.0]) {
                 return Some(status.resource);
             }
-            bx += 15.0;
+            bx += ENEMY_STATUS_STEP;
         }
     }
     let _ = game;
@@ -2484,19 +2486,13 @@ fn enemy_visuals(
     let y = oy + l.rect("MarginContainer3/EffectContainerHolder")[1] + 2.0 - armor_row;
     for status in v.statuses.iter().take(5) {
         let policy = policies.get(status.resource);
-        let amount = number(status.amount);
-        let width = 17.0 + amount.chars().count() as f32 * CHAR_W;
         if let Some(icon) = &policy.icon {
             out.push(tinted([x, y, 14.0, 14.0], icon, policy.color));
         }
+        // The white turns-left mark is the only number; the amount is in the
+        // tooltip.
         status_marks(status, [x, y, 14.0, 14.0], out);
-        out.push(text(
-            [x + 15.0, y + 1.0, 24.0, 13.0],
-            amount,
-            policy.color,
-            Align::Left,
-        ));
-        x += width + 4.0;
+        x += ENEMY_STATUS_STEP;
     }
 
     if view.selected && !view.out_of_combat {
@@ -2570,14 +2566,14 @@ pub fn log_overlay_draws(ui: &UiState, out: &mut Vec<Draw>) {
         let age = (count - 1 - i) as f32;
         let alpha = (1.0 - age * 0.16).max(0.35);
         let y = BOTTOM - (age + 1.0) * LINE_H;
-        let w = (line.chars().count() as f32 * CHAR_W + 8.0).min(322.0);
+        let w = (line.chars().count() as f32 * CHAR_W + 8.0).min(300.0);
         out.push(Draw::Fill {
-            rect: [312.0, y, w, LINE_H],
+            rect: [6.0, y, w, LINE_H],
             color: [0.02, 0.03, 0.06, 0.55 * alpha],
         });
         let mut color = *color;
         color[3] = alpha;
-        out.push(text([316.0, y - 1.0, w, 13.0], line.clone(), color, Align::Left));
+        out.push(text([10.0, y - 1.0, w, 13.0], line.clone(), color, Align::Left));
     }
 }
 
@@ -3201,7 +3197,7 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     if let Some((msg, until)) = &ui.message
         && ui.time < *until
     {
-        out.push(center_text(474.0, 280.0, 300.0, msg, palette(8)));
+        out.push(center_text(STAGE_CX, 270.0, 300.0, msg, palette(8)));
     }
     if state_died {
         // `DeathScreen`: the resolved scene with the source's result texts.

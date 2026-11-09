@@ -32,8 +32,10 @@ impl Plugin for LabyrinthPlugin {
         .insert_resource(megatower_runtime::render::hud_layout::ActionAreaGrowth(
             view::ACTION_GROWTH,
         ))
+        .insert_resource(megatower_runtime::render::hud_layout::StageLayout)
         .init_resource::<Labyrinth>()
         .add_plugins(doors::DoorsPlugin)
+
         .add_systems(Startup, (load_legacy, autostart).chain())
         .add_systems(Update, scripted_moves);
     }
@@ -46,7 +48,10 @@ pub(super) enum Selection {
 }
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub(super) enum View {
+    /// The full-width room with the bottom bar; the drawer is closed.
     #[default]
+    Stage,
+    /// The drawer: gear, bag and sockets (and the stats / log tabs).
     Profile,
     Map,
     Tree,
@@ -75,6 +80,7 @@ pub struct Labyrinth {
 
 #[derive(Clone, Debug)]
 pub(super) enum Action {
+    Bag,
     Starter(usize),
     Skill(usize),
     Pass,
@@ -810,6 +816,7 @@ impl Labyrinth {
                         self.act(ui, Action::Allocate(id));
                     }
                 }
+                'b' => self.act(ui, Action::Bag),
                 'm' => self.act(ui, Action::Map),
                 'p' => self.act(ui, Action::Tree),
                 _ => {}
@@ -926,12 +933,12 @@ impl Labyrinth {
         let gear = click
             && ui
                 .cursor
-                .is_some_and(|[x, y]| contains([609.0, 5.0, 26.0, 26.0], x, y));
+                .is_some_and(|[x, y]| contains(view::OPTIONS_BUTTON, x, y));
         if keys.just_pressed(KeyCode::Escape) {
             if ui.esc_open {
                 ui.esc_open = false;
-            } else if self.view != View::Profile {
-                self.view = View::Profile;
+            } else if self.view != View::Stage {
+                self.view = View::Stage;
             } else if matches!(
                 self.game().mode,
                 Mode::Shop
@@ -990,7 +997,7 @@ impl Labyrinth {
         if self.game().mode == Mode::Map {
             if keys.just_pressed(KeyCode::KeyM) {
                 self.view = if self.view == View::Map {
-                    View::Profile
+                    View::Stage
                 } else {
                     View::Map
                 };
@@ -998,14 +1005,18 @@ impl Labyrinth {
             }
             if keys.just_pressed(KeyCode::KeyP) {
                 self.view = if self.view == View::Tree {
-                    View::Profile
+                    View::Stage
                 } else {
                     View::Tree
                 };
                 return;
             }
             if keys.any_just_pressed([KeyCode::KeyI, KeyCode::Tab]) {
-                self.view = View::Profile;
+                self.view = if self.view == View::Profile && ui.tab == Tab::Profile {
+                    View::Stage
+                } else {
+                    View::Profile
+                };
                 ui.tab = Tab::Profile;
                 return;
             }
@@ -1156,16 +1167,24 @@ impl Labyrinth {
                     let _ = self.game_mut().character.unsocket(slot, i);
                 }
             }
+            Action::Bag => {
+                self.view = if self.view == View::Profile && ui.tab == Tab::Profile {
+                    View::Stage
+                } else {
+                    View::Profile
+                };
+                ui.tab = Tab::Profile;
+            }
             Action::Tree => {
                 self.view = if self.view == View::Tree {
-                    View::Profile
+                    View::Stage
                 } else {
                     View::Tree
                 }
             }
             Action::Map => {
                 self.view = if self.view == View::Map {
-                    View::Profile
+                    View::Stage
                 } else {
                     View::Map
                 }
@@ -1539,7 +1558,7 @@ impl Labyrinth {
                     .timeline
                     .frame
                     .as_ref()
-                    .map_or(474.0, |f| crate::frame::enemy_cx(f, enemy_idx));
+                    .map_or(crate::compose::STAGE_CX, |f| crate::frame::enemy_cx(f, enemy_idx));
                 ui.vfx.push(crate::model::LiveVfx {
                     kind: crate::model::VfxKind::Burst,
                     at: ui.time,
@@ -1563,12 +1582,12 @@ impl Labyrinth {
                 ui.popups.push(LivePopup {
                     popup,
                     at: ui.time,
-                    origin: [474.0 + roll(1) * 22.0, 110.0 + roll(2) * 8.0],
+                    origin: [crate::compose::STAGE_CX + roll(1) * 22.0, 110.0 + roll(2) * 8.0],
                     drift: roll(3) * 8.0,
                 })
             }
             Fx::EnemyPopup { enemy_idx, popup } => {
-                let (cx, dy) = ui.timeline.frame.as_ref().map_or((474.0, 0.0), |f| {
+                let (cx, dy) = ui.timeline.frame.as_ref().map_or((crate::compose::STAGE_CX, 0.0), |f| {
                     (
                         crate::frame::enemy_cx(f, enemy_idx),
                         crate::frame::enemy_dy(f, enemy_idx),
@@ -1737,6 +1756,7 @@ mod tests {
         Labyrinth {
             run: Some(run),
             policies: Some(megatower_core::combat::profile::StatusPolicies::recovered()),
+            view: View::Profile,
             ..default()
         }
     }

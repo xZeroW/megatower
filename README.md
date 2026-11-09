@@ -22,7 +22,7 @@ reference/parity work: `MEGATOWER_LEGACY=1 cargo run -p megatower-client`.
   Space passes and Left/Right/Tab changes target.
 - Click a door or use W/A/D/S to move relative to your facing. Enter descends
   from resolved stairs. M shows the floor map; P shows the passive tree.
-- Equipment and all 20 bag slots stay in Megatower's HUD. Right-click gear to
+- The room fills the screen above a bottom bar (hero, skills, actions). Equipment and all 20 bag slots are in a drawer over the left side: open it with I, Tab or the bag button, close it with Esc. Right-click gear to
   equip/unequip. Select a gem, then click equipment to socket it; linked gems
   appear in the original bottom-left slots (right-click to unsocket).
 - Crafting orbs (shown under the level as `Rf Au As Rl Rg`) drop from fights, elites, treasure

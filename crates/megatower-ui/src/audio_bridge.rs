@@ -129,7 +129,7 @@ fn drive_room_dolly(
     }
 }
 
-/// The diamond wipe: the room transition over the room column, or the death
+/// The diamond wipe: the room transition over the whole screen, or the death
 /// screen's over the whole screen.
 #[auto_add_system(plugin = UiPlugin, schedule = Update)]
 fn drive_wipe(
@@ -155,7 +155,7 @@ fn drive_wipe(
     } else if let Some(t) = ui.transition {
         let age = ((ui.time - t.at) / t.seconds.max(1e-3)).clamp(0.0, 1.0) as f32;
         megatower_runtime::render::wipe::ScreenWipe {
-            region: [308.0, 0.0, 332.0, 360.0],
+            region: [0.0, 0.0, 640.0, 360.0],
             progress: if t.start { age } else { 1.0 + age },
         }
     } else {

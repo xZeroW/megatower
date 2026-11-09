@@ -18,7 +18,8 @@ use bevy::{
 use bevy_auto_plugin::prelude::*;
 use megatower_assets::room_materials::{MeshMaterial, room_materials};
 use megatower_assets::room_scene::{RoomLight, scene};
-use megatower_assets::room_screen::{ROOM_CAMERA_FOV_DEGREES, ROOM_VIEWPORT_SIZE};
+use megatower_assets::room_screen::{ROOM_CAMERA_FOV_DEGREES, ROOM_VIEWPORT_SIZE, STAGE_VIEWPORT_SIZE};
+use super::hud_layout::StageLayout;
 
 /// The scene (`room_scene::scene_for`) the room view should show; `None`
 /// while there is no run.
@@ -140,10 +141,12 @@ pub fn setup_room(
     mut materials: ResMut<Assets<RoomMaterial>>,
     mut images: ResMut<Assets<Image>>,
     capture: Option<ResMut<CaptureReadiness>>,
+    stage: Option<Res<StageLayout>>,
 ) {
+    let size = if stage.is_some() { STAGE_VIEWPORT_SIZE } else { ROOM_VIEWPORT_SIZE };
     let target = images.add(Image::new_target_texture(
-        ROOM_VIEWPORT_SIZE[0],
-        ROOM_VIEWPORT_SIZE[1],
+        size[0],
+        size[1],
         TextureFormat::Rgba8Unorm,
         Some(TextureFormat::Rgba8UnormSrgb),
     ));
