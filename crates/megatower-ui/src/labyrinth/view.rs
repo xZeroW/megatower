@@ -1058,10 +1058,7 @@ impl Labyrinth {
                 && let Some(i) = compose::hit_enemy(&frame, cursor[0], cursor[1])
                 && let Some(e) = game.battle.as_ref().and_then(|b| b.enemies.get(i))
             {
-                let mut lines = vec![
-                    e.fighter.name.clone(),
-                    format!("Next: {} ({})", e.intent().name, intent_amount(e)),
-                ];
+                let mut lines = vec![e.fighter.name.clone()];
                 lines.extend(
                     megatower_sim::ailment::Ailment::ALL
                         .into_iter()
