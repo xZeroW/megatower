@@ -3,7 +3,7 @@
         (
             id: "resources/enemies/armored_goblin",
             name: "Armored Goblin",
-            texture: Some("assets/textures/enemies/armored_goblin.png"),
+            texture: Some("textures/enemies/armored_goblin.png"),
             floor_number: 2,
             flying: false,
             starting_status_effects: [],
@@ -53,7 +53,7 @@
         (
             id: "resources/enemies/armored_spirit",
             name: "Armored Spirit",
-            texture: Some("assets/textures/enemies/armored_spirit.png"),
+            texture: Some("textures/enemies/armored_spirit.png"),
             floor_number: 4,
             flying: true,
             starting_status_effects: [],
@@ -93,7 +93,7 @@
         (
             id: "resources/enemies/bat",
             name: "Bat",
-            texture: Some("assets/textures/enemies/bat.png"),
+            texture: Some("textures/enemies/bat.png"),
             floor_number: 0,
             flying: true,
             starting_status_effects: [],
@@ -121,7 +121,7 @@
         (
             id: "resources/enemies/blinded_priest",
             name: "Blinded Priest",
-            texture: Some("assets/textures/enemies/blinded_priest.png"),
+            texture: Some("textures/enemies/blinded_priest.png"),
             floor_number: 10,
             flying: false,
             starting_status_effects: [],
@@ -157,7 +157,7 @@
         (
             id: "resources/enemies/blood_ghoul",
             name: "Blood Ghoul",
-            texture: Some("assets/textures/enemies/blood_ghoul.png"),
+            texture: Some("textures/enemies/blood_ghoul.png"),
             floor_number: 3,
             flying: false,
             starting_status_effects: [],
@@ -197,7 +197,7 @@
         (
             id: "resources/enemies/boar",
             name: "Boar",
-            texture: Some("assets/textures/enemies/boar.png"),
+            texture: Some("textures/enemies/boar.png"),
             floor_number: 0,
             flying: false,
             starting_status_effects: [],
@@ -227,7 +227,7 @@
         (
             id: "resources/enemies/braskap",
             name: "Braskap",
-            texture: Some("assets/textures/enemies/braskap.png"),
+            texture: Some("textures/enemies/braskap.png"),
             floor_number: 9,
             flying: false,
             starting_status_effects: [],
@@ -269,7 +269,7 @@
         (
             id: "resources/enemies/bravura",
             name: "Bravura",
-            texture: Some("assets/textures/enemies/bravura.png"),
+            texture: Some("textures/enemies/bravura.png"),
             floor_number: 6,
             flying: false,
             starting_status_effects: [],
@@ -324,7 +324,7 @@
         (
             id: "resources/enemies/brother",
             name: "Brother",
-            texture: Some("assets/textures/enemies/brother.png"),
+            texture: Some("textures/enemies/brother.png"),
             floor_number: 7,
             flying: false,
             starting_status_effects: [],
@@ -354,7 +354,7 @@
         (
             id: "resources/enemies/cloud_dragon",
             name: "Cloud Dragon",
-            texture: Some("assets/textures/enemies/cloud_dragon.png"),
+            texture: Some("textures/enemies/cloud_dragon.png"),
             floor_number: 9,
             flying: false,
             starting_status_effects: [],
@@ -403,7 +403,7 @@
         (
             id: "resources/enemies/cursed_abomination",
             name: "Cursed Abomination",
-            texture: Some("assets/textures/enemies/cursed_abomination.png"),
+            texture: Some("textures/enemies/cursed_abomination.png"),
             floor_number: 11,
             flying: true,
             starting_status_effects: [],
@@ -433,7 +433,7 @@
         (
             id: "resources/enemies/death",
             name: "Death",
-            texture: Some("assets/textures/enemies/death.png"),
+            texture: Some("textures/enemies/death.png"),
             floor_number: 29,
             flying: false,
             starting_status_effects: [],
@@ -477,7 +477,7 @@
         (
             id: "resources/enemies/efis",
             name: "Efis",
-            texture: Some("assets/textures/enemies/efis.png"),
+            texture: Some("textures/enemies/efis.png"),
             floor_number: 2,
             flying: true,
             starting_status_effects: [],
@@ -513,7 +513,7 @@
         (
             id: "resources/enemies/eldrids_flesh",
             name: "Eldrid\'s Flesh",
-            texture: Some("assets/textures/enemies/eldrids_flesh.png"),
+            texture: Some("textures/enemies/eldrids_flesh.png"),
             floor_number: 13,
             flying: false,
             starting_status_effects: [],
@@ -567,7 +567,7 @@
         (
             id: "resources/enemies/fire_dragon",
             name: "Fire Dragon",
-            texture: Some("assets/textures/enemies/fire_dragon.png"),
+            texture: Some("textures/enemies/fire_dragon.png"),
             floor_number: 6,
             flying: false,
             starting_status_effects: [],
@@ -601,7 +601,7 @@
         (
             id: "resources/enemies/fronk",
             name: "Fronk",
-            texture: Some("assets/textures/enemies/fronk.png"),
+            texture: Some("textures/enemies/fronk.png"),
             floor_number: 0,
             flying: false,
             starting_status_effects: [],
@@ -637,7 +637,7 @@
         (
             id: "resources/enemies/giant_spider",
             name: "Giant Spider",
-            texture: Some("assets/textures/enemies/giant_spider.png"),
+            texture: Some("textures/enemies/giant_spider.png"),
             floor_number: 3,
             flying: false,
             starting_status_effects: [],
@@ -671,7 +671,7 @@
         (
             id: "resources/enemies/goblin",
             name: "Goblin",
-            texture: Some("assets/textures/enemies/goblin.png"),
+            texture: Some("textures/enemies/goblin.png"),
             floor_number: 1,
             flying: false,
             starting_status_effects: [],
@@ -709,7 +709,7 @@
         (
             id: "resources/enemies/golden_guardian",
             name: "Golden Guardian",
-            texture: Some("assets/textures/enemies/golden_guardian.png"),
+            texture: Some("textures/enemies/golden_guardian.png"),
             floor_number: 13,
             flying: false,
             starting_status_effects: [
@@ -758,7 +758,7 @@
         (
             id: "resources/enemies/graven",
             name: "Graven",
-            texture: Some("assets/textures/enemies/graven.png"),
+            texture: Some("textures/enemies/graven.png"),
             floor_number: 28,
             flying: false,
             starting_status_effects: [],
@@ -800,7 +800,7 @@
         (
             id: "resources/enemies/harpy",
             name: "Harpy",
-            texture: Some("assets/textures/enemies/harpy.png"),
+            texture: Some("textures/enemies/harpy.png"),
             floor_number: 5,
             flying: true,
             starting_status_effects: [],
@@ -834,7 +834,7 @@
         (
             id: "resources/enemies/iron_golem",
             name: "Iron Golem",
-            texture: Some("assets/textures/enemies/iron_golem.png"),
+            texture: Some("textures/enemies/iron_golem.png"),
             floor_number: 25,
             flying: false,
             starting_status_effects: [
@@ -899,7 +899,7 @@
         (
             id: "resources/enemies/jellyrak",
             name: "Jellyrak",
-            texture: Some("assets/textures/enemies/jellyrak.png"),
+            texture: Some("textures/enemies/jellyrak.png"),
             floor_number: 2,
             flying: true,
             starting_status_effects: [],
@@ -935,7 +935,7 @@
         (
             id: "resources/enemies/jupiter",
             name: "Jupiter",
-            texture: Some("assets/textures/enemies/jupiter.png"),
+            texture: Some("textures/enemies/jupiter.png"),
             floor_number: 19,
             flying: true,
             starting_status_effects: [],
@@ -978,7 +978,7 @@
         (
             id: "resources/enemies/kotya",
             name: "Kotya",
-            texture: Some("assets/textures/enemies/kotya.png"),
+            texture: Some("textures/enemies/kotya.png"),
             floor_number: 8,
             flying: false,
             starting_status_effects: [
@@ -1024,7 +1024,7 @@
         (
             id: "resources/enemies/leafing",
             name: "Leafing",
-            texture: Some("assets/textures/enemies/leafing.png"),
+            texture: Some("textures/enemies/leafing.png"),
             floor_number: 0,
             flying: false,
             starting_status_effects: [],
@@ -1058,7 +1058,7 @@
         (
             id: "resources/enemies/magma_golem",
             name: "Magma Golem",
-            texture: Some("assets/textures/enemies/magma_golem.png"),
+            texture: Some("textures/enemies/magma_golem.png"),
             floor_number: 8,
             flying: false,
             starting_status_effects: [],
@@ -1094,7 +1094,7 @@
         (
             id: "resources/enemies/mars",
             name: "Mars",
-            texture: Some("assets/textures/enemies/mars.png"),
+            texture: Some("textures/enemies/mars.png"),
             floor_number: 11,
             flying: false,
             starting_status_effects: [],
@@ -1136,7 +1136,7 @@
         (
             id: "resources/enemies/moon",
             name: "Moon",
-            texture: Some("assets/textures/enemies/moon.png"),
+            texture: Some("textures/enemies/moon.png"),
             floor_number: 10,
             flying: false,
             starting_status_effects: [],
@@ -1178,7 +1178,7 @@
         (
             id: "resources/enemies/morizon",
             name: "Morizon",
-            texture: Some("assets/textures/enemies/morizon.png"),
+            texture: Some("textures/enemies/morizon.png"),
             floor_number: 10,
             flying: false,
             starting_status_effects: [],
@@ -1214,7 +1214,7 @@
         (
             id: "resources/enemies/neptune",
             name: "Neptune",
-            texture: Some("assets/textures/enemies/neptune.png"),
+            texture: Some("textures/enemies/neptune.png"),
             floor_number: 12,
             flying: false,
             starting_status_effects: [],
@@ -1256,7 +1256,7 @@
         (
             id: "resources/enemies/overseer",
             name: "Overseer",
-            texture: Some("assets/textures/enemies/overseer.png"),
+            texture: Some("textures/enemies/overseer.png"),
             floor_number: 8,
             flying: true,
             starting_status_effects: [],
@@ -1302,7 +1302,7 @@
         (
             id: "resources/enemies/pebbling",
             name: "Pebbling",
-            texture: Some("assets/textures/enemies/pebbling.png"),
+            texture: Some("textures/enemies/pebbling.png"),
             floor_number: 0,
             flying: false,
             starting_status_effects: [],
@@ -1336,7 +1336,7 @@
         (
             id: "resources/enemies/perfect_slave",
             name: "Perfect Slave",
-            texture: Some("assets/textures/enemies/perfect_slave.png"),
+            texture: Some("textures/enemies/perfect_slave.png"),
             floor_number: 59,
             flying: false,
             starting_status_effects: [
@@ -1417,7 +1417,7 @@
         (
             id: "resources/enemies/pinto",
             name: "Pinto",
-            texture: Some("assets/textures/enemies/pinto.png"),
+            texture: Some("textures/enemies/pinto.png"),
             floor_number: 12,
             flying: false,
             starting_status_effects: [],
@@ -1453,7 +1453,7 @@
         (
             id: "resources/enemies/rat",
             name: "Rat",
-            texture: Some("assets/textures/enemies/rat.png"),
+            texture: Some("textures/enemies/rat.png"),
             floor_number: 0,
             flying: false,
             starting_status_effects: [],
@@ -1481,7 +1481,7 @@
         (
             id: "resources/enemies/red_orc",
             name: "Red Orc",
-            texture: Some("assets/textures/enemies/red_orc.png"),
+            texture: Some("textures/enemies/red_orc.png"),
             floor_number: 5,
             flying: false,
             starting_status_effects: [],
@@ -1511,7 +1511,7 @@
         (
             id: "resources/enemies/rogue",
             name: "Rogue",
-            texture: Some("assets/textures/enemies/rogue.png"),
+            texture: Some("textures/enemies/rogue.png"),
             floor_number: 2,
             flying: false,
             starting_status_effects: [],
@@ -1545,7 +1545,7 @@
         (
             id: "resources/enemies/ruined_king",
             name: "Ruined King",
-            texture: Some("assets/textures/enemies/ruined_king.png"),
+            texture: Some("textures/enemies/ruined_king.png"),
             floor_number: 9,
             flying: false,
             starting_status_effects: [
@@ -1633,7 +1633,7 @@
         (
             id: "resources/enemies/saturn",
             name: "Saturn",
-            texture: Some("assets/textures/enemies/saturn.png"),
+            texture: Some("textures/enemies/saturn.png"),
             floor_number: 20,
             flying: false,
             starting_status_effects: [
@@ -1700,7 +1700,7 @@
         (
             id: "resources/enemies/shadow_ghost",
             name: "Shadow Ghost",
-            texture: Some("assets/textures/enemies/shadow_ghost.png"),
+            texture: Some("textures/enemies/shadow_ghost.png"),
             floor_number: 7,
             flying: true,
             starting_status_effects: [],
@@ -1736,7 +1736,7 @@
         (
             id: "resources/enemies/shadow_wizard",
             name: "Shadow Wizard",
-            texture: Some("assets/textures/enemies/shadow_wizard.png"),
+            texture: Some("textures/enemies/shadow_wizard.png"),
             floor_number: 1,
             flying: false,
             starting_status_effects: [],
@@ -1772,7 +1772,7 @@
         (
             id: "resources/enemies/skeleton_warrior",
             name: "Skeleton Warrior",
-            texture: Some("assets/textures/enemies/skeleton_warrior.png"),
+            texture: Some("textures/enemies/skeleton_warrior.png"),
             floor_number: 1,
             flying: false,
             starting_status_effects: [],
@@ -1808,7 +1808,7 @@
         (
             id: "resources/enemies/slime",
             name: "Slime",
-            texture: Some("assets/textures/enemies/slime.png"),
+            texture: Some("textures/enemies/slime.png"),
             floor_number: 0,
             flying: false,
             starting_status_effects: [],
@@ -1838,7 +1838,7 @@
         (
             id: "resources/enemies/slorn",
             name: "Slorn",
-            texture: Some("assets/textures/enemies/slorn.png"),
+            texture: Some("textures/enemies/slorn.png"),
             floor_number: 2,
             flying: false,
             starting_status_effects: [],
@@ -1874,7 +1874,7 @@
         (
             id: "resources/enemies/snow_pix",
             name: "Snow Pix",
-            texture: Some("assets/textures/enemies/snow_pix.png"),
+            texture: Some("textures/enemies/snow_pix.png"),
             floor_number: 0,
             flying: true,
             starting_status_effects: [],
@@ -1910,7 +1910,7 @@
         (
             id: "resources/enemies/snow_wraith",
             name: "Snow Wraith",
-            texture: Some("assets/textures/enemies/snow_wraith.png"),
+            texture: Some("textures/enemies/snow_wraith.png"),
             floor_number: 5,
             flying: false,
             starting_status_effects: [],
@@ -1946,7 +1946,7 @@
         (
             id: "resources/enemies/stone_golem",
             name: "Stone Golem",
-            texture: Some("assets/textures/enemies/stone_golem.png"),
+            texture: Some("textures/enemies/stone_golem.png"),
             floor_number: 3,
             flying: false,
             starting_status_effects: [],
@@ -1986,7 +1986,7 @@
         (
             id: "resources/enemies/sun",
             name: "Sun",
-            texture: Some("assets/textures/enemies/sun.png"),
+            texture: Some("textures/enemies/sun.png"),
             floor_number: 24,
             flying: true,
             starting_status_effects: [],
@@ -2030,7 +2030,7 @@
         (
             id: "resources/enemies/thunder_dragon",
             name: "Thunder Dragon",
-            texture: Some("assets/textures/enemies/thunder_dragon.png"),
+            texture: Some("textures/enemies/thunder_dragon.png"),
             floor_number: 12,
             flying: false,
             starting_status_effects: [],
@@ -2072,7 +2072,7 @@
         (
             id: "resources/enemies/uranus",
             name: "Uranus",
-            texture: Some("assets/textures/enemies/uranus.png"),
+            texture: Some("textures/enemies/uranus.png"),
             floor_number: 22,
             flying: false,
             starting_status_effects: [],
@@ -2114,7 +2114,7 @@
         (
             id: "resources/enemies/venomous_spider",
             name: "Venomous Spider",
-            texture: Some("assets/textures/enemies/venomous_spider.png"),
+            texture: Some("textures/enemies/venomous_spider.png"),
             floor_number: 5,
             flying: false,
             starting_status_effects: [],
@@ -2162,7 +2162,7 @@
         (
             id: "resources/enemies/venus",
             name: "Venus",
-            texture: Some("assets/textures/enemies/venus.png"),
+            texture: Some("textures/enemies/venus.png"),
             floor_number: 16,
             flying: false,
             starting_status_effects: [],
@@ -2204,7 +2204,7 @@
         (
             id: "resources/enemies/void_squid",
             name: "Void Squid",
-            texture: Some("assets/textures/enemies/void_squid.png"),
+            texture: Some("textures/enemies/void_squid.png"),
             floor_number: 7,
             flying: true,
             starting_status_effects: [],
@@ -2240,7 +2240,7 @@
         (
             id: "resources/enemies/windwatcher",
             name: "Windwatcher",
-            texture: Some("assets/textures/enemies/windwatcher.png"),
+            texture: Some("textures/enemies/windwatcher.png"),
             floor_number: 26,
             flying: false,
             starting_status_effects: [],
@@ -2284,7 +2284,7 @@
         (
             id: "resources/enemies/witch",
             name: "Witch",
-            texture: Some("assets/textures/enemies/witch.png"),
+            texture: Some("textures/enemies/witch.png"),
             floor_number: 3,
             flying: false,
             starting_status_effects: [],
@@ -2315,7 +2315,7 @@
         (
             id: "resources/enemies/wizard_skeleton",
             name: "Wizard Skeleton",
-            texture: Some("assets/textures/enemies/wizard_skeleton.png"),
+            texture: Some("textures/enemies/wizard_skeleton.png"),
             floor_number: 3,
             flying: false,
             starting_status_effects: [],
@@ -2359,7 +2359,7 @@
         (
             id: "resources/special_enemies/common_chest",
             name: "Common Chest",
-            texture: Some("assets/textures/enemies/common_chest.png"),
+            texture: Some("textures/enemies/common_chest.png"),
             floor_number: 0,
             flying: false,
             starting_status_effects: [],
@@ -2387,7 +2387,7 @@
         (
             id: "resources/special_enemies/golden_chest",
             name: "Golden Chest",
-            texture: Some("assets/textures/enemies/golden_chest.png"),
+            texture: Some("textures/enemies/golden_chest.png"),
             floor_number: 0,
             flying: false,
             starting_status_effects: [],
@@ -2415,7 +2415,7 @@
         (
             id: "resources/special_enemies/heart_of_the_tower",
             name: "Heart of the Tower",
-            texture: Some("assets/textures/enemies/heart_of_the_tower.png"),
+            texture: Some("textures/enemies/heart_of_the_tower.png"),
             floor_number: 0,
             flying: true,
             starting_status_effects: [],
@@ -2430,7 +2430,7 @@
         (
             id: "resources/special_enemies/merchant",
             name: "Merchant",
-            texture: Some("assets/textures/enemies/merchant.png"),
+            texture: Some("textures/enemies/merchant.png"),
             floor_number: 0,
             flying: false,
             starting_status_effects: [],
@@ -2452,7 +2452,7 @@
         (
             id: "resources/special_enemies/mystic_bison",
             name: "Mystic Bison",
-            texture: Some("assets/textures/enemies/mystic_bison.png"),
+            texture: Some("textures/enemies/mystic_bison.png"),
             floor_number: 0,
             flying: false,
             starting_status_effects: [],
@@ -2467,7 +2467,7 @@
         (
             id: "resources/special_enemies/mystic_trader",
             name: "Mystic Trader",
-            texture: Some("assets/textures/enemies/mystic_trader.png"),
+            texture: Some("textures/enemies/mystic_trader.png"),
             floor_number: 0,
             flying: true,
             starting_status_effects: [],
@@ -2482,7 +2482,7 @@
         (
             id: "resources/special_enemies/training_dummy",
             name: "Training Dummy",
-            texture: Some("assets/textures/enemies/training_dummy.png"),
+            texture: Some("textures/enemies/training_dummy.png"),
             floor_number: 0,
             flying: false,
             starting_status_effects: [],

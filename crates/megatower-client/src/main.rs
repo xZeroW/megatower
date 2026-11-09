@@ -14,11 +14,6 @@ fn main() {
         .insert_resource(ClearColor(palette_color(Some(1))))
         .add_plugins((
             DefaultPlugins
-                .set(AssetPlugin {
-                    // Resolve runtime media from the Rust workspace, not the original game source.
-                    file_path: "../..".into(),
-                    ..default()
-                })
                 .set(ImagePlugin::default_nearest())
                 // Audio goes through bevy_kira_audio (`GameAudioPlugin`).
                 .disable::<bevy::audio::AudioPlugin>()
@@ -42,6 +37,16 @@ fn main() {
         ))
         .add_plugins(dev_plugins)
         .run();
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn cargo_uses_workspace_assets_with_bevy_defaults() {
+        let root = bevy::asset::io::file::FileAssetReader::get_base_path();
+        let asset_path = bevy::asset::AssetPlugin::default().file_path;
+        assert!(root.join(asset_path).join("textures/ui/logo.png").is_file());
+    }
 }
 
 /// Keep the recovered presentation, but drive new runs with the new game's

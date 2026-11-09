@@ -343,13 +343,13 @@ fn win_popups(before: &Gains, character: &megatower_sim::character::Character) -
     let mut popups = Vec::new();
     if character.gold > before.gold {
         let mut popup = Popup::new((character.gold - before.gold).to_string(), hex(0xffaa00));
-        popup.right_icon = Some("assets/textures/icons/gold_coins_icon.png".into());
+        popup.right_icon = Some("textures/icons/gold_coins_icon.png".into());
         popups.push(popup);
     }
     let xp = xp_gained(before, character.progress.level, character.progress.xp);
     if xp > 0 {
         let mut popup = Popup::new(xp.to_string(), hex(0x4d9fff));
-        popup.right_icon = Some("assets/textures/icons/trial_level_icon.png".into());
+        popup.right_icon = Some("textures/icons/trial_level_icon.png".into());
         popups.push(popup);
     }
     if character.progress.level > before.level {
@@ -419,11 +419,11 @@ fn scripted_moves(
 fn damage_look(kind: megatower_sim::tags::DamageType) -> (u32, &'static str) {
     use megatower_sim::tags::DamageType as D;
     match kind {
-        D::Physical => (0xe8e6e0, "assets/textures/icons/attack_icon.png"),
-        D::Fire => (0xff8a30, "assets/textures/icons/magma_icon.png"),
-        D::Cold => (0x8fd6ff, "assets/textures/icons/magic_damage_icon.png"),
-        D::Lightning => (0xffe14d, "assets/textures/icons/electro_charge.png"),
-        D::Chaos => (0xb06cf0, "assets/textures/icons/toxicity_icon.png"),
+        D::Physical => (0xe8e6e0, "textures/icons/attack_icon.png"),
+        D::Fire => (0xff8a30, "textures/icons/magma_icon.png"),
+        D::Cold => (0x8fd6ff, "textures/icons/magic_damage_icon.png"),
+        D::Lightning => (0xffe14d, "textures/icons/electro_charge.png"),
+        D::Chaos => (0xb06cf0, "textures/icons/toxicity_icon.png"),
     }
 }
 
@@ -431,12 +431,12 @@ fn damage_look(kind: megatower_sim::tags::DamageType) -> (u32, &'static str) {
 fn ailment_look(ailment: megatower_sim::ailment::Ailment) -> (u32, &'static str) {
     use megatower_sim::ailment::Ailment as A;
     match ailment {
-        A::Ignite => (0xff8a30, "assets/textures/icons/magma_icon.png"),
-        A::Bleed => (0xd2263f, "assets/textures/icons/bleed.png"),
-        A::Poison => (0x7ccf3b, "assets/textures/icons/toxicity_icon.png"),
-        A::Shock => (0xffe14d, "assets/textures/icons/electro_charge.png"),
-        A::Chill => (0x8fd6ff, "assets/textures/icons/slowness_icon.png"),
-        A::Freeze => (0x5aa6ff, "assets/textures/icons/freeze_icon.png"),
+        A::Ignite => (0xff8a30, "textures/icons/magma_icon.png"),
+        A::Bleed => (0xd2263f, "textures/icons/bleed.png"),
+        A::Poison => (0x7ccf3b, "textures/icons/toxicity_icon.png"),
+        A::Shock => (0xffe14d, "textures/icons/electro_charge.png"),
+        A::Chill => (0x8fd6ff, "textures/icons/slowness_icon.png"),
+        A::Freeze => (0x5aa6ff, "textures/icons/freeze_icon.png"),
     }
 }
 
@@ -480,7 +480,7 @@ fn popups_for(event: &CombatEvent, share: f64) -> Vec<(Actor, Popup)> {
             if damage <= 0.0 {
                 popup = icon(
                     Popup::callout("BLOCKED", hex(0xb8c4d8), 1.25, 0.0),
-                    "assets/textures/icons/guard_icon.png",
+                    "textures/icons/guard_icon.png",
                 );
             } else if crit {
                 popup.size = 2.0;
@@ -490,16 +490,16 @@ fn popups_for(event: &CombatEvent, share: f64) -> Vec<(Actor, Popup)> {
                     target,
                     icon(
                         Popup::callout("CRITICAL!", hex(0xffd23f), 1.5, 34.0),
-                        "assets/textures/icons/execution_icon.png",
+                        "textures/icons/execution_icon.png",
                     ),
                 ));
             } else if damage > 0.0 && share >= BIG_HIT_SHARE {
                 popup.size = 1.5;
                 popup.punch = 0.4;
                 let (word, color, path) = if target == Actor::Hero {
-                    ("OUCH!", 0xff4d4d, "assets/textures/icons/fury_icon.png")
+                    ("OUCH!", 0xff4d4d, "textures/icons/fury_icon.png")
                 } else {
-                    ("MASSIVE!", 0xff9a3d, "assets/textures/icons/power_icon.png")
+                    ("MASSIVE!", 0xff9a3d, "textures/icons/power_icon.png")
                 };
                 out.push((
                     target,
@@ -542,7 +542,7 @@ fn popups_for(event: &CombatEvent, share: f64) -> Vec<(Actor, Popup)> {
             target,
             icon(
                 Popup::callout("DODGE", crate::compose::palette(8), 1.25, 0.0),
-                "assets/textures/icons/elusive_icon.png",
+                "textures/icons/elusive_icon.png",
             ),
         )],
         CombatEvent::Heal { actor, amount } if amount >= 0.5 => vec![(
@@ -558,14 +558,14 @@ fn popups_for(event: &CombatEvent, share: f64) -> Vec<(Actor, Popup)> {
                     1.1,
                     0.0,
                 ),
-                "assets/textures/icons/guard_icon.png",
+                "textures/icons/guard_icon.png",
             ),
         )],
         CombatEvent::Frozen { actor } => vec![(
             actor,
             icon(
                 Popup::callout("FROZEN SOLID", hex(0x5aa6ff), 1.4, 44.0),
-                "assets/textures/icons/freeze_icon.png",
+                "textures/icons/freeze_icon.png",
             ),
         )],
         CombatEvent::Death {
@@ -574,14 +574,14 @@ fn popups_for(event: &CombatEvent, share: f64) -> Vec<(Actor, Popup)> {
             Actor::Enemy(i),
             icon(
                 Popup::callout("SLAIN", hex(0xe8d8a0), 1.4, 58.0),
-                "assets/textures/icons/dread.png",
+                "textures/icons/dread.png",
             ),
         )],
         CombatEvent::Repeat => vec![(
             Actor::Hero,
             icon(
                 Popup::callout("REPEAT!", hex(0xffe14d), 1.4, 10.0),
-                "assets/textures/icons/extra_attack_icon.png",
+                "textures/icons/extra_attack_icon.png",
             ),
         )],
         CombatEvent::Payoff { target, ailment } => {
@@ -624,7 +624,7 @@ fn load_legacy(mut session: ResMut<Labyrinth>) {
 
 fn autostart(mut session: ResMut<Labyrinth>, mut ui: ResMut<crate::UiRes>) {
     if std::env::var_os("GAME_AUTOSTART").is_some() {
-        session.start(Some("assets/textures/portraits/kestrel.png".into()));
+        session.start(Some("textures/portraits/kestrel.png".into()));
         ui.0.screen = Screen::Playing;
     }
 }
@@ -927,7 +927,7 @@ impl Labyrinth {
         if self.game().character.gold != gold {
             ui.audio.push((
                 format!(
-                    "assets/sfx/{}.wav",
+                    "sfx/{}.wav",
                     if self.game().character.gold > gold {
                         "add_gold_coins"
                     } else {
@@ -938,11 +938,10 @@ impl Labyrinth {
             ));
         }
         if self.game().character.progress.level > level || self.game().character.progress.xp > xp {
-            ui.audio.push(("assets/sfx/gain_xp.wav".into(), 0.0));
+            ui.audio.push(("sfx/gain_xp.wav".into(), 0.0));
         }
         if self.game().floor.number != floor {
-            ui.audio
-                .push(("assets/sfx/floor_completed.wav".into(), 0.0));
+            ui.audio.push(("sfx/floor_completed.wav".into(), 0.0));
         }
         self.draw(ui, rects)
     }
@@ -1151,8 +1150,7 @@ impl Labyrinth {
         match action {
             Action::Starter(i) => {
                 self.game_mut().pick_starter(i);
-                ui.audio
-                    .push(("assets/sfx/enter_the_dungeon.wav".into(), 2.5));
+                ui.audio.push(("sfx/enter_the_dungeon.wav".into(), 2.5));
             }
             Action::Skill(index) => self.combat(
                 ui,
@@ -1174,7 +1172,7 @@ impl Labyrinth {
                         at: ui.time,
                         seconds: 0.7,
                     });
-                    ui.audio.push(("assets/sfx/transition.wav".into(), 0.0));
+                    ui.audio.push(("sfx/transition.wav".into(), 0.0));
                 }
             }
             Action::Descend => self.game_mut().descend(),
@@ -1425,7 +1423,7 @@ impl Labyrinth {
                         if target == Actor::Hero && was >= line && v.health < line && v.health > 0.0
                         {
                             fx.push(Fx::Popup(Popup {
-                                left_icon: Some("assets/textures/icons/fear_icon.png".into()),
+                                left_icon: Some("textures/icons/fear_icon.png".into()),
                                 ..Popup::callout(
                                     "DANGER!",
                                     crate::compose::hex(0xff4d4d),
@@ -1612,9 +1610,7 @@ impl Labyrinth {
                     ui.shake_until = ui.time + 0.25
                 }
             }
-            Fx::Sfx { name, volume_db } => {
-                ui.audio.push((format!("assets/sfx/{name}.wav"), volume_db))
-            }
+            Fx::Sfx { name, volume_db } => ui.audio.push((format!("sfx/{name}.wav"), volume_db)),
             Fx::Popup(popup) => {
                 let n = ui.popups.len();
                 let roll = |salt| crate::model::scatter(ui.time, n, salt);
@@ -1723,7 +1719,7 @@ mod tests {
         assert!(popups.len() >= 2, "gold and experience at least");
         assert_eq!(
             popups[0].right_icon.as_deref(),
-            Some("assets/textures/icons/gold_coins_icon.png")
+            Some("textures/icons/gold_coins_icon.png")
         );
         assert_eq!(
             popups[0].text,
@@ -1830,7 +1826,7 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         let path = dir.join("run.ron");
         let mut session = fixture(6, 1);
-        session.portrait = Some("assets/textures/portraits/kestrel.png".into());
+        session.portrait = Some("textures/portraits/kestrel.png".into());
         session.autosave_to(&path);
         assert_eq!(session.saved.as_ref().map(|i| i.floor), Some(1));
         // No change, no rewrite.
@@ -1846,7 +1842,7 @@ mod tests {
         assert_eq!(other.game().mode, Mode::Map);
         assert_eq!(
             other.portrait.as_deref(),
-            Some("assets/textures/portraits/kestrel.png")
+            Some("textures/portraits/kestrel.png")
         );
         // A fight is not saved: the map state stays on disk.
         session.game_mut().mode = Mode::Shop;

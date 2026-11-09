@@ -119,17 +119,17 @@ pub struct Ability {
 /// `Input.mouse_mode == MOUSE_MODE_HIDDEN`.
 pub fn press_texture(joypad_active: bool) -> &'static str {
     if joypad_active {
-        "assets/textures/icons/steam_deck_a.png"
+        "textures/icons/steam_deck_a.png"
     } else {
-        "assets/textures/icons/left_click_icon.png"
+        "textures/icons/left_click_icon.png"
     }
 }
 
 pub fn alt_press_texture(joypad_active: bool) -> &'static str {
     if joypad_active {
-        "assets/textures/icons/steam_deck_x.png"
+        "textures/icons/steam_deck_x.png"
     } else {
-        "assets/textures/icons/right_click_icon.png"
+        "textures/icons/right_click_icon.png"
     }
 }
 
@@ -523,9 +523,6 @@ mod tests {
             memory_slot_backup_path("user://", 2, "d"),
             "user:///backups/memory_slot_2/d_memory_slot_2.save"
         );
-        assert_eq!(
-            press_texture(true),
-            "assets/textures/icons/steam_deck_a.png"
-        );
+        assert_eq!(press_texture(true), "textures/icons/steam_deck_a.png");
     }
 }

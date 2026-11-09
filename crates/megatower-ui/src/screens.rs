@@ -636,7 +636,7 @@ pub fn synergy_grid_draws(
             let y = panel.rect[1] + 5.0 + row as f32 * (SYNERGY_CELL[1] + SYNERGY_SEPARATION);
             out.push(Draw::Image {
                 rect: [x, y, SYNERGY_CELL[0], SYNERGY_CELL[1]],
-                path: "assets/textures/ui/small_panel_background.png".to_owned(),
+                path: "textures/ui/small_panel_background.png".to_owned(),
                 region: Some([0.0, 0.0, 5.0, 5.0]),
                 tint: palette(2),
                 slice: Some([3.0, 3.0, 3.0, 3.0]),
@@ -992,7 +992,7 @@ pub fn profile_popup_draws(
         if locked {
             out.push(Draw::Image {
                 rect: [card_left + 33.0 + 9.0, 293.0 + POPUP_DY + 8.0, 14.0, 15.0],
-                path: "assets/textures/ui/lock_icon.png".to_owned(),
+                path: "textures/ui/lock_icon.png".to_owned(),
                 region: None,
                 tint: [1.0; 4],
                 slice: None,
@@ -1194,12 +1194,7 @@ mod library_tests {
     #[test]
     fn popup_shows_one_unlocked_card_for_a_fresh_record() {
         let layout = megatower_assets::ui_layout::adventurer_overview_layout();
-        let draws = profile_popup_draws(
-            &layout,
-            Some("assets/textures/portraits/kestrel.png"),
-            0,
-            0.0,
-        );
+        let draws = profile_popup_draws(&layout, Some("textures/portraits/kestrel.png"), 0, 0.0);
         let text_of = |needle: &str| {
             draws
                 .iter()

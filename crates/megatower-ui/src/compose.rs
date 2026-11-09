@@ -195,7 +195,7 @@ pub(super) fn pill_bar(
 ) {
     out.push(Draw::Image {
         rect: [rect[0] - 1.0, rect[1] - 1.0, rect[2] + 2.0, rect[3] + 2.0],
-        path: trim("assets/textures/ui/minimal_bar.png"),
+        path: trim("textures/ui/minimal_bar.png"),
         region: None,
         tint: color,
         slice: Some([4.0; 4]),
@@ -216,7 +216,7 @@ fn pill_fill(rect: R, frac: f32, color: Rgba, out: &mut Vec<Draw>) {
         let corner = (w / 2.0).min(4.0);
         out.push(Draw::Image {
             rect: [rect[0], rect[1], w, rect[3]],
-            path: trim("assets/textures/ui/minimal_bar_fill.png"),
+            path: trim("textures/ui/minimal_bar_fill.png"),
             region: None,
             tint: color,
             slice: Some([corner, 4.0, corner, 4.0]),
@@ -270,7 +270,7 @@ pub(super) fn mana_pip(right: f32, y: f32, max_mana: i64, mana: i64, out: &mut V
     let x = right - w;
     out.push(Draw::Image {
         rect: [x, y, w, 11.0],
-        path: trim("assets/textures/ui/minimal_bar.png"),
+        path: trim("textures/ui/minimal_bar.png"),
         region: None,
         tint: blue,
         slice: Some([4.0; 4]),
@@ -284,7 +284,7 @@ pub(super) fn mana_pip(right: f32, y: f32, max_mana: i64, mana: i64, out: &mut V
             inner[2] + 2.0,
             inner[3] + 2.0,
         ],
-        path: trim("assets/textures/ui/minimal_bar_fill.png"),
+        path: trim("textures/ui/minimal_bar_fill.png"),
         region: Some([0.0, 0.0, 7.0, 7.0]),
         tint: blue,
         slice: Some([4.0, 3.0, 4.0, 3.0]),
@@ -381,7 +381,7 @@ fn socket_icon(rect: R, socket: megatower_core::items::definition::SocketType) -
     };
     Draw::Image {
         rect: [rect[0] + 1.0, rect[1] + 1.0, 32.0, 32.0],
-        path: trim("assets/textures/ui/equipment_slots.png"),
+        path: trim("textures/ui/equipment_slots.png"),
         region: Some([x, y, 32.0, 32.0]),
         tint: palette(1),
         slice: None,
@@ -650,22 +650,22 @@ fn item_draws_with(
     let Some(def) = &value.resource else { return };
     let icon = value
         .texture()
-        .unwrap_or("assets/textures/items/unknown.png")
+        .unwrap_or("textures/items/unknown.png")
         .to_owned();
     // Rarity border (toggle borders for essentials/specials), then the icon.
     let mut border = ItemRarity::texture(value.rarity() as i32).to_owned();
     if def.is_essential() {
         border = format!(
-            "assets/textures/rarity_borders/toggle_{}_border.png",
+            "textures/rarity_borders/toggle_{}_border.png",
             if value.toggled { "on" } else { "off" }
         );
     }
     if def.is_consumable() || def.is_tome() || def.is_special || value.is_banish {
-        border = "assets/textures/rarity_borders/toggle_off_border.png".into();
+        border = "textures/rarity_borders/toggle_off_border.png".into();
     }
     let inner = [rect[0] + 1.0, rect[1] + 1.0, 32.0, 32.0];
     if value.is_banish {
-        out.push(image(rect, "assets/textures/ui/banish_slot.png"));
+        out.push(image(rect, "textures/ui/banish_slot.png"));
     } else {
         let outer = [rect[0], rect[1], 34.0, 34.0];
         match glow {
@@ -682,9 +682,9 @@ fn item_draws_with(
                 let grey = lerp(1.0, 0.4);
                 out.push(tinted(inner, &icon, [grey, grey, grey, 1.0]));
                 let arrow = if value.is_reforge {
-                    "assets/textures/ui/reforge_merge_icon.png"
+                    "textures/ui/reforge_merge_icon.png"
                 } else {
-                    "assets/textures/ui/merge_icon.png"
+                    "textures/ui/merge_icon.png"
                 };
                 out.push(tinted(
                     [rect[0] + 1.0, rect[1] + 1.0, 32.0, 32.0],
@@ -702,7 +702,7 @@ fn item_draws_with(
     if value.reforge_level > 0 && !value.is_banish {
         out.push(Draw::Image {
             rect: [rect[0], rect[1], 34.0, 34.0],
-            path: "assets/textures/ui/reforged_border.png".into(),
+            path: "textures/ui/reforged_border.png".into(),
             region: Some([
                 ((value.reforge_level - 1) as f32 * 34.0).min(34.0 * 5.0),
                 0.0,
@@ -718,7 +718,7 @@ fn item_draws_with(
         // `DiscountTextureRect`: the badge hangs off the slot's top-left.
         out.push(image(
             [rect[0] - 5.0, rect[1] - 5.0, 21.0, 21.0],
-            "assets/textures/icons/discount_icon.png",
+            "textures/icons/discount_icon.png",
         ));
     }
     if locked {
@@ -869,11 +869,11 @@ fn draw_lock(rect: R, out: &mut Vec<Draw>) {
     for (dx, dy) in [(-1.0, 0.0), (1.0, 0.0), (0.0, -1.0), (0.0, 1.0)] {
         out.push(tinted(
             [lock[0] + dx, lock[1] + dy, lock[2], lock[3]],
-            "assets/textures/ui/lock_icon.png",
+            "textures/ui/lock_icon.png",
             palette(1),
         ));
     }
-    out.push(tinted(lock, "assets/textures/ui/lock_icon.png", palette(4)));
+    out.push(tinted(lock, "textures/ui/lock_icon.png", palette(4)));
 }
 
 /// One drawable piece of a tooltip row.
@@ -951,7 +951,7 @@ fn rows_from_tip(game: &Game, tip: &crate::info_builders::Tip) -> Vec<TipRow> {
                 if j > 0 {
                     rows.last_mut()
                         .expect("row")
-                        .push(Seg::Icon("assets/textures/icons/p_dot.png".to_owned(), col));
+                        .push(Seg::Icon("textures/icons/p_dot.png".to_owned(), col));
                 }
                 if !chunk.is_empty() {
                     rows.last_mut()
@@ -1149,8 +1149,8 @@ fn tip_title(name: &str, color: &crate::info_builders::NameColor) -> TipRow {
 /// `HoverInfoManager`'s `bottom_hint` for an item slot: the click that acts on
 /// it (right-click buys, takes, removes or consumes; left-click locks).
 fn slot_hint(game: &Game, slot: Slot, item: Entity) -> Option<(String, String)> {
-    const LEFT: &str = "assets/textures/icons/left_click_icon.png";
-    const RIGHT: &str = "assets/textures/icons/right_click_icon.png";
+    const LEFT: &str = "textures/icons/left_click_icon.png";
+    const RIGHT: &str = "textures/icons/right_click_icon.png";
     let container = slot.container?;
     let local = game.local();
     let player = game.player(local);
@@ -1766,7 +1766,7 @@ pub(crate) fn ability_tip(game: &Game, slot: usize) -> Option<TipView> {
     if let Some(cost) = result.mana_cost {
         view.price = Some(TipPrice {
             amount: format!("{cost}"),
-            icon: Some("assets/textures/icons/mana_icon.png".to_owned()),
+            icon: Some("textures/icons/mana_icon.png".to_owned()),
             color: hex(0x285cc4),
         });
     }
@@ -2048,7 +2048,7 @@ fn preview_sparkles(ox: f32, oy: f32, color: Rgba, time: f64, seed: usize, out: 
         let y = oy + 60.0 + (hash(2) * 40.0 - 20.0) - age * LIFE as f32 * 15.0;
         out.push(tinted(
             [x - 4.0, y - 4.0, 9.0, 9.0],
-            "assets/textures/particles/star.png",
+            "textures/particles/star.png",
             [color[0], color[1], color[2], alpha],
         ));
     }
@@ -2111,7 +2111,7 @@ pub(crate) fn vfx_draws(ui: &UiState, out: &mut Vec<Draw>) {
                 let size = 256.0 * (0.1 + 0.2 * age / 0.25);
                 out.push(tinted(
                     [cx - size / 2.0, cy - size / 2.0, size, size],
-                    "assets/vfx/hit.png",
+                    "vfx/hit.png",
                     [1.0, 0.354_667, 0.12, alpha],
                 ));
                 let pulse = [
@@ -2131,7 +2131,7 @@ pub(crate) fn vfx_draws(ui: &UiState, out: &mut Vec<Draw>) {
                 let star = 512.0 * scale;
                 out.push(tinted(
                     [cx - star / 2.0, cy - star / 2.0, star, star],
-                    "assets/vfx/star_02.png",
+                    "vfx/star_02.png",
                     [1.0, 0.325_333, 0.12, 0.423_529],
                 ));
             }
@@ -2141,13 +2141,13 @@ pub(crate) fn vfx_draws(ui: &UiState, out: &mut Vec<Draw>) {
                 let big = 512.0 * 0.3 * grow;
                 out.push(tinted(
                     [cx - big / 2.0, cy - big / 2.0, big, big],
-                    "assets/vfx/star_09.png",
+                    "vfx/star_09.png",
                     [0.458_824, 0.411_765, 0.960_784, 0.8 * grow],
                 ));
                 let small = 512.0 * 0.2 * grow;
                 out.push(tinted(
                     [cx - small / 2.0, cy - small / 2.0, small, small],
-                    "assets/vfx/star_08.png",
+                    "vfx/star_08.png",
                     [0.637_481, 0.641_771, 0.986_377, 1.0],
                 ));
             }
@@ -2158,7 +2158,7 @@ pub(crate) fn vfx_draws(ui: &UiState, out: &mut Vec<Draw>) {
                 let flare = (if big { 150.0 } else { 90.0 }) * (1.0 - t).powi(2);
                 out.push(tinted(
                     [cx - flare / 2.0, cy - flare / 2.0, flare, flare],
-                    "assets/vfx/star_02.png",
+                    "vfx/star_02.png",
                     [vfx.color[0], vfx.color[1], vfx.color[2], 0.8 * (1.0 - t)],
                 ));
                 let count = if big { 14 } else { 8 };
@@ -2175,7 +2175,7 @@ pub(crate) fn vfx_draws(ui: &UiState, out: &mut Vec<Draw>) {
                             size,
                             size,
                         ],
-                        "assets/textures/particles/star.png",
+                        "textures/particles/star.png",
                         [vfx.color[0], vfx.color[1], vfx.color[2], 1.0 - t * t],
                     ));
                 }
@@ -2208,7 +2208,7 @@ pub(crate) fn vfx_draws(ui: &UiState, out: &mut Vec<Draw>) {
                     let size = 16.0 * (1.0 + unit(vfx.seed, i * 11 + 7)) * curve;
                     out.push(tinted(
                         [x - size / 2.0, y - size / 2.0, size, size],
-                        "assets/textures/particles/dust.png",
+                        "textures/particles/dust.png",
                         [0.741, 0.741, 0.741, 1.0 - t],
                     ));
                 }
@@ -2233,7 +2233,7 @@ pub(crate) fn vfx_draws(ui: &UiState, out: &mut Vec<Draw>) {
                     };
                     out.push(tinted(
                         [x - width / 2.0, y - height / 2.0, width, height],
-                        "assets/textures/particles/beam.png",
+                        "textures/particles/beam.png",
                         [vfx.color[0], vfx.color[1], vfx.color[2], alpha],
                     ));
                 }
@@ -2245,7 +2245,7 @@ pub(crate) fn vfx_draws(ui: &UiState, out: &mut Vec<Draw>) {
                     (
                         20u32,
                         2.0_f32,
-                        "assets/textures/particles/flame_0.png",
+                        "textures/particles/flame_0.png",
                         [25.0, 25.0],
                         60.0,
                     )
@@ -2253,7 +2253,7 @@ pub(crate) fn vfx_draws(ui: &UiState, out: &mut Vec<Draw>) {
                     (
                         7u32,
                         1.75,
-                        "assets/textures/particles/heart_0.png",
+                        "textures/particles/heart_0.png",
                         [35.0, 15.0],
                         44.0,
                     )
@@ -2501,7 +2501,7 @@ fn enemy_visuals(
         let r = [ox + (l.size[0] - r[2]) / 2.0, r[1], r[2], r[3]];
         out.push(Draw::Image {
             rect: r,
-            path: "assets/textures/ui/enemy_selection.png".into(),
+            path: "textures/ui/enemy_selection.png".into(),
             region: Some([0.0, 0.0, 16.0, 16.0]),
             tint: palette(8),
             slice: None,
@@ -2639,7 +2639,7 @@ pub fn popup_draws(ui: &UiState, out: &mut Vec<Draw>) {
             icon(
                 out,
                 &mut cx,
-                &Some("assets/textures/icons/luck_icon.png".to_owned()),
+                &Some("textures/icons/luck_icon.png".to_owned()),
             );
         }
     }
@@ -2707,7 +2707,7 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         let gold = game.rules.stats.get(StatId::Gold);
         out.push(tinted(
             rects.gold_icon,
-            "assets/textures/icons/gold_coins_icon.png",
+            "textures/icons/gold_coins_icon.png",
             gold.color,
         ));
         out.push(text(
@@ -2719,7 +2719,7 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
         let diamond = game.rules.stats.get(StatId::Diamond);
         out.push(tinted(
             rects.diamond_icon,
-            "assets/textures/icons/diamonds_icon.png",
+            "textures/icons/diamonds_icon.png",
             diamond.color,
         ));
         out.push(text(
@@ -2922,7 +2922,7 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
                         .is_some_and(|i| i.discount > 0.0);
                     out.push(Draw::Image {
                         rect: [rect[0] - 1.0, rect[1] - 1.0, 36.0, 36.0],
-                        path: trim("assets/textures/ui/item_slot_outline.png"),
+                        path: trim("textures/ui/item_slot_outline.png"),
                         region: Some([if discounted { 36.0 } else { 0.0 }, 0.0, 36.0, 36.0]),
                         tint: WHITE,
                         slice: None,
@@ -2981,7 +2981,7 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
                     if owned {
                         out.push(tinted(
                             [rect[0] + 14.0, rect[1] + 35.5, 6.0, 7.0],
-                            "assets/textures/icons/p_dot.png",
+                            "textures/icons/p_dot.png",
                             hex(0x2a2a35),
                         ));
                     }
@@ -3013,7 +3013,7 @@ fn compose_room(game: &mut Game, ui: &UiState, rects: &Rects) -> Vec<Draw> {
     let hovered = ui.cursor.is_some_and(|[x, y]| contains(button, x, y));
     out.push(Draw::Image {
         rect: button,
-        path: trim("assets/textures/icons/loot_stash.png"),
+        path: trim("textures/icons/loot_stash.png"),
         region: Some([if hovered { 27.0 } else { 0.0 }, 0.0, 27.0, 20.0]),
         tint: WHITE,
         slice: None,
@@ -3389,23 +3389,18 @@ fn action_strip(
             label
         };
         let (icon, tint) = match action {
-            Action::Stance => (Some("assets/textures/icons/guard_icon.png".to_owned()), 4),
-            Action::Primary if battle => {
-                (Some("assets/textures/icons/attack_icon.png".to_owned()), 5)
-            }
+            Action::Stance => (Some("textures/icons/guard_icon.png".to_owned()), 4),
+            Action::Primary if battle => (Some("textures/icons/attack_icon.png".to_owned()), 5),
             Action::Primary
                 if matches!(game.memory.room_type, Room::Merchant | Room::MysticTrader) =>
             {
-                (Some("assets/textures/ui/leave_icon.png".to_owned()), 4)
+                (Some("textures/ui/leave_icon.png".to_owned()), 4)
             }
             Action::Primary => (None, 5),
             Action::EnemyExtra
                 if matches!(game.memory.room_type, Room::Merchant | Room::MysticTrader) =>
             {
-                (
-                    Some("assets/textures/icons/refresh_icon_small.png".to_owned()),
-                    4,
-                )
+                (Some("textures/icons/refresh_icon_small.png".to_owned()), 4)
             }
             Action::Ability(i) => (ability_icons.get(i).cloned().flatten(), 4),
             Action::EnemyExtra => (None, 5),

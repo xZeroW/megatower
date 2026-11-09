@@ -14,7 +14,7 @@ use megatower_assets::room_screen::{
 };
 use megatower_assets::ui_layout::{Visual, recovered_layout};
 
-const FONT: &str = "assets/fonts/monogram-extended.ttf";
+const FONT: &str = "fonts/monogram-extended.ttf";
 
 #[derive(AutoPlugin)]
 #[auto_plugin(impl_plugin_trait)]

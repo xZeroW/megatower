@@ -3,7 +3,7 @@
         (
             id: "resources/adventurers/fren",
             name: "Kestrel",
-            portrait: Some("assets/textures/portraits/kestrel.png"),
+            portrait: Some("textures/portraits/kestrel.png"),
             blink: None,
             starting_inventory_items: [],
             challenge_market_items: [],
@@ -52,7 +52,7 @@
         (
             id: "resources/adventurers/pyry",
             name: "Umbrath",
-            portrait: Some("assets/textures/portraits/umbrath.png"),
+            portrait: Some("textures/portraits/umbrath.png"),
             blink: None,
             starting_inventory_items: [],
             challenge_market_items: [],
@@ -107,7 +107,7 @@
         (
             id: "resources/adventurers/sid",
             name: "Rethan",
-            portrait: Some("assets/textures/portraits/rethan.png"),
+            portrait: Some("textures/portraits/rethan.png"),
             blink: None,
             starting_inventory_items: [],
             challenge_market_items: [],
@@ -150,7 +150,7 @@
         (
             id: "resources/adventurers/elys",
             name: "Elaris",
-            portrait: Some("assets/textures/portraits/elaris.png"),
+            portrait: Some("textures/portraits/elaris.png"),
             blink: None,
             starting_inventory_items: [],
             challenge_market_items: [],
@@ -199,7 +199,7 @@
         (
             id: "resources/adventurers/fael",
             name: "Branric",
-            portrait: Some("assets/textures/portraits/branric.png"),
+            portrait: Some("textures/portraits/branric.png"),
             blink: None,
             starting_inventory_items: [],
             challenge_market_items: [],
@@ -254,7 +254,7 @@
         (
             id: "resources/adventurers/tyr",
             name: "Gorix",
-            portrait: Some("assets/textures/portraits/gorix.png"),
+            portrait: Some("textures/portraits/gorix.png"),
             blink: None,
             starting_inventory_items: [],
             challenge_market_items: [],
@@ -315,7 +315,7 @@
         (
             id: "resources/adventurers/viran",
             name: "Thalara",
-            portrait: Some("assets/textures/portraits/thalara.png"),
+            portrait: Some("textures/portraits/thalara.png"),
             blink: None,
             starting_inventory_items: [],
             challenge_market_items: [],
@@ -376,7 +376,7 @@
         (
             id: "resources/adventurers/kinno",
             name: "Mirelle",
-            portrait: Some("assets/textures/portraits/mirelle.png"),
+            portrait: Some("textures/portraits/mirelle.png"),
             blink: None,
             starting_inventory_items: [],
             challenge_market_items: [],
@@ -437,7 +437,7 @@
         (
             id: "resources/adventurers/riel",
             name: "Pellim",
-            portrait: Some("assets/textures/portraits/pellim.png"),
+            portrait: Some("textures/portraits/pellim.png"),
             blink: None,
             starting_inventory_items: [],
             challenge_market_items: [],
@@ -492,7 +492,7 @@
         (
             id: "resources/adventurers/amon",
             name: "Orvian",
-            portrait: Some("assets/textures/portraits/orvian.png"),
+            portrait: Some("textures/portraits/orvian.png"),
             blink: None,
             starting_inventory_items: [],
             challenge_market_items: [],
@@ -541,7 +541,7 @@
         (
             id: "resources/adventurers/jace",
             name: "Nivor",
-            portrait: Some("assets/textures/portraits/nivor.png"),
+            portrait: Some("textures/portraits/nivor.png"),
             blink: None,
             starting_inventory_items: [],
             challenge_market_items: [

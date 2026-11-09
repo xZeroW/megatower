@@ -9,9 +9,9 @@ pub const CYAN: Rgba = [0.0, 1.0, 1.0, 1.0];
 pub const LIGHT_BLUE: Rgba = [0.678_431_4, 0.847_058_8, 0.901_960_8, 1.0];
 pub const PALE_VIOLET_RED: Rgba = [0.858_823_5, 0.439_215_7, 0.576_470_6, 1.0];
 
-pub const TOGGLE_OFF_BORDER: &str = "assets/textures/rarity_borders/toggle_off_border.png";
-pub const TOGGLE_ON_BORDER: &str = "assets/textures/rarity_borders/toggle_on_border.png";
-pub const UNKNOWN_ITEM: &str = "assets/textures/items/unknown.png";
+pub const TOGGLE_OFF_BORDER: &str = "textures/rarity_borders/toggle_off_border.png";
+pub const TOGGLE_ON_BORDER: &str = "textures/rarity_borders/toggle_on_border.png";
+pub const UNKNOWN_ITEM: &str = "textures/items/unknown.png";
 pub const REFORGE_FRAME: f32 = 34.0;
 
 /// Inputs read from `Item` / `ItemResource` by `apply_data`.
@@ -172,7 +172,7 @@ mod tests {
 
     fn base() -> ItemVisualInput<'static> {
         ItemVisualInput {
-            texture: Some("assets/textures/items/x.png"),
+            texture: Some("textures/items/x.png"),
             rarity: 2,
             is_essential: false,
             toggled: false,

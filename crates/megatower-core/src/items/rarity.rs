@@ -70,16 +70,16 @@ impl ItemRarity {
 
     pub fn texture(index: i32) -> &'static str {
         match Self::from_index(index) {
-            Some(Self::Common) => "assets/textures/rarity_borders/common_rarity_border.png",
-            Some(Self::Uncommon) => "assets/textures/rarity_borders/uncommon_rarity_border.png",
-            Some(Self::Rare) => "assets/textures/rarity_borders/rare_rarity_border.png",
-            Some(Self::Legendary) => "assets/textures/rarity_borders/legendary_rarity_border.png",
-            Some(Self::Mythic) => "assets/textures/rarity_borders/mythic_rarity_border.png",
-            Some(Self::Eternal) => "assets/textures/rarity_borders/eternal_rarity_border.png",
-            Some(Self::Abyssal) => "assets/textures/rarity_borders/abyssal_rarity_border.png",
-            Some(Self::Cosmic) => "assets/textures/rarity_borders/cosmic_rarity_border.png",
-            Some(Self::Divine) => "assets/textures/rarity_borders/divine_rarity_border.png",
-            None => "assets/textures/rarity_borders/blank_rarity_border.png",
+            Some(Self::Common) => "textures/rarity_borders/common_rarity_border.png",
+            Some(Self::Uncommon) => "textures/rarity_borders/uncommon_rarity_border.png",
+            Some(Self::Rare) => "textures/rarity_borders/rare_rarity_border.png",
+            Some(Self::Legendary) => "textures/rarity_borders/legendary_rarity_border.png",
+            Some(Self::Mythic) => "textures/rarity_borders/mythic_rarity_border.png",
+            Some(Self::Eternal) => "textures/rarity_borders/eternal_rarity_border.png",
+            Some(Self::Abyssal) => "textures/rarity_borders/abyssal_rarity_border.png",
+            Some(Self::Cosmic) => "textures/rarity_borders/cosmic_rarity_border.png",
+            Some(Self::Divine) => "textures/rarity_borders/divine_rarity_border.png",
+            None => "textures/rarity_borders/blank_rarity_border.png",
         }
     }
 

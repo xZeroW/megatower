@@ -10,7 +10,7 @@ use std::collections::HashMap;
 /// (`flat_light.gdshader`).
 #[derive(Clone, Debug, PartialEq)]
 pub struct MeshMaterial {
-    /// Path under the recovered project, e.g. `assets/textures/3d/rock.png`.
+    /// Path under the recovered project, e.g. `textures/3d/rock.png`.
     pub texture: String,
     pub dim: f32,
     pub uv_scale: Option<f32>,
@@ -117,7 +117,7 @@ mod tests {
         assert!(
             forest
                 .values()
-                .all(|m| m.texture.starts_with("assets/textures/3d/"))
+                .all(|m| m.texture.starts_with("textures/3d/"))
         );
     }
 }

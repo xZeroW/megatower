@@ -4,7 +4,7 @@
 
 use megatower_core::definitions::BorderType;
 
-pub const UNKNOWN_PORTRAIT: &str = "assets/textures/portraits/unknown.png";
+pub const UNKNOWN_PORTRAIT: &str = "textures/portraits/unknown.png";
 
 /// `AdventurerPortrait` blink timer. `roll` is `randf_range(0, 1)`; it is
 /// only consumed when the dryness limit has not been reached.
@@ -72,9 +72,9 @@ pub enum NodeType {
 /// `AdventurerTreeNode.update_cover_texture`: (atlas, region size = node size).
 pub fn cover(node: NodeType) -> (&'static str, f32) {
     if node == NodeType::Stat {
-        ("assets/textures/ui/small_tree_node.png", 26.0)
+        ("textures/ui/small_tree_node.png", 26.0)
     } else {
-        ("assets/textures/ui/normal_tree_node.png", 50.0)
+        ("textures/ui/normal_tree_node.png", 50.0)
     }
 }
 
@@ -342,7 +342,7 @@ mod tests {
         assert_eq!(lines[0], [[13.0, 25.0], [13.0, 36.0]]);
         assert_eq!(
             cover(NodeType::Stat),
-            ("assets/textures/ui/small_tree_node.png", 26.0)
+            ("textures/ui/small_tree_node.png", 26.0)
         );
         assert_eq!(show_as_disabled(NodeType::Stat).region_x, 26.0);
         assert!(show_as_locked().lock_visible);

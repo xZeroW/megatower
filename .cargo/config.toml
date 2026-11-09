@@ -1,0 +1,3 @@
+# Bevy otherwise uses the client crate directory when running through Cargo.
+[env]
+BEVY_ASSET_ROOT = { value = ".", relative = true }

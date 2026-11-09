@@ -184,7 +184,7 @@ fn text_bundle(
     (
         Text::new(text.to_owned()),
         TextFont {
-            font: assets.load("assets/fonts/monogram-extended.ttf").into(),
+            font: assets.load("fonts/monogram-extended.ttf").into(),
             font_size: FontSize::Px(size),
             ..default()
         },

@@ -24,13 +24,13 @@ pub fn label_rules(
 /// `reload_label` font choice by locale: (font path, size).
 pub fn label_font(locale: &str, ignore_override: bool) -> (&'static str, i32) {
     if ignore_override {
-        return ("assets/fonts/monogram-extended.ttf", 16);
+        return ("fonts/monogram-extended.ttf", 16);
     }
     match locale {
-        "japanese" | "koreana" => ("assets/fonts/Galmuri11.ttf", 12),
-        "schinese" => ("assets/fonts/VonwaonBitmap-12px.ttf", 12),
-        "tchinese" => ("assets/fonts/Cubic_11_1.100_R.ttf", 12),
-        _ => ("assets/fonts/monogram-extended.ttf", 16),
+        "japanese" | "koreana" => ("fonts/Galmuri11.ttf", 12),
+        "schinese" => ("fonts/VonwaonBitmap-12px.ttf", 12),
+        "tchinese" => ("fonts/Cubic_11_1.100_R.ttf", 12),
+        _ => ("fonts/monogram-extended.ttf", 16),
     }
 }
 
@@ -249,10 +249,7 @@ mod tests {
             label_update_value(99.95, 100.0, 0.016, 2.5, false),
             Some(100.0)
         );
-        assert_eq!(
-            label_font("koreana", false),
-            ("assets/fonts/Galmuri11.ttf", 12)
-        );
+        assert_eq!(label_font("koreana", false), ("fonts/Galmuri11.ttf", 12));
         assert_eq!(label_font("koreana", true).1, 16);
     }
 

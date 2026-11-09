@@ -63,17 +63,17 @@ const EQUIPMENT: [EquipSlot; 8] = [
 
 fn art(item: &Item) -> &'static str {
     match item.base.as_str() {
-        "gnarled_wand" | "crystal_staff" => "assets/textures/items/magic_wand.png",
-        "war_axe" => "assets/textures/items/training_axe.png",
-        "silk_robe" => "assets/textures/items/shamans_robe.png",
+        "gnarled_wand" | "crystal_staff" => "textures/items/magic_wand.png",
+        "war_axe" => "textures/items/training_axe.png",
+        "silk_robe" => "textures/items/shamans_robe.png",
         _ => match item.slot {
-            Slot::Weapon => "assets/textures/items/training_sword.png",
-            Slot::Body => "assets/textures/items/leather_chestplate.png",
-            Slot::Helm => "assets/textures/items/leather_helmet.png",
-            Slot::Gloves => "assets/textures/items/unchained_gauntlet.png",
-            Slot::Boots => "assets/textures/items/leather_boots.png",
-            Slot::Ring => "assets/textures/items/silver_ring.png",
-            Slot::Amulet => "assets/textures/items/amulet_of_life.png",
+            Slot::Weapon => "textures/items/training_sword.png",
+            Slot::Body => "textures/items/leather_chestplate.png",
+            Slot::Helm => "textures/items/leather_helmet.png",
+            Slot::Gloves => "textures/items/unchained_gauntlet.png",
+            Slot::Boots => "textures/items/leather_boots.png",
+            Slot::Ring => "textures/items/silver_ring.png",
+            Slot::Amulet => "textures/items/amulet_of_life.png",
         },
     }
 }
@@ -104,7 +104,7 @@ fn loot_draw(out: &mut Vec<Draw>, rect: R, loot: &Loot) {
         Loot::Gem(_) => {
             // socket.png is a slot frame, not a gem icon. Drawing it here
             // nested a second outline over the rarity border.
-            out.push(image(inner, "assets/textures/items/rune.png"));
+            out.push(image(inner, "textures/items/rune.png"));
         }
     }
 }
@@ -112,7 +112,7 @@ fn loot_draw(out: &mut Vec<Draw>, rect: R, loot: &Loot) {
 fn selection_outline(rect: R) -> Draw {
     Draw::Image {
         rect: [rect[0] - 1.0, rect[1] - 1.0, 36.0, 36.0],
-        path: "assets/textures/ui/item_slot_outline.png".into(),
+        path: "textures/ui/item_slot_outline.png".into(),
         region: Some([0.0, 0.0, 36.0, 36.0]),
         tint: palette(8),
         slice: None,
@@ -141,7 +141,7 @@ fn tree_node_icon(node: &megatower_sim::passives::NodeDef) -> &'static str {
     use megatower_sim::ailment::Ailment as A;
     use megatower_sim::modifier::Stat;
     use megatower_sim::tags::Tag;
-    const ICONS: &str = "assets/textures/icons/";
+    const ICONS: &str = "textures/icons/";
     let keystone = match node.id.as_str() {
         "glass_cannon" => Some("frailty_keystone"),
         "blood_pact" => Some("resentment_keystone"),
@@ -151,39 +151,35 @@ fn tree_node_icon(node: &megatower_sim::passives::NodeDef) -> &'static str {
     };
     if let Some(name) = keystone {
         return match name {
-            "frailty_keystone" => "assets/textures/icons/frailty_keystone.png",
-            "resentment_keystone" => "assets/textures/icons/resentment_keystone.png",
-            "prodigality_keystone" => "assets/textures/icons/prodigality_keystone.png",
-            _ => "assets/textures/icons/preservation_keystone.png",
+            "frailty_keystone" => "textures/icons/frailty_keystone.png",
+            "resentment_keystone" => "textures/icons/resentment_keystone.png",
+            "prodigality_keystone" => "textures/icons/prodigality_keystone.png",
+            _ => "textures/icons/preservation_keystone.png",
         };
     }
     let _ = ICONS;
     let Some(m) = node.mods.first() else {
-        return "assets/textures/icons/wisdom_icon.png";
+        return "textures/icons/wisdom_icon.png";
     };
     match m.stat {
-        Stat::Life | Stat::EnergyShield => "assets/textures/icons/max_health_icon.png",
-        Stat::Mana | Stat::ManaRegen | Stat::ManaCost => "assets/textures/icons/mana_icon.png",
-        Stat::Armour => "assets/textures/icons/guard_icon.png",
-        Stat::Evasion => "assets/textures/icons/elusive_icon.png",
-        Stat::Damage if m.requires.has(Tag::Spell) => "assets/textures/icons/magic_damage_icon.png",
-        Stat::Damage | Stat::AddedMin(_) | Stat::AddedMax(_) => {
-            "assets/textures/icons/attack_icon.png"
-        }
-        Stat::Convert(..) => "assets/textures/icons/power_icon.png",
-        Stat::CritChance | Stat::CritMultiplier => "assets/textures/icons/execution_icon.png",
-        Stat::Resistance(_) | Stat::MaxResistance(_) => {
-            "assets/textures/icons/magic_shield_icon.png"
-        }
-        Stat::Penetration(_) => "assets/textures/icons/magic_shield_break_icon.png",
-        Stat::AilmentChance(A::Ignite) => "assets/textures/icons/magma_icon.png",
-        Stat::AilmentChance(A::Bleed) => "assets/textures/icons/bleed.png",
-        Stat::AilmentChance(A::Poison) => "assets/textures/icons/toxicity_icon.png",
-        Stat::AilmentChance(A::Shock) => "assets/textures/icons/electro_charge.png",
-        Stat::AilmentChance(A::Chill) => "assets/textures/icons/slowness_icon.png",
-        Stat::AilmentChance(A::Freeze) => "assets/textures/icons/freeze_icon.png",
-        Stat::LifeLeech => "assets/textures/icons/omni_vamp.png",
-        _ => "assets/textures/icons/fury_icon.png",
+        Stat::Life | Stat::EnergyShield => "textures/icons/max_health_icon.png",
+        Stat::Mana | Stat::ManaRegen | Stat::ManaCost => "textures/icons/mana_icon.png",
+        Stat::Armour => "textures/icons/guard_icon.png",
+        Stat::Evasion => "textures/icons/elusive_icon.png",
+        Stat::Damage if m.requires.has(Tag::Spell) => "textures/icons/magic_damage_icon.png",
+        Stat::Damage | Stat::AddedMin(_) | Stat::AddedMax(_) => "textures/icons/attack_icon.png",
+        Stat::Convert(..) => "textures/icons/power_icon.png",
+        Stat::CritChance | Stat::CritMultiplier => "textures/icons/execution_icon.png",
+        Stat::Resistance(_) | Stat::MaxResistance(_) => "textures/icons/magic_shield_icon.png",
+        Stat::Penetration(_) => "textures/icons/magic_shield_break_icon.png",
+        Stat::AilmentChance(A::Ignite) => "textures/icons/magma_icon.png",
+        Stat::AilmentChance(A::Bleed) => "textures/icons/bleed.png",
+        Stat::AilmentChance(A::Poison) => "textures/icons/toxicity_icon.png",
+        Stat::AilmentChance(A::Shock) => "textures/icons/electro_charge.png",
+        Stat::AilmentChance(A::Chill) => "textures/icons/slowness_icon.png",
+        Stat::AilmentChance(A::Freeze) => "textures/icons/freeze_icon.png",
+        Stat::LifeLeech => "textures/icons/omni_vamp.png",
+        _ => "textures/icons/fury_icon.png",
     }
 }
 
@@ -386,10 +382,10 @@ fn walk_button(turn: Turn) -> (R, &'static str) {
     let centre = compose::STAGE_CX;
     let top = ACTION_AREA[1] + (ACTION_AREA[3] - (2.0 * H + GAP_Y)) / 2.0;
     let (col, row, icon) = match turn {
-        Turn::Ahead => (0.0, 0.0, "assets/textures/ui/move_ahead.png"),
-        Turn::Left => (-1.0, 1.0, "assets/textures/ui/move_left.png"),
-        Turn::Back => (0.0, 1.0, "assets/textures/ui/move_back.png"),
-        Turn::Right => (1.0, 1.0, "assets/textures/ui/move_right.png"),
+        Turn::Ahead => (0.0, 0.0, "textures/ui/move_ahead.png"),
+        Turn::Left => (-1.0, 1.0, "textures/ui/move_left.png"),
+        Turn::Back => (0.0, 1.0, "textures/ui/move_back.png"),
+        Turn::Right => (1.0, 1.0, "textures/ui/move_right.png"),
     };
     (
         [
@@ -462,7 +458,7 @@ impl Labyrinth {
                 let mut flask = icon(
                     combat_flask(slots),
                     Action::Flask,
-                    "assets/textures/icons/recovery.png",
+                    "textures/icons/recovery.png",
                     &format!(
                         "Flask [F]: restores {:.0}% of your life and takes the turn",
                         megatower_sim::combat::FLASK_HEAL
@@ -479,7 +475,7 @@ impl Labyrinth {
                 out.push(icon(
                     combat_guard(slots),
                     Action::Guard,
-                    "assets/textures/icons/guard_icon.png",
+                    "textures/icons/guard_icon.png",
                     "Guard [Space]: no skill this turn, enemy hits deal half damage",
                 ));
                 if let Some(battle) = &game.battle {
@@ -498,9 +494,9 @@ impl Labyrinth {
                         );
                         c.label.clear();
                         c.icon = Some(if skill.tags.has(megatower_sim::tags::Tag::Attack) {
-                            "assets/textures/icons/attack_icon.png"
+                            "textures/icons/attack_icon.png"
                         } else {
-                            "assets/textures/icons/magic_damage_icon.png"
+                            "textures/icons/magic_damage_icon.png"
                         });
                         c.tip.push(format!("{cost:.0} {resource}"));
                         if let Some(effect) = &skill.effect {
@@ -531,13 +527,13 @@ impl Labyrinth {
                 out.push(icon(
                     nudge(rects.merchant_leave, 12.0),
                     Action::Leave,
-                    "assets/textures/ui/leave_icon.png",
+                    "textures/ui/leave_icon.png",
                     "Leave merchant [Esc]",
                 ));
                 let mut refresh = icon(
                     nudge(rects.merchant_refresh, 8.0),
                     Action::Refresh,
-                    "assets/textures/icons/refresh_icon.png",
+                    "textures/icons/refresh_icon.png",
                     "Refresh unlocked gems",
                 );
                 if let Some(shop) = game.shop() {
@@ -595,7 +591,7 @@ impl Labyrinth {
                 out.push(icon(
                     in_action_area(rects.merchant_leave),
                     Action::Leave,
-                    "assets/textures/ui/leave_icon.png",
+                    "textures/ui/leave_icon.png",
                     "Leave shrine [Esc]",
                 ));
                 for (i, id) in offers.iter().enumerate() {
@@ -640,7 +636,7 @@ impl Labyrinth {
                 out.push(icon(
                     in_action_area(rects.merchant_leave),
                     Action::Leave,
-                    "assets/textures/ui/leave_icon.png",
+                    "textures/ui/leave_icon.png",
                     "Leave gem altar [Esc]",
                 ));
                 // Select any bag gem, or a gem in the linked sockets below
@@ -661,7 +657,7 @@ impl Labyrinth {
                     let mut leave = icon(
                         in_action_area(rects.merchant_leave),
                         Action::Leave,
-                        "assets/textures/ui/leave_icon.png",
+                        "textures/ui/leave_icon.png",
                         if reward.pick_one {
                             "Skip the reward [Esc]"
                         } else {
@@ -723,7 +719,7 @@ impl Labyrinth {
         let mut bag = icon(
             MENU_BUTTONS[0],
             Action::Bag,
-            "assets/textures/icons/adventurer_icon.png",
+            "textures/icons/adventurer_icon.png",
             "Bag and gear [I]",
         );
         bag.enabled = !matches!(game.mode, Mode::Starter(_) | Mode::Dead);
@@ -731,7 +727,7 @@ impl Labyrinth {
         let mut map = icon(
             MENU_BUTTONS[1],
             Action::Map,
-            "assets/textures/icons/floor_icon.png",
+            "textures/icons/floor_icon.png",
             "Floor map [M]",
         );
         map.enabled = in_map;
@@ -739,7 +735,7 @@ impl Labyrinth {
         let mut tree = icon(
             MENU_BUTTONS[2],
             Action::Tree,
-            "assets/textures/icons/wisdom_icon.png",
+            "textures/icons/wisdom_icon.png",
             "Passive tree [P]",
         );
         tree.enabled = in_map;
@@ -837,7 +833,7 @@ impl Labyrinth {
                             }
                         }
                     }
-                    ui.audio.push(("assets/sfx/item_equip.wav".into(), 0.0));
+                    ui.audio.push(("sfx/item_equip.wav".into(), 0.0));
                 }
             }
             return;
@@ -857,7 +853,7 @@ impl Labyrinth {
                             self.game_mut().character.equip(bag, Some(slot)).map(|_| ())
                         };
                     if result.is_ok() {
-                        ui.audio.push(("assets/sfx/ui/rune_select.wav".into(), 5.0));
+                        ui.audio.push(("sfx/ui/rune_select.wav".into(), 5.0));
                     }
                 }
             }
@@ -968,7 +964,7 @@ impl Labyrinth {
         ));
         out.push(Draw::Image {
             rect: OPTIONS_BUTTON,
-            path: "assets/textures/icons/options_button.png".into(),
+            path: "textures/icons/options_button.png".into(),
             region: Some([0.0, 0.0, 26.0, 26.0]),
             tint: palette(1),
             slice: None,
@@ -1056,7 +1052,7 @@ impl Labyrinth {
                     if shop.locked[i] {
                         out.push(tinted(
                             [rect[0] + 23.0, rect[1] - 3.0, 14.0, 14.0],
-                            "assets/textures/ui/lock_icon.png",
+                            "textures/ui/lock_icon.png",
                             palette(8),
                         ));
                     }
@@ -1340,10 +1336,10 @@ impl Labyrinth {
         let stunned = enemy.fighter.stunned || enemy.fighter.afflictions.frozen;
         let (icon, tint) = match enemy.intent().kind {
             // It loses the action it was about to take.
-            _ if stunned => ("assets/textures/icons/stun_icon.png", hex(0xe8c27a)),
-            IntentKind::Attack(_) => ("assets/textures/icons/attack_icon.png", hex(0xff6a6a)),
-            IntentKind::Guard { .. } => ("assets/textures/icons/guard_icon.png", hex(0x7ab4ff)),
-            IntentKind::Heal { .. } => ("assets/textures/icons/overheal_icon.png", hex(0x6fdc6f)),
+            _ if stunned => ("textures/icons/stun_icon.png", hex(0xe8c27a)),
+            IntentKind::Attack(_) => ("textures/icons/attack_icon.png", hex(0xff6a6a)),
+            IntentKind::Guard { .. } => ("textures/icons/guard_icon.png", hex(0x7ab4ff)),
+            IntentKind::Heal { .. } => ("textures/icons/overheal_icon.png", hex(0x6fdc6f)),
         };
         let amount = if stunned {
             "skip".to_string()
@@ -1421,7 +1417,7 @@ impl Labyrinth {
         ));
         out.push(tinted(
             [right - gold_w - 16.0, 2.0, 14.0, 14.0],
-            "assets/textures/icons/gold_coins_icon.png",
+            "textures/icons/gold_coins_icon.png",
             hex(0xffaa00),
         ));
     }
@@ -1508,7 +1504,7 @@ impl Labyrinth {
             portrait,
             self.portrait
                 .as_deref()
-                .unwrap_or("assets/textures/portraits/kestrel.png"),
+                .unwrap_or("textures/portraits/kestrel.png"),
         ));
         out.push(image(
             portrait,
@@ -1607,7 +1603,7 @@ impl Labyrinth {
             rects.portrait,
             self.portrait
                 .as_deref()
-                .unwrap_or("assets/textures/portraits/kestrel.png"),
+                .unwrap_or("textures/portraits/kestrel.png"),
         ));
         out.push(image(
             rects.portrait_border,
@@ -1650,7 +1646,7 @@ impl Labyrinth {
         }
         out.push(tinted(
             [15.0, 98.0, 16.0, 16.0],
-            "assets/textures/icons/wisdom_icon.png",
+            "textures/icons/wisdom_icon.png",
             palette(8),
         ));
         out.push(text(
@@ -1678,7 +1674,7 @@ impl Labyrinth {
             } else {
                 out.push(Draw::Image {
                     rect: [rect[0] + 1.0, rect[1] + 1.0, 32.0, 32.0],
-                    path: "assets/textures/ui/equipment_slots.png".into(),
+                    path: "textures/ui/equipment_slots.png".into(),
                     // The final two equipment cells share the seventh atlas
                     // frame (rings); there is no eighth frame in this image.
                     region: Some([i.min(6) as f32 * 32.0, 0.0, 32.0, 32.0]),
@@ -1721,14 +1717,10 @@ impl Labyrinth {
                 if let Some(g) = sockets.gems.get(i) {
                     loot_draw(out, *rect, &Loot::Gem(g.clone()));
                 } else if i < usize::from(sockets.links) {
-                    out.push(tinted(
-                        *rect,
-                        "assets/textures/ui/item_slot.png",
-                        palette(2),
-                    ));
+                    out.push(tinted(*rect, "textures/ui/item_slot.png", palette(2)));
                     out.push(tinted(
                         [rect[0] + 9.0, rect[1] + 9.0, 16.0, 16.0],
-                        "assets/textures/icons/diamonds_icon.png",
+                        "textures/icons/diamonds_icon.png",
                         palette(2),
                     ));
                 }

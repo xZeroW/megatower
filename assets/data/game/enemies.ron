@@ -5,7 +5,7 @@
 [
     (
         id: "tunnel_rat",
-        sprite: Some("assets/textures/enemies/rat.png"),
+        sprite: Some("textures/enemies/rat.png"),
         name: "Tunnel Rat",
         life: 18.0,
         intents: [
@@ -16,7 +16,7 @@
     ),
     (
         id: "bone_archer",
-        sprite: Some("assets/textures/enemies/skeleton_warrior.png"),
+        sprite: Some("textures/enemies/skeleton_warrior.png"),
         name: "Bone Archer",
         life: 22.0,
         resistances: [(Cold, 30.0)],
@@ -27,7 +27,7 @@
     ),
     (
         id: "acid_slime",
-        sprite: Some("assets/textures/enemies/slime.png"),
+        sprite: Some("textures/enemies/slime.png"),
         name: "Acid Slime",
         life: 30.0,
         armour: 40.0,
@@ -39,7 +39,7 @@
     ),
     (
         id: "ember_cultist",
-        sprite: Some("assets/textures/enemies/shadow_wizard.png"),
+        sprite: Some("textures/enemies/shadow_wizard.png"),
         name: "Ember Cultist",
         life: 20.0,
         resistances: [(Fire, 50.0)],
@@ -50,7 +50,7 @@
     ),
     (
         id: "stone_golem",
-        sprite: Some("assets/textures/enemies/stone_golem.png"),
+        sprite: Some("textures/enemies/stone_golem.png"),
         name: "Stone Golem",
         life: 45.0,
         armour: 120.0,
@@ -62,7 +62,7 @@
     ),
     (
         id: "cave_bat",
-        sprite: Some("assets/textures/enemies/bat.png"),
+        sprite: Some("textures/enemies/bat.png"),
         name: "Cave Bat",
         life: 14.0,
         intents: [
@@ -72,7 +72,7 @@
     ),
     (
         id: "goblin_raider",
-        sprite: Some("assets/textures/enemies/goblin.png"),
+        sprite: Some("textures/enemies/goblin.png"),
         name: "Goblin Raider",
         life: 26.0,
         armour: 20.0,
@@ -85,7 +85,7 @@
     ),
     (
         id: "venom_spider",
-        sprite: Some("assets/textures/enemies/venomous_spider.png"),
+        sprite: Some("textures/enemies/venomous_spider.png"),
         name: "Venom Spider",
         life: 24.0,
         min_floor: 2,
@@ -97,7 +97,7 @@
     ),
     (
         id: "blood_ghoul",
-        sprite: Some("assets/textures/enemies/blood_ghoul.png"),
+        sprite: Some("textures/enemies/blood_ghoul.png"),
         name: "Blood Ghoul",
         life: 38.0,
         min_floor: 3,
@@ -109,7 +109,7 @@
     ),
     (
         id: "snow_wraith",
-        sprite: Some("assets/textures/enemies/snow_wraith.png"),
+        sprite: Some("textures/enemies/snow_wraith.png"),
         name: "Snow Wraith",
         life: 28.0,
         min_floor: 3,
@@ -121,7 +121,7 @@
     ),
     (
         id: "shadow_ghost",
-        sprite: Some("assets/textures/enemies/shadow_ghost.png"),
+        sprite: Some("textures/enemies/shadow_ghost.png"),
         name: "Shadow Ghost",
         life: 32.0,
         min_floor: 4,
@@ -134,7 +134,7 @@
     ),
     (
         id: "iron_golem",
-        sprite: Some("assets/textures/enemies/iron_golem.png"),
+        sprite: Some("textures/enemies/iron_golem.png"),
         name: "Iron Golem",
         life: 60.0,
         min_floor: 5,
@@ -148,7 +148,7 @@
     ),
     (
         id: "magma_golem",
-        sprite: Some("assets/textures/enemies/magma_golem.png"),
+        sprite: Some("textures/enemies/magma_golem.png"),
         name: "Magma Golem",
         life: 50.0,
         min_floor: 6,
@@ -162,7 +162,7 @@
     ),
     (
         id: "stair_warden",
-        sprite: Some("assets/textures/enemies/golden_guardian.png"),
+        sprite: Some("textures/enemies/golden_guardian.png"),
         name: "Warden of the Stair",
         life: 150.0,
         armour: 60.0,
@@ -177,7 +177,7 @@
     ),
     (
         id: "ruined_king",
-        sprite: Some("assets/textures/enemies/ruined_king.png"),
+        sprite: Some("textures/enemies/ruined_king.png"),
         name: "The Ruined King",
         life: 150.0,
         armour: 40.0,
@@ -193,7 +193,7 @@
     ),
     (
         id: "fire_dragon",
-        sprite: Some("assets/textures/enemies/fire_dragon.png"),
+        sprite: Some("textures/enemies/fire_dragon.png"),
         name: "Cinder Drake",
         life: 190.0,
         armour: 50.0,
@@ -208,7 +208,7 @@
     ),
     (
         id: "thunder_dragon",
-        sprite: Some("assets/textures/enemies/thunder_dragon.png"),
+        sprite: Some("textures/enemies/thunder_dragon.png"),
         name: "Stormwing",
         life: 175.0,
         armour: 30.0,

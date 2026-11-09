@@ -2,7 +2,7 @@
     (
         id: "resources/items/alchemist\'s_wisdom",
         name: "Alchemist\'s Wisdom",
-        texture: Some("assets/textures/items/alchemists_wisdom.png"),
+        texture: Some("textures/items/alchemists_wisdom.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -43,7 +43,7 @@
     (
         id: "resources/items/amulet_of_life",
         name: "Amulet of Life",
-        texture: Some("assets/textures/items/amulet_of_life.png"),
+        texture: Some("textures/items/amulet_of_life.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -82,7 +82,7 @@
     (
         id: "resources/items/arcanum_hood",
         name: "Arcanum Hood",
-        texture: Some("assets/textures/items/arcanum_hood.png"),
+        texture: Some("textures/items/arcanum_hood.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -121,7 +121,7 @@
     (
         id: "resources/items/arcanum_robe",
         name: "Arcanum Robe",
-        texture: Some("assets/textures/items/arcanum_robe.png"),
+        texture: Some("textures/items/arcanum_robe.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -162,7 +162,7 @@
     (
         id: "resources/items/arcanum_shoes",
         name: "Arcanum Shoes",
-        texture: Some("assets/textures/items/arcanum_shoes.png"),
+        texture: Some("textures/items/arcanum_shoes.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -203,7 +203,7 @@
     (
         id: "resources/items/ashcrow",
         name: "Ashcrow",
-        texture: Some("assets/textures/items/ashcrow.png"),
+        texture: Some("textures/items/ashcrow.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -238,7 +238,7 @@
     (
         id: "resources/items/bastolics_gauntlet",
         name: "Bastolic\'s Gauntlet",
-        texture: Some("assets/textures/items/bastolics_gauntlet.png"),
+        texture: Some("textures/items/bastolics_gauntlet.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -273,7 +273,7 @@
     (
         id: "resources/items/bastolics_guardian",
         name: "Bastolic\'s Guardian",
-        texture: Some("assets/textures/items/bastolics_chestplate.png"),
+        texture: Some("textures/items/bastolics_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -308,7 +308,7 @@
     (
         id: "resources/items/believers_locket",
         name: "Believer\'s Locket",
-        texture: Some("assets/textures/items/believers_locket.png"),
+        texture: Some("textures/items/believers_locket.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -343,7 +343,7 @@
     (
         id: "resources/items/berserkers_axe",
         name: "Berserker\'s Axe",
-        texture: Some("assets/textures/items/berserkers_axe.png"),
+        texture: Some("textures/items/berserkers_axe.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -376,7 +376,7 @@
     (
         id: "resources/items/berserkers_helmet",
         name: "Berserker\'s Helmet",
-        texture: Some("assets/textures/items/berserkers_helmet.png"),
+        texture: Some("textures/items/berserkers_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -417,7 +417,7 @@
     (
         id: "resources/items/black_oath",
         name: "Black Oath",
-        texture: Some("assets/textures/items/black_oath.png"),
+        texture: Some("textures/items/black_oath.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -459,7 +459,7 @@
     (
         id: "resources/items/blackthorn_chestplate",
         name: "Blackthorn Chestplate",
-        texture: Some("assets/textures/items/blackthorn_chestplate.png"),
+        texture: Some("textures/items/blackthorn_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -494,7 +494,7 @@
     (
         id: "resources/items/blackthorn_crown",
         name: "Blackthorn Crown",
-        texture: Some("assets/textures/items/blackthorn_crown.png"),
+        texture: Some("textures/items/blackthorn_crown.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -537,7 +537,7 @@
     (
         id: "resources/items/blackthorn_leggings",
         name: "Blackthorn Leggings",
-        texture: Some("assets/textures/items/blackthorn_leggings.png"),
+        texture: Some("textures/items/blackthorn_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -572,7 +572,7 @@
     (
         id: "resources/items/blackthorn_sabatons",
         name: "Blackthorn Sabatons",
-        texture: Some("assets/textures/items/blackthorn_sabatons.png"),
+        texture: Some("textures/items/blackthorn_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -607,7 +607,7 @@
     (
         id: "resources/items/blade_of_the_ruined",
         name: "Blade of the Ruined",
-        texture: Some("assets/textures/items/blade_of_the_ruined.png"),
+        texture: Some("textures/items/blade_of_the_ruined.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -648,7 +648,7 @@
     (
         id: "resources/items/blake",
         name: "Blake",
-        texture: Some("assets/textures/items/blake.png"),
+        texture: Some("textures/items/blake.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -689,7 +689,7 @@
     (
         id: "resources/items/bloodedge",
         name: "Bloodedge",
-        texture: Some("assets/textures/items/bloodedge.png"),
+        texture: Some("textures/items/bloodedge.png"),
         bb_script: Some("resources/bb_scripts/bloodedge.gd"),
         socket_type: Some(weapon),
         set_resources: [
@@ -738,7 +738,7 @@
     (
         id: "resources/items/celestial_chestplate",
         name: "Celestial Chestplate",
-        texture: Some("assets/textures/items/celestial_chestplate.png"),
+        texture: Some("textures/items/celestial_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -779,7 +779,7 @@
     (
         id: "resources/items/celestial_helmet",
         name: "Celestial Helmet",
-        texture: Some("assets/textures/items/celestial_helmet.png"),
+        texture: Some("textures/items/celestial_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -820,7 +820,7 @@
     (
         id: "resources/items/celestial_leggings",
         name: "Celestial Leggings",
-        texture: Some("assets/textures/items/celestial_leggings.png"),
+        texture: Some("textures/items/celestial_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -861,7 +861,7 @@
     (
         id: "resources/items/celestial_sabatons",
         name: "Celestial Sabatons",
-        texture: Some("assets/textures/items/celestial_sabatons.png"),
+        texture: Some("textures/items/celestial_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -902,7 +902,7 @@
     (
         id: "resources/items/chainmail",
         name: "Chainmail",
-        texture: Some("assets/textures/items/chainmail.png"),
+        texture: Some("textures/items/chainmail.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -935,7 +935,7 @@
     (
         id: "resources/items/cowards_ring",
         name: "Coward\'s Ring",
-        texture: Some("assets/textures/items/cowards_ring.png"),
+        texture: Some("textures/items/cowards_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -968,7 +968,7 @@
     (
         id: "resources/items/crystal_staff",
         name: "Crystal Staff",
-        texture: Some("assets/textures/items/crystal_staff.png"),
+        texture: Some("textures/items/crystal_staff.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -1001,7 +1001,7 @@
     (
         id: "resources/items/cursed_necklace",
         name: "Cursed Necklace",
-        texture: Some("assets/textures/items/cursed_necklace.png"),
+        texture: Some("textures/items/cursed_necklace.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -1036,7 +1036,7 @@
     (
         id: "resources/items/cursed_ring",
         name: "Cursed Ring",
-        texture: Some("assets/textures/items/cursed_ring.png"),
+        texture: Some("textures/items/cursed_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -1071,7 +1071,7 @@
     (
         id: "resources/items/dark_harness",
         name: "Dark Harness",
-        texture: Some("assets/textures/items/dark_harness.png"),
+        texture: Some("textures/items/dark_harness.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -1113,7 +1113,7 @@
     (
         id: "resources/items/dark_magical_ring",
         name: "Dark Magical Ring",
-        texture: Some("assets/textures/items/dark_magical_ring.png"),
+        texture: Some("textures/items/dark_magical_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -1155,7 +1155,7 @@
     (
         id: "resources/items/darkwood_plates",
         name: "Darkwood Plates",
-        texture: Some("assets/textures/items/darkwood_plates.png"),
+        texture: Some("textures/items/darkwood_plates.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -1189,7 +1189,7 @@
     (
         id: "resources/items/dawnbringer",
         name: "Dawnbringer",
-        texture: Some("assets/textures/items/dawnbringer.png"),
+        texture: Some("textures/items/dawnbringer.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -1234,7 +1234,7 @@
     (
         id: "resources/items/demonic_axe",
         name: "Demonic Axe",
-        texture: Some("assets/textures/items/demonic_axe.png"),
+        texture: Some("textures/items/demonic_axe.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -1269,7 +1269,7 @@
     (
         id: "resources/items/demonic_chestplate",
         name: "Demonic Chestplate",
-        texture: Some("assets/textures/items/demonic_chestplate.png"),
+        texture: Some("textures/items/demonic_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -1310,7 +1310,7 @@
     (
         id: "resources/items/demonic_claymore",
         name: "Demonic Claymore",
-        texture: Some("assets/textures/items/demonic_claymore.png"),
+        texture: Some("textures/items/demonic_claymore.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -1346,7 +1346,7 @@
     (
         id: "resources/items/demonic_helmet",
         name: "Demonic Helmet",
-        texture: Some("assets/textures/items/demonic_helmet.png"),
+        texture: Some("textures/items/demonic_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -1387,7 +1387,7 @@
     (
         id: "resources/items/demonic_leggings",
         name: "Demonic Leggings",
-        texture: Some("assets/textures/items/demonic_leggings.png"),
+        texture: Some("textures/items/demonic_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -1428,7 +1428,7 @@
     (
         id: "resources/items/demonic_ring",
         name: "Demonic Ring",
-        texture: Some("assets/textures/items/demonic_ring.png"),
+        texture: Some("textures/items/demonic_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -1463,7 +1463,7 @@
     (
         id: "resources/items/demonic_sabatons",
         name: "Demonic Sabatons",
-        texture: Some("assets/textures/items/demonic_sabatons.png"),
+        texture: Some("textures/items/demonic_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -1504,7 +1504,7 @@
     (
         id: "resources/items/eldrids_ring",
         name: "Eldrid\'s Ring",
-        texture: Some("assets/textures/items/eldrids_ring.png"),
+        texture: Some("textures/items/eldrids_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -1545,7 +1545,7 @@
     (
         id: "resources/items/elemental_necklace",
         name: "Elemental Necklace",
-        texture: Some("assets/textures/items/elemental_necklace.png"),
+        texture: Some("textures/items/elemental_necklace.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -1586,7 +1586,7 @@
     (
         id: "resources/items/emperors_will",
         name: "Emperor\'s Will",
-        texture: Some("assets/textures/items/emperors_will.png"),
+        texture: Some("textures/items/emperors_will.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -1645,7 +1645,7 @@
     (
         id: "resources/items/ethercrests_blade",
         name: "Ethercrest\'s Blade",
-        texture: Some("assets/textures/items/ethercrests_blade.png"),
+        texture: Some("textures/items/ethercrests_blade.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -1681,7 +1681,7 @@
     (
         id: "resources/items/ethercrests_chestplate",
         name: "Ethercrest\'s Chestplate",
-        texture: Some("assets/textures/items/ethercrests_chestplate.png"),
+        texture: Some("textures/items/ethercrests_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -1716,7 +1716,7 @@
     (
         id: "resources/items/ethercrests_helmet",
         name: "Ethercrest\'s Helmet",
-        texture: Some("assets/textures/items/ethercrests_helmet.png"),
+        texture: Some("textures/items/ethercrests_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -1751,7 +1751,7 @@
     (
         id: "resources/items/ethercrests_leggings",
         name: "Ethercrest\'s Leggings",
-        texture: Some("assets/textures/items/ethercrests_leggings.png"),
+        texture: Some("textures/items/ethercrests_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -1786,7 +1786,7 @@
     (
         id: "resources/items/ethercrests_ring",
         name: "Ethercrest\'s Ring",
-        texture: Some("assets/textures/items/ethercrests_ring.png"),
+        texture: Some("textures/items/ethercrests_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -1829,7 +1829,7 @@
     (
         id: "resources/items/ethercrests_sabatons",
         name: "Ethercrest\'s Sabatons",
-        texture: Some("assets/textures/items/ethercrests_sabatons.png"),
+        texture: Some("textures/items/ethercrests_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -1864,7 +1864,7 @@
     (
         id: "resources/items/ethercrests_staff",
         name: "Ethercrest\'s Staff",
-        texture: Some("assets/textures/items/ethercrests_staff.png"),
+        texture: Some("textures/items/ethercrests_staff.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -1899,7 +1899,7 @@
     (
         id: "resources/items/ethercrests_sword",
         name: "Ethercrest\'s Sword",
-        texture: Some("assets/textures/items/ethercrests_sword.png"),
+        texture: Some("textures/items/ethercrests_sword.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -1934,7 +1934,7 @@
     (
         id: "resources/items/ethercrests_tome",
         name: "Ethercrest\'s Tome",
-        texture: Some("assets/textures/items/ethercrests_tome.png"),
+        texture: Some("textures/items/ethercrests_tome.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
@@ -1960,7 +1960,7 @@
     (
         id: "resources/items/excalibur",
         name: "Excalibur",
-        texture: Some("assets/textures/items/excalibur.png"),
+        texture: Some("textures/items/excalibur.png"),
         bb_script: Some("resources/bb_scripts/excalibur.gd"),
         socket_type: Some(weapon),
         set_resources: [
@@ -1993,7 +1993,7 @@
     (
         id: "resources/items/famished_blade",
         name: "Famished Blade",
-        texture: Some("assets/textures/items/famished_blade.png"),
+        texture: Some("textures/items/famished_blade.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -2042,7 +2042,7 @@
     (
         id: "resources/items/frokt",
         name: "Frokt",
-        texture: Some("assets/textures/items/frokt.png"),
+        texture: Some("textures/items/frokt.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
@@ -2068,7 +2068,7 @@
     (
         id: "resources/items/giants_ring",
         name: "Giants Ring",
-        texture: Some("assets/textures/items/giants_ring.png"),
+        texture: Some("textures/items/giants_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -2109,7 +2109,7 @@
     (
         id: "resources/items/glimmer",
         name: "Glimmer",
-        texture: Some("assets/textures/items/glimmer.png"),
+        texture: Some("textures/items/glimmer.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -2144,7 +2144,7 @@
     (
         id: "resources/items/gloom",
         name: "Gloom",
-        texture: Some("assets/textures/items/gloom.png"),
+        texture: Some("textures/items/gloom.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -2179,7 +2179,7 @@
     (
         id: "resources/items/golden_chestplate",
         name: "Golden Chestplate",
-        texture: Some("assets/textures/items/golden_chestplate.png"),
+        texture: Some("textures/items/golden_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -2212,7 +2212,7 @@
     (
         id: "resources/items/golden_crown",
         name: "Golden Crown",
-        texture: Some("assets/textures/items/golden_crown.png"),
+        texture: Some("textures/items/golden_crown.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -2247,7 +2247,7 @@
     (
         id: "resources/items/golden_dagger",
         name: "Golden Dagger",
-        texture: Some("assets/textures/items/golden_dagger.png"),
+        texture: Some("textures/items/golden_dagger.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -2283,7 +2283,7 @@
     (
         id: "resources/items/golden_helmet",
         name: "Golden Helmet",
-        texture: Some("assets/textures/items/golden_helmet.png"),
+        texture: Some("textures/items/golden_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -2316,7 +2316,7 @@
     (
         id: "resources/items/golden_leggings",
         name: "Golden Leggings",
-        texture: Some("assets/textures/items/golden_leggings.png"),
+        texture: Some("textures/items/golden_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -2349,7 +2349,7 @@
     (
         id: "resources/items/golden_sabatons",
         name: "Golden Sabatons",
-        texture: Some("assets/textures/items/golden_sabatons.png"),
+        texture: Some("textures/items/golden_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -2382,7 +2382,7 @@
     (
         id: "resources/items/golden_sword",
         name: "Golden Sword",
-        texture: Some("assets/textures/items/golden_sword.png"),
+        texture: Some("textures/items/golden_sword.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -2417,7 +2417,7 @@
     (
         id: "resources/items/golden_warden",
         name: "Golden Warden",
-        texture: Some("assets/textures/items/golden_warden.png"),
+        texture: Some("textures/items/golden_warden.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -2452,7 +2452,7 @@
     (
         id: "resources/items/greeds_grasp",
         name: "Greed\'s Grasp",
-        texture: Some("assets/textures/items/greeds_grasp.png"),
+        texture: Some("textures/items/greeds_grasp.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -2485,7 +2485,7 @@
     (
         id: "resources/items/heart_of_gold",
         name: "Heart of Gold",
-        texture: Some("assets/textures/items/heart_of_gold.png"),
+        texture: Some("textures/items/heart_of_gold.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -2543,7 +2543,7 @@
     (
         id: "resources/items/hunger_blade",
         name: "Hunger Blade",
-        texture: Some("assets/textures/items/hunger_blade.png"),
+        texture: Some("textures/items/hunger_blade.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -2585,7 +2585,7 @@
     (
         id: "resources/items/hunters_boots",
         name: "Hunter\'s Boots",
-        texture: Some("assets/textures/items/hunters_boots.png"),
+        texture: Some("textures/items/hunters_boots.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -2618,7 +2618,7 @@
     (
         id: "resources/items/hunters_hood",
         name: "Hunter\'s Hood",
-        texture: Some("assets/textures/items/hunters_hood.png"),
+        texture: Some("textures/items/hunters_hood.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -2651,7 +2651,7 @@
     (
         id: "resources/items/hunters_jerkin",
         name: "Hunter\'s Jerkin",
-        texture: Some("assets/textures/items/hunters_jerkin.png"),
+        texture: Some("textures/items/hunters_jerkin.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -2684,7 +2684,7 @@
     (
         id: "resources/items/hunters_necklace",
         name: "Hunter\'s Necklace",
-        texture: Some("assets/textures/items/hunters_necklace.png"),
+        texture: Some("textures/items/hunters_necklace.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -2717,7 +2717,7 @@
     (
         id: "resources/items/hunters_pants",
         name: "Hunter\'s Pants",
-        texture: Some("assets/textures/items/hunters_pants.png"),
+        texture: Some("textures/items/hunters_pants.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -2750,7 +2750,7 @@
     (
         id: "resources/items/hunters_ring",
         name: "Hunter\'s Ring",
-        texture: Some("assets/textures/items/hunters_ring.png"),
+        texture: Some("textures/items/hunters_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -2783,7 +2783,7 @@
     (
         id: "resources/items/hysword",
         name: "HySword",
-        texture: Some("assets/textures/items/hysword.png"),
+        texture: Some("textures/items/hysword.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -2824,7 +2824,7 @@
     (
         id: "resources/items/insightus",
         name: "Insightus",
-        texture: Some("assets/textures/items/insightus.png"),
+        texture: Some("textures/items/insightus.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
@@ -2850,7 +2850,7 @@
     (
         id: "resources/items/iron_dagger",
         name: "Iron Dagger",
-        texture: Some("assets/textures/items/iron_dagger.png"),
+        texture: Some("textures/items/iron_dagger.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -2884,7 +2884,7 @@
     (
         id: "resources/items/iron_eater",
         name: "Iron Eater",
-        texture: Some("assets/textures/items/iron_eater.png"),
+        texture: Some("textures/items/iron_eater.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -2923,7 +2923,7 @@
     (
         id: "resources/items/jesters_bone_mask",
         name: "Jester\'s Bone Mask",
-        texture: Some("assets/textures/items/jesters_bone_mask.png"),
+        texture: Some("textures/items/jesters_bone_mask.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -2980,7 +2980,7 @@
     (
         id: "resources/items/keepsake",
         name: "Keepsake",
-        texture: Some("assets/textures/items/keepsake.png"),
+        texture: Some("textures/items/keepsake.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -3013,7 +3013,7 @@
     (
         id: "resources/items/leather_boots",
         name: "Leather Boots",
-        texture: Some("assets/textures/items/leather_boots.png"),
+        texture: Some("textures/items/leather_boots.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -3046,7 +3046,7 @@
     (
         id: "resources/items/leather_chestplate",
         name: "Leather Chestplate",
-        texture: Some("assets/textures/items/leather_chestplate.png"),
+        texture: Some("textures/items/leather_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -3079,7 +3079,7 @@
     (
         id: "resources/items/leather_helmet",
         name: "Leather Helmet",
-        texture: Some("assets/textures/items/leather_helmet.png"),
+        texture: Some("textures/items/leather_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -3112,7 +3112,7 @@
     (
         id: "resources/items/leather_pants",
         name: "Leather Pants",
-        texture: Some("assets/textures/items/leather_pants.png"),
+        texture: Some("textures/items/leather_pants.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -3145,7 +3145,7 @@
     (
         id: "resources/items/life_seeker",
         name: "Life Seeker",
-        texture: Some("assets/textures/items/life_seeker.png"),
+        texture: Some("textures/items/life_seeker.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -3186,7 +3186,7 @@
     (
         id: "resources/items/lightning_boots",
         name: "Lightning Boots",
-        texture: Some("assets/textures/items/lightning_boots.png"),
+        texture: Some("textures/items/lightning_boots.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -3220,7 +3220,7 @@
     (
         id: "resources/items/living_boots",
         name: "Living Boots",
-        texture: Some("assets/textures/items/living_boots.png"),
+        texture: Some("textures/items/living_boots.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -3261,7 +3261,7 @@
     (
         id: "resources/items/living_chestplate",
         name: "Living Chestplate",
-        texture: Some("assets/textures/items/living_chestplate.png"),
+        texture: Some("textures/items/living_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -3302,7 +3302,7 @@
     (
         id: "resources/items/living_helmet",
         name: "Living Helmet",
-        texture: Some("assets/textures/items/living_helmet.png"),
+        texture: Some("textures/items/living_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -3343,7 +3343,7 @@
     (
         id: "resources/items/living_leggings",
         name: "Living Leggings",
-        texture: Some("assets/textures/items/living_leggings.png"),
+        texture: Some("textures/items/living_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -3384,7 +3384,7 @@
     (
         id: "resources/items/magic_wand",
         name: "Magic Wand",
-        texture: Some("assets/textures/items/magic_wand.png"),
+        texture: Some("textures/items/magic_wand.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -3426,7 +3426,7 @@
     (
         id: "resources/items/magical_stick",
         name: "Magical Stick",
-        texture: Some("assets/textures/items/magical_stick.png"),
+        texture: Some("textures/items/magical_stick.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -3459,7 +3459,7 @@
     (
         id: "resources/items/magma_chestplate",
         name: "Magma Chestplate",
-        texture: Some("assets/textures/items/magma_chestplate.png"),
+        texture: Some("textures/items/magma_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -3500,7 +3500,7 @@
     (
         id: "resources/items/magma_helmet",
         name: "Magma Helmet",
-        texture: Some("assets/textures/items/magma_helmet.png"),
+        texture: Some("textures/items/magma_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -3541,7 +3541,7 @@
     (
         id: "resources/items/magma_leggings",
         name: "Magma Leggings",
-        texture: Some("assets/textures/items/magma_leggings.png"),
+        texture: Some("textures/items/magma_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -3582,7 +3582,7 @@
     (
         id: "resources/items/magma_necklace",
         name: "Magma Necklace",
-        texture: Some("assets/textures/items/magma_necklace.png"),
+        texture: Some("textures/items/magma_necklace.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -3623,7 +3623,7 @@
     (
         id: "resources/items/magma_poleaxe",
         name: "Magma Poleaxe",
-        texture: Some("assets/textures/items/magma_poleaxe.png"),
+        texture: Some("textures/items/magma_poleaxe.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -3658,7 +3658,7 @@
     (
         id: "resources/items/magma_sabatons",
         name: "Magma Sabatons",
-        texture: Some("assets/textures/items/magma_sabatons.png"),
+        texture: Some("textures/items/magma_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -3699,7 +3699,7 @@
     (
         id: "resources/items/marauders_helmet",
         name: "Marauder\'s Helmet",
-        texture: Some("assets/textures/items/marauders_helmet.png"),
+        texture: Some("textures/items/marauders_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -3741,7 +3741,7 @@
     (
         id: "resources/items/mask_of_cataclysm",
         name: "Mask of Cataclysm",
-        texture: Some("assets/textures/items/mask_of_cataclysm.png"),
+        texture: Some("textures/items/mask_of_cataclysm.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -3774,7 +3774,7 @@
     (
         id: "resources/items/mask_of_the_cursed",
         name: "Mask of the Cursed",
-        texture: Some("assets/textures/items/mask_of_the_cursed.png"),
+        texture: Some("textures/items/mask_of_the_cursed.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -3809,7 +3809,7 @@
     (
         id: "resources/items/merchant_upgrade",
         name: "Merchant Upgrade",
-        texture: Some("assets/textures/items/cheese.png"),
+        texture: Some("textures/items/cheese.png"),
         bb_script: Some("resources/bb_scripts/merchant_upgrade.gd"),
         socket_type: None,
         set_resources: [
@@ -3835,7 +3835,7 @@
     (
         id: "resources/items/natures_collar",
         name: "Nature\'s Collar",
-        texture: Some("assets/textures/items/natures_collar.png"),
+        texture: Some("textures/items/natures_collar.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -3868,7 +3868,7 @@
     (
         id: "resources/items/natures_gift",
         name: "Nature\'s Gift",
-        texture: Some("assets/textures/items/natures_gift.png"),
+        texture: Some("textures/items/natures_gift.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -3901,7 +3901,7 @@
     (
         id: "resources/items/nighthorn",
         name: "Nighthorn",
-        texture: Some("assets/textures/items/nighthorn.png"),
+        texture: Some("textures/items/nighthorn.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -3936,7 +3936,7 @@
     (
         id: "resources/items/omni_ring",
         name: "Omni Ring",
-        texture: Some("assets/textures/items/omni_ring.png"),
+        texture: Some("textures/items/omni_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -3986,7 +3986,7 @@
     (
         id: "resources/items/orions_core",
         name: "Orion\'s Core",
-        texture: Some("assets/textures/items/orions_core.png"),
+        texture: Some("textures/items/orions_core.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -4027,7 +4027,7 @@
     (
         id: "resources/items/orions_destiny",
         name: "Orion\'s Destiny",
-        texture: Some("assets/textures/items/orions_destiny.png"),
+        texture: Some("textures/items/orions_destiny.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -4070,7 +4070,7 @@
     (
         id: "resources/items/orions_heart",
         name: "Orion\'s Heart",
-        texture: Some("assets/textures/items/orions_heart.png"),
+        texture: Some("textures/items/orions_heart.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -4113,7 +4113,7 @@
     (
         id: "resources/items/orions_leggings",
         name: "Orion\'s Leggings",
-        texture: Some("assets/textures/items/orions_leggings.png"),
+        texture: Some("textures/items/orions_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -4148,7 +4148,7 @@
     (
         id: "resources/items/orions_path",
         name: "Orion\'s Path",
-        texture: Some("assets/textures/items/orions_path.png"),
+        texture: Some("textures/items/orions_path.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -4183,7 +4183,7 @@
     (
         id: "resources/items/orions_rage",
         name: "Orion\'s Rage",
-        texture: Some("assets/textures/items/orions_rage.png"),
+        texture: Some("textures/items/orions_rage.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -4224,7 +4224,7 @@
     (
         id: "resources/items/orions_sanguine_salvation",
         name: "Orion\'s Sanguine Salvation",
-        texture: Some("assets/textures/items/orions_sanguine_salvation.png"),
+        texture: Some("textures/items/orions_sanguine_salvation.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -4265,7 +4265,7 @@
     (
         id: "resources/items/pallac",
         name: "Pallac",
-        texture: Some("assets/textures/items/pallac.png"),
+        texture: Some("textures/items/pallac.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
@@ -4291,7 +4291,7 @@
     (
         id: "resources/items/pantaloons_of_greatness",
         name: "Pantaloons of Greatness",
-        texture: Some("assets/textures/items/pantaloons_of_greatness.png"),
+        texture: Some("textures/items/pantaloons_of_greatness.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -4332,7 +4332,7 @@
     (
         id: "resources/items/poor_mans_blade",
         name: "Poor Man\'s Blade",
-        texture: Some("assets/textures/items/poor_mans_blade.png"),
+        texture: Some("textures/items/poor_mans_blade.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -4367,7 +4367,7 @@
     (
         id: "resources/items/poor_mans_helmet",
         name: "Poor Man\'s Helmet",
-        texture: Some("assets/textures/items/poor_mans_helmet.png"),
+        texture: Some("textures/items/poor_mans_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -4400,7 +4400,7 @@
     (
         id: "resources/items/poor_mans_path",
         name: "Poor Man\'s Path",
-        texture: Some("assets/textures/items/poor_mans_path.png"),
+        texture: Some("textures/items/poor_mans_path.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -4433,7 +4433,7 @@
     (
         id: "resources/items/precious_ring",
         name: "Precious Ring",
-        texture: Some("assets/textures/items/precious_ring.png"),
+        texture: Some("textures/items/precious_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -4468,7 +4468,7 @@
     (
         id: "resources/items/qolk",
         name: "Qolk",
-        texture: Some("assets/textures/items/qolk.png"),
+        texture: Some("textures/items/qolk.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -4510,7 +4510,7 @@
     (
         id: "resources/items/recruits_boots",
         name: "Recruit\'s Boots",
-        texture: Some("assets/textures/items/recruits_boots.png"),
+        texture: Some("textures/items/recruits_boots.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -4543,7 +4543,7 @@
     (
         id: "resources/items/recruits_cloak",
         name: "Recruit\'s Cloak",
-        texture: Some("assets/textures/items/recruits_cloak.png"),
+        texture: Some("textures/items/recruits_cloak.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -4576,7 +4576,7 @@
     (
         id: "resources/items/recruits_hood",
         name: "Recruit\'s Hood",
-        texture: Some("assets/textures/items/recruits_hood.png"),
+        texture: Some("textures/items/recruits_hood.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -4609,7 +4609,7 @@
     (
         id: "resources/items/recruits_pants",
         name: "Recruit\'s Pants",
-        texture: Some("assets/textures/items/recruits_pants.png"),
+        texture: Some("textures/items/recruits_pants.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -4642,7 +4642,7 @@
     (
         id: "resources/items/ribbon_of_fortune",
         name: "Ribbon of Fortune",
-        texture: Some("assets/textures/items/ribbon_of_fortune.png"),
+        texture: Some("textures/items/ribbon_of_fortune.png"),
         bb_script: Some("resources/bb_scripts/ribbon_of_fortune.gd"),
         socket_type: None,
         set_resources: [
@@ -4668,7 +4668,7 @@
     (
         id: "resources/items/ring_of_anger",
         name: "Ring of Anger",
-        texture: Some("assets/textures/items/ring_of_anger.png"),
+        texture: Some("textures/items/ring_of_anger.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -4701,7 +4701,7 @@
     (
         id: "resources/items/ring_of_ice",
         name: "Ring of Ice",
-        texture: Some("assets/textures/items/ring_of_ice.png"),
+        texture: Some("textures/items/ring_of_ice.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -4734,7 +4734,7 @@
     (
         id: "resources/items/ring_of_interest",
         name: "Ring of Interest",
-        texture: Some("assets/textures/items/ring_of_interest.png"),
+        texture: Some("textures/items/ring_of_interest.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -4775,7 +4775,7 @@
     (
         id: "resources/items/ring_of_power",
         name: "Ring of Power",
-        texture: Some("assets/textures/items/ring_of_power.png"),
+        texture: Some("textures/items/ring_of_power.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -4808,7 +4808,7 @@
     (
         id: "resources/items/ring_of_unity",
         name: "Ring of Unity",
-        texture: Some("assets/textures/items/ring_of_unity.png"),
+        texture: Some("textures/items/ring_of_unity.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -4849,7 +4849,7 @@
     (
         id: "resources/items/rod_of_doom",
         name: "Rod of Doom",
-        texture: Some("assets/textures/items/rod_of_doom.png"),
+        texture: Some("textures/items/rod_of_doom.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -4883,7 +4883,7 @@
     (
         id: "resources/items/royal_chestplate",
         name: "Royal Chestplate",
-        texture: Some("assets/textures/items/royal_chestplate.png"),
+        texture: Some("textures/items/royal_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -4932,7 +4932,7 @@
     (
         id: "resources/items/royal_helmet",
         name: "Royal Helmet",
-        texture: Some("assets/textures/items/royal_helmet.png"),
+        texture: Some("textures/items/royal_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -4981,7 +4981,7 @@
     (
         id: "resources/items/royal_leggings",
         name: "Royal Leggings",
-        texture: Some("assets/textures/items/royal_leggings.png"),
+        texture: Some("textures/items/royal_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -5030,7 +5030,7 @@
     (
         id: "resources/items/royal_sabatons",
         name: "Royal Sabatons",
-        texture: Some("assets/textures/items/royal_sabatons.png"),
+        texture: Some("textures/items/royal_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -5079,7 +5079,7 @@
     (
         id: "resources/items/shadow_cloak",
         name: "Shadow Cloak",
-        texture: Some("assets/textures/items/shadow_cloak.png"),
+        texture: Some("textures/items/shadow_cloak.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -5120,7 +5120,7 @@
     (
         id: "resources/items/shadow_echo",
         name: "Shadow Echo",
-        texture: Some("assets/textures/items/shadow_echo.png"),
+        texture: Some("textures/items/shadow_echo.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -5155,7 +5155,7 @@
     (
         id: "resources/items/shadow_piercer",
         name: "Shadow Piercer",
-        texture: Some("assets/textures/items/shadow_piercer.png"),
+        texture: Some("textures/items/shadow_piercer.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -5196,7 +5196,7 @@
     (
         id: "resources/items/shadow_ring",
         name: "Shadow Ring",
-        texture: Some("assets/textures/items/shadow_ring.png"),
+        texture: Some("textures/items/shadow_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -5237,7 +5237,7 @@
     (
         id: "resources/items/shadow_sentence",
         name: "Shadow Sentence",
-        texture: Some("assets/textures/items/shadow_sentence.png"),
+        texture: Some("textures/items/shadow_sentence.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -5279,7 +5279,7 @@
     (
         id: "resources/items/shadow_vortex",
         name: "Shadow Vortex",
-        texture: Some("assets/textures/items/shadow_vortex.png"),
+        texture: Some("textures/items/shadow_vortex.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -5314,7 +5314,7 @@
     (
         id: "resources/items/shadow_whisper",
         name: "Shadow Whisper",
-        texture: Some("assets/textures/items/shadow_whisper.png"),
+        texture: Some("textures/items/shadow_whisper.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -5355,7 +5355,7 @@
     (
         id: "resources/items/shadow_wisdom",
         name: "Shadow Wisdom",
-        texture: Some("assets/textures/items/shadow_wisdom.png"),
+        texture: Some("textures/items/shadow_wisdom.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -5390,7 +5390,7 @@
     (
         id: "resources/items/shamans_robe",
         name: "Shaman\'s Robe",
-        texture: Some("assets/textures/items/shamans_robe.png"),
+        texture: Some("textures/items/shamans_robe.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -5425,7 +5425,7 @@
     (
         id: "resources/items/shard_of_power",
         name: "Shard of Power",
-        texture: Some("assets/textures/items/shard_of_power.png"),
+        texture: Some("textures/items/shard_of_power.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -5466,7 +5466,7 @@
     (
         id: "resources/items/silver_axe",
         name: "Silver Axe",
-        texture: Some("assets/textures/items/silver_axe.png"),
+        texture: Some("textures/items/silver_axe.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -5502,7 +5502,7 @@
     (
         id: "resources/items/silver_chestplate",
         name: "Silver Chestplate",
-        texture: Some("assets/textures/items/silver_chestplate.png"),
+        texture: Some("textures/items/silver_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -5535,7 +5535,7 @@
     (
         id: "resources/items/silver_heart",
         name: "Silver Heart",
-        texture: Some("assets/textures/items/silver_heart.png"),
+        texture: Some("textures/items/silver_heart.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -5591,7 +5591,7 @@
     (
         id: "resources/items/silver_helmet",
         name: "Silver Helmet",
-        texture: Some("assets/textures/items/silver_helmet.png"),
+        texture: Some("textures/items/silver_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -5624,7 +5624,7 @@
     (
         id: "resources/items/silver_leggings",
         name: "Silver Leggings",
-        texture: Some("assets/textures/items/silver_leggings.png"),
+        texture: Some("textures/items/silver_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -5657,7 +5657,7 @@
     (
         id: "resources/items/silver_ring",
         name: "Silver Ring",
-        texture: Some("assets/textures/items/silver_ring.png"),
+        texture: Some("textures/items/silver_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -5690,7 +5690,7 @@
     (
         id: "resources/items/silver_sabatons",
         name: "Silver Sabatons",
-        texture: Some("assets/textures/items/silver_sabatons.png"),
+        texture: Some("textures/items/silver_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -5723,7 +5723,7 @@
     (
         id: "resources/items/silver_sword",
         name: "Silver Sword",
-        texture: Some("assets/textures/items/silver_sword.png"),
+        texture: Some("textures/items/silver_sword.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -5756,7 +5756,7 @@
     (
         id: "resources/items/soul_collector",
         name: "Soul Collector",
-        texture: Some("assets/textures/items/soul_collector.png"),
+        texture: Some("textures/items/soul_collector.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -5797,7 +5797,7 @@
     (
         id: "resources/items/starborn_ring",
         name: "Starborn Ring",
-        texture: Some("assets/textures/items/starborn_ring.png"),
+        texture: Some("textures/items/starborn_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -5830,7 +5830,7 @@
     (
         id: "resources/items/steak",
         name: "Steak",
-        texture: Some("assets/textures/items/steak.png"),
+        texture: Some("textures/items/steak.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
@@ -5856,7 +5856,7 @@
     (
         id: "resources/items/throngler",
         name: "Throngler",
-        texture: Some("assets/textures/items/throngler.png"),
+        texture: Some("textures/items/throngler.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -5905,7 +5905,7 @@
     (
         id: "resources/items/thunderblade",
         name: "Thunderblade",
-        texture: Some("assets/textures/items/thunderblade.png"),
+        texture: Some("textures/items/thunderblade.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -5946,7 +5946,7 @@
     (
         id: "resources/items/thundergrace",
         name: "Thundergrace",
-        texture: Some("assets/textures/items/thundergrace.png"),
+        texture: Some("textures/items/thundergrace.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -5981,7 +5981,7 @@
     (
         id: "resources/items/thunderhelm",
         name: "Thunderhelm",
-        texture: Some("assets/textures/items/thunderhelm.png"),
+        texture: Some("textures/items/thunderhelm.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -6022,7 +6022,7 @@
     (
         id: "resources/items/thunderiders",
         name: "Thunderiders",
-        texture: Some("assets/textures/items/thunderiders.png"),
+        texture: Some("textures/items/thunderiders.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -6063,7 +6063,7 @@
     (
         id: "resources/items/thunderstriders",
         name: "Thunderstriders",
-        texture: Some("assets/textures/items/thunderstriders.png"),
+        texture: Some("textures/items/thunderstriders.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -6104,7 +6104,7 @@
     (
         id: "resources/items/thundervow",
         name: "Thundervow",
-        texture: Some("assets/textures/items/thundervow.png"),
+        texture: Some("textures/items/thundervow.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -6145,7 +6145,7 @@
     (
         id: "resources/items/tome_of_arcanum",
         name: "Tome of Arcanum",
-        texture: Some("assets/textures/items/tome_of_arcanum.png"),
+        texture: Some("textures/items/tome_of_arcanum.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
@@ -6171,7 +6171,7 @@
     (
         id: "resources/items/tome_of_attacks",
         name: "Tome of Attacks",
-        texture: Some("assets/textures/items/tome_of_attacks.png"),
+        texture: Some("textures/items/tome_of_attacks.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
@@ -6197,7 +6197,7 @@
     (
         id: "resources/items/tome_of_darkness",
         name: "Tome of Darkness",
-        texture: Some("assets/textures/items/tome_of_darkness.png"),
+        texture: Some("textures/items/tome_of_darkness.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
@@ -6223,7 +6223,7 @@
     (
         id: "resources/items/totem_of_greed",
         name: "Totem of Greed",
-        texture: Some("assets/textures/items/totem_of_greed.png"),
+        texture: Some("textures/items/totem_of_greed.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
@@ -6256,7 +6256,7 @@
     (
         id: "resources/items/training_axe",
         name: "Training Axe",
-        texture: Some("assets/textures/items/training_axe.png"),
+        texture: Some("textures/items/training_axe.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -6289,7 +6289,7 @@
     (
         id: "resources/items/training_hammer",
         name: "Training Hammer",
-        texture: Some("assets/textures/items/training_hammer.png"),
+        texture: Some("textures/items/training_hammer.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -6322,7 +6322,7 @@
     (
         id: "resources/items/training_sword",
         name: "Training Sword",
-        texture: Some("assets/textures/items/training_sword.png"),
+        texture: Some("textures/items/training_sword.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -6356,7 +6356,7 @@
     (
         id: "resources/items/turtle_chestplate",
         name: "Turtle Chestplate",
-        texture: Some("assets/textures/items/turtle_chestplate.png"),
+        texture: Some("textures/items/turtle_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -6397,7 +6397,7 @@
     (
         id: "resources/items/turtle_gauntlet",
         name: "Turtle Gauntlet",
-        texture: Some("assets/textures/items/turtle_gauntlet.png"),
+        texture: Some("textures/items/turtle_gauntlet.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -6430,7 +6430,7 @@
     (
         id: "resources/items/turtle_leggings",
         name: "Turtle Leggings",
-        texture: Some("assets/textures/items/turtle_leggings.png"),
+        texture: Some("textures/items/turtle_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -6471,7 +6471,7 @@
     (
         id: "resources/items/turtle_sabatons",
         name: "Turtle Sabatons",
-        texture: Some("assets/textures/items/turtle_sabatons.png"),
+        texture: Some("textures/items/turtle_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -6512,7 +6512,7 @@
     (
         id: "resources/items/unchained_gauntlet",
         name: "Unchained Gauntlet",
-        texture: Some("assets/textures/items/unchained_gauntlet.png"),
+        texture: Some("textures/items/unchained_gauntlet.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -6545,7 +6545,7 @@
     (
         id: "resources/items/unchained_ring",
         name: "Unchained Ring",
-        texture: Some("assets/textures/items/unchained_ring.png"),
+        texture: Some("textures/items/unchained_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -6578,7 +6578,7 @@
     (
         id: "resources/items/vampiric_chestplate",
         name: "Vampiric Chestplate",
-        texture: Some("assets/textures/items/vampiric_chestplate.png"),
+        texture: Some("textures/items/vampiric_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -6619,7 +6619,7 @@
     (
         id: "resources/items/vampiric_helmet",
         name: "Vampiric Helmet",
-        texture: Some("assets/textures/items/vampiric_helmet.png"),
+        texture: Some("textures/items/vampiric_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -6660,7 +6660,7 @@
     (
         id: "resources/items/vitality_ring",
         name: "Vitality Ring",
-        texture: Some("assets/textures/items/vitality_ring.png"),
+        texture: Some("textures/items/vitality_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -6693,7 +6693,7 @@
     (
         id: "resources/items/vurk",
         name: "Vurk",
-        texture: Some("assets/textures/items/vurk.png"),
+        texture: Some("textures/items/vurk.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -6736,7 +6736,7 @@
     (
         id: "resources/items/warriors_chestplate",
         name: "Warrior\'s Chestplate",
-        texture: Some("assets/textures/items/warriors_chestplate.png"),
+        texture: Some("textures/items/warriors_chestplate.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -6769,7 +6769,7 @@
     (
         id: "resources/items/warriors_helmet",
         name: "Warrior\'s Helmet",
-        texture: Some("assets/textures/items/warriors_helmet.png"),
+        texture: Some("textures/items/warriors_helmet.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -6810,7 +6810,7 @@
     (
         id: "resources/items/warriors_leggings",
         name: "Warrior\'s Leggings",
-        texture: Some("assets/textures/items/warriors_leggings.png"),
+        texture: Some("textures/items/warriors_leggings.png"),
         bb_script: None,
         socket_type: Some(leggings),
         set_resources: [
@@ -6843,7 +6843,7 @@
     (
         id: "resources/items/warriors_ring",
         name: "Warrior\'s Ring",
-        texture: Some("assets/textures/items/warriors_ring.png"),
+        texture: Some("textures/items/warriors_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -6884,7 +6884,7 @@
     (
         id: "resources/items/warriors_sabatons",
         name: "Warrior\'s Sabatons",
-        texture: Some("assets/textures/items/warriors_sabatons.png"),
+        texture: Some("textures/items/warriors_sabatons.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -6917,7 +6917,7 @@
     (
         id: "resources/items/warriors_war_hammer",
         name: "Warrior\'s War Hammer",
-        texture: Some("assets/textures/items/warriors_war_hammer.png"),
+        texture: Some("textures/items/warriors_war_hammer.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -6952,7 +6952,7 @@
     (
         id: "resources/items/witchcraft_leggings",
         name: "Witchcraft Leggings",
-        texture: Some("assets/textures/items/witchcraft_leggings.png"),
+        texture: Some("textures/items/witchcraft_leggings.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -6987,7 +6987,7 @@
     (
         id: "resources/items/witherscar",
         name: "Witherscar",
-        texture: Some("assets/textures/items/witherscar.png"),
+        texture: Some("textures/items/witherscar.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -7029,7 +7029,7 @@
     (
         id: "resources/items/wooden_crown",
         name: "Wooden Crown",
-        texture: Some("assets/textures/items/wooden_crown.png"),
+        texture: Some("textures/items/wooden_crown.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -7085,7 +7085,7 @@
     (
         id: "resources/items/wooden_plates",
         name: "Wooden Plates",
-        texture: Some("assets/textures/items/wooden_plates.png"),
+        texture: Some("textures/items/wooden_plates.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -7118,7 +7118,7 @@
     (
         id: "resources/items/wooden_shoes",
         name: "Wooden Shoes",
-        texture: Some("assets/textures/items/wooden_shoes.png"),
+        texture: Some("textures/items/wooden_shoes.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -7151,7 +7151,7 @@
     (
         id: "resources/items/zefrot",
         name: "Zefrot",
-        texture: Some("assets/textures/items/zefrot.png"),
+        texture: Some("textures/items/zefrot.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [
@@ -7177,7 +7177,7 @@
     (
         id: "resources/items/zephyrons_eye",
         name: "Zephyron\'s Eye",
-        texture: Some("assets/textures/items/zephyrons_eye.png"),
+        texture: Some("textures/items/zephyrons_eye.png"),
         bb_script: None,
         socket_type: Some(necklace),
         set_resources: [
@@ -7210,7 +7210,7 @@
     (
         id: "resources/items/zephyrons_magical_cap",
         name: "Zephyron\'s Magical Cap",
-        texture: Some("assets/textures/items/zephyrons_magical_cap.png"),
+        texture: Some("textures/items/zephyrons_magical_cap.png"),
         bb_script: None,
         socket_type: Some(helmet),
         set_resources: [
@@ -7243,7 +7243,7 @@
     (
         id: "resources/items/zephyrons_magical_cloak",
         name: "Zephyron\'s Magical Cloak",
-        texture: Some("assets/textures/items/zephyrons_magical_cloak.png"),
+        texture: Some("textures/items/zephyrons_magical_cloak.png"),
         bb_script: None,
         socket_type: Some(chestplate),
         set_resources: [
@@ -7276,7 +7276,7 @@
     (
         id: "resources/items/zephyrons_magical_ring",
         name: "Zephyron\'s Magical Ring",
-        texture: Some("assets/textures/items/zephyrons_magical_ring.png"),
+        texture: Some("textures/items/zephyrons_magical_ring.png"),
         bb_script: None,
         socket_type: Some(ring),
         set_resources: [
@@ -7311,7 +7311,7 @@
     (
         id: "resources/items/zephyrons_magical_shoes",
         name: "Zephyron\'s Magical Shoes",
-        texture: Some("assets/textures/items/zephyrons_magical_shoes.png"),
+        texture: Some("textures/items/zephyrons_magical_shoes.png"),
         bb_script: None,
         socket_type: Some(boots),
         set_resources: [
@@ -7344,7 +7344,7 @@
     (
         id: "resources/items/zephyrons_magical_staff",
         name: "Zephyron\'s Magical Staff",
-        texture: Some("assets/textures/items/zephyrons_magical_staff.png"),
+        texture: Some("textures/items/zephyrons_magical_staff.png"),
         bb_script: None,
         socket_type: Some(weapon),
         set_resources: [
@@ -7377,7 +7377,7 @@
     (
         id: "resources/items/zephyrons_tome",
         name: "Zephyron\'s Tome",
-        texture: Some("assets/textures/items/zephyrons_tome.png"),
+        texture: Some("textures/items/zephyrons_tome.png"),
         bb_script: None,
         socket_type: None,
         set_resources: [

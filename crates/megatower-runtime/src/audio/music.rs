@@ -1,12 +1,12 @@
 //! Which music plays where, from `Memory.get_music_start_track` /
 //! `get_music_loop_track` and `StateManager`'s per-state tracks.
 
-const GAMEPLAY: &str = "assets/music/gameplay/";
+const GAMEPLAY: &str = "music/gameplay/";
 
-pub const INTRO: &str = "assets/music/main_menu/intro.ogg";
-pub const MAIN_MENU: &str = "assets/music/main_menu/main_menu.ogg";
-pub const LIBRARY: &str = "assets/music/main_menu/library.ogg";
-pub const NEW_JOURNEY: &str = "assets/music/main_menu/new_journey.ogg";
+pub const INTRO: &str = "music/main_menu/intro.ogg";
+pub const MAIN_MENU: &str = "music/main_menu/main_menu.ogg";
+pub const LIBRARY: &str = "music/main_menu/library.ogg";
+pub const NEW_JOURNEY: &str = "music/main_menu/new_journey.ogg";
 /// `Music.new(stream, 0.0, 1.75)` for every menu state change.
 pub const MENU_FADE_SECONDS: f32 = 1.75;
 /// `update_music`: `start_track.fade_speed = 1.75`.
@@ -95,7 +95,7 @@ mod tests {
 
     #[test]
     fn every_referenced_track_exists_and_only_start_tracks_play_once() {
-        let root = megatower_core::paths::runtime_root();
+        let root = megatower_core::paths::runtime_root().join("assets");
         let mut paths: Vec<String> = (0..70)
             .flat_map(|f| [gameplay_start(f), gameplay_loop(f)])
             .collect();

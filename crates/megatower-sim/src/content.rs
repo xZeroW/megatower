@@ -92,7 +92,7 @@ mod tests {
 
     #[test]
     fn every_enemy_has_a_sprite_on_disk() {
-        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../assets");
         for e in &get().enemies {
             let sprite = e
                 .sprite

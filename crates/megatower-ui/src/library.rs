@@ -136,7 +136,7 @@ pub fn slot_highlight_color_type(highlighted: bool) -> megatower_core::records::
 /// `EquipmentSlotPreview.update_texture`.
 pub fn preview_texture(socket_texture: &str, locked: bool) -> &str {
     if locked {
-        "assets/textures/ui/equipment_lock.png"
+        "textures/ui/equipment_lock.png"
     } else {
         socket_texture
     }
@@ -145,7 +145,7 @@ pub fn preview_texture(socket_texture: &str, locked: bool) -> &str {
 /// `BestiaryContainer.add_enemy`: unknown enemies use the placeholder.
 pub fn bestiary_texture(enemy_texture: Option<&str>) -> String {
     enemy_texture
-        .unwrap_or("assets/textures/enemies/unknown.png")
+        .unwrap_or("textures/enemies/unknown.png")
         .to_string()
 }
 
@@ -206,12 +206,9 @@ mod tests {
         assert!(passive_source_bits(&[]).is_empty());
         assert_eq!(
             preview_texture("a.png", true),
-            "assets/textures/ui/equipment_lock.png"
+            "textures/ui/equipment_lock.png"
         );
-        assert_eq!(
-            bestiary_texture(None),
-            "assets/textures/enemies/unknown.png"
-        );
+        assert_eq!(bestiary_texture(None), "textures/enemies/unknown.png");
         assert_eq!(set_pop_animation(true), "pop_error");
     }
 }

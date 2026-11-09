@@ -167,7 +167,7 @@ pub fn draw_stash(game: &Game, ui: &UiState, rects: &Rects, out: &mut Vec<Draw>)
     {
         out.push(Draw::Image {
             rect: *rect,
-            path: "assets/textures/ui/item_slot.png".into(),
+            path: "textures/ui/item_slot.png".into(),
             region: None,
             tint: palette(2),
             slice: None,
@@ -208,7 +208,7 @@ pub fn draw_dismantle_slot(game: &Game, ui: &UiState, out: &mut Vec<Draw>) {
     let _ = ui;
     out.push(Draw::Image {
         rect: DISMANTLE_SLOT,
-        path: "assets/textures/ui/item_slot.png".into(),
+        path: "textures/ui/item_slot.png".into(),
         region: None,
         tint: palette(7),
         slice: None,

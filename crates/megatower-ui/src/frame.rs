@@ -249,7 +249,7 @@ pub(super) fn select_draws(
     {
         out.push(Draw::Image {
             rect: cell,
-            path: "assets/textures/ui/normal_panel_background.png".into(),
+            path: "textures/ui/normal_panel_background.png".into(),
             region: rects.big_panel.region,
             tint: if i == selected {
                 compose::palette(6)
@@ -414,7 +414,7 @@ pub(super) fn apply_event(ui: &mut UiState, game: &mut Game, fx: Fx) {
                 }
             }
         }
-        Fx::Sfx { name, volume_db } => ui.audio.push((format!("assets/sfx/{name}.wav"), volume_db)),
+        Fx::Sfx { name, volume_db } => ui.audio.push((format!("sfx/{name}.wav"), volume_db)),
         Fx::SfxFile { path, volume_db } => ui.audio.push((path.clone(), volume_db)),
         Fx::FloorChanged { floor } => {
             ui.message = Some((format!("FLOOR {}", floor + 1), now + 1.5))

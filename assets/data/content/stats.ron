@@ -3,7 +3,7 @@
         (
             id: accuracy,
             name: "Accuracy",
-            icon: Some("assets/textures/icons/stats/accuracy_icon.png"),
+            icon: Some("textures/icons/stats/accuracy_icon.png"),
             color: (0.513726, 0.396078, 0.94902, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -17,7 +17,7 @@
         (
             id: active_armor,
             name: "Active Armor",
-            icon: Some("assets/textures/icons/stats/armor_icon.png"),
+            icon: Some("textures/icons/stats/armor_icon.png"),
             color: (0.4224, 0.4768, 0.64, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -31,7 +31,7 @@
         (
             id: adaptive_attack,
             name: "Adaptive Attack",
-            icon: Some("assets/textures/icons/stats/adaptive_attack_icon.png"),
+            icon: Some("textures/icons/stats/adaptive_attack_icon.png"),
             color: (0.584314, 0.815686, 1.0, 1.0),
             is_attack_type: true,
             is_percentage: false,
@@ -45,7 +45,7 @@
         (
             id: agility,
             name: "Agility",
-            icon: Some("assets/textures/icons/stats/agility_icon.png"),
+            icon: Some("textures/icons/stats/agility_icon.png"),
             color: (0.780392, 0.690196, 0.545098, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -59,7 +59,7 @@
         (
             id: armor,
             name: "Armor",
-            icon: Some("assets/textures/icons/stats/armor_icon.png"),
+            icon: Some("textures/icons/stats/armor_icon.png"),
             color: (0.427451, 0.458824, 0.552941, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -73,7 +73,7 @@
         (
             id: armor_damage,
             name: "Armor Damage",
-            icon: Some("assets/textures/icons/stats/armored_attack.png"),
+            icon: Some("textures/icons/stats/armored_attack.png"),
             color: (0.427451, 0.458824, 0.552941, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -87,7 +87,7 @@
         (
             id: armor_shields,
             name: "Armor Shields",
-            icon: Some("assets/textures/icons/stats/armor_shield.png"),
+            icon: Some("textures/icons/stats/armor_shield.png"),
             color: (0.443137, 0.6, 0.780392, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -101,7 +101,7 @@
         (
             id: armor_steal,
             name: "Armor Steal",
-            icon: Some("assets/textures/icons/stats/armor_steal.png"),
+            icon: Some("textures/icons/stats/armor_steal.png"),
             color: (0.501961, 0.458824, 0.552941, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -115,7 +115,7 @@
         (
             id: armored_attack,
             name: "Armored Attack",
-            icon: Some("assets/textures/icons/stats/armored_attack.png"),
+            icon: Some("textures/icons/stats/armored_attack.png"),
             color: (0.427451, 0.458824, 0.552941, 1.0),
             is_attack_type: true,
             is_percentage: true,
@@ -129,7 +129,7 @@
         (
             id: blackrot_damage,
             name: "Blackrot Damage",
-            icon: Some("assets/textures/icons/toxicity_icon.png"),
+            icon: Some("textures/icons/toxicity_icon.png"),
             color: (0.278431, 0.278431, 0.380392, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -143,7 +143,7 @@
         (
             id: bleed_damage,
             name: "Bleed Damage",
-            icon: Some("assets/textures/icons/bleed.png"),
+            icon: Some("textures/icons/bleed.png"),
             color: (0.705882, 0.12549, 0.270588, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -157,7 +157,7 @@
         (
             id: cinder_damage,
             name: "Cinder Damage",
-            icon: Some("assets/textures/icons/cinder_damage_icon.png"),
+            icon: Some("textures/icons/cinder_damage_icon.png"),
             color: (0.976471, 0.639216, 0.105882, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -171,7 +171,7 @@
         (
             id: combat,
             name: "Combat",
-            icon: Some("assets/textures/icons/stats/combat_icon.png"),
+            icon: Some("textures/icons/stats/combat_icon.png"),
             color: (0.839216, 0.486275, 0.372549, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -185,7 +185,7 @@
         (
             id: crit_chance,
             name: "Crit Chance",
-            icon: Some("assets/textures/icons/stats/critical_strike_icon.png"),
+            icon: Some("textures/icons/stats/critical_strike_icon.png"),
             color: (1.0, 0.396078, 0.262745, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -199,7 +199,7 @@
         (
             id: critical_damage,
             name: "Critical Damage",
-            icon: Some("assets/textures/icons/stats/critical_damage.png"),
+            icon: Some("textures/icons/stats/critical_damage.png"),
             color: (1.0, 0.647059, 0.0235294, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -213,7 +213,7 @@
         (
             id: dazzle,
             name: "Dazzle",
-            icon: Some("assets/textures/icons/stats/dazzle_icon.png"),
+            icon: Some("textures/icons/stats/dazzle_icon.png"),
             color: (0.666667, 0.890196, 0.811765, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -227,7 +227,7 @@
         (
             id: dazzle_damage,
             name: "Dazzle Damage",
-            icon: Some("assets/textures/icons/stats/dazzle_icon.png"),
+            icon: Some("textures/icons/stats/dazzle_icon.png"),
             color: (0.666667, 0.890196, 0.811765, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -241,7 +241,7 @@
         (
             id: diamond,
             name: "Diamond",
-            icon: Some("assets/textures/icons/diamonds_icon.png"),
+            icon: Some("textures/icons/diamonds_icon.png"),
             color: (0.203922, 0.772549, 1.0, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -255,7 +255,7 @@
         (
             id: eldership,
             name: "Eldership",
-            icon: Some("assets/textures/icons/wisdom_icon.png"),
+            icon: Some("textures/icons/wisdom_icon.png"),
             color: (0.5112, 0.62952, 0.72, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -269,7 +269,7 @@
         (
             id: electric_damage,
             name: "Electric Damage",
-            icon: Some("assets/textures/icons/item_sets/thunder.png"),
+            icon: Some("textures/icons/item_sets/thunder.png"),
             color: (0.0, 0.666667, 1.0, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -283,7 +283,7 @@
         (
             id: electricity,
             name: "Electricity",
-            icon: Some("assets/textures/icons/stats/electricity_icon.png"),
+            icon: Some("textures/icons/stats/electricity_icon.png"),
             color: (0.988235, 0.792157, 0.0, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -297,7 +297,7 @@
         (
             id: elemental_power,
             name: "Elemental Power",
-            icon: Some("assets/textures/icons/stats/elemental_power.png"),
+            icon: Some("textures/icons/stats/elemental_power.png"),
             color: (0.52549, 0.270588, 0.501961, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -311,7 +311,7 @@
         (
             id: elemental_resistance,
             name: "Elemental Resistance",
-            icon: Some("assets/textures/icons/stats/elemental_resistance.png"),
+            icon: Some("textures/icons/stats/elemental_resistance.png"),
             color: (0.4732, 0.3328, 0.52, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -325,7 +325,7 @@
         (
             id: energy,
             name: "Energy",
-            icon: Some("assets/textures/icons/energy_icon.png"),
+            icon: Some("textures/icons/energy_icon.png"),
             color: (0.956863, 0.823529, 0.611765, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -339,7 +339,7 @@
         (
             id: faith,
             name: "Faith",
-            icon: Some("assets/textures/icons/faith.png"),
+            icon: Some("textures/icons/faith.png"),
             color: (0.960784, 0.819608, 0.529412, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -353,7 +353,7 @@
         (
             id: flow,
             name: "Flow",
-            icon: Some("assets/textures/icons/stats/flow_icon.png"),
+            icon: Some("textures/icons/stats/flow_icon.png"),
             color: (0.84, 0.930667, 1.0, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -367,7 +367,7 @@
         (
             id: freeze_attack,
             name: "Freeze Attack",
-            icon: Some("assets/textures/icons/freeze_attacks.png"),
+            icon: Some("textures/icons/freeze_attacks.png"),
             color: (0.352941, 0.533333, 1.0, 1.0),
             is_attack_type: true,
             is_percentage: false,
@@ -381,7 +381,7 @@
         (
             id: freeze_damage,
             name: "Freeze Damage",
-            icon: Some("assets/textures/icons/freeze_icon.png"),
+            icon: Some("textures/icons/freeze_icon.png"),
             color: (0.352941, 0.533333, 1.0, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -395,7 +395,7 @@
         (
             id: gold,
             name: "Gold",
-            icon: Some("assets/textures/icons/gold_coins_icon.png"),
+            icon: Some("textures/icons/gold_coins_icon.png"),
             color: (0.976471, 0.639216, 0.105882, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -409,7 +409,7 @@
         (
             id: gold_on_kill,
             name: "Gold On Kill",
-            icon: Some("assets/textures/icons/gold_coins_icon.png"),
+            icon: Some("textures/icons/gold_coins_icon.png"),
             color: (0.972549, 0.635294, 0.105882, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -423,7 +423,7 @@
         (
             id: greed,
             name: "Greed",
-            icon: Some("assets/textures/icons/greed_icon.png"),
+            icon: Some("textures/icons/greed_icon.png"),
             color: (0.976471, 0.639216, 0.105882, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -437,7 +437,7 @@
         (
             id: health,
             name: "Health",
-            icon: Some("assets/textures/icons/max_health_icon.png"),
+            icon: Some("textures/icons/max_health_icon.png"),
             color: (0.705882, 0.12549, 0.270588, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -451,7 +451,7 @@
         (
             id: lethality,
             name: "Lethality",
-            icon: Some("assets/textures/icons/stats/lethality_icon.png"),
+            icon: Some("textures/icons/stats/lethality_icon.png"),
             color: (0.701961, 0.72549, 0.819608, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -465,7 +465,7 @@
         (
             id: life_steal,
             name: "Life Steal",
-            icon: Some("assets/textures/icons/stats/life_steal_icon.png"),
+            icon: Some("textures/icons/stats/life_steal_icon.png"),
             color: (0.694118, 0.286275, 0.380392, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -479,7 +479,7 @@
         (
             id: luck,
             name: "Luck",
-            icon: Some("assets/textures/icons/luck_icon.png"),
+            icon: Some("textures/icons/luck_icon.png"),
             color: (0.000000721961, 0.805206, 0.344767, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -493,7 +493,7 @@
         (
             id: magic_attack,
             name: "Magic Attack",
-            icon: Some("assets/textures/icons/magic_damage_icon.png"),
+            icon: Some("textures/icons/magic_damage_icon.png"),
             color: (0.458824, 0.411765, 0.960784, 1.0),
             is_attack_type: true,
             is_percentage: false,
@@ -507,7 +507,7 @@
         (
             id: magic_damage,
             name: "Magic Damage",
-            icon: Some("assets/textures/icons/magic_damage_icon.png"),
+            icon: Some("textures/icons/magic_damage_icon.png"),
             color: (0.458824, 0.411765, 0.960784, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -521,7 +521,7 @@
         (
             id: malice,
             name: "Malice",
-            icon: Some("assets/textures/icons/curse_icon.png"),
+            icon: Some("textures/icons/curse_icon.png"),
             color: (0.282353, 0.227451, 0.364706, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -535,7 +535,7 @@
         (
             id: malice_damage,
             name: "Malice Damage",
-            icon: Some("assets/textures/icons/curse_icon.png"),
+            icon: Some("textures/icons/curse_icon.png"),
             color: (0.282353, 0.227451, 0.364706, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -549,7 +549,7 @@
         (
             id: mana,
             name: "Mana",
-            icon: Some("assets/textures/icons/mana_icon.png"),
+            icon: Some("textures/icons/mana_icon.png"),
             color: (0.156863, 0.360784, 0.768627, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -563,7 +563,7 @@
         (
             id: max_health,
             name: "Max Health",
-            icon: Some("assets/textures/icons/max_health_icon.png"),
+            icon: Some("textures/icons/max_health_icon.png"),
             color: (0.705882, 0.12549, 0.270588, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -577,7 +577,7 @@
         (
             id: max_mana,
             name: "Max Mana",
-            icon: Some("assets/textures/icons/mana_icon.png"),
+            icon: Some("textures/icons/mana_icon.png"),
             color: (0.156863, 0.360784, 0.768627, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -591,7 +591,7 @@
         (
             id: omni_crit_chance,
             name: "Omni Crit Chance",
-            icon: Some("assets/textures/icons/stats/critical_strike_icon.png"),
+            icon: Some("textures/icons/stats/critical_strike_icon.png"),
             color: (0.737255, 0.290196, 0.607843, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -605,7 +605,7 @@
         (
             id: omni_vamp,
             name: "Omni Vamp",
-            icon: Some("assets/textures/icons/omni_vamp.png"),
+            icon: Some("textures/icons/omni_vamp.png"),
             color: (0.764706, 0.2, 0.45098, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -619,7 +619,7 @@
         (
             id: penetration,
             name: "Penetration",
-            icon: Some("assets/textures/icons/stats/penetration_icon.png"),
+            icon: Some("textures/icons/stats/penetration_icon.png"),
             color: (0.45098, 0.4, 0.498039, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -633,7 +633,7 @@
         (
             id: physical_attack,
             name: "Physical Attack",
-            icon: Some("assets/textures/icons/stats/physical_damage_icon.png"),
+            icon: Some("textures/icons/stats/physical_damage_icon.png"),
             color: (0.98, 0.2254, 0.288283, 1.0),
             is_attack_type: true,
             is_percentage: false,
@@ -647,7 +647,7 @@
         (
             id: physical_damage,
             name: "Physical Damage",
-            icon: Some("assets/textures/icons/stats/physical_damage_icon.png"),
+            icon: Some("textures/icons/stats/physical_damage_icon.png"),
             color: (0.980392, 0.223529, 0.290196, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -661,7 +661,7 @@
         (
             id: poison_damage,
             name: "Poison Damage",
-            icon: Some("assets/textures/icons/toxicity_icon.png"),
+            icon: Some("textures/icons/toxicity_icon.png"),
             color: (0.360784, 0.537255, 0.388235, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -675,7 +675,7 @@
         (
             id: power,
             name: "Power",
-            icon: Some("assets/textures/icons/power_icon.png"),
+            icon: Some("textures/icons/power_icon.png"),
             color: (0.721569, 0.321569, 0.517647, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -689,7 +689,7 @@
         (
             id: random_stat,
             name: "Random Stat",
-            icon: Some("assets/textures/icons/unknown_set_icon.png"),
+            icon: Some("textures/icons/unknown_set_icon.png"),
             color: (0.698039, 0.721569, 0.815686, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -703,7 +703,7 @@
         (
             id: recovery,
             name: "Recovery",
-            icon: Some("assets/textures/icons/recovery.png"),
+            icon: Some("textures/icons/recovery.png"),
             color: (0.705882, 0.12549, 0.270588, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -717,7 +717,7 @@
         (
             id: spelldom,
             name: "Spelldom",
-            icon: Some("assets/textures/icons/spelldom_icon.png"),
+            icon: Some("textures/icons/spelldom_icon.png"),
             color: (0.721569, 0.666667, 0.913725, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -731,7 +731,7 @@
         (
             id: tenacity,
             name: "Tenacity",
-            icon: Some("assets/textures/icons/stats/tenacity_icon.png"),
+            icon: Some("textures/icons/stats/tenacity_icon.png"),
             color: (0.635294, 0.537255, 1.0, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -745,7 +745,7 @@
         (
             id: total_attacks,
             name: "Total Attacks",
-            icon: Some("assets/textures/icons/extra_attack_icon.png"),
+            icon: Some("textures/icons/extra_attack_icon.png"),
             color: (0.858824, 0.643137, 0.388235, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -759,7 +759,7 @@
         (
             id: toughness,
             name: "Toughness",
-            icon: Some("assets/textures/icons/toughness_icon.png"),
+            icon: Some("textures/icons/toughness_icon.png"),
             color: (0.521569, 0.619608, 0.643137, 1.0),
             is_attack_type: false,
             is_percentage: true,
@@ -773,7 +773,7 @@
         (
             id: toxicity,
             name: "Toxicity",
-            icon: Some("assets/textures/icons/toxicity_icon.png"),
+            icon: Some("textures/icons/toxicity_icon.png"),
             color: (0.360784, 0.537255, 0.388235, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -787,7 +787,7 @@
         (
             id: true_damage,
             name: "True Damage",
-            icon: Some("assets/textures/icons/true_damage_icon.png"),
+            icon: Some("textures/icons/true_damage_icon.png"),
             color: (1.0, 1.0, 1.0, 1.0),
             is_attack_type: false,
             is_percentage: false,
@@ -801,7 +801,7 @@
         (
             id: wisdom,
             name: "Wisdom",
-            icon: Some("assets/textures/icons/wisdom_icon.png"),
+            icon: Some("textures/icons/wisdom_icon.png"),
             color: (0.541176, 0.694118, 1.0, 1.0),
             is_attack_type: false,
             is_percentage: false,

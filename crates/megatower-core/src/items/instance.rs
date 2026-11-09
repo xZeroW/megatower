@@ -431,7 +431,7 @@ impl Item {
 
     pub fn texture(&self) -> Option<&str> {
         if self.is_tinker_kit {
-            return Some("assets/textures/items/tinker_kit.png");
+            return Some("textures/items/tinker_kit.png");
         }
         self.resource
             .as_ref()

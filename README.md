@@ -147,3 +147,5 @@ Everything under `assets/data/` (`layouts/`, `content/`, `rooms/`) is RON, compi
 
 The game loads fonts, textures, and audio from the workspace `assets/` folder,
 not from the original game project, which is no longer in the repo.
+For release downloads, extract the whole archive and keep `assets/` next to the
+game executable; copying the executable alone will not include these files.

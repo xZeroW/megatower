@@ -121,9 +121,9 @@ pub fn fade_out(origin_state: &str, current_state: &str) -> bool {
 }
 
 /// Tones played by `process_tone_events`: (path, volume, pitch min, pitch max).
-pub const BUTTON_HOVER: (&str, f32, f32, f32) = ("assets/sfx/button_hover.wav", -6.0, 1.05, 1.05);
-pub const BUTTON_PRESS: (&str, f32, f32, f32) = ("assets/sfx/button_press.wav", 2.45, 0.93, 1.08);
-pub const RUNE_SELECT: (&str, f32, f32, f32) = ("assets/sfx/ui/rune_select.wav", 5.0, 1.05, 1.05);
+pub const BUTTON_HOVER: (&str, f32, f32, f32) = ("sfx/button_hover.wav", -6.0, 1.05, 1.05);
+pub const BUTTON_PRESS: (&str, f32, f32, f32) = ("sfx/button_press.wav", 2.45, 0.93, 1.08);
+pub const RUNE_SELECT: (&str, f32, f32, f32) = ("sfx/ui/rune_select.wav", 5.0, 1.05, 1.05);
 
 /// `EnemyManager.upgrade_enemy`: indexes of enemies in the battle that get
 /// the upgrade's stats.

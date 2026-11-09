@@ -8,9 +8,10 @@ use bevy::color::ColorToComponents;
 use serde_json::{Value, json};
 
 fn oracle() -> Value {
-    serde_json::from_str(include_str!(
-        "../../../../artifacts/character-content-golden.json"
-    ))
+    serde_json::from_str(
+        &include_str!("../../../../artifacts/character-content-golden.json")
+            .replace("\"assets/", "\""),
+    )
     .unwrap()
 }
 

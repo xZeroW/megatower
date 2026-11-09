@@ -22,9 +22,9 @@ use serde_json::{Value, json};
 use std::sync::Arc;
 
 fn oracle() -> Vec<Value> {
-    serde_json::from_str(include_str!(
-        "../../../../artifacts/item-catalog-golden.json"
-    ))
+    serde_json::from_str(
+        &include_str!("../../../../artifacts/item-catalog-golden.json").replace("\"assets/", "\""),
+    )
     .unwrap()
 }
 

@@ -52,14 +52,14 @@ impl BorderType {
 
     pub fn texture(self) -> &'static str {
         match self {
-            Self::Ascended => "assets/textures/portrait_borders/ascended_border.png",
-            Self::Celestial => "assets/textures/portrait_borders/celestial_border.png",
-            Self::Frozen => "assets/textures/portrait_borders/frozen_border.png",
-            Self::Jaden => "assets/textures/portrait_borders/jaden_border.png",
-            Self::Demonic => "assets/textures/portrait_borders/demonic_border.png",
-            Self::Golden => "assets/textures/portrait_borders/golden_border.png",
-            Self::Silver => "assets/textures/portrait_borders/silver_border.png",
-            Self::Wooden => "assets/textures/portrait_borders/wooden_border.png",
+            Self::Ascended => "textures/portrait_borders/ascended_border.png",
+            Self::Celestial => "textures/portrait_borders/celestial_border.png",
+            Self::Frozen => "textures/portrait_borders/frozen_border.png",
+            Self::Jaden => "textures/portrait_borders/jaden_border.png",
+            Self::Demonic => "textures/portrait_borders/demonic_border.png",
+            Self::Golden => "textures/portrait_borders/golden_border.png",
+            Self::Silver => "textures/portrait_borders/silver_border.png",
+            Self::Wooden => "textures/portrait_borders/wooden_border.png",
         }
     }
 }
@@ -140,7 +140,7 @@ pub const KEYWORDS: [Keyword; 8] = [
     },
     Keyword {
         name: "Execute",
-        icon: Some("assets/textures/icons/execution_icon.png"),
+        icon: Some("textures/icons/execution_icon.png"),
         color: [0.701961, 0.72549, 0.819608, 1.0],
         bb_script: None,
     },
@@ -152,13 +152,13 @@ pub const KEYWORDS: [Keyword; 8] = [
     },
     Keyword {
         name: "Tinker",
-        icon: Some("assets/textures/icons/dismantle_icon.png"),
+        icon: Some("textures/icons/dismantle_icon.png"),
         color: [0.368627, 0.368627, 0.462745, 1.0],
         bb_script: Some("tinker"),
     },
     Keyword {
         name: "Heal",
-        icon: Some("assets/textures/icons/stats/heal_icon.png"),
+        icon: Some("textures/icons/stats/heal_icon.png"),
         color: [0.690196, 0.909804, 0.529412, 1.0],
         bb_script: None,
     },

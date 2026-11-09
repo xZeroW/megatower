@@ -40,7 +40,7 @@ struct RoomCamera;
 
 /// Render layer of the room scene, kept out of the UI camera.
 pub const ROOM_LAYER: usize = 1;
-const WALL_TEXTURE: &str = "assets/textures/3d/dungeon_wall.png";
+const WALL_TEXTURE: &str = "textures/3d/dungeon_wall.png";
 
 #[derive(AutoPlugin)]
 pub struct RoomRenderPlugin;

@@ -3,7 +3,7 @@
         (
             id: "resources/item_sets/ancient_ice",
             name: "Ancient Ice",
-            icon: Some("assets/textures/icons/item_sets/ancient_ice.png"),
+            icon: Some("textures/icons/item_sets/ancient_ice.png"),
             color: (0.494118, 0.827451, 1.0, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -12,7 +12,7 @@
         (
             id: "resources/item_sets/ancient_shell",
             name: "Ancient Shell",
-            icon: Some("assets/textures/icons/item_sets/ancient_shell.png"),
+            icon: Some("textures/icons/item_sets/ancient_shell.png"),
             color: (0.351563, 0.304688, 0.265625, 1.0),
             bonus_stats: [],
             game_logic_script: Some("resources/item_set_scripts/ancient_shell.gd"),
@@ -21,7 +21,7 @@
         (
             id: "resources/item_sets/arcanum",
             name: "Arcanum",
-            icon: Some("assets/textures/icons/item_sets/arcanum_icon.png"),
+            icon: Some("textures/icons/item_sets/arcanum_icon.png"),
             color: (0.14902, 0.682353, 0.835294, 1.0),
             bonus_stats: [],
             game_logic_script: Some("resources/item_set_scripts/arcanum.gd"),
@@ -30,7 +30,7 @@
         (
             id: "resources/item_sets/bastolic",
             name: "Bastolic",
-            icon: Some("assets/textures/icons/item_sets/bastolic_icon.png"),
+            icon: Some("textures/icons/item_sets/bastolic_icon.png"),
             color: (0.737255, 0.333333, 0.639216, 1.0),
             bonus_stats: [],
             game_logic_script: Some("resources/item_set_scripts/bastolic.gd"),
@@ -39,7 +39,7 @@
         (
             id: "resources/item_sets/berserker",
             name: "Berserker",
-            icon: Some("assets/textures/icons/item_sets/berserker_icon.png"),
+            icon: Some("textures/icons/item_sets/berserker_icon.png"),
             color: (0.309804, 0.305882, 0.290196, 1.0),
             bonus_stats: [],
             game_logic_script: Some("resources/item_set_scripts/berserker.gd"),
@@ -48,7 +48,7 @@
         (
             id: "resources/item_sets/blackthorn",
             name: "Blackthorn",
-            icon: Some("assets/textures/icons/item_sets/blackthorn_icon.png"),
+            icon: Some("textures/icons/item_sets/blackthorn_icon.png"),
             color: (0.328125, 0.238281, 0.269531, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -57,7 +57,7 @@
         (
             id: "resources/item_sets/cataclysm",
             name: "Cataclysm",
-            icon: Some("assets/textures/icons/item_sets/cataclysm_icon.png"),
+            icon: Some("textures/icons/item_sets/cataclysm_icon.png"),
             color: (0.576471, 0.498039, 0.431373, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -66,7 +66,7 @@
         (
             id: "resources/item_sets/celestial",
             name: "Celestial",
-            icon: Some("assets/textures/icons/item_sets/celestial_icon.png"),
+            icon: Some("textures/icons/item_sets/celestial_icon.png"),
             color: (0.737255, 0.290196, 0.607843, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -75,7 +75,7 @@
         (
             id: "resources/item_sets/chromalure",
             name: "Chromalure",
-            icon: Some("assets/textures/icons/item_sets/chromalure_icon.png"),
+            icon: Some("textures/icons/item_sets/chromalure_icon.png"),
             color: (0.257813, 0.640625, 0.347656, 1.0),
             bonus_stats: [],
             game_logic_script: Some("resources/item_set_scripts/chromalure.gd"),
@@ -84,7 +84,7 @@
         (
             id: "resources/item_sets/consumable",
             name: "Consumable",
-            icon: Some("assets/textures/icons/item_sets/consumable.png"),
+            icon: Some("textures/icons/item_sets/consumable.png"),
             color: (0.349144, 0.349176, 0.409201, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -93,7 +93,7 @@
         (
             id: "resources/item_sets/cursed",
             name: "Cursed",
-            icon: Some("assets/textures/icons/item_sets/cursed_icon.png"),
+            icon: Some("textures/icons/item_sets/cursed_icon.png"),
             color: (0.28125, 0.226563, 0.363281, 1.0),
             bonus_stats: [],
             game_logic_script: Some("resources/item_set_scripts/cursed.gd"),
@@ -102,7 +102,7 @@
         (
             id: "resources/item_sets/darkness",
             name: "Darkness",
-            icon: Some("assets/textures/icons/item_sets/darkness_icon.png"),
+            icon: Some("textures/icons/item_sets/darkness_icon.png"),
             color: (0.277344, 0.277344, 0.378906, 1.0),
             bonus_stats: [],
             game_logic_script: Some("resources/item_set_scripts/darkness.gd"),
@@ -111,7 +111,7 @@
         (
             id: "resources/item_sets/demonic",
             name: "Demonic",
-            icon: Some("assets/textures/icons/item_sets/demonic_icon.png"),
+            icon: Some("textures/icons/item_sets/demonic_icon.png"),
             color: (0.517647, 0.211765, 0.25098, 1.0),
             bonus_stats: [],
             game_logic_script: Some("resources/item_set_scripts/demonic.gd"),
@@ -120,7 +120,7 @@
         (
             id: "resources/item_sets/essential",
             name: "Essential",
-            icon: Some("assets/textures/icons/item_sets/essential_icon.png"),
+            icon: Some("textures/icons/item_sets/essential_icon.png"),
             color: (0.6177, 0.689185, 0.87, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -129,7 +129,7 @@
         (
             id: "resources/item_sets/flesh",
             name: "Flesh",
-            icon: Some("assets/textures/icons/item_sets/flesh_icon.png"),
+            icon: Some("textures/icons/item_sets/flesh_icon.png"),
             color: (0.726563, 0.457031, 0.414063, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -138,7 +138,7 @@
         (
             id: "resources/item_sets/generic",
             name: "Generic",
-            icon: Some("assets/textures/icons/item_sets/generic_icon.png"),
+            icon: Some("textures/icons/item_sets/generic_icon.png"),
             color: (0.698039, 0.721569, 0.815686, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -147,7 +147,7 @@
         (
             id: "resources/item_sets/golden",
             name: "Golden",
-            icon: Some("assets/textures/icons/item_sets/golden_icon.png"),
+            icon: Some("textures/icons/item_sets/golden_icon.png"),
             color: (0.972549, 0.635294, 0.105882, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -156,7 +156,7 @@
         (
             id: "resources/item_sets/hunter",
             name: "Hunter",
-            icon: Some("assets/textures/icons/item_sets/hunter_icon.png"),
+            icon: Some("textures/icons/item_sets/hunter_icon.png"),
             color: (0.496094, 0.554688, 0.265625, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -165,7 +165,7 @@
         (
             id: "resources/item_sets/jade",
             name: "Jade",
-            icon: Some("assets/textures/icons/item_sets/jade.png"),
+            icon: Some("textures/icons/item_sets/jade.png"),
             color: (0.12549, 0.839216, 0.780392, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -174,7 +174,7 @@
         (
             id: "resources/item_sets/legacy",
             name: "Legacy",
-            icon: Some("assets/textures/icons/item_sets/legacy_icon.png"),
+            icon: Some("textures/icons/item_sets/legacy_icon.png"),
             color: (0.996078, 0.952941, 0.752941, 1.0),
             bonus_stats: [],
             game_logic_script: Some("resources/item_set_scripts/legacy.gd"),
@@ -183,7 +183,7 @@
         (
             id: "resources/item_sets/magma",
             name: "Magma",
-            icon: Some("assets/textures/icons/magma_icon.png"),
+            icon: Some("textures/icons/magma_icon.png"),
             color: (0.980392, 0.415686, 0.0392157, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -192,7 +192,7 @@
         (
             id: "resources/item_sets/mercenary",
             name: "Mercenary",
-            icon: Some("assets/textures/icons/item_sets/mercenary_icon.png"),
+            icon: Some("textures/icons/item_sets/mercenary_icon.png"),
             color: (0.427451, 0.298039, 0.254902, 1.0),
             bonus_stats: [],
             game_logic_script: Some("resources/item_set_scripts/mercenary.gd"),
@@ -201,7 +201,7 @@
         (
             id: "resources/item_sets/orion",
             name: "Orion",
-            icon: Some("assets/textures/icons/item_sets/orion_icon.png"),
+            icon: Some("textures/icons/item_sets/orion_icon.png"),
             color: (0.726563, 0.457031, 0.414063, 1.0),
             bonus_stats: [],
             game_logic_script: Some("resources/item_set_scripts/orion.gd"),
@@ -210,7 +210,7 @@
         (
             id: "resources/item_sets/phantom",
             name: "Phantom",
-            icon: Some("assets/textures/icons/item_sets/phantom_icon.png"),
+            icon: Some("textures/icons/item_sets/phantom_icon.png"),
             color: (0.12549, 0.839216, 0.780392, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -219,7 +219,7 @@
         (
             id: "resources/item_sets/poverty",
             name: "Poverty",
-            icon: Some("assets/textures/icons/item_sets/poverty.png"),
+            icon: Some("textures/icons/item_sets/poverty.png"),
             color: (0.313726, 0.290196, 0.286275, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -228,7 +228,7 @@
         (
             id: "resources/item_sets/reforge",
             name: "Reforge",
-            icon: Some("assets/textures/icons/dismantle_icon.png"),
+            icon: Some("textures/icons/dismantle_icon.png"),
             color: (0.367565, 0.367865, 0.462613, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -237,7 +237,7 @@
         (
             id: "resources/item_sets/royal",
             name: "Royal",
-            icon: Some("assets/textures/icons/item_sets/royal_icon.png"),
+            icon: Some("textures/icons/item_sets/royal_icon.png"),
             color: (0.0, 0.509804, 0.827451, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -246,7 +246,7 @@
         (
             id: "resources/item_sets/scout",
             name: "Scout",
-            icon: Some("assets/textures/icons/item_sets/scout.png"),
+            icon: Some("textures/icons/item_sets/scout.png"),
             color: (0.733333, 0.458824, 0.278431, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -255,7 +255,7 @@
         (
             id: "resources/item_sets/shadow",
             name: "Shadow",
-            icon: Some("assets/textures/icons/item_sets/shadow_icon.png"),
+            icon: Some("textures/icons/item_sets/shadow_icon.png"),
             color: (0.282353, 0.278431, 0.278431, 1.0),
             bonus_stats: [],
             game_logic_script: Some("resources/item_set_scripts/shadow.gd"),
@@ -264,7 +264,7 @@
         (
             id: "resources/item_sets/silver",
             name: "Silver",
-            icon: Some("assets/textures/icons/item_sets/silver_icon.png"),
+            icon: Some("textures/icons/item_sets/silver_icon.png"),
             color: (0.542969, 0.574219, 0.683594, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -273,7 +273,7 @@
         (
             id: "resources/item_sets/swiftness",
             name: "Swiftness",
-            icon: Some("assets/textures/icons/item_sets/swiftness_icon.png"),
+            icon: Some("textures/icons/item_sets/swiftness_icon.png"),
             color: (0.752941, 0.941176, 1.0, 1.0),
             bonus_stats: [],
             game_logic_script: Some("resources/item_set_scripts/swiftness.gd"),
@@ -282,7 +282,7 @@
         (
             id: "resources/item_sets/thunder",
             name: "Thunder",
-            icon: Some("assets/textures/icons/item_sets/thunder.png"),
+            icon: Some("textures/icons/item_sets/thunder.png"),
             color: (0.96875, 0.769531, 0.226563, 1.0),
             bonus_stats: [],
             game_logic_script: Some("resources/item_set_scripts/thunder.gd"),
@@ -291,7 +291,7 @@
         (
             id: "resources/item_sets/tome",
             name: "Tome",
-            icon: Some("assets/textures/icons/item_sets/tome.png"),
+            icon: Some("textures/icons/item_sets/tome.png"),
             color: (0.4466, 0.482173, 0.58, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -300,7 +300,7 @@
         (
             id: "resources/item_sets/unchained",
             name: "Unchained",
-            icon: Some("assets/textures/icons/item_sets/unchained_icon.png"),
+            icon: Some("textures/icons/item_sets/unchained_icon.png"),
             color: (0.701961, 0.72549, 0.819608, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -309,7 +309,7 @@
         (
             id: "resources/item_sets/vampiric",
             name: "Vampiric",
-            icon: Some("assets/textures/icons/item_sets/vampiric_icon.png"),
+            icon: Some("textures/icons/item_sets/vampiric_icon.png"),
             color: (0.658824, 0.180392, 0.309804, 1.0),
             bonus_stats: [],
             game_logic_script: Some("resources/item_set_scripts/vampiric.gd"),
@@ -318,7 +318,7 @@
         (
             id: "resources/item_sets/warrior",
             name: "Warrior",
-            icon: Some("assets/textures/icons/item_sets/warrior.png"),
+            icon: Some("textures/icons/item_sets/warrior.png"),
             color: (0.5, 0.480469, 0.476563, 1.0),
             bonus_stats: [],
             game_logic_script: Some("resources/item_set_scripts/warrior.gd"),
@@ -327,7 +327,7 @@
         (
             id: "resources/item_sets/wood",
             name: "Wood",
-            icon: Some("assets/textures/icons/item_sets/wood_icon.png"),
+            icon: Some("textures/icons/item_sets/wood_icon.png"),
             color: (0.472656, 0.402344, 0.332031, 1.0),
             bonus_stats: [
                 Some([
@@ -354,7 +354,7 @@
         (
             id: "resources/item_sets/zephyron",
             name: "Zephyron",
-            icon: Some("assets/textures/icons/item_sets/zephyrons_icon.png"),
+            icon: Some("textures/icons/item_sets/zephyrons_icon.png"),
             color: (0.398438, 0.296875, 0.6875, 1.0),
             bonus_stats: [],
             game_logic_script: None,
@@ -822,7 +822,7 @@
         (
             id: "resources/abilities/arcane_roulette",
             name: "Arcane Roulette",
-            icon: Some("assets/textures/icons/abilities/arcane_roulette_icon.png"),
+            icon: Some("textures/icons/abilities/arcane_roulette_icon.png"),
             mana_cost: 0,
             use_limit: 2,
             status_effects_on_activation: [],
@@ -850,7 +850,7 @@
         (
             id: "resources/abilities/barrier",
             name: "Barrier",
-            icon: Some("assets/textures/icons/magic_shield_icon.png"),
+            icon: Some("textures/icons/magic_shield_icon.png"),
             mana_cost: 1,
             use_limit: 0,
             status_effects_on_activation: [],
@@ -864,7 +864,7 @@
         (
             id: "resources/abilities/bloodlust_aura",
             name: "Bloodlust Aura",
-            icon: Some("assets/textures/icons/abilities/bloodlust_aura_icon.png"),
+            icon: Some("textures/icons/abilities/bloodlust_aura_icon.png"),
             mana_cost: 0,
             use_limit: 1,
             status_effects_on_activation: [],
@@ -878,7 +878,7 @@
         (
             id: "resources/abilities/burden_of_power",
             name: "Burden of Power",
-            icon: Some("assets/textures/icons/abilities/burden_of_power_icon.png"),
+            icon: Some("textures/icons/abilities/burden_of_power_icon.png"),
             mana_cost: 0,
             use_limit: 1,
             status_effects_on_activation: [
@@ -932,7 +932,7 @@
         (
             id: "resources/abilities/drain_react",
             name: "Drain React",
-            icon: Some("assets/textures/icons/weakness_icon.png"),
+            icon: Some("textures/icons/weakness_icon.png"),
             mana_cost: 0,
             use_limit: 1,
             status_effects_on_activation: [],
@@ -988,7 +988,7 @@
         (
             id: "resources/abilities/frozen_strike",
             name: "Frozen Strike",
-            icon: Some("assets/textures/icons/abilities/frozen_strike.png"),
+            icon: Some("textures/icons/abilities/frozen_strike.png"),
             mana_cost: 1,
             use_limit: 0,
             status_effects_on_activation: [],
@@ -1058,7 +1058,7 @@
         (
             id: "resources/abilities/heart_of_iron",
             name: "Heart of Iron",
-            icon: Some("assets/textures/icons/heart_of_iron.png"),
+            icon: Some("textures/icons/heart_of_iron.png"),
             mana_cost: 0,
             use_limit: 1,
             status_effects_on_activation: [],
@@ -1100,7 +1100,7 @@
         (
             id: "resources/abilities/mind_control",
             name: "Mind Control",
-            icon: Some("assets/textures/icons/abilities/mind_control.png"),
+            icon: Some("textures/icons/abilities/mind_control.png"),
             mana_cost: 2,
             use_limit: 0,
             status_effects_on_activation: [],
@@ -1170,7 +1170,7 @@
         (
             id: "resources/abilities/multi_stun",
             name: "Multi Stun",
-            icon: Some("assets/textures/icons/multi_stun_icon.png"),
+            icon: Some("textures/icons/multi_stun_icon.png"),
             mana_cost: 0,
             use_limit: 1,
             status_effects_on_activation: [],
@@ -1184,7 +1184,7 @@
         (
             id: "resources/abilities/my_justice",
             name: "My Justice",
-            icon: Some("assets/textures/icons/my_justice_icon.png"),
+            icon: Some("textures/icons/my_justice_icon.png"),
             mana_cost: 0,
             use_limit: 1,
             status_effects_on_activation: [
@@ -1207,7 +1207,7 @@
         (
             id: "resources/abilities/my_way",
             name: "My Way",
-            icon: Some("assets/textures/icons/counter_attack_icon.png"),
+            icon: Some("textures/icons/counter_attack_icon.png"),
             mana_cost: 0,
             use_limit: 2,
             status_effects_on_activation: [
@@ -1273,7 +1273,7 @@
         (
             id: "resources/abilities/prowlers_strike",
             name: "Prowler\'s Strike",
-            icon: Some("assets/textures/icons/prowlers_strike_icon.png"),
+            icon: Some("textures/icons/prowlers_strike_icon.png"),
             mana_cost: 0,
             use_limit: 3,
             status_effects_on_activation: [],
@@ -1301,7 +1301,7 @@
         (
             id: "resources/abilities/replay",
             name: "Replay",
-            icon: Some("assets/textures/icons/replay_ability_icon.png"),
+            icon: Some("textures/icons/replay_ability_icon.png"),
             mana_cost: 0,
             use_limit: 1,
             status_effects_on_activation: [],
@@ -1357,7 +1357,7 @@
         (
             id: "resources/abilities/silhouette",
             name: "Silhouette",
-            icon: Some("assets/textures/icons/elusive_icon.png"),
+            icon: Some("textures/icons/elusive_icon.png"),
             mana_cost: 0,
             use_limit: 1,
             status_effects_on_activation: [
@@ -1376,7 +1376,7 @@
         (
             id: "resources/abilities/spell_bind",
             name: "Spell Bind",
-            icon: Some("assets/textures/icons/silence_icon.png"),
+            icon: Some("textures/icons/silence_icon.png"),
             mana_cost: 1,
             use_limit: 0,
             status_effects_on_activation: [],
@@ -1390,7 +1390,7 @@
         (
             id: "resources/abilities/steady_grip",
             name: "Steady Grip",
-            icon: Some("assets/textures/icons/extra_attack_icon.png"),
+            icon: Some("textures/icons/extra_attack_icon.png"),
             mana_cost: 0,
             use_limit: 3,
             status_effects_on_activation: [],

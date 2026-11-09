@@ -372,7 +372,7 @@ pub fn draws(
         let x = t[0] - 4.0 + t[2] * ui.rarity as f32 / MAX_RARITY as f32;
         out.push(tinted(
             [x, t[1] - 3.0, 8.0, 10.0],
-            "assets/textures/ui/slider_grabber.png",
+            "textures/ui/slider_grabber.png",
             palette(4),
         ));
     }
@@ -403,7 +403,7 @@ pub fn draws(
         let Some(cell) = build_cell(layout, slot, ui.build_scroll) else {
             continue;
         };
-        out.push(tinted(cell, "assets/textures/ui/item_slot.png", palette(4)));
+        out.push(tinted(cell, "textures/ui/item_slot.png", palette(4)));
         if let Some(Some(item)) = items.get(slot)
             && let Some(entity) = ui.build_entity(item)
         {

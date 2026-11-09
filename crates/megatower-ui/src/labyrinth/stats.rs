@@ -17,7 +17,7 @@ const COL_W: f32 = 142.0;
 const ROW_H: f32 = 14.5;
 const CHAR_W: f32 = 6.0;
 
-const ICONS: &str = "assets/textures/icons/";
+const ICONS: &str = "textures/icons/";
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct StatLine {
