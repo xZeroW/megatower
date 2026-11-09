@@ -1,0 +1,124 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tag in the format `v1.2.3`"
+        required: true
+        type: string
+      build_for_linux:
+        description: "Build for Linux"
+        default: true
+        type: boolean
+      build_for_windows:
+        description: "Build for Windows"
+        default: true
+        type: boolean
+      build_for_macos:
+        description: "Build for macOS"
+        default: true
+        type: boolean
+      upload_to_github:
+        description: "Upload to GitHub releases"
+        default: true
+        type: boolean
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  binary_name: megatower
+  package_name: megatower
+  assets_path: assets
+
+jobs:
+  build:
+    name: Build (${{ matrix.platform }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux
+            runner: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - platform: windows
+            runner: windows-latest
+            target: x86_64-pc-windows-msvc
+            binary_ext: .exe
+          - platform: macos
+            runner: macos-latest
+            target: aarch64-apple-darwin
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check platform enabled
+        id: enabled
+        run: |
+          case '${{ matrix.platform }}' in
+            linux) v='${{ inputs.build_for_linux }}' ;;
+            windows) v='${{ inputs.build_for_windows }}' ;;
+            macos) v='${{ inputs.build_for_macos }}' ;;
+          esac
+          echo "value=${v}" >> "${GITHUB_OUTPUT}"
+
+      - uses: actions/checkout@v4
+        if: steps.enabled.outputs.value == 'true'
+
+      - uses: dtolnay/rust-toolchain@stable
+        if: steps.enabled.outputs.value == 'true'
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        if: steps.enabled.outputs.value == 'true'
+        with:
+          shared-key: release-${{ matrix.platform }}
+          cache-on-failure: true
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Install build dependencies (Linux)
+        if: steps.enabled.outputs.value == 'true' && matrix.platform == 'linux'
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
+
+      - name: Build
+        if: steps.enabled.outputs.value == 'true'
+        run: cargo build --locked --release -p megatower-client --target '${{ matrix.target }}'
+
+      - name: Package
+        if: steps.enabled.outputs.value == 'true'
+        run: |
+          out="${{ env.package_name }}-${{ matrix.platform }}"
+          mkdir -p "tmp/${out}"
+          cp "target/${{ matrix.target }}/release/${{ env.binary_name }}${{ matrix.binary_ext }}" "tmp/${out}/"
+          cp -R '${{ env.assets_path }}' "tmp/${out}/"
+          cd tmp
+          if [ '${{ matrix.platform }}' = 'windows' ]; then
+            7z a "${out}.zip" "${out}"
+          else
+            zip --recurse-paths "${out}.zip" "${out}"
+          fi
+          echo "package=${out}.zip" >> "${GITHUB_ENV}"
+
+      - uses: actions/upload-artifact@v4
+        if: steps.enabled.outputs.value == 'true'
+        with:
+          name: package-${{ matrix.platform }}
+          path: tmp/${{ env.package }}
+          retention-days: 7
+
+      - name: Upload package to GitHub release
+        if: steps.enabled.outputs.value == 'true' && inputs.upload_to_github
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: tmp/${{ env.package }}
+          asset_name: ${{ env.package }}
+          release_name: ${{ inputs.version }}
+          tag: ${{ inputs.version }}
+          overwrite: true
