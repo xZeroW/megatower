@@ -5,7 +5,7 @@ use crate::character::{Character, GemSpot, ItemSpot, Loot};
 use crate::combat::{Battle, CombatEvent, FLASK_CHARGES, HeroAction, Outcome, encounter_scaled};
 use crate::content;
 use crate::labyrinth::{self, Dir, Floor, MoveError, Pos, RoomKind, Turn};
-use crate::legacy::Legacy;
+use crate::legacy::{Legacy, RunEnd};
 use crate::loot::{reward_offers, room_loot, room_orbs, starting_character};
 use crate::merchant::{Shop, loot_sell_price, salvage, salvage_price, sell as sell_loot};
 use crate::orbs::{Orb, OrbError};
@@ -64,6 +64,8 @@ pub struct Run {
     pub legacy: Legacy,
     /// Points already paid out for this run's end.
     rewarded: bool,
+    /// Id of the gem the run started with; empty until one is picked.
+    pub starter: String,
 }
 
 /// What a saved run keeps. Only the map between rooms is saved: no fight,
@@ -77,6 +79,8 @@ struct SavedRun {
     /// Merchant stock per room (a list, since a position is not a text key).
     shops: Vec<(Pos, Shop)>,
     legacy: Legacy,
+    #[serde(default)]
+    starter: String,
 }
 
 /// Bumped when the saved shape changes so an old save is dropped, not misread.
@@ -140,6 +144,7 @@ impl Run {
             battle: None,
             reward: None,
             rewarded: false,
+            starter: String::new(),
         }
     }
 
@@ -150,14 +155,14 @@ impl Run {
         offers
     }
 
-    /// Pays out Legacy points for a dead run, once; `None` while alive or
-    /// already paid.
-    pub fn finish(&mut self) -> Option<u32> {
+    /// Pays out Legacy points for a dead run and records it, once; `None`
+    /// while alive or already paid.
+    pub fn finish(&mut self) -> Option<RunEnd> {
         if self.mode != Mode::Dead || self.rewarded {
             return None;
         }
         self.rewarded = true;
-        Some(self.legacy.finish_run(self.floor.number))
+        Some(self.legacy.finish_run(self.floor.number, &self.starter))
     }
 
     /// The run as text, or `None` unless it is on the map between rooms.
@@ -174,6 +179,7 @@ impl Run {
             character: self.character.clone(),
             shops,
             legacy: self.legacy.clone(),
+            starter: self.starter.clone(),
         })
         .ok()
     }
@@ -195,6 +201,7 @@ impl Run {
             reward: None,
             legacy: saved.legacy,
             rewarded: false,
+            starter: saved.starter,
         })
     }
 
@@ -246,6 +253,7 @@ impl Run {
             return;
         };
         self.character = starting_character(&id, content::get(), &mut self.rng);
+        self.starter = id;
         self.legacy.apply(&mut self.character);
         self.mode = Mode::Map;
     }
@@ -332,7 +340,10 @@ impl Run {
             _ => {}
         }
         let danger = self.floor.danger();
-        let Some(enemies) = encounter_scaled(kind, floor, danger, &c.enemies, &mut self.rng) else {
+        let modifier = self.floor.modifier;
+        let Some(enemies) =
+            encounter_scaled(kind, floor, danger, modifier, &c.enemies, &mut self.rng)
+        else {
             self.floor.resolve_current();
             return;
         };
@@ -981,8 +992,11 @@ mod tests {
         let mut run = started(7);
         assert_eq!(run.finish(), None);
         run.mode = Mode::Dead;
-        let earned = run.finish().unwrap();
+        let end = run.finish().unwrap();
+        let earned = end.points;
         assert_eq!(earned, crate::legacy::run_reward(1));
+        assert!(end.record);
+        assert_eq!(run.legacy.best_with(&run.starter), 1);
         assert_eq!(run.finish(), None);
         assert_eq!(run.legacy.points, earned);
 

@@ -69,6 +69,11 @@ a purple "call" brings another enemy in. Hover an enemy to read its next move.
 Wandering a floor too long raises Danger (shown under the life bar): enemies you meet grow
 stronger until you take the stairs.
 
+Floors 4 and 7, and every floor from 10, have a modifier, named in purple on the top line
+(hover it): Burning and Venomous enemies ignite or poison, Barren floors have no Rest room,
+Hunted floors twice the elites, Crowded floors bigger fights. The tower has no last floor:
+past floor 9 enemies grow faster with every floor.
+
 ### Saving
 
 The run is saved automatically on the map between rooms (never mid-fight or in a shop, shrine,
@@ -80,7 +85,9 @@ profile.
 
 Dying pays Legacy points (1, plus 3 per floor beaten and 5 per boss). On the main menu's
 Legacy screen, spend them on unlocks: Arc, Venom Dart and Frost Nova join the offered starter gems, and Purse,
-Hoarder, Alchemist and Scholar give a head start (gold, orbs, a passive point). Legacy is saved
+Hoarder, Alchemist and Scholar give a head start (gold, orbs, a passive point). Reaching floor
+4, 7, 10, 13, 16 or 20 for the first time pays a bonus (5 to 50 points). The profile keeps your
+best floor with each starter gem, shown when you pick one and when you die. Legacy is saved
 to `legacy.json` beside the profile.
 
 ### Settings

@@ -24,11 +24,20 @@ builds), exploring hidden labyrinth floors.
    beaten + 5 per boss. They buy permanent unlocks on the Legacy screen (main menu): three more starter
    gems (Arc, Venom Dart, Frost Nova; the first run offers Heavy Strike, Split Shot and
    Fireball) and head starts (+40 / +80 gold, an Ascend and Augment orb, a passive point).
+   The profile also keeps the deepest floor reached with each starter gem (shown where the
+   starter is picked, on the death screen and on the Legacy screen) and pays milestones once:
+   reaching floor 4 / 7 / 10 / 13 / 16 / 20 for the first time gives 5 / 10 / 15 / 20 / 30 /
+   50 Legacy on top.
 
 ## Labyrinth
 
-- Floor = grid (5×5 on floor 1, growing to ~8×8). Generated as a random spanning tree
+- Floor = grid (5×5 on floor 1, one more per side every two floors, 7×7 from floor 5 on:
+  deeper floors get harder, not longer). Generated as a random spanning tree
   (every room reachable) plus a few extra doors to create loops.
+- Floor modifiers: floors 4 and 7, then every floor from 10, roll one twist, named in the
+  status line (hover it for the rule). Burning: enemy hits add 2-4 fire (scaled with depth)
+  and ignite 40% of the time. Venomous: 1-3 chaos and 50% poison. Barren: no Rest room.
+  Hunted: twice the elites. Crowded: one more enemy in every plain fight.
 - Visibility per room: `Hidden` → `Seen` (adjacent to a visited room: you see the door
   and the room's type) → `Visited`.
 - Room types: Fight, Elite, Treasure, Merchant (sells gems, see below), Shrine (pick 1 of 3 boons), Rest
@@ -94,7 +103,9 @@ builds), exploring hidden labyrinth floors.
   - Fights hold 1 or 2 enemies on floor 1 and grow with depth: 1 to 1 + ceil(floor/3) on the field (at most 5,
     `MAX_FIELD`) plus up to floor/6 more waiting behind them (at most 3). An elite room holds an
     Elite (×2 life, 30% more damage) and up to 1 + floor/6 normal companions; boss stairs hold the
-    boss, with up to floor/6 helpers. Enemies get 60% more life and 35% more damage per floor.
+    boss, with up to floor/6 helpers. Enemies get 60% more life and 35% more damage per floor. Past floor 9 each floor counts
+    for more (floor 9 + n adds 1 + n/2 floors' worth, `scaling_depth`), so floor 12 scales
+    like floor 15 used to and floor 16 like floor 30: an endless run ends.
     Winning a fight restores 15% of life.
   - Evasion dodges attacks only, capped at 75%. Damage over time ignores mitigation.
   - Ailment numbers are in `megatower-sim/src/ailment.rs`.

@@ -4,6 +4,7 @@
 
 use crate::orbs::Orb;
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Reward {
@@ -73,6 +74,41 @@ pub const UNLOCKS: [Unlock; 7] = [
     },
 ];
 
+/// Reaching `floor` for the first time pays `points`, once per profile.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Milestone {
+    pub floor: u32,
+    pub points: u32,
+}
+
+/// The floor after each boss, then floor 20.
+pub const MILESTONES: [Milestone; 6] = [
+    Milestone {
+        floor: 4,
+        points: 5,
+    },
+    Milestone {
+        floor: 7,
+        points: 10,
+    },
+    Milestone {
+        floor: 10,
+        points: 15,
+    },
+    Milestone {
+        floor: 13,
+        points: 20,
+    },
+    Milestone {
+        floor: 16,
+        points: 30,
+    },
+    Milestone {
+        floor: 20,
+        points: 50,
+    },
+];
+
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Legacy {
@@ -81,6 +117,23 @@ pub struct Legacy {
     pub owned: Vec<String>,
     pub best_floor: u32,
     pub runs: u32,
+    /// Deepest floor reached with each starter gem, by gem id.
+    pub best_by_starter: BTreeMap<String, u32>,
+    /// Floors of the [`MILESTONES`] already paid.
+    pub milestones: Vec<u32>,
+}
+
+/// What ending a run did to the profile.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct RunEnd {
+    /// Everything earned: [`run_reward`] plus the milestones.
+    pub points: u32,
+    /// Milestones reached for the first time, shallowest first.
+    pub milestones: Vec<Milestone>,
+    /// The starter's best floor before this run (0 for its first).
+    pub previous_best: u32,
+    /// This run went deeper than any before with its starter.
+    pub record: bool,
 }
 
 /// Points for a run that ended on `floor`: 3 per floor beaten, 5 more per
@@ -95,13 +148,40 @@ impl Legacy {
         self.owned.iter().any(|o| o == id)
     }
 
-    /// Records a finished run; returns the points earned.
-    pub fn finish_run(&mut self, floor: u32) -> u32 {
-        let earned = run_reward(floor);
-        self.points += earned;
+    /// Deepest floor reached with a starter gem; 0 when never played.
+    pub fn best_with(&self, starter: &str) -> u32 {
+        self.best_by_starter.get(starter).copied().unwrap_or(0)
+    }
+
+    /// The shallowest milestone not reached yet.
+    pub fn next_milestone(&self) -> Option<Milestone> {
+        MILESTONES
+            .into_iter()
+            .find(|m| !self.milestones.contains(&m.floor))
+    }
+
+    /// Records a run that ended on `floor`, started with the gem `starter`.
+    pub fn finish_run(&mut self, floor: u32, starter: &str) -> RunEnd {
+        let milestones: Vec<Milestone> = MILESTONES
+            .into_iter()
+            .filter(|m| m.floor <= floor && !self.milestones.contains(&m.floor))
+            .collect();
+        self.milestones.extend(milestones.iter().map(|m| m.floor));
+        let points = run_reward(floor) + milestones.iter().map(|m| m.points).sum::<u32>();
+        self.points += points;
         self.best_floor = self.best_floor.max(floor);
         self.runs += 1;
-        earned
+        let previous_best = self.best_with(starter);
+        let record = floor > previous_best;
+        if record && !starter.is_empty() {
+            self.best_by_starter.insert(starter.to_string(), floor);
+        }
+        RunEnd {
+            points,
+            milestones,
+            previous_best,
+            record,
+        }
     }
 
     /// Unlocks not bought yet, cheapest first.
@@ -188,17 +268,54 @@ mod tests {
     }
 
     #[test]
+    fn milestones_pay_once() {
+        let mut l = Legacy::default();
+        assert_eq!(l.next_milestone().map(|m| m.floor), Some(4));
+        let end = l.finish_run(8, "arc");
+        assert_eq!(
+            end.milestones.iter().map(|m| m.floor).collect::<Vec<_>>(),
+            [4, 7]
+        );
+        assert_eq!(end.points, run_reward(8) + 15);
+        assert_eq!(l.points, end.points);
+        assert_eq!(l.next_milestone().map(|m| m.floor), Some(10));
+        let again = l.finish_run(8, "arc");
+        assert!(again.milestones.is_empty());
+        assert_eq!(again.points, run_reward(8));
+        let floors: Vec<u32> = MILESTONES.iter().map(|m| m.floor).collect();
+        assert!(floors.is_sorted());
+    }
+
+    #[test]
+    fn records_are_kept_per_starter() {
+        let mut l = Legacy::default();
+        assert!(l.finish_run(5, "arc").record);
+        let worse = l.finish_run(3, "arc");
+        assert!(!worse.record);
+        assert_eq!(worse.previous_best, 5);
+        assert!(l.finish_run(2, "fireball").record);
+        assert_eq!(l.best_with("arc"), 5);
+        assert_eq!(l.best_with("fireball"), 2);
+        assert_eq!(l.best_with("heavy_strike"), 0);
+        assert_eq!(l.best_floor, 5);
+        // An old profile without the new fields still loads.
+        let old: Legacy = ron::from_str("(points:3,owned:[],best_floor:4,runs:2)").unwrap();
+        assert_eq!(old.best_floor, 4);
+        assert!(old.best_by_starter.is_empty());
+    }
+
+    #[test]
     fn buying_spends_points_once() {
         let mut l = Legacy::default();
         assert!(!l.buy("arc"));
-        assert_eq!(l.finish_run(5), run_reward(5));
+        assert_eq!(l.finish_run(3, "arc").points, run_reward(3));
         l.points = 30;
         assert!(l.buy("arc"));
         assert!(!l.buy("arc"));
         assert!(!l.buy("nope"));
         assert_eq!(l.points, 18);
         assert!(l.starters().contains(&"arc"));
-        assert_eq!(l.best_floor, 5);
+        assert_eq!(l.best_floor, 3);
         assert_eq!(l.runs, 1);
         assert!(l.available().iter().all(|u| u.id != "arc"));
     }

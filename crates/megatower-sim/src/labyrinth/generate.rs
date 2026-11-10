@@ -2,12 +2,16 @@
 //! a few extra doors for loops, then room kinds placed by the rules in
 //! `design/GAME-DESIGN.md`.
 
-use super::{Dir, Floor, Pos, Room, RoomKind, Visibility};
+use super::{Dir, Floor, FloorModifier, Pos, Room, RoomKind, Visibility};
 use crate::rng::Rng;
 
-/// Grid side for a floor: 5 on floor 1, one more every two floors, up to 8.
+/// Largest grid side. Deeper floors get harder, not longer.
+pub const MAX_FLOOR_SIZE: u8 = 7;
+
+/// Grid side for a floor: 5 on floor 1, one more every two floors, up to
+/// [`MAX_FLOOR_SIZE`].
 pub fn floor_size(number: u32) -> u8 {
-    (5 + number.saturating_sub(1) / 2).min(8) as u8
+    (5 + number.saturating_sub(1) / 2).min(u32::from(MAX_FLOOR_SIZE)) as u8
 }
 
 /// Every third floor's stairs are guarded by a boss.
@@ -15,8 +19,24 @@ fn has_boss(number: u32) -> bool {
     number.is_multiple_of(3)
 }
 
-fn elite_count(number: u32) -> usize {
-    1 + number as usize / 3
+/// The first floor with a [`FloorModifier`].
+pub const FIRST_MODIFIED_FLOOR: u32 = 4;
+/// From here on every floor has one.
+pub const ALWAYS_MODIFIED_FLOOR: u32 = 10;
+
+/// Whether a floor is rolled with a [`FloorModifier`]: the floor after each
+/// boss from floor 4 on, then every floor from floor 10.
+pub fn has_modifier(number: u32) -> bool {
+    number >= ALWAYS_MODIFIED_FLOOR || (number >= FIRST_MODIFIED_FLOOR && number % 3 == 1)
+}
+
+fn elite_count(number: u32, modifier: Option<FloorModifier>) -> usize {
+    let base = 1 + number as usize / 3;
+    if modifier == Some(FloorModifier::Hunted) {
+        base * 2
+    } else {
+        base
+    }
 }
 
 fn altar_uses(number: u32) -> u8 {
@@ -25,6 +45,10 @@ fn altar_uses(number: u32) -> u8 {
 
 pub fn generate(number: u32, rng: &mut Rng) -> Floor {
     let size = floor_size(number);
+    // Rolled only on floors that have one, so the others keep their layout.
+    let modifier = has_modifier(number)
+        .then(|| rng.pick(&FloorModifier::ALL).copied())
+        .flatten();
     let blank = Room {
         kind: RoomKind::Fight,
         doors: 0,
@@ -41,6 +65,7 @@ pub fn generate(number: u32, rng: &mut Rng) -> Floor {
         current: start,
         facing: Dir::North,
         steps: 0,
+        modifier,
     };
     carve_tree(&mut floor, rng);
     add_loops(&mut floor, rng);
@@ -118,7 +143,7 @@ fn place_rooms(floor: &mut Floor, rng: &mut Rng) {
 
     // Elites stay off the start→stairs path when there is room for that, so
     // the shortest way down never forces one.
-    for _ in 0..elite_count(number) {
+    for _ in 0..elite_count(number, floor.modifier) {
         let i = free
             .iter()
             .position(|p| !main_path.contains(p))
@@ -129,13 +154,15 @@ fn place_rooms(floor: &mut Floor, rng: &mut Rng) {
     }
 
     let mut specials = vec![
-        RoomKind::Rest,
         RoomKind::Treasure,
         RoomKind::Merchant,
         RoomKind::GemAltar {
             uses_left: altar_uses(number),
         },
     ];
+    if floor.modifier != Some(FloorModifier::Barren) {
+        specials.insert(0, RoomKind::Rest);
+    }
     if rng.chance(50.0) {
         specials.push(RoomKind::Shrine);
     }
@@ -169,8 +196,9 @@ mod tests {
         assert_eq!(floor_size(1), 5);
         assert_eq!(floor_size(2), 5);
         assert_eq!(floor_size(3), 6);
-        assert_eq!(floor_size(7), 8);
-        assert_eq!(floor_size(50), 8);
+        assert_eq!(floor_size(5), 7);
+        assert_eq!(floor_size(7), 7);
+        assert_eq!(floor_size(50), 7);
     }
 
     #[test]
@@ -231,15 +259,37 @@ mod tests {
         for f in floors() {
             assert_eq!(count(&f, |k| k == RoomKind::Start), 1);
             assert_eq!(count(&f, |k| matches!(k, RoomKind::Stairs { .. })), 1);
-            assert_eq!(count(&f, |k| k == RoomKind::Rest), 1);
+            let rest = usize::from(f.modifier != Some(FloorModifier::Barren));
+            assert_eq!(count(&f, |k| k == RoomKind::Rest), rest);
             assert_eq!(count(&f, |k| k == RoomKind::Treasure), 1);
             assert_eq!(count(&f, |k| k == RoomKind::Merchant), 1);
             assert_eq!(count(&f, |k| matches!(k, RoomKind::GemAltar { .. })), 1);
             assert!((1..=2).contains(&count(&f, |k| k == RoomKind::Event)));
             assert!(count(&f, |k| k == RoomKind::Shrine) <= 1);
-            assert_eq!(count(&f, |k| k == RoomKind::Elite), elite_count(f.number));
+            assert_eq!(
+                count(&f, |k| k == RoomKind::Elite),
+                elite_count(f.number, f.modifier)
+            );
             assert!(count(&f, |k| k == RoomKind::Fight) > 0);
         }
+    }
+
+    #[test]
+    fn modifiers_start_after_the_first_boss() {
+        let modified: Vec<u32> = (1..=12).filter(|&n| has_modifier(n)).collect();
+        assert_eq!(modified, [4, 7, 10, 11, 12]);
+        let mut seen = std::collections::HashSet::new();
+        for f in floors() {
+            assert_eq!(f.modifier.is_some(), has_modifier(f.number));
+            seen.extend(f.modifier);
+        }
+        assert_eq!(seen.len(), FloorModifier::ALL.len());
+    }
+
+    #[test]
+    fn hunted_floors_double_the_elites() {
+        assert_eq!(elite_count(7, None), 3);
+        assert_eq!(elite_count(7, Some(FloorModifier::Hunted)), 6);
     }
 
     #[test]
@@ -262,7 +312,7 @@ mod tests {
         for f in floors() {
             let path = f.path(f.start, f.stairs());
             let off_path = f.rooms.len() - path.len();
-            if off_path >= elite_count(f.number) {
+            if off_path >= elite_count(f.number, f.modifier) {
                 for p in &path {
                     assert_ne!(f.room(*p).kind, RoomKind::Elite, "floor {} {p:?}", f.number);
                 }

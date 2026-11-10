@@ -71,7 +71,7 @@ pub struct Labyrinth {
     /// (the real app), so tests never touch the user's files.
     pub(super) legacy: megatower_sim::legacy::Legacy,
     persist: bool,
-    last_reward: Option<u32>,
+    last_reward: Option<megatower_sim::legacy::RunEnd>,
     /// The run on disk, if any, and what was last written (to save only on change).
     saved: Option<megatower_sim::run::SaveInfo>,
     saved_signature: Option<u64>,
@@ -386,7 +386,7 @@ fn win_popups(before: &Gains, character: &megatower_sim::character::Character) -
 ///   once (no wipe); `*` walks to the stairs, `C` starts a fight against ten (five fighting, five waiting); `F` / `M` / `H` / `V` / `A` / `T` to the first fight, the
 ///   merchant, shrine, event, Gem Altar or treasure room, entering it without
 ///   fighting on the way; `x` leaves a room screen; `>` descends; `g` gives
-///   100 gold; `k` thirty doors on the danger clock; `o` two of every crafting orb; `$` a treasure room's loot; `R` an elite's pick-one reward; `+` a level; `^` takes the first
+///   100 gold; `k` thirty doors on the danger clock; `X` ends the run in death; `o` two of every crafting orb; `$` a treasure room's loot; `R` an elite's pick-one reward; `+` a level; `^` takes the first
 ///   passive node allowed; `m` / `p` toggle the map and the tree.
 /// - `GAME_LATE_MOVES`: more commands, played once `GAME_LATE_AT` (default 1)
 ///   seconds have passed, so effects like combat text are in flight when a
@@ -680,8 +680,8 @@ impl Labyrinth {
             return;
         }
         run.legacy = self.legacy.clone();
-        if let Some(earned) = run.finish() {
-            self.last_reward = Some(earned);
+        if let Some(end) = run.finish() {
+            self.last_reward = Some(end);
             self.legacy = run.legacy.clone();
             self.save_legacy();
         }
@@ -814,6 +814,7 @@ impl Labyrinth {
                 '>' => self.act(ui, Action::Descend),
                 'g' => self.game_mut().character.gold += 100,
                 'k' => self.game_mut().floor.steps += 30,
+                'X' => self.game_mut().mode = Mode::Dead,
                 'o' => {
                     for orb in megatower_sim::orbs::Orb::ALL {
                         self.game_mut().character.orbs.add(orb, 2);
@@ -1813,8 +1814,13 @@ mod tests {
         let mut session = fixture(3, 4);
         session.game_mut().mode = Mode::Dead;
         session.sync_legacy();
-        let earned = megatower_sim::legacy::run_reward(4);
-        assert_eq!(session.last_reward, Some(earned));
+        // Floor 4 is also the first milestone.
+        let earned =
+            megatower_sim::legacy::run_reward(4) + megatower_sim::legacy::MILESTONES[0].points;
+        let end = session.last_reward.clone().unwrap();
+        assert_eq!(end.points, earned);
+        assert!(end.record);
+        assert_eq!(end.milestones.len(), 1);
         assert_eq!(session.legacy.points, earned);
         assert_eq!(session.legacy.best_floor, 4);
         // Paid once, and a test session never writes the user's files.

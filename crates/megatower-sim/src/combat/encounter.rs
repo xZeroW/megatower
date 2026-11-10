@@ -3,7 +3,7 @@
 use super::{Enemy, Fighter};
 use crate::ailment::Ailment;
 use crate::damage::HitSpec;
-use crate::labyrinth::RoomKind;
+use crate::labyrinth::{FloorModifier, RoomKind};
 use crate::modifier::{ModSet, Modifier, Stat};
 use crate::rng::Rng;
 use crate::tags::DamageType;
@@ -93,6 +93,19 @@ const MAX_QUEUE: u32 = 3;
 pub const LIFE_PER_FLOOR: f64 = 60.0;
 pub const ELITE_LIFE: f64 = 2.0;
 
+/// The last floor of even scaling; each floor past it counts for more.
+pub const LATE_FLOOR: u32 = 9;
+/// How much more: floor `LATE_FLOOR + n` adds `1 + n * LATE_STEP` floors'
+/// worth of scaling instead of 1.
+pub const LATE_STEP: f64 = 0.5;
+
+/// Floors' worth of enemy scaling at `floor`: one per floor below the first,
+/// and more than one per floor past [`LATE_FLOOR`], so an endless run ends.
+pub fn scaling_depth(floor: u32) -> f64 {
+    let late = f64::from(floor.saturating_sub(LATE_FLOOR));
+    f64::from(floor.max(1) - 1) + LATE_STEP * late * (late + 1.0) / 2.0
+}
+
 /// Percent more life and damage per level of the floor's danger clock.
 pub const DANGER_LIFE: f64 = 6.0;
 pub const DANGER_DAMAGE: f64 = 5.0;
@@ -103,12 +116,27 @@ pub fn spawn(def: &EnemyDef, floor: u32, elite: bool) -> Enemy {
 
 /// [`spawn`] with the floor's danger level on top.
 pub fn spawn_scaled(def: &EnemyDef, floor: u32, elite: bool, danger: u32) -> Enemy {
-    spawn_as(def, floor, elite, danger, false)
+    spawn_as(def, floor, elite, danger, None, false)
 }
 
+/// Fire a [`FloorModifier::Burning`] floor adds to each enemy hit at floor
+/// 1 (it scales with depth like the rest), and the chance to ignite.
+pub const BURNING_DAMAGE: (f64, f64) = (2.0, 4.0);
+pub const BURNING_IGNITE: f64 = 40.0;
+/// The same for [`FloorModifier::Venomous`], as chaos damage and poison.
+pub const VENOMOUS_DAMAGE: (f64, f64) = (1.0, 3.0);
+pub const VENOMOUS_POISON: f64 = 50.0;
+
 /// `summoned` enemies are the ones a [`IntentKind::Summon`] calls in.
-fn spawn_as(def: &EnemyDef, floor: u32, elite: bool, danger: u32, summoned: bool) -> Enemy {
-    let depth = f64::from(floor.max(1) - 1);
+fn spawn_as(
+    def: &EnemyDef,
+    floor: u32,
+    elite: bool,
+    danger: u32,
+    modifier: Option<FloorModifier>,
+    summoned: bool,
+) -> Enemy {
+    let depth = scaling_depth(floor);
     let danger_level = danger;
     let danger = f64::from(danger);
     let mut life =
@@ -119,6 +147,26 @@ fn spawn_as(def: &EnemyDef, floor: u32, elite: bool, danger: u32, summoned: bool
         mods.push(Modifier::flat(Stat::Resistance(t), value));
     }
     for &(ailment, chance) in &def.ailments {
+        mods.push(Modifier::flat(Stat::AilmentChance(ailment), chance));
+    }
+    let laced = match modifier {
+        Some(FloorModifier::Burning) => Some((
+            DamageType::Fire,
+            BURNING_DAMAGE,
+            Ailment::Ignite,
+            BURNING_IGNITE,
+        )),
+        Some(FloorModifier::Venomous) => Some((
+            DamageType::Chaos,
+            VENOMOUS_DAMAGE,
+            Ailment::Poison,
+            VENOMOUS_POISON,
+        )),
+        _ => None,
+    };
+    if let Some((t, (min, max), ailment, chance)) = laced {
+        mods.push(Modifier::flat(Stat::AddedMin(t), min));
+        mods.push(Modifier::flat(Stat::AddedMax(t), max));
         mods.push(Modifier::flat(Stat::AilmentChance(ailment), chance));
     }
     mods.push(Modifier::flat(Stat::Depth, depth));
@@ -146,7 +194,7 @@ fn spawn_as(def: &EnemyDef, floor: u32, elite: bool, danger: u32, summoned: bool
                 continue;
             }
             if let Some(minion) = content.enemies.iter().find(|d| &d.id == id) {
-                minions.push(spawn_as(minion, floor, false, danger_level, true));
+                minions.push(spawn_as(minion, floor, false, danger_level, modifier, true));
             }
         }
     }
@@ -172,14 +220,15 @@ pub fn encounter(
     defs: &[EnemyDef],
     rng: &mut Rng,
 ) -> Option<Vec<Enemy>> {
-    encounter_scaled(kind, floor, 0, defs, rng)
+    encounter_scaled(kind, floor, 0, None, defs, rng)
 }
 
-/// [`encounter`] at a danger level.
+/// [`encounter`] at a danger level, on a floor with a modifier.
 pub fn encounter_scaled(
     kind: RoomKind,
     floor: u32,
     danger: u32,
+    modifier: Option<FloorModifier>,
     defs: &[EnemyDef],
     rng: &mut Rng,
 ) -> Option<Vec<Enemy>> {
@@ -188,13 +237,17 @@ pub fn encounter_scaled(
         .filter(|d| !d.boss && d.min_floor <= floor)
         .collect();
     let pick = |rng: &mut Rng| *rng.pick(&normals).expect("at least one normal enemy");
+    let spawn_scaled = |def: &EnemyDef, floor: u32, elite: bool, danger: u32| {
+        spawn_as(def, floor, elite, danger, modifier, false)
+    };
     match kind {
         RoomKind::Fight => {
             // One or two from the first floor, so target choice matters at
             // once; up to MAX_FIELD at once deeper down, and from the mid
             // floors some more waiting behind them.
             let max = (1 + floor.div_ceil(3)).min(super::MAX_FIELD as u32);
-            let count = 1 + rng.below(max) + rng.below(1 + floor / 6).min(MAX_QUEUE);
+            let crowd = u32::from(modifier == Some(FloorModifier::Crowded));
+            let count = 1 + rng.below(max) + rng.below(1 + floor / 6).min(MAX_QUEUE) + crowd;
             Some(
                 (0..count)
                     .map(|_| spawn_scaled(pick(rng), floor, false, danger))
@@ -242,6 +295,50 @@ mod tests {
         let f4 = spawn(rat, 4, false);
         assert!(f4.fighter.max_life > f1.fighter.max_life);
         assert!(f4.fighter.mods.more(Stat::Damage, Default::default()) > 1.0);
+    }
+
+    #[test]
+    fn scaling_speeds_up_past_the_late_floor() {
+        assert_eq!(scaling_depth(1), 0.0);
+        assert_eq!(scaling_depth(LATE_FLOOR), f64::from(LATE_FLOOR - 1));
+        let step = |floor| scaling_depth(floor + 1) - scaling_depth(floor);
+        assert_eq!(step(5), 1.0);
+        assert!(step(LATE_FLOOR) > 1.0);
+        assert!(step(15) > step(LATE_FLOOR));
+    }
+
+    #[test]
+    fn floor_modifiers_change_the_enemies() {
+        let rat = &defs()[0];
+        let plain = spawn_as(rat, 4, false, 0, None, false);
+        let burning = spawn_as(rat, 4, false, 0, Some(FloorModifier::Burning), false);
+        let ignite = |e: &Enemy| {
+            e.fighter
+                .mods
+                .flat(Stat::AilmentChance(Ailment::Ignite), Default::default())
+        };
+        assert_eq!(ignite(&plain), 0.0);
+        assert_eq!(ignite(&burning), BURNING_IGNITE);
+        assert!(
+            burning
+                .fighter
+                .mods
+                .flat(Stat::AddedMax(DamageType::Fire), Default::default())
+                > 0.0
+        );
+
+        let most = |modifier| {
+            let mut rng = Rng::seeded(5);
+            (0..200)
+                .map(|_| {
+                    encounter_scaled(RoomKind::Fight, 1, 0, modifier, defs(), &mut rng)
+                        .unwrap()
+                        .len()
+                })
+                .max()
+                .unwrap()
+        };
+        assert_eq!(most(Some(FloorModifier::Crowded)), most(None) + 1);
     }
 
     #[test]

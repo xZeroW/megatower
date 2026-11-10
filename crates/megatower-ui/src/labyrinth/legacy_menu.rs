@@ -1,7 +1,7 @@
 //! The Legacy screen opened from the main menu: Legacy points, and the
 //! unlocks they buy.
 use super::*;
-use crate::compose::{self, Align, Draw, WHITE, palette, text};
+use crate::compose::{self, Align, Draw, WHITE, hex, palette, text};
 use megatower_sim::legacy::UNLOCKS;
 
 const ROW: [f32; 4] = [120.0, 74.0, 400.0, 26.0];
@@ -43,15 +43,34 @@ impl Labyrinth {
             WHITE,
             Align::Center,
         ));
+        let next = self
+            .legacy
+            .next_milestone()
+            .map(|m| format!("  |  next: floor {} (+{})", m.floor, m.points))
+            .unwrap_or_default();
         out.push(text(
-            [120.0, 46.0, 400.0, 13.0],
+            [20.0, 44.0, 600.0, 13.0],
             format!(
-                "{} points  |  best floor {}  |  runs {}",
+                "{} points  |  best floor {}  |  runs {}{next}",
                 self.legacy.points, self.legacy.best_floor, self.legacy.runs
             ),
             palette(8),
             Align::Center,
         ));
+        let records: Vec<String> = megatower_sim::content::get()
+            .gems
+            .starters()
+            .filter(|g| self.legacy.best_with(&g.id) > 0)
+            .map(|g| format!("{} {}", g.name, self.legacy.best_with(&g.id)))
+            .collect();
+        if !records.is_empty() {
+            out.push(text(
+                [20.0, 58.0, 600.0, 13.0],
+                format!("Best floors: {}", records.join(", ")),
+                hex(0xffaa00),
+                Align::Center,
+            ));
+        }
         for (i, u) in UNLOCKS.iter().enumerate() {
             let owned = self.legacy.owns(u.id);
             let label = if owned {

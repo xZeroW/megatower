@@ -355,6 +355,11 @@ fn tip_lines(loot: &Loot) -> Vec<String> {
         }
     }
 }
+/// Where the status line names the floor's modifier (hover for the rule).
+const FLOOR_MODIFIER_RECT: [f32; 4] = [200.0, 1.0, 150.0, 13.0];
+/// First line of the record and milestone notes on the death screen.
+const DEATH_NOTES_Y: f32 = 202.0;
+
 fn tooltip(out: &mut Vec<Draw>, rects: &Rects, cursor: [f32; 2], lines: Vec<String>) {
     compose::draw_tip(
         out,
@@ -994,6 +999,28 @@ impl Labyrinth {
                     palette(8),
                     Align::Center,
                 ));
+                let best = game.legacy.best_with(id);
+                out.push(text(
+                    [x - 38.0, 262.0, 110.0, 13.0],
+                    if best > 0 {
+                        format!("Best: floor {best}")
+                    } else {
+                        "Not played yet".to_owned()
+                    },
+                    if best > 0 { hex(0xffaa00) } else { palette(4) },
+                    Align::Center,
+                ));
+            }
+            if let Some(next) = game.legacy.next_milestone() {
+                out.push(text(
+                    [120.0, 300.0, 400.0, 13.0],
+                    format!(
+                        "Next milestone: reach floor {} (+{} Legacy)",
+                        next.floor, next.points
+                    ),
+                    palette(8),
+                    Align::Center,
+                ));
             }
             return out;
         }
@@ -1264,7 +1291,16 @@ impl Labyrinth {
             compose::popup_draws(ui, &mut out);
         }
         if let Some(cursor) = ui.cursor {
-            if let Some(c) = choices
+            if let Some(modifier) = game.floor.modifier
+                && self.view == View::Stage
+                && contains(FLOOR_MODIFIER_RECT, cursor[0], cursor[1])
+            {
+                let lines = vec![
+                    format!("{} floor", modifier.name()),
+                    modifier.describe().to_owned(),
+                ];
+                tooltip(&mut out, rects, cursor, lines);
+            } else if let Some(c) = choices
                 .iter()
                 .find(|c| contains(c.rect, cursor[0], cursor[1]))
             {
@@ -1363,9 +1399,37 @@ impl Labyrinth {
                 &megatower_assets::ui_layout::death_screen_layout(),
                 &format!("Died on floor {}", game.floor.number),
                 self.last_reward
-                    .map(|n| format!("+{n} Legacy ({} total)", game.legacy.points))
+                    .as_ref()
+                    .map(|end| format!("+{} Legacy ({} total)", end.points, game.legacy.points))
                     .as_deref(),
             ));
+            if let Some(end) = &self.last_reward {
+                let starter = megatower_sim::run::gem_name(&game.starter);
+                let mut lines = vec![if end.record && end.previous_best > 0 {
+                    format!(
+                        "New record with {starter}! (was floor {})",
+                        end.previous_best
+                    )
+                } else if end.record {
+                    format!("First run with {starter}")
+                } else {
+                    format!("Best with {starter}: floor {}", end.previous_best)
+                }];
+                lines.extend(end.milestones.iter().map(|m| {
+                    format!(
+                        "Milestone: reached floor {} (+{} Legacy)",
+                        m.floor, m.points
+                    )
+                }));
+                for (i, line) in lines.into_iter().enumerate() {
+                    out.push(text(
+                        [120.0, DEATH_NOTES_Y + i as f32 * 13.0, 400.0, 13.0],
+                        line,
+                        hex(0xffaa00),
+                        Align::Center,
+                    ));
+                }
+            }
         }
         out
     }
@@ -1438,9 +1502,17 @@ impl Labyrinth {
             hex(0xcfd6ee),
             Align::Left,
         ));
+        if let Some(modifier) = game.floor.modifier {
+            out.push(text(
+                FLOOR_MODIFIER_RECT,
+                format!("{}: {}", modifier.name(), modifier.summary()),
+                hex(0xc98bff),
+                Align::Left,
+            ));
+        }
         if game.floor.danger() > 0 {
             out.push(text(
-                [200.0, 1.0, 140.0, 13.0],
+                [354.0, 1.0, 60.0, 13.0],
                 format!("Danger {}", game.floor.danger()),
                 hex(0xff6a4d),
                 Align::Left,

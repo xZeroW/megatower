@@ -92,14 +92,31 @@ AoE starters (Frost Nova, Arc) outscale single-target ones (Heavy Strike).
 
 ## Phase 4: endless support
 
-- [ ] Best-floor record per starter gem, shown on the title and death screens.
-- [ ] Milestones ("first time past floor 6") that pay Legacy or unlock content.
-- [ ] Floor modifiers every few floors ("enemies ignite", "no Rest room",
-      "elites doubled"). The last new content appears at floor 6 today.
-- [ ] Cap the grid size so later floors do not get slower; let scaling do the
-      work.
-- [ ] Accelerate scaling after floor 9. Target: a good player dies around
-      floors 12-20 in 30-45 minutes.
+- [x] Best-floor record per starter gem, shown on the title and death screens.
+      Done: the profile keeps the deepest floor per starter. It is shown
+      under each offered gem where the run starts ("Best: floor 9" / "Not
+      played yet"), on the death screen ("New record with Arc! (was floor
+      5)") and on the Legacy screen.
+- [x] Milestones ("first time past floor 6") that pay Legacy or unlock content.
+      Done: reaching floor 4 / 7 / 10 / 13 / 16 / 20 for the first time pays
+      5 / 10 / 15 / 20 / 30 / 50 Legacy, once per profile, listed on the death
+      screen. The next one is named where the starter is picked.
+      Open: milestones only pay points; none unlocks content yet (Phase 5).
+- [x] Floor modifiers every few floors ("enemies ignite", "no Rest room",
+      "elites doubled"). Done: floors 4 and 7, then every floor from 10, roll
+      one of Burning (hits add fire and ignite), Venomous (chaos and poison),
+      Barren (no Rest room), Hunted (twice the elites) and Crowded (one more
+      enemy per plain fight). The status line names it; hover for the rule.
+      Open: every modifier is a penalty; none pays more for the risk, and
+      the player cannot see the next floor's modifier before descending.
+- [x] Cap the grid size so later floors do not get slower; let scaling do the
+      work. Done: 7x7 from floor 5 on (was 8x8 from floor 7).
+- [x] Accelerate scaling after floor 9. Target: a good player dies around
+      floors 12-20 in 30-45 minutes. Done: floor 9 + n counts as 1 + n/2
+      more floors of enemy life and damage. The bot's deaths moved from
+      "spread up to floor 20 and beyond" to floors 10-17 (see Balance watch).
+      Open: run length in minutes is not measured; the bot is weaker than a
+      good player, so the real wall may sit a few floors deeper.
 
 ## Phase 5: variety and meta
 
@@ -152,5 +169,14 @@ AoE starters (Frost Nova, Arc) outscale single-target ones (Heavy Strike).
   pass, 28 before Phase 3). Heavy Strike is still last. The run is now a
   little easier than before Phase 3, which Phase 4's scaling has to take
   back.
+- After Phase 4 (7x7 cap, late scaling, floor modifiers), floor 12 cleared:
+  Heavy Strike 37%, Split Shot 67%, Fireball 63%, Frost Nova 85%, Arc 83%,
+  Venom Dart 53%. Run to floor 20 (`-- 150 20`), nobody clears it; average
+  last floor 11.6 (Heavy Strike) to 14.5 (Frost Nova), and 85% of deaths fall
+  on floors 10-17, most on 12-15. Before the phase 19-91% cleared floor 20.
+  Floor 7 is a new small spike (43 of 900 runs; 13 of 600 before): its
+  modifier lands on top of the first iron and magma golems. The spread
+  between starters is back to 48 points at floor 12, since the late floors
+  favour hitting everything.
 - Re-run `cargo run -p megatower-sim --example bot --release -- 150 12` after
   each phase.

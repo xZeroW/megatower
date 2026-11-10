@@ -8,7 +8,7 @@
 
 mod generate;
 
-pub use generate::{floor_size, generate};
+pub use generate::{MAX_FLOOR_SIZE, floor_size, generate, has_modifier};
 
 use serde::{Deserialize, Serialize};
 use std::collections::VecDeque;
@@ -168,6 +168,63 @@ pub struct Exit {
     pub cleared: bool,
 }
 
+/// A twist on a whole floor, rolled when the floor is made and shown to the
+/// player from the first room on.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum FloorModifier {
+    /// Enemy hits carry fire and can ignite.
+    Burning,
+    /// Enemy hits carry venom and can poison.
+    Venomous,
+    /// The floor has no Rest room.
+    Barren,
+    /// Twice the elites.
+    Hunted,
+    /// One more enemy in every plain fight.
+    Crowded,
+}
+
+impl FloorModifier {
+    pub const ALL: [FloorModifier; 5] = [
+        FloorModifier::Burning,
+        FloorModifier::Venomous,
+        FloorModifier::Barren,
+        FloorModifier::Hunted,
+        FloorModifier::Crowded,
+    ];
+
+    pub fn name(self) -> &'static str {
+        match self {
+            FloorModifier::Burning => "Burning",
+            FloorModifier::Venomous => "Venomous",
+            FloorModifier::Barren => "Barren",
+            FloorModifier::Hunted => "Hunted",
+            FloorModifier::Crowded => "Crowded",
+        }
+    }
+
+    /// A few words for a status line.
+    pub fn summary(self) -> &'static str {
+        match self {
+            FloorModifier::Burning => "enemies ignite",
+            FloorModifier::Venomous => "enemies poison",
+            FloorModifier::Barren => "no Rest room",
+            FloorModifier::Hunted => "double elites",
+            FloorModifier::Crowded => "bigger fights",
+        }
+    }
+
+    pub fn describe(self) -> &'static str {
+        match self {
+            FloorModifier::Burning => "Enemy hits add fire damage and can ignite you.",
+            FloorModifier::Venomous => "Enemy hits add chaos damage and can poison you.",
+            FloorModifier::Barren => "This floor has no Rest room.",
+            FloorModifier::Hunted => "This floor holds twice the elites.",
+            FloorModifier::Crowded => "Every plain fight has one more enemy.",
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Floor {
     /// 1-based depth.
@@ -182,6 +239,8 @@ pub struct Floor {
     /// Doors walked through on this floor; the danger clock counts them.
     #[serde(default)]
     pub steps: u32,
+    #[serde(default)]
+    pub modifier: Option<FloorModifier>,
 }
 
 /// Doors a floor lets you walk through per room before danger starts to rise.
