@@ -16,6 +16,21 @@ pub enum Reward {
     Orbs(Orb, u32),
     /// Passive points at the start.
     Points(u32),
+    /// Content that is out of the pools until bought, by id.
+    Gem(&'static str),
+    Unique(&'static str),
+    Boon(&'static str),
+    Event(&'static str),
+}
+
+impl Reward {
+    /// Adds something to the pools rather than to the start of a run.
+    pub fn is_content(self) -> bool {
+        matches!(
+            self,
+            Reward::Gem(_) | Reward::Unique(_) | Reward::Boon(_) | Reward::Event(_)
+        )
+    }
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -26,10 +41,46 @@ pub struct Unlock {
     pub reward: Reward,
 }
 
+impl Unlock {
+    /// One line on what buying it changes.
+    pub fn describe(&self) -> String {
+        let content = crate::content::get();
+        let mods = |mods: &[crate::modifier::Modifier]| crate::describe::mod_lines(mods).join(", ");
+        match self.reward {
+            Reward::Starter(id) => format!(
+                "{} can be offered as a starting skill",
+                crate::run::gem_name(id)
+            ),
+            Reward::Gold(n) => format!("Every run starts with {n} more gold"),
+            Reward::Orbs(orb, n) => format!("Every run starts with {n} {}", orb.name()),
+            Reward::Points(n) => format!("Every run starts with {n} passive point(s)"),
+            Reward::Gem(id) => match content.gems.support(id) {
+                Some(gem) => format!("Support gem in drops and shops: {}", mods(&gem.mods)),
+                None => "Skill gem in drops and shops".to_owned(),
+            },
+            Reward::Unique(id) => content
+                .items
+                .uniques
+                .iter()
+                .find(|u| u.id == id)
+                .map_or_else(String::new, |u| {
+                    let base = content.items.base(&u.base).map_or("", |b| b.name.as_str());
+                    format!("Unique {base}: {}", mods(&u.mods))
+                }),
+            Reward::Boon(id) => content
+                .boons
+                .iter()
+                .find(|b| b.id == id)
+                .map_or_else(String::new, |b| format!("Shrine boon: {}", mods(&b.mods))),
+            Reward::Event(_) => "A new event that can wait in event rooms".to_owned(),
+        }
+    }
+}
+
 /// Starters offered from the first run on.
 pub const BASE_STARTERS: [&str; 3] = ["heavy_strike", "split_shot", "fireball"];
 
-pub const UNLOCKS: [Unlock; 7] = [
+pub const UNLOCKS: [Unlock; 17] = [
     Unlock {
         id: "arc",
         name: "Arc",
@@ -71,6 +122,66 @@ pub const UNLOCKS: [Unlock; 7] = [
         name: "Hoarder (+80 gold)",
         cost: 30,
         reward: Reward::Gold(80),
+    },
+    Unlock {
+        id: "gamblers_table",
+        name: "Event: Gambler's Table",
+        cost: 10,
+        reward: Reward::Event("gamblers_table"),
+    },
+    Unlock {
+        id: "sealed_vault",
+        name: "Event: Sealed Vault",
+        cost: 10,
+        reward: Reward::Event("sealed_vault"),
+    },
+    Unlock {
+        id: "siphon",
+        name: "Gem: Siphon",
+        cost: 15,
+        reward: Reward::Gem("siphon"),
+    },
+    Unlock {
+        id: "cruelty",
+        name: "Gem: Cruelty",
+        cost: 15,
+        reward: Reward::Gem("cruelty"),
+    },
+    Unlock {
+        id: "opening",
+        name: "Boon: The Opening",
+        cost: 15,
+        reward: Reward::Boon("opening"),
+    },
+    Unlock {
+        id: "harvest",
+        name: "Boon: Harvest",
+        cost: 15,
+        reward: Reward::Boon("harvest"),
+    },
+    Unlock {
+        id: "poise",
+        name: "Boon: Poise",
+        cost: 15,
+        reward: Reward::Boon("poise"),
+    },
+    Unlock {
+        id: "heralds_charm",
+        name: "Unique: Herald's Charm",
+        cost: 20,
+        reward: Reward::Unique("heralds_charm"),
+    },
+    Unlock {
+        id: "duelists_grips",
+        name: "Unique: Duelist's Grips",
+        cost: 20,
+        reward: Reward::Unique("duelists_grips"),
+    },
+    Unlock {
+        id: "brewers_cap",
+        name: "Unique: Brewer's Cap",
+        cost: 20,
+        reward: Reward::Unique("brewers_cap"),
     },
 ];
 
@@ -208,6 +319,15 @@ impl Legacy {
         UNLOCKS.iter().filter(|u| self.owns(u.id)).map(|u| u.reward)
     }
 
+    /// Content still out of the pools: what is unlockable and not bought.
+    pub fn locked(&self) -> Vec<Reward> {
+        UNLOCKS
+            .iter()
+            .filter(|u| u.reward.is_content() && !self.owns(u.id))
+            .map(|u| u.reward)
+            .collect()
+    }
+
     /// Starter gem ids that may be offered.
     pub fn starters(&self) -> Vec<&'static str> {
         let mut ids = BASE_STARTERS.to_vec();
@@ -222,7 +342,11 @@ impl Legacy {
     pub fn apply(&self, character: &mut crate::character::Character) {
         for reward in self.rewards() {
             match reward {
-                Reward::Starter(_) => {}
+                Reward::Starter(_)
+                | Reward::Gem(_)
+                | Reward::Unique(_)
+                | Reward::Boon(_)
+                | Reward::Event(_) => {}
                 Reward::Gold(n) => character.gold += n,
                 Reward::Orbs(orb, n) => {
                     character.orbs.add(orb, n);
@@ -258,6 +382,46 @@ mod tests {
         let mut starters: Vec<&str> = gems.starters().map(|g| g.id.as_str()).collect();
         starters.sort();
         assert_eq!(all, starters);
+        // Unlockable content exists, and a starter or its partner is never locked.
+        let c = content::get();
+        for unlock in &UNLOCKS {
+            match unlock.reward {
+                Reward::Gem(id) => {
+                    assert!(c.gems.active(id).is_some() || c.gems.support(id).is_some());
+                    assert!(
+                        gems.starters()
+                            .all(|g| g.id != id && g.partner.as_deref() != Some(id))
+                    );
+                }
+                Reward::Unique(id) => assert!(c.items.uniques.iter().any(|u| u.id == id)),
+                Reward::Boon(id) => assert!(c.boons.iter().any(|b| b.id == id)),
+                Reward::Event(id) => assert!(c.events.iter().any(|e| e.id == id)),
+                _ => {}
+            }
+        }
+    }
+
+    #[test]
+    fn locked_content_stays_out_of_the_pools_until_bought() {
+        let c = content::get();
+        let mut l = Legacy::default();
+        let pool = c.pool(&l);
+        assert!(pool.gems.support("siphon").is_none());
+        assert!(pool.gems.support("echo").is_some());
+        assert!(pool.boons.iter().all(|b| b.id != "opening"));
+        assert!(pool.events.iter().all(|e| e.id != "sealed_vault"));
+        assert!(pool.items.uniques.iter().all(|u| u.id != "brewers_cap"));
+        assert_eq!(pool.items.uniques.len() + 3, c.items.uniques.len());
+        l.points = 100;
+        for id in ["siphon", "opening", "sealed_vault", "brewers_cap"] {
+            assert!(l.buy(id));
+        }
+        let pool = c.pool(&l);
+        assert!(pool.gems.support("siphon").is_some());
+        assert!(pool.gems.support("cruelty").is_none());
+        assert!(pool.boons.iter().any(|b| b.id == "opening"));
+        assert!(pool.events.iter().any(|e| e.id == "sealed_vault"));
+        assert!(pool.items.uniques.iter().any(|u| u.id == "brewers_cap"));
     }
 
     #[test]

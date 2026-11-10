@@ -215,6 +215,19 @@
             cost_percent: 110.0,
             mods: [(stat: LifeLeech, kind: Flat, value: 6.0)],
         ),
+        // Rule supports: locked until bought with Legacy (legacy.rs).
+        (
+            id: "siphon",
+            name: "Siphon",
+            cost_percent: 110.0,
+            mods: [(stat: ManaOnKill, kind: Flat, value: 6.0)],
+        ),
+        (
+            id: "cruelty",
+            name: "Cruelty",
+            cost_percent: 115.0,
+            mods: [(stat: CritsInflict, kind: Flat, value: 1.0)],
+        ),
         (
             id: "echo",
             name: "Echo",

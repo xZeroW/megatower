@@ -120,12 +120,36 @@ AoE starters (Frost Nova, Arc) outscale single-target ones (Heavy Strike).
 
 ## Phase 5: variety and meta
 
-- [ ] Adventurers get a passive and a starting kit (the pick is a portrait
-      today).
-- [ ] Wider Legacy: unlock gems, uniques and events (7 unlocks for 124 points
-      today).
-- [ ] Rule-changing boons and uniques ("first skill each fight repeats",
-      "poison can crit") in place of flat stat bumps.
+- [x] Adventurers get a passive and a starting kit (the pick was a portrait).
+      Done: `assets/data/game/adventurers.ron` gives each of the 11 a named
+      passive and a kit, handed over with the starter gem. Kestrel crit and
+      evasion; Umbrath 20% more damage for 15% less life; Rethan 25% more
+      damage at full life; Elaris leech; Branric guarding empowers the next
+      turn; Gorix life and armour; Thalara mana per kill; Mirelle 12% repeat
+      chance; Pellim first skill of a fight repeats; Orvian flasks also
+      guard; Nivor crits always inflict ailments. Kits are gold, orbs or a
+      gem (Iron Wall, Concussive Blow, ...). Shown under the grid where the
+      adventurer is picked and above the starter gems. A click selects an
+      adventurer; the run begins with the Start button (or Enter).
+      Open: the passive is not shown once the run is on (no line in the
+      stats panel); adventurers have no Legacy record of their own.
+- [x] Wider Legacy: unlock gems, uniques and events (was 7 unlocks for 124
+      points). Done: 17 unlocks for 279 points. The 10 new ones add content
+      to the pools: 2 events (Gambler's Table, Sealed Vault), 2 support gems
+      (Siphon, Cruelty), 3 boons (The Opening, Harvest, Poise) and 3 uniques
+      (Herald's Charm, Duelist's Grips, Brewer's Cap). A locked piece never
+      drops, is never sold or offered. The Legacy screen has two columns
+      and says what the hovered unlock does.
+      Open: milestones still pay points only; a fresh profile sees none of
+      the rule-changers except through its adventurer.
+- [x] Rule-changing boons and uniques ("first skill each fight repeats",
+      "poison can crit") in place of flat stat bumps. Done as five rules any
+      modifier source can carry: first skill of a fight repeats, mana per
+      enemy a skill kills, guarding gives more damage next turn, crits always
+      inflict the skill's ailments, drinking a flask also guards. They are on
+      adventurers, 3 boons, 3 uniques and 2 support gems.
+      Open: the older boons and uniques are still stat bumps; "poison can
+      crit" was not built.
 
 ## Cut or simplify
 
@@ -178,5 +202,13 @@ AoE starters (Frost Nova, Arc) outscale single-target ones (Heavy Strike).
   modifier lands on top of the first iron and magma golems. The spread
   between starters is back to 48 points at floor 12, since the late floors
   favour hitting everything.
+- After Phase 5 the starter table is unchanged to the point (the bot has
+  no adventurer and a fresh profile, so none of the new content is in its
+  pools). Per adventurer (`-- 100 12 adventurers`, all starters pooled, the
+  bot does not play around the passive), floor 12 cleared: none 63%, Kestrel
+  70%, Umbrath 62%, Rethan 64%, Elaris 69%, Branric 66%, Gorix 69%, Thalara
+  61%, Mirelle 69%, Pellim 77%, Orvian 68%, Nivor 70%. Pellim's sure repeat
+  is the strongest; Umbrath and Thalara give the bot nothing. The unlockable
+  content is not measured: the bot never owns it.
 - Re-run `cargo run -p megatower-sim --example bot --release -- 150 12` after
   each phase.

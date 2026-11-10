@@ -85,6 +85,11 @@ fn line(m: &Modifier) -> String {
         Stat::LifeLeech => format!("{:.0}% of damage leeched as life", m.value),
         Stat::SkillsCostLife => "Skills cost life instead of mana".to_string(),
         Stat::RepeatChance => format!("{:.0}% chance to repeat skills", m.value),
+        Stat::FirstSkillRepeats => "Your first skill in each fight repeats".to_string(),
+        Stat::ManaOnKill => format!("{:+.0} mana for each enemy a skill kills", m.value),
+        Stat::GuardEmpowers => format!("Guarding gives {:.0}% more damage next turn", m.value),
+        Stat::CritsInflict => "Critical hits always inflict your ailments".to_string(),
+        Stat::FlaskGuards => "Drinking a flask also guards".to_string(),
     }
     .to_string()
         + &if tag_words(m.requires).is_empty() || matches!(m.stat, Stat::Damage) {

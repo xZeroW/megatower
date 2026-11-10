@@ -627,13 +627,29 @@ fn load_legacy(mut session: ResMut<Labyrinth>) {
 
 fn autostart(mut session: ResMut<Labyrinth>, mut ui: ResMut<crate::UiRes>) {
     if std::env::var_os("GAME_AUTOSTART").is_some() {
-        session.start(Some("textures/portraits/kestrel.png".into()));
+        // QA: `GAME_ADVENTURER=Gorix` plays that adventurer's passive and kit.
+        let who = std::env::var("GAME_ADVENTURER").unwrap_or_else(|_| "Kestrel".into());
+        session.start(
+            Some(format!("textures/portraits/{}.png", who.to_lowercase())),
+            &who,
+        );
         ui.0.screen = Screen::Playing;
     }
 }
 
 impl Labyrinth {
-    pub fn start(&mut self, portrait: Option<String>) {
+    /// Starts over with the same adventurer.
+    pub(super) fn restart(&mut self) {
+        let who = self
+            .run
+            .as_ref()
+            .map(|run| run.adventurer().to_owned())
+            .unwrap_or_default();
+        self.start(self.portrait.clone(), &who);
+    }
+
+    /// A new run as `adventurer` (a name from adventurers.ron).
+    pub fn start(&mut self, portrait: Option<String>, adventurer: &str) {
         let floor = std::env::var("GAME_FLOOR")
             .ok()
             .and_then(|s| s.parse().ok())
@@ -651,6 +667,9 @@ impl Labyrinth {
             policies: Some(megatower_core::combat::profile::StatusPolicies::recovered()),
             ..default()
         };
+        if let Some(run) = self.run.as_mut() {
+            run.set_adventurer(adventurer);
+        }
         // QA: `GAME_STARTER=frost_nova` starts with that gem, offered or not.
         if let (Ok(gem), Some(run)) = (std::env::var("GAME_STARTER"), self.run.as_mut()) {
             run.start_with(&gem);
@@ -746,7 +765,7 @@ impl Labyrinth {
         let loaded = std::fs::read_to_string(path).ok().and_then(|text| {
             let (portrait, rest) = text.split_once('\n')?;
             let mut run = Run::load(rest)?;
-            run.legacy = self.legacy.clone();
+            run.set_legacy(self.legacy.clone());
             Some((portrait.to_string(), run))
         });
         let Some((portrait, run)) = loaded else {
@@ -992,7 +1011,7 @@ impl Labyrinth {
             match screens::esc_hit(&layout, x, y) {
                 Some(screens::EscButton::Resume) => ui.esc_open = false,
                 Some(screens::EscButton::Restart) => {
-                    self.start(self.portrait.clone());
+                    self.restart();
                     ui.esc_open = false;
                     ui.timeline = Timeline::default();
                     ui.transition = None;
@@ -1128,7 +1147,7 @@ impl Labyrinth {
                 self.cycle_target(-1);
             }
         } else if self.game().mode == Mode::Dead && keys.just_pressed(KeyCode::Enter) {
-            self.start(self.portrait.clone());
+            self.restart();
             ui.timeline = Timeline::default();
         }
     }

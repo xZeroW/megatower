@@ -4,12 +4,27 @@ use super::*;
 use crate::compose::{self, Align, Draw, WHITE, hex, palette, text};
 use megatower_sim::legacy::UNLOCKS;
 
-const ROW: [f32; 4] = [120.0, 74.0, 400.0, 26.0];
-const ROW_GAP: f32 = 32.0;
-const BACK: [f32; 4] = [270.0, 322.0, 100.0, 26.0];
+/// The first row of the left column (starters and head starts); content
+/// unlocks fill the right one.
+const ROW: [f32; 4] = [40.0, 76.0, 270.0, 20.0];
+const COLUMN_GAP: f32 = 290.0;
+const ROW_GAP: f32 = 23.0;
+/// What the hovered unlock does.
+const ABOUT: [f32; 4] = [20.0, 307.0, 600.0, 13.0];
+const BACK: [f32; 4] = [270.0, 324.0, 100.0, 26.0];
 
 fn row(i: usize) -> [f32; 4] {
-    [ROW[0], ROW[1] + i as f32 * ROW_GAP, ROW[2], ROW[3]]
+    let content = UNLOCKS[i].reward.is_content();
+    let line = UNLOCKS[..i]
+        .iter()
+        .filter(|u| u.reward.is_content() == content)
+        .count();
+    [
+        ROW[0] + if content { COLUMN_GAP } else { 0.0 },
+        ROW[1] + line as f32 * ROW_GAP,
+        ROW[2],
+        ROW[3],
+    ]
 }
 
 impl Labyrinth {
@@ -79,7 +94,24 @@ impl Labyrinth {
                 format!("{} - {}", u.name, u.cost)
             };
             let affordable = !owned && self.legacy.points >= u.cost;
-            compose::button(rects, row(i), &label, None, affordable, 4, &mut out);
+            // The rows are lower than a stock button, so the label is placed
+            // here instead of by `compose::button`.
+            let r = row(i);
+            compose::button(rects, r, "", None, affordable, 4, &mut out);
+            out.push(text(
+                [r[0], r[1] + 2.0, r[2], 13.0],
+                label,
+                palette(if affordable { 1 } else { 4 }),
+                Align::Center,
+            ));
+        }
+        if let Some(u) = ui.cursor.and_then(|[x, y]| {
+            UNLOCKS
+                .iter()
+                .enumerate()
+                .find_map(|(i, u)| contains(row(i), x, y).then_some(u))
+        }) {
+            out.push(text(ABOUT, u.describe(), WHITE, Align::Center));
         }
         compose::button(rects, BACK, "Back", None, true, 4, &mut out);
         out
@@ -92,7 +124,21 @@ mod tests {
 
     #[test]
     fn rows_fit_above_the_back_button() {
-        let last = row(UNLOCKS.len() - 1);
-        assert!(last[1] + last[3] < BACK[1]);
+        for (i, u) in UNLOCKS.iter().enumerate() {
+            let r = row(i);
+            assert!(r[1] + r[3] <= ABOUT[1], "{}", u.name);
+            assert!(r[0] >= 0.0 && r[0] + r[2] <= 640.0);
+            for j in 0..i {
+                assert_ne!(row(j), r, "{} overlaps", u.name);
+            }
+        }
+        const { assert!(ABOUT[1] + ABOUT[3] <= BACK[1]) };
+    }
+
+    #[test]
+    fn every_unlock_says_what_it_does() {
+        for u in UNLOCKS {
+            assert!(u.describe().len() > 10, "{}", u.name);
+        }
     }
 }

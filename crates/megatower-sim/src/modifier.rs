@@ -49,6 +49,17 @@ pub enum Stat {
     SkillsCostLife,
     /// Percent chance for a skill to repeat for free, on top of its supports.
     RepeatChance,
+    /// Any positive value: the first damaging skill of each fight repeats.
+    FirstSkillRepeats,
+    /// Mana regained for each enemy a skill kills.
+    ManaOnKill,
+    /// Guarding gives this percent more damage until the end of the next turn.
+    GuardEmpowers,
+    /// Any positive value: a critical hit always inflicts the ailments the
+    /// attacker has a chance for.
+    CritsInflict,
+    /// Any positive value: drinking a flask also guards.
+    FlaskGuards,
     /// Floors below the first. Set on enemies so `enemy_derived.ron` can scale them.
     Depth,
     /// 1 on elites, otherwise absent. Set on enemies for `enemy_derived.ron`.

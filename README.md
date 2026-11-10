@@ -10,15 +10,18 @@ Megatower is the base client, with its existing menus, resolved HUD layout,
 pixel-art slots, tooltips, options, audio and room renderer. Its new runs use
 `megatower-sim` for labyrinths, map-dependent exits, combat, equipment, gems, shops
 and progression. The adapter lives in `crates/megatower-ui/src/labyrinth/`;
-Megatower's original simulation does not run alongside it. Adventurer selection
-currently chooses a portrait; the first skill gem determines the starting build and
-brings a partner skill with it, so you start with two.
+Megatower's original simulation does not run alongside it. The adventurer you pick
+brings a passive and a starting kit (shown under the grid when you hover one); the
+first skill gem determines the starting build and brings a partner skill with it, so
+you start with two.
 
 No crates or binaries have been renamed. To run the original simulation for
 reference/parity work: `MEGATOWER_LEGACY=1 cargo run -p megatower-client`.
 
 ### Controls
 
+- Click an adventurer to select them and read their passive and kit, then press Start
+  (or Enter) to begin; Back returns to the menu.
 - Choose a first gem with 1–3 or a click. In combat, 1–4 use linked skills;
   Space guards (no skill, enemy hits deal half damage that turn), F drinks a
   flask (35% of your life, takes the turn; 2 charges, refilled at Rest rooms,
@@ -85,7 +88,10 @@ profile.
 
 Dying pays Legacy points (1, plus 3 per floor beaten and 5 per boss). On the main menu's
 Legacy screen, spend them on unlocks: Arc, Venom Dart and Frost Nova join the offered starter gems, and Purse,
-Hoarder, Alchemist and Scholar give a head start (gold, orbs, a passive point). Reaching floor
+Hoarder, Alchemist and Scholar give a head start (gold, orbs, a passive point). Ten more add
+content to every later run: two events, two support gems, three boons and three uniques, most
+of them rule changes ("your first skill in each fight repeats") rather than stats. Until bought
+they never drop or appear. Hover an unlock to read what it does. Reaching floor
 4, 7, 10, 13, 16 or 20 for the first time pays a bonus (5 to 50 points). The profile keeps your
 best floor with each starter gem, shown when you pick one and when you die. Legacy is saved
 to `legacy.json` beside the profile.
@@ -111,7 +117,8 @@ curl -s -X POST http://127.0.0.1:15702 -H 'content-type: application/json' \
 ```
 
 `GAME_AUTOSTART=1` skips the menus to the new run's starter selection;
-`GAME_SEED` and `GAME_FLOOR` make the labyrinth reproducible.
+`GAME_SEED` and `GAME_FLOOR` make the labyrinth reproducible; `GAME_ADVENTURER=Gorix`
+picks the adventurer (Kestrel otherwise).
 `GAME_MOVES` / `GAME_LATE_MOVES` play scripted commands in that run (pick a gem,
 walk, fight, shops, rooms, tree; the list is on `scripted_moves` in
 `crates/megatower-ui/src/labyrinth/mod.rs`), and `tools/lab-shot.sh OUT.png

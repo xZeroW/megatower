@@ -111,6 +111,10 @@ pub struct Character {
     /// Flask charges left; a Rest room refills them.
     #[serde(default = "full_flasks")]
     pub flasks: u32,
+    /// Id of the [`crate::adventurer::AdventurerDef`] whose passive applies;
+    /// empty for a hero without one.
+    #[serde(default)]
+    pub adventurer: String,
 }
 
 fn full_flasks() -> u32 {
@@ -128,6 +132,7 @@ impl Character {
             boons: Vec::new(),
             orbs: Orbs::default(),
             flasks: full_flasks(),
+            adventurer: String::new(),
         };
         for (slot, item) in equipment {
             c.equipment[slot.index()] = Some(item);
@@ -153,6 +158,9 @@ impl Character {
         }
         for item in self.equipment.iter().flatten() {
             mods.extend(item.mods().iter());
+        }
+        if let Some(adventurer) = content.adventurer(&self.adventurer) {
+            mods.extend(adventurer.mods.iter().copied());
         }
         mods.extend(qa_mods().iter().copied());
         crate::derived::resolve(&mods, &content.derived)

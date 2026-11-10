@@ -138,4 +138,34 @@
             ]),
         ],
     ),
+    // Locked until bought with Legacy (legacy.rs).
+    (
+        id: "gamblers_table",
+        name: "Gambler's Table",
+        text: "A hooded figure shuffles bone dice across a table and nods at the empty stool.",
+        choices: [
+            (label: "Stake 30 gold", cost: 30, results: [
+                (weight: 45, text: "The dice fall your way.", effects: [Gold(80)]),
+                (weight: 15, text: "The figure slides a gem across the table instead.", effects: [Gem, Gold(20)]),
+                (weight: 40, text: "The figure pockets your coin without a word.", effects: []),
+            ]),
+            (label: "Walk on", results: [
+                (weight: 1, text: "The dice rattle behind you.", effects: []),
+            ]),
+        ],
+    ),
+    (
+        id: "sealed_vault",
+        name: "Sealed Vault",
+        text: "A vault door hangs from one hinge. The air beyond hums with an old ward.",
+        choices: [
+            (label: "Force your way in", results: [
+                (weight: 1, text: "The ward burns you, but the vault is yours.", effects: [Hurt(25.0), Item, Gem]),
+            ]),
+            (label: "Reach through the gap", results: [
+                (weight: 60, text: "Your fingers close on a purse.", effects: [Gold(25)]),
+                (weight: 40, text: "The ward snaps at your hand.", effects: [Hurt(10.0)]),
+            ]),
+        ],
+    ),
 ]

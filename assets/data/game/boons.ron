@@ -48,4 +48,14 @@
     (id: "echoes", name: "Blessing of Echoes", mods: [
         (stat: RepeatChance, kind: Flat, value: 8.0),
     ]),
+    // Rule boons: locked until bought with Legacy (legacy.rs).
+    (id: "opening", name: "Blessing of the Opening", mods: [
+        (stat: FirstSkillRepeats, kind: Flat, value: 1.0),
+    ]),
+    (id: "harvest", name: "Blessing of Harvest", mods: [
+        (stat: ManaOnKill, kind: Flat, value: 6.0),
+    ]),
+    (id: "poise", name: "Blessing of Poise", mods: [
+        (stat: GuardEmpowers, kind: Flat, value: 40.0),
+    ]),
 ]

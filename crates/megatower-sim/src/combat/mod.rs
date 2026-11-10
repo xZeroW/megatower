@@ -313,6 +313,8 @@ pub struct Battle {
     pub flasks: u32,
     /// Everything that happened, oldest first.
     pub log: Vec<CombatEvent>,
+    /// The hero has used a damaging skill in this fight.
+    opened: bool,
     rng: Rng,
 }
 
@@ -396,7 +398,8 @@ impl Strike<'_> {
                 let chance = self
                     .mods
                     .flat(Stat::AilmentChance(ailment), self.spec.tags | self.state);
-                if source > 0.0 && chance > 0.0 && rng.chance(chance) {
+                let sure = hit.crit && self.mods.flat(Stat::CritsInflict, Tags::NONE) > 0.0;
+                if source > 0.0 && chance > 0.0 && (sure || rng.chance(chance)) {
                     target.afflictions.inflict(ailment, source);
                     log.push(CombatEvent::Inflict {
                         target: actor,
@@ -424,6 +427,7 @@ impl Battle {
             turn: 1,
             flasks: 0,
             log: Vec::new(),
+            opened: false,
             rng,
         }
     }
@@ -547,8 +551,20 @@ impl Battle {
                         actor: Actor::Hero,
                         name: "Guard".into(),
                     });
+                    let more = self.hero.mods.flat(Stat::GuardEmpowers, Tags::NONE);
+                    if more > 0.0 && self.hero.empower.is_none_or(|(m, _)| m <= more) {
+                        // Until the end of the next turn.
+                        self.hero.empower = Some((more, 2));
+                        self.log.push(CombatEvent::Note {
+                            actor: Actor::Hero,
+                            note: Note::Empowered,
+                        });
+                    }
                 }
                 HeroAction::Flask => {
+                    if self.hero.mods.flat(Stat::FlaskGuards, Tags::NONE) > 0.0 {
+                        taken = GUARD_DAMAGE_TAKEN;
+                    }
                     self.flasks -= 1;
                     self.log.push(CombatEvent::Action {
                         actor: Actor::Hero,
@@ -613,11 +629,15 @@ impl Battle {
         let mut primary = primary;
         // A skill without damage is its effect alone.
         let casts = if skill.hit.base.is_empty() { 0 } else { 2 };
+        // The opening skill of a fight may be sure to repeat.
+        let opening = casts > 0 && !std::mem::replace(&mut self.opened, true);
+        let sure = opening && mods.flat(Stat::FirstSkillRepeats, Tags::NONE) > 0.0;
+        let standing = self.living().len();
         for cast in 0..casts {
             if cast == 1 {
                 let chance =
                     skill.repeat_chance + self.hero.mods.flat(Stat::RepeatChance, skill.tags);
-                if !self.rng.chance(chance) {
+                if !sure && !self.rng.chance(chance) {
                     break;
                 }
                 let living = self.living();
@@ -631,6 +651,11 @@ impl Battle {
                 let target = &mut self.enemies[i].fighter;
                 dealt += strike.land(target, Actor::Enemy(i), &mut self.rng, &mut self.log);
             }
+        }
+        let killed = standing - self.living().len();
+        let gain = mods.flat(Stat::ManaOnKill, skill.tags) * killed as f64;
+        if gain > 0.0 {
+            self.hero.mana = (self.hero.mana + gain).min(self.hero.max_mana);
         }
         let leech = mods.flat(Stat::LifeLeech, skill.tags);
         if leech > 0.0 && dealt > 0.0 {
@@ -1805,5 +1830,89 @@ mod tests {
             }
         }
         assert_eq!(outcome, Outcome::Won);
+    }
+
+    fn ruled(stat: Stat, value: f64, skills: Vec<Skill>, enemies: Vec<Enemy>) -> Battle {
+        let mut mods = ModSet::new();
+        mods.push(Modifier::flat(stat, value));
+        Battle::new(Fighter::hero(mods), skills, enemies, Rng::seeded(1))
+    }
+
+    const CAST: HeroAction = HeroAction::Skill {
+        index: 0,
+        target: 0,
+    };
+
+    #[test]
+    fn the_first_skill_of_a_fight_can_be_sure_to_repeat() {
+        let mut b = ruled(
+            Stat::FirstSkillRepeats,
+            1.0,
+            vec![skill(Fire, 1.0, Targeting::Single)],
+            vec![idle(100.0)],
+        );
+        b.act(CAST).unwrap();
+        assert_eq!(hits(&b), 2);
+        b.act(CAST).unwrap();
+        assert_eq!(hits(&b), 3);
+    }
+
+    #[test]
+    fn kills_can_pay_mana() {
+        let mut b = ruled(
+            Stat::ManaOnKill,
+            6.0,
+            vec![skill(Fire, 10.0, Targeting::All)],
+            vec![idle(5.0), idle(5.0), idle(100.0)],
+        );
+        b.hero.mana = 10.0;
+        b.act(CAST).unwrap();
+        approx(b.hero.mana, 10.0 - 5.0 + 12.0 + HERO_MANA_REGEN);
+    }
+
+    #[test]
+    fn a_guard_can_empower_the_next_turn_only() {
+        let mut b = ruled(
+            Stat::GuardEmpowers,
+            50.0,
+            vec![skill(Fire, 10.0, Targeting::Single)],
+            vec![idle(100.0)],
+        );
+        b.act(HeroAction::Guard).unwrap();
+        b.act(CAST).unwrap();
+        approx(b.enemies[0].fighter.life, 85.0);
+        b.act(CAST).unwrap();
+        approx(b.enemies[0].fighter.life, 75.0);
+    }
+
+    #[test]
+    fn a_flask_can_guard() {
+        let mut b = ruled(
+            Stat::FlaskGuards,
+            1.0,
+            vec![],
+            vec![enemy(100.0, vec![punch(20.0)])],
+        )
+        .with_flasks(1);
+        b.hero.life = 20.0;
+        b.act(HeroAction::Flask).unwrap();
+        let healed = HERO_LIFE * FLASK_HEAL / 100.0;
+        approx(b.hero.life, 20.0 + healed - 20.0 * GUARD_DAMAGE_TAKEN);
+    }
+
+    #[test]
+    fn crits_can_be_sure_to_inflict() {
+        let mut mods = ModSet::new();
+        mods.push(Modifier::flat(Stat::CritsInflict, 1.0));
+        mods.push(Modifier::flat(Stat::CritChance, 100.0));
+        mods.push(Modifier::flat(Stat::AilmentChance(Ailment::Ignite), 1.0));
+        let mut b = Battle::new(
+            Fighter::hero(mods),
+            vec![skill(Fire, 5.0, Targeting::Single)],
+            vec![idle(1000.0)],
+            Rng::seeded(3),
+        );
+        b.act(CAST).unwrap();
+        assert!(b.enemies[0].fighter.afflictions.has(Ailment::Ignite));
     }
 }

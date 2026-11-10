@@ -3,7 +3,7 @@
 
 use crate::character::{Character, GemSpot, ItemSpot, Loot};
 use crate::combat::{Battle, CombatEvent, FLASK_CHARGES, HeroAction, Outcome, encounter_scaled};
-use crate::content;
+use crate::content::{self, Content};
 use crate::labyrinth::{self, Dir, Floor, MoveError, Pos, RoomKind, Turn};
 use crate::legacy::{Legacy, RunEnd};
 use crate::loot::{reward_offers, room_loot, room_orbs, starting_character};
@@ -66,6 +66,10 @@ pub struct Run {
     rewarded: bool,
     /// Id of the gem the run started with; empty until one is picked.
     pub starter: String,
+    /// Id of the adventurer the hero will be; see [`Run::set_adventurer`].
+    adventurer: String,
+    /// What this run can roll: the content its Legacy has unlocked.
+    pool: Content,
 }
 
 /// What a saved run keeps. Only the map between rooms is saved: no fight,
@@ -135,6 +139,8 @@ impl Run {
         let floor = labyrinth::generate(floor_number, &mut rng);
         let offers = Self::roll_offers(&legacy, &mut rng);
         Self {
+            pool: content::get().pool(&legacy),
+            adventurer: String::new(),
             legacy,
             mode: Mode::Starter(offers),
             floor,
@@ -195,13 +201,15 @@ impl Run {
             mode: Mode::Map,
             floor: saved.floor,
             rng: saved.rng,
-            character: saved.character,
             shops: saved.shops.into_iter().collect(),
             battle: None,
             reward: None,
+            pool: content::get().pool(&saved.legacy),
+            adventurer: saved.character.adventurer.clone(),
             legacy: saved.legacy,
             rewarded: false,
             starter: saved.starter,
+            character: saved.character,
         })
     }
 
@@ -245,6 +253,24 @@ impl Run {
         h.finish()
     }
 
+    /// Who the hero will be: the passive and kit of that
+    /// [`crate::adventurer::AdventurerDef`] are handed over with the starter
+    /// gem. An unknown id is a hero without either.
+    pub fn set_adventurer(&mut self, id: &str) {
+        self.adventurer = id.to_string();
+    }
+
+    /// The id of the adventurer this run is played with ("" for none).
+    pub fn adventurer(&self) -> &str {
+        &self.adventurer
+    }
+
+    /// Replaces the profile, and with it what the run can roll.
+    pub fn set_legacy(&mut self, legacy: Legacy) {
+        self.pool = content::get().pool(&legacy);
+        self.legacy = legacy;
+    }
+
     pub fn pick_starter(&mut self, index: usize) {
         let Mode::Starter(offers) = &self.mode else {
             return;
@@ -255,6 +281,9 @@ impl Run {
         self.character = starting_character(&id, content::get(), &mut self.rng);
         self.starter = id;
         self.legacy.apply(&mut self.character);
+        if let Some(adventurer) = content::get().adventurer(&self.adventurer) {
+            adventurer.equip(&mut self.character);
+        }
         self.mode = Mode::Map;
     }
 
@@ -305,7 +334,7 @@ impl Run {
                 return;
             }
             RoomKind::Shrine => {
-                let offers = shrine_offers(c, &self.character, &mut self.rng);
+                let offers = shrine_offers(&self.pool, &self.character, &mut self.rng);
                 if offers.is_empty() {
                     // Nothing left to offer: the shrine is done with.
                     self.floor.resolve_current();
@@ -315,7 +344,7 @@ impl Run {
                 return;
             }
             RoomKind::Event => {
-                let event = self.rng.pick(&c.events).expect("event content");
+                let event = self.rng.pick(&self.pool.events).expect("event content");
                 self.mode = Mode::Event {
                     id: event.id.clone(),
                     outcome: None,
@@ -372,7 +401,7 @@ impl Run {
         let rng = &mut self.rng;
         self.shops
             .entry(pos)
-            .or_insert_with(|| Shop::new(floor, content::get(), rng));
+            .or_insert_with(|| Shop::new(floor, &self.pool, rng));
         self.mode = Mode::Shop;
     }
 
@@ -416,7 +445,7 @@ impl Run {
     }
 
     pub fn refresh_shop(&mut self) -> bool {
-        let gems = &content::get().gems;
+        let gems = &self.pool.gems;
         let Some(shop) = self.shops.get_mut(&self.floor.current) else {
             return false;
         };
@@ -509,7 +538,7 @@ impl Run {
             choice,
             &mut self.character,
             self.floor.number,
-            c,
+            &self.pool,
             &mut self.rng,
         );
         self.floor.resolve_current();
@@ -627,7 +656,7 @@ impl Run {
     fn take_loot(&mut self, kind: RoomKind) {
         let floor = self.floor.number;
         let mut left = Vec::new();
-        for item in room_loot(kind, floor, content::get(), &mut self.rng) {
+        for item in room_loot(kind, floor, &self.pool, &mut self.rng) {
             if let Err(item) = self.character.add_loot(item) {
                 left.push(item);
             }
@@ -635,7 +664,7 @@ impl Run {
         for orb in room_orbs(kind, floor, &mut self.rng) {
             self.character.orbs.add(orb, 1);
         }
-        let offers = reward_offers(kind, floor, content::get(), &mut self.rng);
+        let offers = reward_offers(kind, floor, &self.pool, &mut self.rng);
         let reward = if !offers.is_empty() {
             Reward {
                 offers,
@@ -1096,5 +1125,40 @@ mod tests {
         run.debug_walk_to_stairs();
         run.descend();
         assert_eq!(run.floor.number, 2);
+    }
+
+    #[test]
+    fn the_adventurer_brings_a_passive_and_a_kit() {
+        let mut run = Run::new(3, 1);
+        run.set_adventurer("Elaris");
+        run.pick_starter(0);
+        assert_eq!(run.character.adventurer, "Elaris");
+        let has_kit = run
+            .character
+            .inventory
+            .iter()
+            .any(|l| matches!(l, Loot::Gem(g) if g.id == "bloodthirst"));
+        assert!(has_kit);
+        let leech = run
+            .character
+            .mods()
+            .flat(crate::modifier::Stat::LifeLeech, crate::tags::Tags::NONE);
+        assert!(leech >= 3.0);
+        let back = Run::load(&run.save().unwrap()).unwrap();
+        assert_eq!(back.character.adventurer, "Elaris");
+        // No adventurer: the plain hero of before.
+        assert!(started(3).character.adventurer.is_empty());
+    }
+
+    #[test]
+    fn a_fresh_profile_never_rolls_locked_content() {
+        let run = Run::new(1, 1);
+        assert!(run.pool.gems.support("siphon").is_none());
+        assert!(run.pool.boons.iter().all(|b| b.id != "poise"));
+        let mut legacy = Legacy::default();
+        legacy.points = 15;
+        assert!(legacy.buy("poise"));
+        let run = Run::with_legacy(1, 1, legacy);
+        assert!(run.pool.boons.iter().any(|b| b.id == "poise"));
     }
 }

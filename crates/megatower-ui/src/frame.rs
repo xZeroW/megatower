@@ -113,37 +113,81 @@ fn update_screens(
                 screens::main_menu_draws(&layout)
             }
             (None, _) | (_, Screen::Select | Screen::Intro | Screen::MainMenu) => {
-                if let (true, Some([x, y])) = (click, ui.cursor) {
-                    for (i, cell) in adventurer_cells(catalog.list.len()).into_iter().enumerate() {
-                        if contains(cell, x, y) {
-                            ui.selected_adventurer = i;
-                            if let Some(labyrinth) = labyrinth.as_deref_mut() {
-                                labyrinth.start(catalog.list[i].portrait.clone());
-                            } else {
-                                let seed = std::time::SystemTime::now()
-                                    .duration_since(std::time::UNIX_EPOCH)
-                                    .map_or(1, |d| d.as_nanos() as u64);
-                                let mut run = NewRun::default_for(&catalog.list[i].name, seed);
-                                if std::env::var("MEGALOOT_MODE")
-                                    .is_ok_and(|m| m.eq_ignore_ascii_case("practice"))
-                                {
-                                    run.mode = megatower_core::game_mode::GameMode::Practice;
-                                }
-                                slot.0 = Some(Game::new(run));
-                            }
-                            ui.screen = Screen::Playing;
-                            ui.timeline = Timeline::default();
-                            ui.presented_room = None;
-                            ui.transition = None;
-                            ui.death_at = None;
-                            ui.dragged = None;
-                            ui.popups.clear();
-                            break;
-                        }
+                let clicked = ui.cursor.filter(|_| click);
+                let cell = clicked.and_then(|[x, y]| {
+                    adventurer_cells(catalog.list.len())
+                        .into_iter()
+                        .position(|cell| contains(cell, x, y))
+                });
+                if let Some(i) = cell {
+                    ui.selected_adventurer = i;
+                }
+                // With the new rules a click only selects, so the passive can
+                // be read first; Start (or Enter) begins the run.
+                let chosen = if labyrinth.is_some() {
+                    if clicked.is_some_and(|[x, y]| contains(SELECT_BACK, x, y)) {
+                        ui.screen = Screen::MainMenu;
                     }
+                    let confirm = clicked.is_some_and(|[x, y]| contains(SELECT_START, x, y))
+                        || keys.just_pressed(KeyCode::Enter);
+                    Some(ui.selected_adventurer).filter(|&i| confirm && i < catalog.list.len())
+                } else {
+                    cell
+                };
+                if let Some(i) = chosen {
+                    if let Some(labyrinth) = labyrinth.as_deref_mut() {
+                        labyrinth.start(catalog.list[i].portrait.clone(), &catalog.list[i].name);
+                    } else {
+                        let seed = std::time::SystemTime::now()
+                            .duration_since(std::time::UNIX_EPOCH)
+                            .map_or(1, |d| d.as_nanos() as u64);
+                        let mut run = NewRun::default_for(&catalog.list[i].name, seed);
+                        if std::env::var("MEGALOOT_MODE")
+                            .is_ok_and(|m| m.eq_ignore_ascii_case("practice"))
+                        {
+                            run.mode = megatower_core::game_mode::GameMode::Practice;
+                        }
+                        slot.0 = Some(Game::new(run));
+                    }
+                    ui.screen = Screen::Playing;
+                    ui.timeline = Timeline::default();
+                    ui.presented_room = None;
+                    ui.transition = None;
+                    ui.death_at = None;
+                    ui.dragged = None;
+                    ui.popups.clear();
                 }
                 if slot.0.is_none() {
-                    select_draws(rects, &catalog, ui.selected_adventurer)
+                    let mut draws = select_draws(rects, &catalog, ui.selected_adventurer);
+                    // The new rules give each adventurer a passive and a kit.
+                    if labyrinth.is_some() {
+                        let shown = ui
+                            .cursor
+                            .and_then(|[x, y]| {
+                                adventurer_cells(catalog.list.len())
+                                    .into_iter()
+                                    .position(|cell| contains(cell, x, y))
+                            })
+                            .unwrap_or(ui.selected_adventurer);
+                        if let Some(entry) = catalog.list.get(shown) {
+                            adventurer_card(&mut draws, &entry.name);
+                        }
+                        let name = catalog
+                            .list
+                            .get(ui.selected_adventurer)
+                            .map_or("", |a| a.name.as_str());
+                        compose::button(
+                            rects,
+                            SELECT_START,
+                            &format!("Start as {name}"),
+                            None,
+                            true,
+                            8,
+                            &mut draws,
+                        );
+                        compose::button(rects, SELECT_BACK, "Back", None, true, 4, &mut draws);
+                    }
+                    draws
                 } else {
                     Vec::new()
                 }
@@ -217,6 +261,38 @@ pub(super) fn adventurer_cells(count: usize) -> Vec<R> {
             [60.0 + col * 90.0, 110.0 + row * 80.0, 80.0, 70.0]
         })
         .collect()
+}
+
+/// Confirms the selected adventurer (new rules only; Enter does the same).
+pub(super) const SELECT_START: R = [250.0, 324.0, 180.0, 26.0];
+/// Back to the main menu.
+pub(super) const SELECT_BACK: R = [140.0, 324.0, 100.0, 26.0];
+
+/// Under the grid: the passive and starting kit of the adventurer `name`.
+pub(super) fn adventurer_card(out: &mut Vec<Draw>, name: &str) {
+    let content = megatower_sim::content::get();
+    let Some(who) = content.adventurer(name) else {
+        return;
+    };
+    let lines = [
+        (
+            format!("{}: {}", who.id, who.passive),
+            compose::hex(0xffaa00),
+        ),
+        (who.passive_lines().join(", "), compose::WHITE),
+        (
+            format!("Starts with {}", who.kit_line(&content.gems)),
+            compose::palette(4),
+        ),
+    ];
+    for (i, (line, color)) in lines.into_iter().enumerate() {
+        out.push(compose::text(
+            [20.0, 274.0 + i as f32 * 14.0, 600.0, 13.0],
+            line,
+            color,
+            Align::Center,
+        ));
+    }
 }
 
 pub(super) fn select_draws(
@@ -632,7 +708,7 @@ mod labyrinth_routing_tests {
     #[test]
     fn the_original_selection_screen_starts_only_the_new_simulation() {
         let mut app = App::new();
-        let cell = adventurer_cells(1)[0];
+        let cell = adventurer_cells(3)[2];
         let mut ui = UiState {
             screen: Screen::Select,
             ..default()
@@ -654,17 +730,26 @@ mod labyrinth_routing_tests {
             .init_resource::<InputContext>()
             .add_message::<AppExit>()
             .add_systems(Update, update_screens);
+        // A click on an adventurer only selects them, so their passive can
+        // be read before the run starts.
         app.world_mut().run_schedule(Update);
-        assert!(app.world().resource::<GameSlot>().0.is_none());
-        assert_eq!(app.world().resource::<UiRes>().0.screen, Screen::Playing);
-        assert!(matches!(
+        let ui = &app.world().resource::<UiRes>().0;
+        assert_eq!((ui.screen, ui.selected_adventurer), (Screen::Select, 2));
+        assert!(
             app.world()
                 .resource::<crate::labyrinth::Labyrinth>()
                 .run
-                .as_ref()
-                .unwrap()
-                .mode,
-            megatower_sim::run::Mode::Starter(_)
-        ));
+                .is_none()
+        );
+        // Start confirms the choice.
+        app.world_mut().resource_mut::<UiRes>().0.cursor =
+            Some([SELECT_START[0] + 5.0, SELECT_START[1] + 5.0]);
+        app.world_mut().run_schedule(Update);
+        assert!(app.world().resource::<GameSlot>().0.is_none());
+        assert_eq!(app.world().resource::<UiRes>().0.screen, Screen::Playing);
+        let labyrinth = app.world().resource::<crate::labyrinth::Labyrinth>();
+        let run = labyrinth.run.as_ref().unwrap();
+        assert!(matches!(run.mode, megatower_sim::run::Mode::Starter(_)));
+        assert_eq!(run.adventurer(), "Rethan");
     }
 }

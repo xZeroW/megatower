@@ -1,0 +1,43 @@
+// What each adventurer brings to a run: a passive (always on) and a starting
+// kit. `id` is the adventurer's name in assets/data/content/adventurers.ron.
+// Shape: `AdventurerDef` in crates/megatower-sim/src/adventurer.rs.
+[
+    (id: "Kestrel", passive: "Prowler", gold: 20, mods: [
+        (stat: CritChance, kind: Flat, value: 4.0),
+        (stat: Evasion, kind: Flat, value: 8.0),
+    ]),
+    (id: "Umbrath", passive: "Burden of Power", orbs: [(Ascend, 1)], mods: [
+        (stat: Damage, kind: More, value: 20.0),
+        (stat: Life, kind: Increased, value: -15.0),
+    ]),
+    (id: "Rethan", passive: "My Way", gold: 30, mods: [
+        (stat: Damage, kind: More, value: 25.0, requires: [FullLife]),
+    ]),
+    (id: "Elaris", passive: "Bloodlust", gems: ["bloodthirst"], mods: [
+        (stat: LifeLeech, kind: Flat, value: 3.0),
+    ]),
+    (id: "Branric", passive: "Counterstroke", gems: ["concussive_blow"], mods: [
+        (stat: GuardEmpowers, kind: Flat, value: 40.0),
+    ]),
+    (id: "Gorix", passive: "Heart of Iron", gems: ["iron_wall"], mods: [
+        (stat: Life, kind: Flat, value: 20.0),
+        (stat: Armour, kind: Flat, value: 40.0),
+    ]),
+    (id: "Thalara", passive: "Drain", orbs: [(Augment, 2)], mods: [
+        (stat: ManaOnKill, kind: Flat, value: 5.0),
+    ]),
+    (id: "Mirelle", passive: "Arcane Roulette", orbs: [(Reforge, 2)], mods: [
+        (stat: RepeatChance, kind: Flat, value: 12.0),
+    ]),
+    (id: "Pellim", passive: "Replay", gold: 20, mods: [
+        (stat: FirstSkillRepeats, kind: Flat, value: 1.0),
+    ]),
+    (id: "Orvian", passive: "Silhouette", gold: 25, mods: [
+        (stat: FlaskGuards, kind: Flat, value: 1.0),
+        (stat: Evasion, kind: Flat, value: 6.0),
+    ]),
+    (id: "Nivor", passive: "My Justice", gems: ["affliction"], mods: [
+        (stat: CritsInflict, kind: Flat, value: 1.0),
+        (stat: CritChance, kind: Flat, value: 3.0),
+    ]),
+]

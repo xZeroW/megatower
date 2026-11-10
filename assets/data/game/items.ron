@@ -256,5 +256,18 @@
             (stat: LifeLeech, kind: Flat, value: 2.0),
             (stat: CritMultiplier, kind: Flat, value: 20.0),
         ]),
+        // Rule uniques: locked until bought with Legacy (legacy.rs).
+        (id: "heralds_charm", name: "Herald's Charm", base: "jade_amulet", mods: [
+            (stat: FirstSkillRepeats, kind: Flat, value: 1.0),
+            (stat: Mana, kind: Flat, value: 10.0),
+        ]),
+        (id: "duelists_grips", name: "Duelist's Grips", base: "iron_gauntlets", mods: [
+            (stat: GuardEmpowers, kind: Flat, value: 50.0),
+            (stat: Armour, kind: Flat, value: 40.0),
+        ]),
+        (id: "brewers_cap", name: "Brewer's Cap", base: "leather_cap", mods: [
+            (stat: FlaskGuards, kind: Flat, value: 1.0),
+            (stat: Life, kind: Flat, value: 15.0),
+        ]),
     ],
 )

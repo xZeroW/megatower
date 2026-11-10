@@ -24,6 +24,12 @@ builds), exploring hidden labyrinth floors.
    beaten + 5 per boss. They buy permanent unlocks on the Legacy screen (main menu): three more starter
    gems (Arc, Venom Dart, Frost Nova; the first run offers Heavy Strike, Split Shot and
    Fireball) and head starts (+40 / +80 gold, an Ascend and Augment orb, a passive point).
+   Ten more unlocks put content into the pools of later runs (`Content::pool`): two events,
+   the Siphon and Cruelty supports, three boons and three uniques. Most carry a rule
+   instead of a number: the first skill of a fight repeats, mana per enemy a skill kills,
+   guarding gives more damage next turn, crits always inflict ailments, a flask also guards.
+   The adventurer picked before the run (`adventurers.ron`) has one passive, often one of
+   those rules, and a small kit of gold, orbs or a gem.
    The profile also keeps the deepest floor reached with each starter gem (shown where the
    starter is picked, on the death screen and on the Legacy screen) and pays milestones once:
    reaching floor 4 / 7 / 10 / 13 / 16 / 20 for the first time gives 5 / 10 / 15 / 20 / 30 /

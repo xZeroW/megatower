@@ -1,13 +1,43 @@
 //! Balance report: the bot plays many runs per starter gem.
 //! `cargo run -p megatower-sim --example bot --release [runs] [last_floor]`
+//! A third argument, `adventurers`, reports per adventurer instead (all
+//! starters pooled).
 
-use megatower_sim::bot::play;
+use megatower_sim::bot::{play, play_as};
 use megatower_sim::content;
+
+/// How far the bot gets as each adventurer, over every starter gem.
+fn adventurers(runs: u64, last: u32) {
+    println!("{runs} runs per starter and adventurer, stopping after floor {last}\n");
+    println!(
+        "{:<10} {:>7} {:>7} {:>9}",
+        "adventurer", "f6 boss", "cleared", "avg floor"
+    );
+    let names = content::get().adventurers.iter().map(|a| a.id.as_str());
+    for who in std::iter::once("").chain(names) {
+        let results: Vec<_> = content::get()
+            .gems
+            .starters()
+            .flat_map(|gem| (0..runs).map(|seed| play_as(seed, &gem.id, who, last)))
+            .collect();
+        let n = results.len() as f64;
+        println!(
+            "{:<10} {:>6.0}% {:>6.0}% {:>9.1}",
+            if who.is_empty() { "(none)" } else { who },
+            100.0 * results.iter().filter(|r| r.bosses >= 2).count() as f64 / n,
+            100.0 * results.iter().filter(|r| !r.died).count() as f64 / n,
+            results.iter().map(|r| f64::from(r.floor)).sum::<f64>() / n,
+        );
+    }
+}
 
 fn main() {
     let mut args = std::env::args().skip(1);
     let runs: u64 = args.next().and_then(|a| a.parse().ok()).unwrap_or(200);
     let last: u32 = args.next().and_then(|a| a.parse().ok()).unwrap_or(9);
+    if args.next().is_some() {
+        return adventurers(runs, last);
+    }
     println!("{runs} runs per starter, stopping after floor {last}\n");
     println!(
         "{:<13} {:>7} {:>7} {:>7} {:>7} {:>7} {:>9} {:>7}",

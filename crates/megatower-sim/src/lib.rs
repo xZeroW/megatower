@@ -28,6 +28,7 @@
     clippy::field_reassign_with_default
 )]
 
+pub mod adventurer;
 pub mod ailment;
 pub mod bot;
 pub mod character;

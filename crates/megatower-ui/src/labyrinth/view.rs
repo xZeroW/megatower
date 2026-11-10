@@ -793,7 +793,7 @@ impl Labyrinth {
         let Some([x, y]) = ui.cursor else { return };
         if self.game().mode == Mode::Dead {
             if contains(compose::new_run_rect(), x, y) {
-                self.start(self.portrait.clone());
+                self.restart();
                 ui.timeline = Timeline::default();
             }
             return;
@@ -937,6 +937,25 @@ impl Labyrinth {
                 WHITE,
                 Align::Center,
             ));
+            // Who is playing: the adventurer's passive and what they bring.
+            if let Some(who) = content::get().adventurer(game.adventurer()) {
+                let lines = [
+                    (format!("{}: {}", who.id, who.passive), hex(0xffaa00)),
+                    (who.passive_lines().join(", "), WHITE),
+                    (
+                        format!("Starts with {}", who.kit_line(&content::get().gems)),
+                        palette(4),
+                    ),
+                ];
+                for (i, (line, color)) in lines.into_iter().enumerate() {
+                    out.push(text(
+                        [20.0, 94.0 + i as f32 * 13.0, 600.0, 13.0],
+                        line,
+                        color,
+                        Align::Center,
+                    ));
+                }
+            }
             for (i, id) in offers.iter().enumerate() {
                 let x = 194.0 + i as f32 * 110.0;
                 loot_draw(

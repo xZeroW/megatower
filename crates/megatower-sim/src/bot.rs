@@ -36,7 +36,14 @@ pub struct BotResult {
 
 /// Plays one run with `starter` until death or past `last_floor`.
 pub fn play(seed: u64, starter: &str, last_floor: u32) -> BotResult {
+    play_as(seed, starter, "", last_floor)
+}
+
+/// [`play`] as the adventurer `adventurer` ("" for none): the bot gets the
+/// passive and the kit, and plays no differently for them.
+pub fn play_as(seed: u64, starter: &str, adventurer: &str, last_floor: u32) -> BotResult {
     let mut run = Run::new(seed, 1);
+    run.set_adventurer(adventurer);
     run.start_with(starter);
     let mut bosses = 0;
     let mut fights = 0;
