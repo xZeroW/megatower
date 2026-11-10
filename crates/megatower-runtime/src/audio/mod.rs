@@ -92,7 +92,7 @@ fn play_sfx(
     mut queue: ResMut<SfxQueue>,
 ) {
     for (path, db) in queue.0.drain(..) {
-        if megatower_core::paths::runtime_root().join(&path).exists() {
+        if megatower_core::paths::assets_root().join(&path).exists() {
             sfx.play(assets.load(path)).with_volume(db);
         }
     }

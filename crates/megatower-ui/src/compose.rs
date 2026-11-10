@@ -71,7 +71,7 @@ pub fn texture_size(path: &str) -> (f32, f32) {
     if let Some(size) = cache.lock().unwrap().get(&key) {
         return *size;
     }
-    let size = std::fs::read(megatower_core::paths::runtime_root().join(&key))
+    let size = std::fs::read(megatower_core::paths::assets_root().join(&key))
         .ok()
         .filter(|bytes| bytes.len() > 24 && &bytes[12..16] == b"IHDR")
         .map_or((64.0, 64.0), |b| {
@@ -95,7 +95,7 @@ pub fn sprite_bounds(path: &str) -> (f32, f32, f32, f32) {
         return *b;
     }
     let (w, h) = texture_size(path);
-    let bounds = image::open(megatower_core::paths::runtime_root().join(&key))
+    let bounds = image::open(megatower_core::paths::assets_root().join(&key))
         .ok()
         .and_then(|img| {
             let img = img.to_rgba8();
