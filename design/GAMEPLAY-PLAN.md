@@ -1,7 +1,12 @@
 # Gameplay plan
 
 Outcome of the gameplay review of November 2026, benchmarked against Megaloot
-and the Dungeonbound preview. The build engine (gems, links, affixes, orbs,
+and the Dungeonbound preview. Underkeep (turn-based grid crawler, four-person
+party, hand-built dungeons with secrets, traps and puzzles) is a third
+reference: not a roguelike, but its fights reward planning around what the
+enemy is about to do, and its dungeons hide things worth a detour. Phase 3
+takes the first point; hidden rooms and traps are candidates for Phase 4's
+floor variety. The build engine (gems, links, affixes, orbs,
 passive tree) is the game's strength. The work below is about giving the player
 more decisions around it, not about adding raw content.
 
@@ -64,10 +69,26 @@ AoE starters (Frost Nova, Arc) outscale single-target ones (Heavy Strike).
 
 ## Phase 3: enemies that ask questions
 
-- [ ] Enemies inflict ailments on the hero (makes resistances matter).
-- [ ] New intent kinds: buff, summon, charge-up attack.
-- [ ] One signature mechanic per boss; bosses are only bigger intent loops
-      today.
+- [x] Enemies inflict ailments on the hero (makes resistances matter).
+      Done: `ailments:` in enemies.ron gives a chance per hit; the ailment is
+      built from the damage that got through, so resistances shrink it. Rats
+      and ghouls bleed, slimes and spiders poison, cultists and Magma Golems
+      ignite, Snow Wraiths chill (35%) and freeze (8%). The hero's ailments
+      are listed under the bars. Second Wind's cleanse now has a use.
+- [x] New intent kinds: buff, summon, charge-up attack. Done as Rally (all
+      enemies deal more damage; Goblin Raider), Summon (Cave Bat calls bats;
+      summoned enemies cannot summon and pay nothing) and Charge (a wind-up
+      turn, then a heavy hit; a stun during the wind-up cancels the hit;
+      Shadow Ghost, Iron Golem). Each has its own marker and a tooltip line.
+- [x] One signature mechanic per boss. Warden: winds up Judgement (26-34).
+      Ruined King: raises Bone Archers, every hit poisons. Cinder Drake:
+      ignites, 50% more damage under half life. Stormwing: charged
+      Thunderclap that shocks, then a dive into the shocked hero.
+      Open: poison from floor-1 enemies ticks for under 1 damage; freeze on
+      the hero is a lost turn with no counter but cold resistance; the
+      enemy's wind-up is only readable from the marker and tooltip, there
+      is no animation. The AoE gap that summons opened was closed by
+      making single-target starters hit harder (see Balance watch).
 
 ## Phase 4: endless support
 
@@ -118,5 +139,18 @@ AoE starters (Frost Nova, Arc) outscale single-target ones (Heavy Strike).
 - After loot choices (the bot takes the best-scoring gear offer and sells
   spare gear): Heavy Strike 64%, Split Shot 81%, Fireball 79%, Frost Nova
   92%, Arc 91%, Venom Dart 70%. Unchanged within noise.
+- After Phase 3 (the bot guards or stuns a wind-up, cleanses when ailing,
+  buys no resistances on purpose): Heavy Strike 41%, Split Shot 68%,
+  Fireball 63%, Frost Nova 91%, Arc 87%, Venom Dart 55%. Single-target
+  starters lost 13-23 points, AoE ones 1-4. Magma Golem, Iron Golem, Snow
+  Wraith and Shadow Ghost are what stands at most deaths.
+- After the single-target pass: Heavy Strike 9-15 -> 14-21, Fireball 9-15
+  -> 13-20, Venom Dart 9-14 -> 13-20 in total, and the three use 150 / 140 /
+  140% of added damage (Frost Nova uses 70%), so one target pays more than
+  hitting everyone. Heavy Strike 73%, Split Shot 87%, Fireball 85%, Frost
+  Nova 95%, Arc 91%, Venom Dart 81%. The spread is 22 points (50 before the
+  pass, 28 before Phase 3). Heavy Strike is still last. The run is now a
+  little easier than before Phase 3, which Phase 4's scaling has to take
+  back.
 - Re-run `cargo run -p megatower-sim --example bot --release -- 150 12` after
   each phase.

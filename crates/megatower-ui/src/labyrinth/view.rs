@@ -255,14 +255,55 @@ fn intent_amount(enemy: &megatower_sim::combat::Enemy) -> String {
                 .fighter
                 .mods
                 .more(megatower_sim::modifier::Stat::Damage, spec.tags)
-                * enemy.fighter.afflictions.damage_dealt_multiplier();
+                * enemy.dealt_multiplier();
             let min: f64 = spec.base.iter().map(|(_, r)| r.min).sum();
             let max: f64 = spec.base.iter().map(|(_, r)| r.max).sum();
             format!("{:.0}-{:.0}", min * scale, max * scale)
         }
         IntentKind::Guard { armour } => format!("+{armour:.0}"),
         IntentKind::Heal { percent } => format!("{percent:.0}%"),
+        IntentKind::Rally { more_damage, .. } => format!("+{more_damage:.0}%"),
+        IntentKind::Summon { .. } => "call".into(),
+        IntentKind::Charge => "winds up".into(),
     }
+}
+
+/// What the enemy's next move asks of the player, where that is not plain.
+fn intent_tip(enemy: &megatower_sim::combat::Enemy) -> Vec<String> {
+    use megatower_sim::combat::IntentKind;
+    match &enemy.intent().kind {
+        IntentKind::Attack(_) if enemy.charged => {
+            vec!["A wound-up hit: guard it, or stun to cancel it".into()]
+        }
+        IntentKind::Attack(_) | IntentKind::Guard { .. } | IntentKind::Heal { .. } => vec![],
+        IntentKind::Rally { more_damage, .. } => {
+            vec![format!("Every enemy deals {more_damage:.0}% more damage")]
+        }
+        IntentKind::Summon { .. } => vec!["Calls another enemy to the fight".into()],
+        IntentKind::Charge => vec![
+            "Winds up a heavy hit for its next turn".into(),
+            "A stun cancels the hit".into(),
+        ],
+    }
+}
+
+/// What stands on a fighter in a fight, for tooltips and the hero's strip.
+fn condition_names(fighter: &megatower_sim::combat::Fighter) -> Vec<String> {
+    use megatower_sim::ailment::Ailment;
+    let mut names: Vec<String> = Ailment::ALL
+        .into_iter()
+        .filter(|a| fighter.afflictions.has(*a))
+        .map(|a| match a {
+            Ailment::Poison if fighter.afflictions.poison.len() > 1 => {
+                format!("Poison x{}", fighter.afflictions.poison.len())
+            }
+            _ => format!("{a:?}"),
+        })
+        .collect();
+    if let Some((more, turns)) = fighter.empower {
+        names.push(format!("+{more:.0}% damage ({turns})"));
+    }
+    names
 }
 
 fn tip_lines(loot: &Loot) -> Vec<String> {
@@ -1236,12 +1277,15 @@ impl Labyrinth {
                 && let Some(e) = game.battle.as_ref().and_then(|b| b.enemies.get(i))
             {
                 let mut lines = vec![e.fighter.name.clone()];
-                lines.extend(
-                    megatower_sim::ailment::Ailment::ALL
-                        .into_iter()
-                        .filter(|a| e.fighter.afflictions.has(*a))
-                        .map(|a| format!("{a:?}")),
-                );
+                if e.fighter.alive() {
+                    let intent = e.intent();
+                    lines.push(format!("Next: {}", intent.name));
+                    lines.extend(intent_tip(e));
+                    if e.is_enraged() {
+                        lines.push("Enraged".into());
+                    }
+                }
+                lines.extend(condition_names(&e.fighter));
                 tooltip(&mut out, rects, cursor, lines);
             } else if self.view == View::Profile
                 && ui.tab == Tab::Profile
@@ -1340,6 +1384,15 @@ impl Labyrinth {
             IntentKind::Attack(_) => ("textures/icons/attack_icon.png", hex(0xff6a6a)),
             IntentKind::Guard { .. } => ("textures/icons/guard_icon.png", hex(0x7ab4ff)),
             IntentKind::Heal { .. } => ("textures/icons/overheal_icon.png", hex(0x6fdc6f)),
+            IntentKind::Rally { .. } => ("textures/icons/fury_icon.png", hex(0xffb347)),
+            IntentKind::Summon { .. } => ("textures/icons/swarm_trial.png", hex(0xc9a0ff)),
+            IntentKind::Charge => ("textures/icons/warning_icon.png", hex(0xffd23f)),
+        };
+        // The wound-up hit stands out from an ordinary one.
+        let (icon, tint) = if enemy.charged && !stunned {
+            ("textures/icons/warning_icon.png", hex(0xff3b3b))
+        } else {
+            (icon, tint)
         };
         let amount = if stunned {
             "skip".to_string()
@@ -1539,6 +1592,19 @@ impl Labyrinth {
             align: Align::Center,
         });
         let life = Self::hero_bars(out, ui, rects, frame, portrait, 46.0, 150.0);
+        // Ailments and boosts on the hero, under the bars.
+        if let Some(battle) = &game.battle {
+            let conditions = condition_names(&battle.hero).join("  ");
+            if !conditions.is_empty() {
+                out.push(Draw::Text {
+                    rect: [life[0], 338.0, 190.0, 12.0],
+                    text: conditions,
+                    size: 12.0,
+                    color: hex(0xd9a0ff),
+                    align: Align::Left,
+                });
+            }
+        }
         let v = &frame.player;
         if let Some(policies) = &self.policies {
             // Status icons beside the bars, two to a row.

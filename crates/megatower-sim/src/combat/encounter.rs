@@ -1,6 +1,7 @@
 //! Enemy definitions, their scaling with depth, and who a room throws at you.
 
 use super::{Enemy, Fighter};
+use crate::ailment::Ailment;
 use crate::damage::HitSpec;
 use crate::labyrinth::RoomKind;
 use crate::modifier::{ModSet, Modifier, Stat};
@@ -19,6 +20,31 @@ pub enum IntentKind {
     Heal {
         percent: f64,
     },
+    /// Every living enemy deals this percent more damage. `turns` counts the
+    /// turn of the shout itself, so 2 covers the enemies that act after it
+    /// and everyone's next action.
+    Rally {
+        more_damage: f64,
+        turns: u8,
+    },
+    /// Calls the enemy with this id to the field (it does not act this
+    /// turn). Nothing comes while the field is full. Summoned enemies cannot
+    /// summon and pay no XP or gold.
+    Summon {
+        id: String,
+    },
+    /// Winds up: nothing happens this turn and the next intent, the big
+    /// hit, follows. A stun during the wind-up cancels that hit as well.
+    Charge,
+}
+
+/// A boss that hits harder once it is hurt.
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Enrage {
+    /// Percent of maximum life at or under which it sets in.
+    pub below: f64,
+    /// Percent more damage dealt from then on.
+    pub more_damage: f64,
 }
 
 /// What an enemy will do on its turn; shown to the player in advance.
@@ -46,6 +72,12 @@ pub struct EnemyDef {
     /// Picture for the room view (an asset path).
     #[serde(default)]
     pub sprite: Option<String>,
+    /// Chance in percent for its hits to inflict each ailment. A hit can
+    /// only inflict what its damage types allow (fire ignites, and so on).
+    #[serde(default)]
+    pub ailments: Vec<(Ailment, f64)>,
+    #[serde(default)]
+    pub enrage: Option<Enrage>,
     /// Repeated in order.
     pub intents: Vec<Intent>,
 }
@@ -71,7 +103,13 @@ pub fn spawn(def: &EnemyDef, floor: u32, elite: bool) -> Enemy {
 
 /// [`spawn`] with the floor's danger level on top.
 pub fn spawn_scaled(def: &EnemyDef, floor: u32, elite: bool, danger: u32) -> Enemy {
+    spawn_as(def, floor, elite, danger, false)
+}
+
+/// `summoned` enemies are the ones a [`IntentKind::Summon`] calls in.
+fn spawn_as(def: &EnemyDef, floor: u32, elite: bool, danger: u32, summoned: bool) -> Enemy {
     let depth = f64::from(floor.max(1) - 1);
+    let danger_level = danger;
     let danger = f64::from(danger);
     let mut life =
         def.life * (1.0 + LIFE_PER_FLOOR * depth / 100.0) * (1.0 + DANGER_LIFE * danger / 100.0);
@@ -79,6 +117,9 @@ pub fn spawn_scaled(def: &EnemyDef, floor: u32, elite: bool, danger: u32) -> Ene
     mods.push(Modifier::flat(Stat::Armour, def.armour));
     for &(t, value) in &def.resistances {
         mods.push(Modifier::flat(Stat::Resistance(t), value));
+    }
+    for &(ailment, chance) in &def.ailments {
+        mods.push(Modifier::flat(Stat::AilmentChance(ailment), chance));
     }
     mods.push(Modifier::flat(Stat::Depth, depth));
     if danger > 0.0 {
@@ -90,14 +131,37 @@ pub fn spawn_scaled(def: &EnemyDef, floor: u32, elite: bool, danger: u32) -> Ene
         mods.push(Modifier::flat(Stat::Elite, 1.0));
         name = format!("Elite {name}");
     }
-    let mods = crate::derived::resolve(&mods, &crate::content::get().enemy_derived);
+    let content = crate::content::get();
+    let mods = crate::derived::resolve(&mods, &content.enemy_derived);
+    let mut intents = def.intents.clone();
+    let mut minions = Vec::new();
+    if summoned {
+        intents.retain(|i| !matches!(i.kind, IntentKind::Summon { .. }));
+    } else {
+        for intent in &intents {
+            let IntentKind::Summon { id } = &intent.kind else {
+                continue;
+            };
+            if minions.iter().any(|m: &Enemy| &m.id == id) {
+                continue;
+            }
+            if let Some(minion) = content.enemies.iter().find(|d| &d.id == id) {
+                minions.push(spawn_as(minion, floor, false, danger_level, true));
+            }
+        }
+    }
     Enemy {
         fighter: Fighter::new(name, life, 0.0, mods),
         id: def.id.clone(),
         boss: def.boss,
         elite,
-        intents: def.intents.clone(),
+        intents,
         next: 0,
+        charged: false,
+        summoned,
+        enrage: def.enrage,
+        enraged: false,
+        minions,
     }
 }
 
@@ -203,6 +267,51 @@ mod tests {
                 }
             }
         }
+    }
+
+    #[test]
+    fn summoners_carry_their_minions() {
+        let by_id = |id: &str| defs().iter().find(|d| d.id == id).unwrap();
+        for def in defs() {
+            let e = spawn(def, 4, false);
+            for intent in &def.intents {
+                if let IntentKind::Summon { id } = &intent.kind {
+                    let minion = e.minions.iter().find(|m| &m.id == id).expect("minion");
+                    assert!(minion.summoned && minion.minions.is_empty());
+                    assert!(!minion.intents.is_empty(), "{id} can only summon");
+                    assert!(
+                        minion
+                            .intents
+                            .iter()
+                            .all(|i| !matches!(i.kind, IntentKind::Summon { .. }))
+                    );
+                    assert!(!by_id(id).boss);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn a_charge_is_followed_by_an_attack() {
+        for def in defs() {
+            for (i, intent) in def.intents.iter().enumerate() {
+                if intent.kind == IntentKind::Charge {
+                    let next = &def.intents[(i + 1) % def.intents.len()];
+                    assert!(matches!(next.kind, IntentKind::Attack(_)), "{}", def.id);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn enemy_ailments_become_chances() {
+        let spider = defs().iter().find(|d| d.id == "venom_spider").unwrap();
+        let e = spawn(spider, 2, false);
+        let chance = e
+            .fighter
+            .mods
+            .flat(Stat::AilmentChance(Ailment::Poison), Default::default());
+        assert!(chance > 0.0);
     }
 
     #[test]

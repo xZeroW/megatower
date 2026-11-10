@@ -231,15 +231,35 @@ fn choose_action(battle: &Battle) -> HeroAction {
         return HeroAction::Flask;
     }
     let life_paid = battle.pays_with_life();
-    let best = (0..battle.skills.len())
-        .filter(|&i| {
-            let cost = battle.skill_cost(i).unwrap_or(f64::MAX);
-            if life_paid {
-                battle.hero.life > cost * 2.0
-            } else {
-                battle.hero.mana >= cost
+    let affordable = |i: usize| {
+        let cost = battle.skill_cost(i).unwrap_or(f64::MAX);
+        if life_paid {
+            battle.hero.life > cost * 2.0
+        } else {
+            battle.hero.mana >= cost
+        }
+    };
+    // A wound-up hit is coming: stun it away, or else take it on the guard.
+    let winding = living.iter().copied().find(|&i| {
+        let e = &battle.enemies[i];
+        e.charged && !e.fighter.stunned && !e.fighter.afflictions.frozen
+    });
+    if let Some(i) = winding {
+        let stun = (0..battle.skills.len())
+            .find(|&s| battle.skills[s].effect == Some(Effect::Stun) && affordable(s));
+        return match stun {
+            Some(index) if !battle.enemies[i].fighter.stun_immune => {
+                HeroAction::Skill { index, target: i }
             }
-        })
+            _ => HeroAction::Guard,
+        };
+    }
+    let ailing = {
+        let a = &battle.hero.afflictions;
+        a.ignite.is_some() || a.bleed.is_some() || a.poison.len() >= 2 || a.shock > 0
+    };
+    let best = (0..battle.skills.len())
+        .filter(|&i| affordable(i))
         .max_by(|&a, &b| {
             let value = |i: usize| {
                 let s = &battle.skills[i];
@@ -256,10 +276,13 @@ fn choose_action(battle: &Battle) -> HeroAction {
                     Some(Effect::Empower { .. }) if battle.hero.empower.is_none() => {
                         value += 4.0 * living.len() as f64;
                     }
-                    Some(Effect::Cleanse { .. })
-                        if battle.hero.life < battle.hero.max_life * 0.6 =>
-                    {
-                        value += 15.0;
+                    Some(Effect::Cleanse { .. }) => {
+                        if battle.hero.life < battle.hero.max_life * 0.6 {
+                            value += 15.0;
+                        }
+                        if ailing {
+                            value += 10.0;
+                        }
                     }
                     _ => {}
                 }

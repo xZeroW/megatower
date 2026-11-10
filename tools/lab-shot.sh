@@ -11,7 +11,8 @@ cd "$(dirname "$0")/.."
 out="${1:?usage: tools/lab-shot.sh OUT.png [VAR=value ...]}"
 shift
 cargo build -q -p megatower-client
-env GAME_AUTOSTART=1 MEGALOOT_CAPTURE_SCREENSHOT=1 \
+# The binary is run directly, so it needs the asset root Cargo would set.
+env BEVY_ASSET_ROOT="$PWD" GAME_AUTOSTART=1 MEGALOOT_CAPTURE_SCREENSHOT=1 \
     MEGALOOT_CAPTURE_DELAY_SECS="${MEGALOOT_CAPTURE_DELAY_SECS:-2}" "$@" \
     timeout 120 target/debug/megatower >/dev/null 2>&1 || true
 cp artifacts/latest.png "$out"

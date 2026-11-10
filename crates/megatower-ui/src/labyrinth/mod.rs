@@ -241,6 +241,9 @@ fn event_line(event: &CombatEvent, names: &[String]) -> String {
                 Note::Warded => format!("{who} braced behind a ward"),
                 Note::Cleansed => format!("{who} {was} cleansed of ailments"),
                 Note::Empowered => format!("{who} {was} empowered"),
+                Note::Charging => format!("{who} winds up a heavy hit"),
+                Note::Interrupted => format!("{who} lost the hit it was winding up"),
+                Note::Enraged => format!("{who} flew into a rage"),
             }
         }
         CombatEvent::Death { actor } => format!("{} {} defeated", who(*actor), was(*actor)),

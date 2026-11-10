@@ -1,5 +1,9 @@
 // Enemies at floor 1; `encounter.rs` scales them with depth. Each enemy
 // repeats its intents in order, and the player sees the next one.
+// Intent kinds: Attack, Guard, Heal, Rally (every enemy hits harder), Summon
+// (calls another enemy in) and Charge (winds up the next intent, which must be
+// an Attack; a stun cancels both). `ailments` are chances in percent for its
+// hits to inflict them; the hit's damage type decides which can apply.
 // The shape is `EnemyDef` in crates/megatower-sim/src/combat/encounter.rs. `sprite`
 // is the 64x64 picture the room view stands up for it.
 [
@@ -8,6 +12,7 @@
         sprite: Some("textures/enemies/rat.png"),
         name: "Tunnel Rat",
         life: 18.0,
+        ailments: [(Bleed, 25.0)],
         intents: [
             (name: "Bite", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 3.0, max: 5.0))]))),
             (name: "Bite", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 3.0, max: 5.0))]))),
@@ -32,6 +37,7 @@
         life: 30.0,
         armour: 40.0,
         resistances: [(Chaos, 40.0)],
+        ailments: [(Poison, 40.0)],
         intents: [
             (name: "Spit", kind: Attack((tags: [Spell, Projectile, Chaos], base: [(Chaos, (min: 3.0, max: 5.0))]))),
             (name: "Harden", kind: Guard(armour: 60.0)),
@@ -43,6 +49,7 @@
         name: "Ember Cultist",
         life: 20.0,
         resistances: [(Fire, 50.0)],
+        ailments: [(Ignite, 40.0)],
         intents: [
             (name: "Firebolt", kind: Attack((tags: [Spell, Projectile, Fire], base: [(Fire, (min: 5.0, max: 8.0))]))),
             (name: "Dark Chant", kind: Heal(percent: 20.0)),
@@ -68,6 +75,7 @@
         intents: [
             (name: "Nip", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 2.0, max: 4.0))], base_crit: 12.0))),
             (name: "Swoop", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 4.0, max: 7.0))], base_crit: 12.0))),
+            (name: "Screech", kind: Summon(id: "cave_bat")),
         ],
     ),
     (
@@ -79,7 +87,7 @@
         intents: [
             (name: "Stab", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 3.0, max: 6.0))]))),
             (name: "Stab", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 3.0, max: 6.0))]))),
-            (name: "War Cry", kind: Guard(armour: 40.0)),
+            (name: "War Cry", kind: Rally(more_damage: 40.0, turns: 2)),
             (name: "Cleaver", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 8.0, max: 12.0))]))),
         ],
     ),
@@ -90,6 +98,7 @@
         life: 24.0,
         min_floor: 2,
         resistances: [(Chaos, 60.0)],
+        ailments: [(Poison, 60.0)],
         intents: [
             (name: "Web Spit", kind: Attack((tags: [Spell, Projectile, Chaos], base: [(Chaos, (min: 4.0, max: 7.0))]))),
             (name: "Fang", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 5.0, max: 9.0))], base_crit: 8.0))),
@@ -101,6 +110,7 @@
         name: "Blood Ghoul",
         life: 38.0,
         min_floor: 3,
+        ailments: [(Bleed, 40.0)],
         intents: [
             (name: "Rend", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 6.0, max: 10.0))]))),
             (name: "Feast", kind: Heal(percent: 18.0)),
@@ -114,6 +124,7 @@
         life: 28.0,
         min_floor: 3,
         resistances: [(Cold, 60.0), (Fire, -25.0)],
+        ailments: [(Chill, 35.0), (Freeze, 8.0)],
         intents: [
             (name: "Frost Bolt", kind: Attack((tags: [Spell, Projectile, Cold], base: [(Cold, (min: 6.0, max: 10.0))]))),
             (name: "Chill Wail", kind: Attack((tags: [Spell, Area, Cold], base: [(Cold, (min: 8.0, max: 12.0))]))),
@@ -129,7 +140,8 @@
         intents: [
             (name: "Haunt", kind: Attack((tags: [Spell, Chaos], base: [(Chaos, (min: 7.0, max: 11.0))]))),
             (name: "Fade", kind: Guard(armour: 80.0)),
-            (name: "Wail", kind: Attack((tags: [Spell, Area, Chaos], base: [(Chaos, (min: 9.0, max: 14.0))]))),
+            (name: "Gather Dark", kind: Charge),
+            (name: "Wail", kind: Attack((tags: [Spell, Area, Chaos], base: [(Chaos, (min: 16.0, max: 22.0))]))),
         ],
     ),
     (
@@ -143,7 +155,8 @@
         intents: [
             (name: "Rust Shield", kind: Guard(armour: 160.0)),
             (name: "Pound", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 12.0, max: 18.0))]))),
-            (name: "Pound", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 12.0, max: 18.0))]))),
+            (name: "Wind Up", kind: Charge),
+            (name: "Crush", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 20.0, max: 26.0))]))),
         ],
     ),
     (
@@ -154,6 +167,7 @@
         min_floor: 6,
         armour: 80.0,
         resistances: [(Fire, 55.0), (Cold, -30.0)],
+        ailments: [(Ignite, 35.0)],
         intents: [
             (name: "Molten Fist", kind: Attack((tags: [Attack, Melee, Fire], base: [(Fire, (min: 10.0, max: 15.0))]))),
             (name: "Cool Down", kind: Heal(percent: 15.0)),
@@ -168,10 +182,12 @@
         armour: 60.0,
         resistances: [(Fire, 25.0), (Cold, 25.0), (Lightning, 25.0), (Chaos, 25.0)],
         boss: true,
+        // Signature: a telegraphed hammer blow. Guard it or stun the wind-up.
         intents: [
             (name: "Cleave", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 10.0, max: 14.0))]))),
             (name: "Stone Ward", kind: Guard(armour: 100.0)),
-            (name: "Inferno", kind: Attack((tags: [Spell, Area, Fire], base: [(Fire, (min: 14.0, max: 20.0))]))),
+            (name: "Raise Hammer", kind: Charge),
+            (name: "Judgement", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 26.0, max: 34.0))]))),
             (name: "Mend", kind: Heal(percent: 10.0)),
         ],
     ),
@@ -184,7 +200,10 @@
         min_floor: 3,
         resistances: [(Chaos, 40.0), (Cold, 20.0)],
         boss: true,
+        // Signature: raises a court of archers and poisons with every hit.
+        ailments: [(Poison, 100.0)],
         intents: [
+            (name: "Raise Court", kind: Summon(id: "bone_archer")),
             (name: "Decree", kind: Guard(armour: 80.0)),
             (name: "Royal Strike", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 11.0, max: 15.0))]))),
             (name: "Withering", kind: Attack((tags: [Spell, Chaos], base: [(Chaos, (min: 13.0, max: 18.0))]))),
@@ -200,6 +219,9 @@
         min_floor: 6,
         resistances: [(Fire, 60.0), (Cold, -20.0)],
         boss: true,
+        // Signature: burns, and hits half again as hard once under half life.
+        ailments: [(Ignite, 60.0)],
+        enrage: Some((below: 50.0, more_damage: 50.0)),
         intents: [
             (name: "Claw", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 12.0, max: 16.0))]))),
             (name: "Wing Guard", kind: Guard(armour: 100.0)),
@@ -215,10 +237,14 @@
         min_floor: 6,
         resistances: [(Lightning, 60.0), (Cold, 20.0)],
         boss: true,
+        // Signature: a charged Thunderclap that shocks, then a dive into the
+        // shocked hero. Stun the wind-up, guard, or cleanse the shock.
+        ailments: [(Shock, 100.0)],
         intents: [
-            (name: "Dive", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 12.0, max: 16.0))], base_crit: 10.0))),
             (name: "Static", kind: Guard(armour: 80.0)),
-            (name: "Thunderclap", kind: Attack((tags: [Spell, Area, Lightning], base: [(Lightning, (min: 15.0, max: 22.0))]))),
+            (name: "Gather Storm", kind: Charge),
+            (name: "Thunderclap", kind: Attack((tags: [Spell, Area, Lightning], base: [(Lightning, (min: 20.0, max: 28.0))]))),
+            (name: "Dive", kind: Attack((tags: [Attack, Melee, Physical], base: [(Physical, (min: 12.0, max: 16.0))], base_crit: 10.0))),
             (name: "Recover", kind: Heal(percent: 10.0)),
         ],
     ),

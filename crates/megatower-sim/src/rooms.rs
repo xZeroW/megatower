@@ -188,6 +188,7 @@ fn give(character: &mut Character, loot: Loot, content: &Content) -> String {
 pub fn battle_gold(enemies: &[Enemy], floor: u32, rng: &mut Rng) -> u32 {
     enemies
         .iter()
+        .filter(|e| !e.summoned)
         .map(|e| {
             let base = 3 + 2 * floor + rng.below(3);
             base * if e.boss {

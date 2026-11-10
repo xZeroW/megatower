@@ -139,9 +139,34 @@ pub struct Enemy {
     pub elite: bool,
     pub intents: Vec<Intent>,
     next: usize,
+    /// Wound up by [`IntentKind::Charge`]: its next intent is the big hit.
+    pub charged: bool,
+    /// Called in mid-fight; pays no XP or gold.
+    pub summoned: bool,
+    pub enrage: Option<encounter::Enrage>,
+    /// The enrage has been announced.
+    enraged: bool,
+    /// Who its [`IntentKind::Summon`] intents call in, ready to copy.
+    minions: Vec<Enemy>,
 }
 
 impl Enemy {
+    /// Hurt enough for its [`encounter::Enrage`] to count.
+    pub fn is_enraged(&self) -> bool {
+        self.enrage.is_some_and(|e| {
+            self.fighter.alive() && self.fighter.life <= self.fighter.max_life * e.below / 100.0
+        })
+    }
+
+    /// What its own state does to the damage it deals.
+    pub fn dealt_multiplier(&self) -> f64 {
+        let enrage = match self.enrage {
+            Some(e) if self.is_enraged() => 1.0 + e.more_damage / 100.0,
+            _ => 1.0,
+        };
+        self.fighter.dealt_multiplier() * enrage
+    }
+
     /// What it will do on its next action.
     pub fn intent(&self) -> &Intent {
         &self.intents[self.next % self.intents.len()]
@@ -236,6 +261,12 @@ pub enum Note {
     Warded,
     Cleansed,
     Empowered,
+    /// Winding up a big hit for its next action.
+    Charging,
+    /// A stun broke its wind-up: the big hit is lost too.
+    Interrupted,
+    /// Hurt enough to hit harder from now on.
+    Enraged,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -663,6 +694,7 @@ impl Battle {
 
     /// `hero_taken` scales what enemy hits deal to the hero this turn.
     fn enemies_act(&mut self, hero_taken: f64) {
+        // Newcomers called in this turn do not act in it.
         for i in 0..self.enemies.len() {
             if !self.enemies[i].fighter.alive() || !self.hero.alive() {
                 continue;
@@ -670,6 +702,13 @@ impl Battle {
             let actor = Actor::Enemy(i);
             let enemy = &mut self.enemies[i];
             enemy.fighter.guard = 0.0;
+            if enemy.is_enraged() && !enemy.enraged {
+                enemy.enraged = true;
+                self.log.push(CombatEvent::Note {
+                    actor,
+                    note: Note::Enraged,
+                });
+            }
             if enemy.fighter.afflictions.take_frozen() {
                 self.log.push(CombatEvent::Frozen { actor });
                 continue;
@@ -680,6 +719,14 @@ impl Battle {
                     actor,
                     note: Note::CannotAct,
                 });
+                if std::mem::take(&mut enemy.charged) {
+                    // The hit it was winding up for is lost with the action.
+                    enemy.next += 1;
+                    self.log.push(CombatEvent::Note {
+                        actor,
+                        note: Note::Interrupted,
+                    });
+                }
                 continue;
             }
             enemy.fighter.stun_immune = false;
@@ -691,11 +738,12 @@ impl Battle {
             });
             match intent.kind {
                 IntentKind::Attack(spec) => {
+                    enemy.charged = false;
                     let strike = Strike {
                         spec: &spec,
                         mods: &enemy.fighter.mods,
                         state: enemy.fighter.state_tags(),
-                        dealt_multiplier: enemy.fighter.dealt_multiplier() * hero_taken,
+                        dealt_multiplier: enemy.dealt_multiplier() * hero_taken,
                         no_ailments: false,
                         payoff: None,
                     };
@@ -708,6 +756,35 @@ impl Battle {
                 IntentKind::Heal { percent } => {
                     let amount = enemy.fighter.heal(enemy.fighter.max_life * percent / 100.0);
                     self.log.push(CombatEvent::Heal { actor, amount });
+                }
+                IntentKind::Rally { more_damage, turns } => {
+                    for (j, ally) in self.enemies.iter_mut().enumerate() {
+                        if ally.fighter.alive() {
+                            ally.fighter.empower = Some((more_damage, turns));
+                            self.log.push(CombatEvent::Note {
+                                actor: Actor::Enemy(j),
+                                note: Note::Empowered,
+                            });
+                        }
+                    }
+                }
+                IntentKind::Summon { id } => {
+                    let minion = enemy.minions.iter().find(|m| m.id == id).cloned();
+                    if let Some(minion) = minion
+                        && self.living().len() < MAX_FIELD
+                    {
+                        self.enemies.push(minion);
+                        self.log.push(CombatEvent::Arrive {
+                            enemy: self.enemies.len() - 1,
+                        });
+                    }
+                }
+                IntentKind::Charge => {
+                    enemy.charged = true;
+                    self.log.push(CombatEvent::Note {
+                        actor,
+                        note: Note::Charging,
+                    });
                 }
             }
         }
@@ -735,10 +812,14 @@ impl Battle {
             }
         }
         self.reinforce();
-        if let Some((_, turns)) = &mut self.hero.empower {
-            *turns -= 1;
-            if *turns == 0 {
-                self.hero.empower = None;
+        let fighters =
+            std::iter::once(&mut self.hero).chain(self.enemies.iter_mut().map(|e| &mut e.fighter));
+        for fighter in fighters {
+            if let Some((_, turns)) = &mut fighter.empower {
+                *turns -= 1;
+                if *turns == 0 {
+                    fighter.empower = None;
+                }
             }
         }
         let regen = self
@@ -937,11 +1018,124 @@ mod tests {
                 })
                 .collect(),
             next: 0,
+            charged: false,
+            summoned: false,
+            enrage: None,
+            enraged: false,
+            minions: Vec::new(),
         }
     }
 
     fn idle(life: f64) -> Enemy {
         enemy(life, vec![IntentKind::Guard { armour: 0.0 }])
+    }
+
+    #[test]
+    fn a_charged_hit_lands_unless_the_wind_up_is_stunned() {
+        let big = || enemy(100.0, vec![IntentKind::Charge, punch(40.0), punch(1.0)]);
+        let mut b = battle(vec![], vec![big()]);
+        b.act(HeroAction::Pass).unwrap();
+        assert!(b.enemies[0].charged);
+        approx(b.hero.life, HERO_LIFE);
+        b.act(HeroAction::Guard).unwrap();
+        approx(b.hero.life, HERO_LIFE - 40.0 * GUARD_DAMAGE_TAKEN);
+        assert!(!b.enemies[0].charged);
+
+        let mut b = battle(vec![utility(Effect::Stun)], vec![big()]);
+        b.act(HeroAction::Pass).unwrap();
+        b.act(HeroAction::Skill {
+            index: 0,
+            target: 0,
+        })
+        .unwrap();
+        approx(b.hero.life, HERO_LIFE);
+        assert!(notes(&b).contains(&Note::Interrupted));
+        // The big hit is gone: the small one is next.
+        b.act(HeroAction::Pass).unwrap();
+        approx(b.hero.life, HERO_LIFE - 1.0);
+    }
+
+    #[test]
+    fn a_rally_makes_every_enemy_hit_harder_for_a_while() {
+        let rally = IntentKind::Rally {
+            more_damage: 50.0,
+            turns: 2,
+        };
+        let mut b = battle(
+            vec![],
+            vec![
+                enemy(100.0, vec![rally, IntentKind::Guard { armour: 0.0 }]),
+                enemy(100.0, vec![punch(10.0)]),
+            ],
+        );
+        b.act(HeroAction::Pass).unwrap();
+        approx(b.hero.life, HERO_LIFE - 15.0);
+        b.act(HeroAction::Pass).unwrap();
+        approx(b.hero.life, HERO_LIFE - 30.0);
+        b.act(HeroAction::Pass).unwrap();
+        // Worn off; the second shout comes before the punch again.
+        assert!(b.enemies[1].fighter.empower.is_some());
+        approx(b.hero.life, HERO_LIFE - 45.0);
+    }
+
+    #[test]
+    fn summons_join_the_field_until_it_is_full() {
+        let mut caller = enemy(100.0, vec![IntentKind::Summon { id: "dummy".into() }]);
+        let mut minion = enemy(10.0, vec![punch(1.0)]);
+        minion.summoned = true;
+        caller.minions = vec![minion];
+        let mut b = battle(vec![], vec![caller]);
+        b.act(HeroAction::Pass).unwrap();
+        assert_eq!(b.enemies.len(), 2);
+        // The newcomer waited a turn.
+        approx(b.hero.life, HERO_LIFE);
+        for _ in 0..8 {
+            b.act(HeroAction::Pass).unwrap();
+        }
+        assert_eq!(b.enemies.len(), MAX_FIELD);
+        assert!(b.enemies[1..].iter().all(|e| e.summoned));
+    }
+
+    #[test]
+    fn an_enraged_enemy_hits_harder() {
+        let mut e = enemy(100.0, vec![punch(10.0)]);
+        e.enrage = Some(encounter::Enrage {
+            below: 50.0,
+            more_damage: 50.0,
+        });
+        let mut b = battle(vec![], vec![e]);
+        b.act(HeroAction::Pass).unwrap();
+        approx(b.hero.life, HERO_LIFE - 10.0);
+        b.enemies[0].fighter.life = 40.0;
+        b.act(HeroAction::Pass).unwrap();
+        b.act(HeroAction::Pass).unwrap();
+        approx(b.hero.life, HERO_LIFE - 40.0);
+        assert_eq!(notes(&b), [Note::Enraged]);
+    }
+
+    #[test]
+    fn enemies_inflict_ailments_and_resistance_softens_them() {
+        let burner = |resist: f64| {
+            let mut e = enemy(
+                100.0,
+                vec![IntentKind::Attack(spec(&[Tag::Spell], Fire, 20.0))],
+            );
+            e.fighter.mods.push(crate::modifier::Modifier::flat(
+                Stat::AilmentChance(Ailment::Ignite),
+                100.0,
+            ));
+            let mut hero = ModSet::new();
+            hero.push(crate::modifier::Modifier::flat(
+                Stat::Resistance(Fire),
+                resist,
+            ));
+            let mut b = Battle::new(Fighter::hero(hero), vec![], vec![e], Rng::seeded(1));
+            b.act(HeroAction::Pass).unwrap();
+            HERO_LIFE - b.hero.life
+        };
+        // 20 fire and the first ignite tick of 8.
+        approx(burner(0.0), 28.0);
+        approx(burner(50.0), 14.0);
     }
 
     fn punch(amount: f64) -> IntentKind {

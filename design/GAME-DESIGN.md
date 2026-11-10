@@ -84,7 +84,13 @@ builds), exploring hidden labyrinth floors.
     `FLASK_CHARGES` / `FLASK_HEAL`). Utility skill gems carry an `effect`
     (gems.ron) in place of, or on top of, damage: Ward (Iron Wall), Stun
     (Concussive Blow), Cleanse (Second Wind), Empower (Battle Cry). Enemies repeat their
-    intents (Attack / Guard / Heal) in order; guard lasts until their next action.
+    intents in order: Attack, Guard (lasts until their next action), Heal, Rally (every
+    enemy deals more damage for a turn or two), Summon (calls another enemy in while the
+    field has room; summoned enemies cannot summon and pay no XP or gold) and Charge (a
+    wind-up turn before a heavy Attack; a stun during the wind-up cancels the hit too).
+  - Enemies inflict ailments on the hero (`ailments:` in enemies.ron, a chance per hit). The
+    ailment is built from the damage that got through, so resistances and armour shrink it,
+    and Second Wind removes it. A frozen hero loses the turn.
   - Fights hold 1 or 2 enemies on floor 1 and grow with depth: 1 to 1 + ceil(floor/3) on the field (at most 5,
     `MAX_FIELD`) plus up to floor/6 more waiting behind them (at most 3). An elite room holds an
     Elite (×2 life, 30% more damage) and up to 1 + floor/6 normal companions; boss stairs hold the
@@ -221,6 +227,13 @@ which gem to upgrade is a real build decision.
   Snow Wraith, Shadow Ghost, Iron and Magma Golem) only show from floor 3–6 on. Bosses: the
   Warden (any boss floor), the Ruined King (from floor 3) and the Cinder Drake and Stormwing
   (from floor 6, resistant to fire and lightning). Elites and fights pick among what has unlocked.
+  Each boss has a signature: the Warden winds up Judgement (guard it or stun the wind-up), the
+  Ruined King raises Bone Archers and poisons with every hit, the Cinder Drake ignites and
+  deals 50% more damage under half life (`enrage:`), Stormwing charges a Thunderclap that
+  shocks and then dives into the shocked hero.
+  Among normal enemies: rats and ghouls bleed, slimes and spiders poison, cultists and Magma
+  Golems ignite, Snow Wraiths chill and sometimes freeze, Cave Bats call more bats, Goblin
+  Raiders rally, Shadow Ghosts and Iron Golems wind up heavy hits.
 - Events: 9 scenes. Choices may cost gold (`cost`); the Peddler sells orbs and gems, and
   some results give orbs (`Orb`).
 - Boons: 12 (adds Ferocity, Bulwark, Thirst, Echoes). Uniques: 7 (Gravewatch, Rimeheart,

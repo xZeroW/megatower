@@ -591,6 +591,7 @@ impl Run {
                 let xp: u32 = battle
                     .enemies
                     .iter()
+                    .filter(|e| !e.summoned)
                     .map(|e| enemy_xp(floor, e.elite, e.boss))
                     .sum();
                 let gold = battle_gold(&battle.enemies, floor, &mut self.rng);

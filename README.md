@@ -58,6 +58,12 @@ hard (and burst the ailment's damage) on a target that is frozen (Shatter), igni
 shocked, and use it up. Set a target up with one skill, then pay it off with another. The skill
 tooltip shows PRIMED when the selected target is ready.
 
+Enemies use ailments too: their hits can poison, ignite, bleed, chill, shock or freeze you
+(listed under your bars). Resistances shrink them and Second Wind removes them. Watch the
+marker under each enemy: "winds up" means a heavy hit comes next turn (guard it, or stun
+the enemy to cancel it), an orange "+40%" is a rally that makes every enemy hit harder, and
+a purple "call" brings another enemy in. Hover an enemy to read its next move.
+
 ### Danger
 
 Wandering a floor too long raises Danger (shown under the life bar): enemies you meet grow
