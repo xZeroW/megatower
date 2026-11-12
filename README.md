@@ -121,6 +121,9 @@ OS, CPU and GPU, and every window mode, resolution or vsync change is logged bef
 the last line says what was being done at a crash. `RUST_LOG=info,bevy_winit=debug,wgpu=warn` writes
 more.
 
+On Windows the Fullscreen option is shown as borderless fullscreen: exclusive fullscreen crashed the
+game there (set `MEGATOWER_EXCLUSIVE_FULLSCREEN=1` to try it again).
+
 ### Settings
 
 Settings are saved to `~/.config/io.github.xzerow.megatower/settings.toml`

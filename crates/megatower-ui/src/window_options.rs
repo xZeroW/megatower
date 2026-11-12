@@ -2,6 +2,14 @@
 
 use super::*;
 
+/// Exclusive fullscreen kills the game on Windows with Vulkan (the process
+/// ends right after the mode is set, with no panic; seen on an AMD driver), so
+/// there "Fullscreen" is borderless fullscreen, which looks the same.
+/// `MEGATOWER_EXCLUSIVE_FULLSCREEN=1` brings the exclusive mode back to test.
+fn exclusive_fullscreen_is_safe() -> bool {
+    !cfg!(windows) || std::env::var_os("MEGATOWER_EXCLUSIVE_FULLSCREEN").is_some()
+}
+
 /// `OptionsManager.set_window_mode` / `set_resolution` / `set_v_sync`.
 #[auto_add_system(plugin = UiPlugin, schedule = Update)]
 fn apply_window_options(
@@ -32,8 +40,12 @@ fn apply_window_options(
         megatower_core::options::WindowMode::Borderless => {
             WindowMode::BorderlessFullscreen(MonitorSelection::Current)
         }
-        megatower_core::options::WindowMode::Fullscreen => {
+        megatower_core::options::WindowMode::Fullscreen if exclusive_fullscreen_is_safe() => {
             WindowMode::Fullscreen(MonitorSelection::Current, VideoModeSelection::Current)
+        }
+        // See `exclusive_fullscreen_is_safe`.
+        megatower_core::options::WindowMode::Fullscreen => {
+            WindowMode::BorderlessFullscreen(MonitorSelection::Current)
         }
     };
     window
