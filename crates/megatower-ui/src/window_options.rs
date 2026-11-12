@@ -15,6 +15,17 @@ fn apply_window_options(
     if *applied == Some(want) {
         return;
     }
+    // Logged before it happens: if the window system crashes on the change,
+    // the last line of the log file says which change it was.
+    info!(
+        "window options: {:?} {}x{} vsync {} (was {:?}), monitor scale {}",
+        o.window_mode,
+        o.resolution[0],
+        o.resolution[1],
+        o.v_sync,
+        *applied,
+        window.scale_factor()
+    );
     *applied = Some(want);
     window.mode = match o.window_mode {
         megatower_core::options::WindowMode::Windowed => WindowMode::Windowed,
@@ -33,4 +44,10 @@ fn apply_window_options(
     } else {
         PresentMode::AutoNoVsync
     };
+    info!(
+        "window options applied: mode {:?}, {}x{}",
+        window.mode,
+        window.width(),
+        window.height()
+    );
 }

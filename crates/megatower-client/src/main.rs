@@ -1,4 +1,5 @@
 mod dev;
+mod file_log;
 
 use bevy::prelude::*;
 use dev::DevPlugin;
@@ -10,11 +11,17 @@ use megatower_runtime::render::{
 use megatower_ui::{UiPlugin, settings::GameSettingsPlugin};
 
 fn main() {
+    file_log::install_panic_hook();
     App::new()
         .insert_resource(ClearColor(palette_color(Some(1))))
         .add_plugins((
             DefaultPlugins
                 .set(ImagePlugin::default_nearest())
+                // The console's lines also go to a file (see `file_log`).
+                .set(bevy::log::LogPlugin {
+                    custom_layer: file_log::layer,
+                    ..default()
+                })
                 // Audio goes through bevy_kira_audio (`GameAudioPlugin`).
                 .disable::<bevy::audio::AudioPlugin>()
                 .set(WindowPlugin {

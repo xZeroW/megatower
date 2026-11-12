@@ -1,3 +1,6 @@
 target
 tools/__pycache__
 artifacts/latest.png
+
+# Tracy captures
+*.tracy

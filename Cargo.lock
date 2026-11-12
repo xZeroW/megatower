@@ -4155,6 +4155,7 @@ dependencies = [
  "megatower-core",
  "megatower-runtime",
  "megatower-ui",
+ "tracing-subscriber",
 ]
 
 [[package]]

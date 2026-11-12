@@ -42,15 +42,22 @@ pub struct AdventurerCatalog {
 }
 
 impl AdventurerCatalog {
+    /// The embedded catalog. Parsed once; callers get a cheap copy (the
+    /// adventurers are shared), so it is fine to call every frame.
     pub fn recovered() -> Self {
-        let raw: Raw = crate::ron_data::from_str(
-            include_str!("../../../assets/data/content/adventurers.ron"),
-            "adventurers.ron",
-        );
-        Self {
-            list: raw.list.into_iter().map(Arc::new).collect(),
-            starting: raw.starting,
-        }
+        static CATALOG: std::sync::OnceLock<AdventurerCatalog> = std::sync::OnceLock::new();
+        CATALOG
+            .get_or_init(|| {
+                let raw: Raw = crate::ron_data::from_str(
+                    include_str!("../../../assets/data/content/adventurers.ron"),
+                    "adventurers.ron",
+                );
+                Self {
+                    list: raw.list.into_iter().map(Arc::new).collect(),
+                    starting: raw.starting,
+                }
+            })
+            .clone()
     }
 
     /// `Adventurers.get_from_name`.

@@ -112,6 +112,15 @@ they never drop or appear. Hover an unlock to read what it does. Reaching floor
 best floor with each starter gem, shown when you pick one and when you die. Legacy is saved
 to `legacy.json` beside the profile.
 
+### Log file
+
+Everything the console prints (and any panic, with a backtrace) is also written to
+`%APPDATA%\megatower\logs\megatower.log` on Windows (`~/.local/share/megatower/logs/` elsewhere,
+honouring `XDG_DATA_HOME`). The previous run is kept as `megatower.previous.log`. It starts with the
+OS, CPU and GPU, and every window mode, resolution or vsync change is logged before it is applied, so
+the last line says what was being done at a crash. `RUST_LOG=info,bevy_winit=debug,wgpu=warn` writes
+more.
+
 ### Settings
 
 Settings are saved to `~/.config/io.github.xzerow.megatower/settings.toml`

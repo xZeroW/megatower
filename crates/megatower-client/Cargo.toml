@@ -11,6 +11,7 @@ path = "src/main.rs"
 bevy.workspace = true
 bevy_brp_extras = { workspace = true, optional = true }
 bevy_auto_plugin.workspace = true
+tracing-subscriber = "0.3"
 megatower-core = { path = "../../crates/megatower-core" }
 megatower-runtime = { path = "../../crates/megatower-runtime" }
 megatower-ui = { path = "../../crates/megatower-ui" }
