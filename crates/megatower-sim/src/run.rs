@@ -29,6 +29,9 @@ pub enum Mode {
     Shop,
     /// Boon ids on offer.
     Shrine(Vec<String>),
+    /// In a Rest room that has not been used: rest, or move on and maybe
+    /// come back.
+    Rest,
     /// The event, and what happened once a choice is made.
     Event {
         id: String,
@@ -122,6 +125,7 @@ pub fn room_name(kind: RoomKind) -> &'static str {
         RoomKind::Shrine => "Shrine",
         RoomKind::Rest => "Rest",
         RoomKind::Event => "Event",
+        RoomKind::Empty => "Empty hall",
         RoomKind::GemAltar { .. } => "Gem Altar",
         RoomKind::Stairs { boss: true } => "Boss",
         RoomKind::Stairs { boss: false } => "Stairs",
@@ -301,6 +305,35 @@ impl Run {
         }
     }
 
+    /// The way to `to` through cleared rooms, see [`Floor::route`].
+    pub fn route(&self, to: Pos) -> Option<Vec<Pos>> {
+        if self.mode != Mode::Map {
+            return None;
+        }
+        self.floor.route(to)
+    }
+
+    /// Walks to `to` through rooms already dealt with, door by door (each one
+    /// counts for the danger clock like any other), and then goes into it as
+    /// if the hero had walked in: a fight, a shop, a Rest room. Does nothing
+    /// when there is no such way.
+    pub fn travel(&mut self, to: Pos) {
+        let Some(path) = self.route(to) else { return };
+        let Some((&last, steps)) = path[1..].split_last() else {
+            return;
+        };
+        for &pos in steps {
+            let dir = self
+                .floor
+                .linked(self.floor.current)
+                .find(|&(_, n)| n == pos)
+                .map(|(dir, _)| dir)
+                .expect("a route follows doors");
+            let _ = self.floor.move_to(dir);
+        }
+        self.step_to(last);
+    }
+
     /// Moves through the door at `turn` relative to the facing.
     pub fn step_turn(&mut self, turn: Turn) {
         let dir = self.floor.facing.turned(turn);
@@ -352,8 +385,9 @@ impl Run {
                 return;
             }
             RoomKind::Rest => {
+                // Resting is a choice: the room stays usable until it is.
                 self.floor.resolve_current();
-                self.character.rest();
+                self.mode = Mode::Rest;
                 return;
             }
             RoomKind::Treasure => {
@@ -391,6 +425,7 @@ impl Run {
         match kind {
             RoomKind::Merchant => self.open_shop(),
             RoomKind::GemAltar { uses_left } if uses_left > 0 => self.mode = Mode::Altar,
+            RoomKind::Rest if !self.floor.rested => self.mode = Mode::Rest,
             _ => {}
         }
     }
@@ -505,6 +540,16 @@ impl Run {
         true
     }
 
+    /// Uses the Rest room: full life and flasks, once per floor.
+    pub fn rest(&mut self) {
+        if self.mode != Mode::Rest {
+            return;
+        }
+        self.character.rest();
+        self.floor.rested = true;
+        self.mode = Mode::Map;
+    }
+
     pub fn take_boon(&mut self, index: usize) {
         let Mode::Shrine(offers) = &self.mode else {
             return;
@@ -582,6 +627,7 @@ impl Run {
                 }
             }
             Mode::Shrine(_) => self.floor.resolve_current(),
+            Mode::Rest => {}
             Mode::Event {
                 outcome: Some(_), ..
             } => {}
@@ -825,7 +871,69 @@ mod tests {
         assert!(run.shop().is_some());
         run.leave_room();
         run.debug_walk_to_kind(|k| k == RoomKind::Shrine || k == RoomKind::Rest);
-        assert!(matches!(run.mode, Mode::Shrine(_) | Mode::Map));
+        assert!(matches!(run.mode, Mode::Shrine(_) | Mode::Rest | Mode::Map));
+    }
+
+    #[test]
+    fn travel_walks_back_through_cleared_rooms_without_stopping() {
+        let mut run = started(2);
+        // Go to the merchant, then leave; its shop is the last room visited.
+        run.debug_walk_to_kind(|k| k == RoomKind::Merchant);
+        assert_eq!(run.mode, Mode::Shop);
+        run.leave_room();
+        let shop = run.floor.current;
+        let start = run.floor.start;
+        let steps = run.floor.steps;
+        // Back to the start in one go, through rooms that are all done.
+        let path = run.route(start).expect("a way back");
+        assert!(path.len() > 2, "the shop is not next to the start");
+        run.travel(start);
+        assert_eq!(run.floor.current, start);
+        assert_eq!(run.mode, Mode::Map);
+        assert_eq!(run.floor.steps, steps + path.len() as u32 - 1);
+        // And to the shop again: walking into it opens it.
+        run.travel(shop);
+        assert_eq!(run.floor.current, shop);
+        assert_eq!(run.mode, Mode::Shop);
+    }
+
+    #[test]
+    fn travel_needs_a_room_the_hero_has_seen() {
+        let run = started(2);
+        let hidden = run
+            .floor
+            .positions()
+            .find(|&p| run.floor.room(p).known_kind().is_none())
+            .unwrap();
+        assert!(run.route(hidden).is_none());
+        assert!(run.route(run.floor.current).is_none());
+    }
+
+    #[test]
+    fn resting_is_a_choice_that_can_wait() {
+        let mut run = started(2);
+        run.debug_walk_to_kind(|k| k == RoomKind::Rest);
+        assert_eq!(run.mode, Mode::Rest);
+        run.character.life = 1.0;
+        // Leaving does not spend it, and the room can be walked back into.
+        run.leave_room();
+        assert_eq!(run.mode, Mode::Map);
+        assert!(!run.floor.rested);
+        assert_eq!(run.character.life, 1.0);
+        let here = run.floor.current;
+        let way = run.floor.linked(here).next().expect("a door").0;
+        run.step(way);
+        run.step(way.opposite());
+        assert_eq!(run.floor.current, here);
+        assert_eq!(run.mode, Mode::Rest);
+        run.rest();
+        assert_eq!(run.mode, Mode::Map);
+        assert_eq!(run.character.life, run.character.max_life());
+        assert!(run.floor.rested);
+        // Used up: walking back in does nothing.
+        run.step(way);
+        run.step(way.opposite());
+        assert_ne!(run.mode, Mode::Rest);
     }
 
     #[test]

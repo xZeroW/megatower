@@ -162,7 +162,7 @@ fn tree_node_icon(node: &megatower_sim::passives::NodeDef) -> &'static str {
         return "textures/icons/wisdom_icon.png";
     };
     match m.stat {
-        Stat::Life | Stat::EnergyShield => "textures/icons/max_health_icon.png",
+        Stat::Life => "textures/icons/max_health_icon.png",
         Stat::Mana | Stat::ManaRegen | Stat::ManaCost => "textures/icons/mana_icon.png",
         Stat::Armour => "textures/icons/guard_icon.png",
         Stat::Evasion => "textures/icons/elusive_icon.png",
@@ -337,6 +337,12 @@ fn tip_lines(loot: &Loot) -> Vec<String> {
             ];
             if let Some(def) = content::get().gems.active(&g.id) {
                 lines.push(format!("{:.0} mana / {:?}", def.cost, def.targeting));
+                // Supports ask for these.
+                let tags: Vec<String> = Vec::<megatower_sim::tags::Tag>::from(def.tags)
+                    .iter()
+                    .map(|t| format!("{t:?}"))
+                    .collect();
+                lines.push(format!("Tags: {}", tags.join(", ")));
                 if let Some(payoff) = &def.payoff {
                     lines.push(megatower_sim::describe::payoff_line(payoff));
                 }
@@ -349,7 +355,7 @@ fn tip_lines(loot: &Loot) -> Vec<String> {
                         .map(|(kind, r)| format!("{:.0}-{:.0} {kind:?}", r.min, r.max)),
                 );
             } else if let Some(def) = content::get().gems.support(&g.id) {
-                lines.extend(megatower_sim::describe::mod_lines(&def.mods));
+                lines.extend(megatower_sim::describe::support_lines(def));
             }
             lines
         }
@@ -490,6 +496,23 @@ impl Labyrinth {
                         && matches!(self.view, View::Stage | View::Profile | View::Map);
                     out.push(c);
                 }
+                // A way to the stairs through rooms already dealt with.
+                let stairs = game.floor.stairs();
+                if game.route(stairs).is_some() {
+                    let (ahead, _) = walk_button(Turn::Ahead);
+                    let mut c = choice(
+                        [ahead[0] + ahead[2] + 4.0, ahead[1], ahead[2], ahead[3]],
+                        Action::Travel(stairs),
+                        ">>",
+                        "Go to the stairs [G]",
+                    );
+                    if !game.floor.room(stairs).cleared {
+                        c.tip.push("The boss waits there".into());
+                    }
+                    c.tip
+                        .push("Walks through cleared rooms; every door counts for Danger".into());
+                    out.push(c);
+                }
                 if matches!(game.floor.current_room().kind, RoomKind::Stairs { .. }) {
                     out.push(choice(
                         centred(400.0, 76.0, 34.0),
@@ -545,6 +568,9 @@ impl Labyrinth {
                             "textures/icons/magic_damage_icon.png"
                         });
                         c.tip.push(format!("{cost:.0} {resource}"));
+                        if !skill.supports.is_empty() {
+                            c.tip.push(format!("Linked: {}", skill.supports.join(", ")));
+                        }
                         if let Some(effect) = &skill.effect {
                             c.tip.push(megatower_sim::describe::effect_line(effect));
                         }
@@ -654,6 +680,22 @@ impl Labyrinth {
                     ));
                 }
             }
+            Mode::Rest => {
+                out.push(icon(
+                    in_action_area(rects.merchant_leave),
+                    Action::Leave,
+                    "textures/ui/leave_icon.png",
+                    "Move on [Esc]; the room stays here if you come back",
+                ));
+                let mut rest = choice(
+                    in_action_area([380.0, 313.0, 100.0, 29.0]),
+                    Action::Rest,
+                    "Rest",
+                    "Rest [1]: full life and full flasks, once per floor",
+                );
+                rest.enabled = true;
+                out.push(rest);
+            }
             Mode::Event { id, outcome } => {
                 if outcome.is_some() {
                     out.push(choice(
@@ -740,7 +782,12 @@ impl Labyrinth {
         // one group (the recovered layout keeps them in the right half).
         if matches!(
             game.mode,
-            Mode::Shop | Mode::Shrine(_) | Mode::Event { .. } | Mode::Altar | Mode::Reward
+            Mode::Shop
+                | Mode::Shrine(_)
+                | Mode::Rest
+                | Mode::Event { .. }
+                | Mode::Altar
+                | Mode::Reward
         ) {
             let bar = |c: &Choice| c.rect[1] >= BAR_Y;
             let min = out
@@ -840,6 +887,13 @@ impl Labyrinth {
                 return;
             }
         }
+        if self.view == View::Map {
+            // A room on the map: go there if the way is clear.
+            if let Some(to) = self.map_hit(x, y) {
+                self.act(ui, Action::Travel(to));
+            }
+            return;
+        }
         if self.view == View::Tree {
             if let Some(id) = self.tree_hit(x, y) {
                 self.tree_selection = Some(id.clone());
@@ -858,6 +912,12 @@ impl Labyrinth {
             return;
         }
         if let Some(i) = rects.inventory.iter().position(|r| contains(*r, x, y)) {
+            // The socketed item selected before this click: right-clicking a
+            // gem sockets it there, not into the weapon by default.
+            let target = match self.selection {
+                Some(Selection::Worn(slot)) if EquipSlot::SOCKETED.contains(&slot) => Some(slot),
+                _ => None,
+            };
             self.selection = Some(Selection::Bag(i));
             if input.alt_click {
                 if self.game().mode == Mode::Shop {
@@ -867,7 +927,8 @@ impl Labyrinth {
                         let _ = self.game_mut().character.equip(i, None);
                         self.selection = None;
                     } else {
-                        for slot in EquipSlot::SOCKETED {
+                        let slots = target.map_or(EquipSlot::SOCKETED.to_vec(), |slot| vec![slot]);
+                        for slot in slots {
                             if self
                                 .game_mut()
                                 .character
@@ -875,8 +936,13 @@ impl Labyrinth {
                                 .is_ok()
                             {
                                 self.selection = Some(Selection::Worn(slot));
+                                self.note_idle_supports(slot);
                                 break;
                             }
+                        }
+                        // No room there: keep that item selected.
+                        if self.selection == Some(Selection::Bag(i)) {
+                            self.selection = target.map(Selection::Worn).or(self.selection);
                         }
                     }
                     ui.audio.push(("sfx/item_equip.wav".into(), 0.0));
@@ -900,6 +966,7 @@ impl Labyrinth {
                         };
                     if result.is_ok() {
                         ui.audio.push(("sfx/ui/rune_select.wav".into(), 5.0));
+                        self.note_idle_supports(slot);
                     }
                 }
             }
@@ -912,6 +979,23 @@ impl Labyrinth {
                 self.act(ui, Action::Upgrade(GemSpot::Socket(slot, i)));
             } else if input.alt_click {
                 self.act(ui, Action::Unsocket(slot, i));
+            }
+        }
+    }
+
+    /// Says so in the log when a linked support does nothing for the skill.
+    fn note_idle_supports(&mut self, slot: EquipSlot) {
+        let idle = self
+            .game()
+            .character
+            .equipped(slot)
+            .and_then(|i| i.sockets.as_ref())
+            .map(|s| s.idle_supports(&content::get().gems))
+            .unwrap_or_default();
+        for (support, active) in idle {
+            let line = format!("{support} does nothing for {active}");
+            if self.log.last() != Some(&line) {
+                self.log.push(line);
             }
         }
     }
@@ -1361,6 +1445,23 @@ impl Labyrinth {
                         format!("{} passive points to spend", progress.points),
                     ],
                 );
+            } else if self.view == View::Map
+                && let Some(to) = self.map_hit(cursor[0], cursor[1])
+                && let Some(route) = game.route(to)
+            {
+                let room = game.floor.room(to);
+                let name = room
+                    .known_kind()
+                    .map_or("Unknown", megatower_sim::run::room_name);
+                tooltip(
+                    &mut out,
+                    rects,
+                    cursor,
+                    vec![
+                        format!("Go to {name}"),
+                        format!("{} doors [click]", route.len() - 1),
+                    ],
+                );
             } else if self.view == View::Tree
                 && let Some(id) = self.tree_hit(cursor[0], cursor[1])
                 && let Some(node) = content::get().tree.nodes.iter().find(|n| n.id == id)
@@ -1404,7 +1505,21 @@ impl Labyrinth {
                         .and_then(|it| it.sockets.as_ref())
                         .and_then(|s| s.gems.get(i))
                 {
-                    let lines = tip_lines(&Loot::Gem(g.clone()));
+                    let mut lines = tip_lines(&Loot::Gem(g.clone()));
+                    // A support that does nothing for the group's skill says so.
+                    let idle = game
+                        .character
+                        .equipped(self.socket_slot())
+                        .and_then(|it| it.sockets.as_ref())
+                        .map(|s| s.idle_supports(&content::get().gems))
+                        .unwrap_or_default();
+                    let name = megatower_sim::run::gem_name(&g.id);
+                    if let Some((_, active)) = idle.iter().find(|(support, _)| *support == name) {
+                        lines.insert(1, format!("NO EFFECT on {active}"));
+                    } else if idle.iter().any(|_| content::get().gems.is_active(&g.id)) {
+                        let names: Vec<_> = idle.iter().map(|(s, _)| s.as_str()).collect();
+                        lines.insert(1, format!("Linked but idle: {}", names.join(", ")));
+                    }
                     tooltip(&mut out, rects, cursor, lines);
                 }
             }
@@ -1683,34 +1798,35 @@ impl Labyrinth {
             align: Align::Center,
         });
         let life = Self::hero_bars(out, ui, rects, frame, portrait, 46.0, 150.0);
-        // Ailments and boosts on the hero, under the bars.
-        if let Some(battle) = &game.battle {
-            let conditions = condition_names(&battle.hero).join("  ");
-            if !conditions.is_empty() {
-                out.push(Draw::Text {
-                    rect: [life[0], 338.0, 190.0, 12.0],
-                    text: conditions,
-                    size: 12.0,
-                    color: hex(0xd9a0ff),
-                    align: Align::Left,
-                });
-            }
-        }
+        // Ailments are icons (with their stacks) under the bars, where a
+        // line of text used to be; boosts stay text, after them.
         let v = &frame.player;
+        let mut x = life[0];
         if let Some(policies) = &self.policies {
-            // Status icons beside the bars, two to a row.
-            for (i, status) in v.statuses.iter().take(6).enumerate() {
+            for status in v.statuses.iter().take(6) {
                 let policy = policies.get(status.resource);
-                let at = [
-                    life[0] + life[2] + 6.0 + (i % 2) as f32 * 17.0,
-                    life[1] + (i / 2) as f32 * 18.0,
-                    16.0,
-                    16.0,
-                ];
+                let at = [x, 336.0, 16.0, 16.0];
                 if let Some(icon) = &policy.icon {
                     out.push(tinted(at, icon, policy.color));
                 }
                 compose::status_marks(status, at, out);
+                x += 19.0;
+            }
+        }
+        if let Some(battle) = &game.battle {
+            let boosts = condition_names(&battle.hero)
+                .into_iter()
+                .filter(|n| n.contains('%'))
+                .collect::<Vec<_>>()
+                .join("  ");
+            if !boosts.is_empty() {
+                out.push(Draw::Text {
+                    rect: [x, 338.0, 190.0, 12.0],
+                    text: boosts,
+                    size: 12.0,
+                    color: hex(0xd9a0ff),
+                    align: Align::Left,
+                });
             }
         }
     }
@@ -1873,6 +1989,21 @@ impl Labyrinth {
             {
                 if let Some(g) = sockets.gems.get(i) {
                     loot_draw(out, *rect, &Loot::Gem(g.clone()));
+                    // A linked support that does nothing is greyed out.
+                    let idle = sockets.idle_supports(&content::get().gems);
+                    let name = megatower_sim::run::gem_name(&g.id);
+                    if idle.iter().any(|(support, _)| *support == name) {
+                        out.push(Draw::Fill {
+                            rect: *rect,
+                            color: [0.05, 0.05, 0.08, 0.65],
+                        });
+                        out.push(text(
+                            [rect[0], rect[1] + 10.0, rect[2], 13.0],
+                            "x",
+                            hex(0xff5555),
+                            Align::Center,
+                        ));
+                    }
                 } else if i < usize::from(sockets.links) {
                     out.push(tinted(*rect, "textures/ui/item_slot.png", palette(2)));
                     out.push(tinted(
@@ -1917,15 +2048,12 @@ impl Labyrinth {
         });
         out.push(text(
             [16.0, 34.0, 275.0, 16.0],
-            "LABYRINTH  /  [M] CLOSE",
+            "LABYRINTH  /  [M] CLOSE  /  CLICK A ROOM TO GO",
             palette(8),
             Align::Center,
         ));
         let floor = &self.game().floor;
-        let step = (240.0 / f32::from(floor.width.max(floor.height))).min(32.0);
-        let cell = step - 7.0;
-        let ox = 155.0 - f32::from(floor.width) * step / 2.0;
-        let oy = 66.0;
+        let (step, cell, ox, oy) = Self::map_layout(floor);
         for p in floor.positions() {
             let room = floor.room(p);
             if room.visibility == Visibility::Hidden {
@@ -1974,7 +2102,7 @@ impl Labyrinth {
                 RoomKind::Treasure => "T",
                 RoomKind::Rest => "R",
                 RoomKind::Event => "?",
-                RoomKind::Start => "",
+                RoomKind::Start | RoomKind::Empty => "",
             });
             if p == floor.current {
                 // An arrow in the room you stand in, pointing the way you face.
@@ -2020,6 +2148,29 @@ impl Labyrinth {
             })
             .collect()
     }
+    /// Where the map puts rooms: the step between them, a room's size and the
+    /// corner of the first one.
+    fn map_layout(floor: &megatower_sim::labyrinth::Floor) -> (f32, f32, f32, f32) {
+        let step = (240.0 / f32::from(floor.width.max(floor.height))).min(32.0);
+        let cell = step - 7.0;
+        let ox = 155.0 - f32::from(floor.width) * step / 2.0;
+        (step, cell, ox, 66.0)
+    }
+
+    /// The room under (`x`, `y`) on the open map that the hero can travel to.
+    fn map_hit(&self, x: f32, y: f32) -> Option<megatower_sim::labyrinth::Pos> {
+        let game = self.game();
+        let floor = &game.floor;
+        let (step, cell, ox, oy) = Self::map_layout(floor);
+        floor
+            .positions()
+            .find(|p| {
+                let (rx, ry) = (ox + f32::from(p.x) * step, oy + f32::from(p.y) * step);
+                contains([rx, ry, cell, cell], x, y)
+            })
+            .filter(|&p| game.route(p).is_some())
+    }
+
     fn tree_hit(&self, x: f32, y: f32) -> Option<String> {
         self.tree_positions()
             .into_iter()
@@ -2443,6 +2594,91 @@ mod tests {
             }
         }
     }
+    #[test]
+    fn right_clicking_a_gem_sockets_it_into_the_selected_item() {
+        let (mut session, mut ui, rects) = fixture();
+        let gems = &content::get().gems;
+        let hero = &mut session.game_mut().character;
+        // Gear with sockets on a piece other than the weapon.
+        let other = EquipSlot::SOCKETED.into_iter().find(|&s| {
+            s != EquipSlot::Weapon && hero.equipped(s).is_some_and(|i| i.sockets.is_some())
+        });
+        let other = other.expect("the starting gear has a second socketed piece");
+        let free = |hero: &megatower_sim::character::Character, slot| {
+            hero.equipped(slot)
+                .and_then(|i| i.sockets.as_ref())
+                .map_or(0, |s| usize::from(s.links).saturating_sub(s.gems.len()))
+        };
+        while hero
+            .equipped(other)
+            .and_then(|i| i.sockets.as_ref())
+            .is_some_and(|s| !s.gems.is_empty())
+        {
+            hero.unsocket(other, 0).unwrap();
+        }
+        let before = (free(hero, EquipSlot::Weapon), free(hero, other));
+        let index = hero.inventory.len();
+        hero.inventory
+            .push(Loot::Gem(Gem::new("kindle", 1, GemRarity::Common)));
+        let _ = gems;
+        session.selection = Some(Selection::Worn(other));
+        let cell = rects.inventory[index];
+        ui.cursor = Some([cell[0] + 17.0, cell[1] + 17.0]);
+        session.pointer(
+            &mut ui,
+            &rects,
+            &FrameInput {
+                alt_click: true,
+                ..default()
+            },
+        );
+        let hero = &session.game().character;
+        assert_eq!(free(hero, other), before.1 - 1);
+        assert_eq!(free(hero, EquipSlot::Weapon), before.0);
+        assert_eq!(session.selection, Some(Selection::Worn(other)));
+    }
+
+    #[test]
+    fn a_linked_support_that_does_nothing_is_marked_and_explained() {
+        let (mut session, mut ui, rects) = fixture();
+        // The weapon holds Heavy Strike with Ricochet, which wants Chain or
+        // Projectile skills.
+        let hero = &mut session.game_mut().character;
+        while hero
+            .equipped(EquipSlot::Weapon)
+            .and_then(|w| w.sockets.as_ref())
+            .is_some_and(|s| !s.gems.is_empty())
+        {
+            hero.unsocket(EquipSlot::Weapon, 0).unwrap();
+        }
+        hero.inventory.clear();
+        for id in ["heavy_strike", "ricochet"] {
+            hero.inventory
+                .push(Loot::Gem(Gem::new(id, 1, GemRarity::Common)));
+            hero.socket(0, EquipSlot::Weapon, &content::get().gems)
+                .unwrap();
+        }
+        // Tooltips are drawn a word at a time.
+        let has = |draws: &[Draw], needle: &str| {
+            draws
+                .iter()
+                .filter_map(|d| match d {
+                    Draw::Text { text, .. } => Some(text.as_str()),
+                    _ => None,
+                })
+                .collect::<String>()
+                .contains(needle)
+        };
+        let draws = session.draw(&ui, &rects);
+        assert!(has(&draws, "x"), "no mark on the idle support");
+        let cell = rects.market[1];
+        ui.cursor = Some([cell[0] + 17.0, cell[1] + 17.0]);
+        let draws = session.draw(&ui, &rects);
+        assert!(has(&draws, "NO EFFECT on Heavy Strike"));
+        assert!(has(&draws, "Hits 2 more enemies"));
+        assert!(has(&draws, "Tags: "));
+    }
+
     #[test]
     fn selecting_a_bag_gem_then_the_original_weapon_cell_sockets_it() {
         let (mut session, mut ui, rects) = fixture();

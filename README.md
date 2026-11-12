@@ -28,9 +28,16 @@ reference/parity work: `MEGATOWER_LEGACY=1 cargo run -p megatower-client`.
   one back per new floor) and Left/Right/Tab changes target.
 - Click a door or use W/A/D/S to move relative to your facing. Enter descends
   from resolved stairs. M shows the floor map; P shows the passive tree.
-  Hover a door arrow, or open the map, to see what the next room holds.
+  Hover a door arrow, or open the map, to see what the next room holds. A Rest room asks
+  before it heals you (key 1, or Esc to move on): it stays usable until you do, once per floor.
+  Some rooms are empty halls; about half of a floor's rooms are plain fights.
+- To cross a floor you have already cleared, click a room on the map (M) or press G (or the
+  >> button beside the door arrows) to go to the stairs: you walk through cleared rooms only, in
+  one go, and enter the last room as if you had walked in (a shop opens, the boss waits at the
+  stairs). Every door still counts for Danger.
 - The room fills the screen above a bottom bar (hero, skills, actions). Equipment and all 20 bag slots are in a drawer over the left side: open it with I, Tab or the bag button, close it with Esc. Right-click gear to
-  equip/unequip. Select a gem, then click equipment to socket it; linked gems
+  equip/unequip. Right-clicking a bag gem sockets it into the socketed item you have selected
+  (the weapon if none is). Select a gem, then click equipment to socket it; linked gems
   appear in the original bottom-left slots (right-click to unsocket).
 - Crafting orbs (shown under the level as `Rf Au As Rl Rg`) drop from fights, elites, treasure
   and bosses. Select a bag or worn item, then press 1 Reforge (reroll affixes), 2 Augment
@@ -53,6 +60,15 @@ reference/parity work: `MEGATOWER_LEGACY=1 cargo run -p megatower-client`.
 ```bash
 cargo test -p megatower-client -p megatower-ui -p megatower-sim
 ```
+
+### Support gems
+
+A support gem's tooltip lists everything it does (extra targets, damage, mana cost) and ends
+with the tags a skill needs for it to work, e.g. Ricochet: "Hits 2 more enemies, 15% less damage,
+25% more mana cost, Tags: Projectile or Chain". A skill gem lists its own tags the same way, and
+a support works when the skill has any of its tags. A support linked to a skill it does not work
+with is greyed out with a red x in the socket row, says "NO EFFECT on <skill>" when hovered and is
+noted in the log; the skill's own tooltip lists the supports that do apply.
 
 ### Combos
 

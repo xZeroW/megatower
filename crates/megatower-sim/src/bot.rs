@@ -99,6 +99,15 @@ pub fn play_as(seed: u64, starter: &str, adventurer: &str, last_floor: u32) -> B
                 run.leave_room();
             }
             Mode::Shrine(_) => run.take_boon(0),
+            Mode::Rest => {
+                // Worth the stop when hurt or short of flasks.
+                let hurt = run.character.life < 0.8 * run.character.max_life();
+                if hurt || run.character.flasks < crate::character::full_flasks() {
+                    run.rest();
+                } else {
+                    run.leave_room();
+                }
+            }
             Mode::Event { id, outcome: None } => {
                 // The first choice it can pay for.
                 let gold = run.character.gold;

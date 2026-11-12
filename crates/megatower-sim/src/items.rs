@@ -50,14 +50,13 @@ pub enum AffixKind {
 impl AffixKind {
     /// The kind every affix granting `stat` belongs to.
     ///
-    /// Prefixes: the life, mana, shield, armour and evasion pools, and
+    /// Prefixes: the life, mana, armour and evasion pools, and
     /// damage (added and increased). Suffixes: everything that shapes how
     /// those behave.
     pub fn of_stat(stat: Stat) -> AffixKind {
         match stat {
             Stat::Life
             | Stat::Mana
-            | Stat::EnergyShield
             | Stat::Armour
             | Stat::Evasion
             | Stat::Damage

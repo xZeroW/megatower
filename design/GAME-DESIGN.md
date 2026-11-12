@@ -47,13 +47,17 @@ builds), exploring hidden labyrinth floors.
 - Visibility per room: `Hidden` → `Seen` (adjacent to a visited room: you see the door
   and the room's type) → `Visited`.
 - Room types: Fight, Elite, Treasure, Merchant (sells gems, see below), Shrine (pick 1 of 3 boons), Rest
-  (heal + refill flasks), Event, Gem Altar, Stairs/Boss. Start room is always empty.
+  (heal + refill flasks, once per floor, when you choose to), Event, Empty hall, Gem Altar,
+  Stairs/Boss. Start room is always empty; an Empty hall needs nothing done in it.
 - Placement rules: Stairs far from start (BFS distance), at least one Rest and one
   Treasure per floor, Elites off the main path.
 - Current numbers (`megatower-sim/src/labyrinth`): side = 5 + (floor − 1) / 2, max 8; one
   extra door per 8 rooms; elites = 1 + floor / 3; Rest, Treasure, Merchant and Gem Altar
-  once per floor; Shrine on half the floors; 1–2 Events; the rest are Fights. You can only
-  leave a room once it is resolved.
+  once per floor; Shrine on half the floors; 1–2 Events. Plain fights are about half of the
+  rooms (minus the elites); the surplus is up to 3 more Events and otherwise Empty halls.
+  You can only leave a room once it is resolved. Travel (`Run::travel`, map click or G) walks a
+  route through cleared rooms in one action; each door still counts for Danger. Walking into the Rest room asks first; leave
+  it and it waits for you until used.
 - The room view (`game-client/src/ (removed) room_view.rs`): the hero stands in the 3D room from
   `megatower-runtime` and faces the way they last walked (`Floor::facing`). Doors are
   built in code where the floor has exits: ahead in the baked far doorway (bricked up
@@ -88,7 +92,7 @@ builds), exploring hidden labyrinth floors.
 - Hero vs. up to 5 enemies on the field at once, with more waiting in a queue (see below). Each turn
   the hero uses one skill or a flask; enemies then act.
 - Enemies telegraph their next action (intent) so builds/defences can be planned.
-- Resources: Life, Mana (skill costs, regenerates per turn), optional Energy Shield.
+- Resources: Life and Mana (skill costs, regenerates per turn). There is no Energy Shield.
 - Turn-based reading of ARPG mechanics: "cast speed" → chance to act twice / repeat,
   durations measured in turns, damage over time ticks at turn end.
 - Current implementation (`megatower-sim/src/combat`, data in `assets/data/game/`):
@@ -204,7 +208,8 @@ actives; they are never starters. The bot cashes in when primed and sets up othe
 - An active gem in a linked group is a skill; supports in the same group modify it.
 - Skills and supports carry tags (Attack, Spell, Melee, Projectile, Area, Chain,
   Duration, element tags); a support only applies if its tags match.
-- Gems gain XP and level; attribute requirements (Str/Dex/Int) gate them.
+- Gems do not gain XP and have no attribute requirements: their rarity is raised at the Gem Altar
+  or by buying a better one.
 - **Starter gem:** the run starts with one active gem picked from several options
   (e.g. 3–4 offered, the class's start region biasing which ones); it starts in a
   linked weapon socket with no supports. Supports must be found or bought.

@@ -15,7 +15,7 @@ use megatower_sim::{
     character::{EquipSlot, GemSpot, Loot},
     combat::{Actor, CombatEvent, HeroAction},
     content,
-    labyrinth::{RoomKind, Turn},
+    labyrinth::{Pos, RoomKind, Turn},
     run::{Mode, Run},
 };
 
@@ -65,6 +65,9 @@ pub struct Labyrinth {
     view: View,
     tree_selection: Option<String>,
     walk: Option<(Turn, f64)>,
+    /// Where a walk that started as a trip (map click, G) is headed; the
+    /// walk's turn is a placeholder then.
+    trip: Option<Pos>,
     log: Vec<String>,
     policies: Option<megatower_core::combat::profile::StatusPolicies>,
     /// Meta progression, kept between runs; saved only when `persist` is on
@@ -85,6 +88,8 @@ pub(super) enum Action {
     Guard,
     Flask,
     Walk(Turn),
+    /// Through cleared rooms to a room of the floor.
+    Travel(Pos),
     Descend,
     Leave,
     Buy(usize),
@@ -93,6 +98,7 @@ pub(super) enum Action {
     Reward(usize),
     Refresh,
     Boon(usize),
+    Rest,
     Event(usize),
     Upgrade(GemSpot),
     Unsocket(EquipSlot, usize),
@@ -801,6 +807,7 @@ impl Labyrinth {
                         Mode::Starter(_) => Action::Starter(i),
                         Mode::Combat => Action::Skill(i),
                         Mode::Shrine(_) => Action::Boon(i),
+                        Mode::Rest => Action::Rest,
                         Mode::Event { .. } => Action::Event(i),
                         Mode::Reward => Action::Reward(i),
                         _ => continue,
@@ -821,6 +828,7 @@ impl Labyrinth {
                     .game_mut()
                     .debug_walk_to_kind(|k| k == RoomKind::Shrine),
                 'V' => self.game_mut().debug_walk_to_kind(|k| k == RoomKind::Event),
+                'N' => self.game_mut().debug_walk_to_kind(|k| k == RoomKind::Rest),
                 'A' => self
                     .game_mut()
                     .debug_walk_to_kind(|k| matches!(k, RoomKind::GemAltar { .. })),
@@ -924,7 +932,11 @@ impl Labyrinth {
         if let Some((turn, at)) = self.walk
             && ui.time - at >= 0.7
         {
-            self.game_mut().step_turn(turn);
+            if let Some(to) = self.trip.take() {
+                self.game_mut().travel(to);
+            } else {
+                self.game_mut().step_turn(turn);
+            }
             self.walk = None;
             self.log.clear();
             ui.transition = Some(Transition {
@@ -988,6 +1000,7 @@ impl Labyrinth {
                 self.game().mode,
                 Mode::Shop
                     | Mode::Shrine(_)
+                    | Mode::Rest
                     | Mode::Altar
                     | Mode::Reward
                     | Mode::Event {
@@ -1115,6 +1128,10 @@ impl Labyrinth {
             };
             if let Some(turn) = turn {
                 self.act(ui, Action::Walk(turn));
+            } else if keys.just_pressed(KeyCode::KeyG) {
+                // Back to the stairs through everything already done.
+                let stairs = self.game().floor.stairs();
+                self.act(ui, Action::Travel(stairs));
             } else if keys.just_pressed(KeyCode::Enter) {
                 self.act(ui, Action::Descend);
             }
@@ -1125,6 +1142,7 @@ impl Labyrinth {
                 Mode::Starter(_) => Some(Action::Starter(i)),
                 Mode::Combat => Some(Action::Skill(i)),
                 Mode::Shrine(_) => Some(Action::Boon(i)),
+                Mode::Rest => Some(Action::Rest),
                 Mode::Event { outcome: None, .. } => Some(Action::Event(i)),
                 Mode::Shop => Some(Action::BuyOrb(i)),
                 Mode::Reward => Some(Action::Reward(i)),
@@ -1198,6 +1216,18 @@ impl Labyrinth {
                     ui.audio.push(("sfx/transition.wav".into(), 0.0));
                 }
             }
+            Action::Travel(to) => {
+                if self.game().route(to).is_some() {
+                    self.trip = Some(to);
+                    self.walk = Some((Turn::Ahead, ui.time));
+                    ui.transition = Some(Transition {
+                        start: true,
+                        at: ui.time,
+                        seconds: 0.7,
+                    });
+                    ui.audio.push(("sfx/transition.wav".into(), 0.0));
+                }
+            }
             Action::Descend => self.game_mut().descend(),
             Action::Leave => self.game_mut().leave_room(),
             Action::Buy(i) => {
@@ -1216,6 +1246,7 @@ impl Labyrinth {
                 self.game_mut().refresh_shop();
             }
             Action::Boon(i) => self.game_mut().take_boon(i),
+            Action::Rest => self.game_mut().rest(),
             Action::Event(i) => self.game_mut().choose(i),
             Action::Upgrade(spot) => {
                 self.game_mut().upgrade_at_altar(spot);
@@ -1965,6 +1996,37 @@ mod tests {
         assert_ne!(session.game().floor.current, origin);
         assert!(!ui.transition.unwrap().start);
         assert!(session.walk.is_none());
+    }
+
+    #[test]
+    fn travelling_crosses_cleared_rooms_in_one_trip_and_gates_input_meanwhile() {
+        let mut session = fixture(2, 1);
+        let mut ui = UiState {
+            screen: Screen::Playing,
+            ..default()
+        };
+        session.play(&mut ui, "Mx");
+        let shop = session.game().floor.current;
+        let start = session.game().floor.start;
+        assert_ne!(shop, start);
+        session.act(&mut ui, Action::Travel(start));
+        assert!(session.walk.is_some(), "the trip starts with the wipe");
+        assert_eq!(session.game().floor.current, shop);
+        ui.time = 0.71;
+        session.frame(&mut ui, &rects(), &default(), &default(), 0.71);
+        assert_eq!(session.game().floor.current, start);
+        assert!(session.walk.is_none() && session.trip.is_none());
+        // The G key goes to the stairs (here the fight room in between is not
+        // cleared, so there is no way and nothing starts).
+        let mut keys = ButtonInput::<KeyCode>::default();
+        keys.press(KeyCode::KeyG);
+        ui.transition = None;
+        session.keyboard(&mut ui, &keys);
+        let stairs = session.game().floor.stairs();
+        assert_eq!(
+            session.walk.is_some(),
+            session.game().route(stairs).is_some()
+        );
     }
 
     #[test]

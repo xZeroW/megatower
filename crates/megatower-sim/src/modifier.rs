@@ -14,7 +14,6 @@ use serde::{Deserialize, Serialize};
 pub enum Stat {
     Life,
     Mana,
-    EnergyShield,
     Armour,
     /// Chance to dodge a hit, in percent.
     Evasion,

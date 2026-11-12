@@ -126,6 +126,14 @@ pub struct ActiveDef {
     pub effect: Option<Effect>,
 }
 
+impl SupportDef {
+    /// Whether this support does anything for a skill with `tags`: one with
+    /// no tag condition supports every skill.
+    pub fn works_with(&self, tags: Tags) -> bool {
+        self.applies_to.is_empty() || tags.intersects(self.applies_to)
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SupportDef {
     pub id: String,
@@ -269,7 +277,7 @@ pub fn build_skill(db: &GemDb, active: &Gem, supports: &[Gem]) -> Result<Skill, 
         let support = db
             .support(&gem.id)
             .ok_or_else(|| SkillError::UnknownGem(gem.id.clone()))?;
-        if !support.applies_to.is_empty() && !def.tags.intersects(support.applies_to) {
+        if !support.works_with(def.tags) {
             continue;
         }
         let strength = gem.rarity.support_strength();
@@ -293,6 +301,20 @@ pub struct SocketGroup {
 }
 
 impl SocketGroup {
+    /// The supports in the group that do nothing for its active gem, with
+    /// the name of that gem. Empty when the group has no active gem.
+    pub fn idle_supports(&self, db: &GemDb) -> Vec<(String, String)> {
+        let Some(active) = self.gems.iter().find_map(|g| db.active(&g.id)) else {
+            return Vec::new();
+        };
+        self.gems
+            .iter()
+            .filter_map(|g| db.support(&g.id))
+            .filter(|s| !s.works_with(active.tags))
+            .map(|s| (s.name.clone(), active.name.clone()))
+            .collect()
+    }
+
     /// The group's skill; `None` when it holds no active gem.
     pub fn skill(&self, db: &GemDb) -> Result<Option<Skill>, SkillError> {
         if self.gems.len() > usize::from(self.links) {
@@ -316,6 +338,58 @@ mod tests {
 
     fn db() -> &'static GemDb {
         &content::get().gems
+    }
+
+    #[test]
+    fn every_support_says_what_it_does_and_what_it_works_with() {
+        for support in &db().supports {
+            let lines = crate::describe::support_lines(support);
+            assert!(lines.len() >= 2, "{}: {lines:?}", support.id);
+            assert!(lines.last().unwrap().starts_with("Tags: "));
+            assert!(
+                lines.iter().any(|l| !l.starts_with("Tags: ")),
+                "{} only says who it works with",
+                support.id
+            );
+        }
+        let ricochet = crate::describe::support_lines(db().support("ricochet").unwrap());
+        assert!(
+            ricochet.contains(&"Hits 2 more enemies".to_string()),
+            "{ricochet:?}"
+        );
+        assert!(
+            ricochet.contains(&"Tags: Projectile or Chain".to_string())
+                || ricochet.contains(&"Tags: Chain or Projectile".to_string())
+        );
+    }
+
+    #[test]
+    fn a_support_that_does_not_fit_the_skill_is_idle() {
+        // Heavy Strike is a melee attack: Ricochet wants Chain or Projectile.
+        let group = SocketGroup {
+            links: 3,
+            gems: vec![
+                Gem::new("heavy_strike", 1, GemRarity::Common),
+                Gem::new("ricochet", 1, GemRarity::Common),
+                Gem::new("bloodthirst", 1, GemRarity::Common),
+            ],
+        };
+        assert_eq!(
+            group.idle_supports(db()),
+            [("Ricochet".to_string(), "Heavy Strike".to_string())]
+        );
+        let skill = group.skill(db()).unwrap().unwrap();
+        assert_eq!(skill.supports, ["Bloodthirst"]);
+        assert_eq!(skill.extra_targets, 0);
+        // On a chain skill it applies.
+        let split = SocketGroup {
+            links: 2,
+            gems: vec![
+                Gem::new("split_shot", 1, GemRarity::Common),
+                Gem::new("ricochet", 1, GemRarity::Common),
+            ],
+        };
+        assert!(split.idle_supports(db()).is_empty());
     }
 
     #[test]

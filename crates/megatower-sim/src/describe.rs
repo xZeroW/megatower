@@ -36,7 +36,6 @@ fn line(m: &Modifier) -> String {
     match m.stat {
         Stat::Life => signed(m.kind, m.value, "maximum life"),
         Stat::Mana => signed(m.kind, m.value, "maximum mana"),
-        Stat::EnergyShield => signed(m.kind, m.value, "energy shield"),
         Stat::Armour => signed(m.kind, m.value, "armour"),
         Stat::Evasion if m.kind == ModKind::Flat => format!("{:+.0}% evasion", m.value),
         Stat::Evasion => signed(m.kind, m.value, "evasion"),
@@ -98,6 +97,55 @@ fn line(m: &Modifier) -> String {
             format!(" with {}", tag_words(m.requires))
         }
         + condition_words(m.requires)
+}
+
+/// "Chain or Projectile" for a list of tags.
+fn tags_or(tags: Tags) -> String {
+    Vec::<Tag>::from(tags)
+        .iter()
+        .map(|t| format!("{t:?}"))
+        .collect::<Vec<_>>()
+        .join(" or ")
+}
+
+/// The tags a skill needs for a support to work, e.g. "Tags: Chain or Projectile".
+pub fn works_with_line(support: &crate::gems::SupportDef) -> String {
+    if support.applies_to.is_empty() {
+        "Tags: any".into()
+    } else {
+        format!("Tags: {}", tags_or(support.applies_to))
+    }
+}
+
+/// Everything a support gem does to the skill it is linked to, one line each,
+/// ending with the skills it works with.
+pub fn support_lines(support: &crate::gems::SupportDef) -> Vec<String> {
+    let mut lines = Vec::new();
+    if support.extra_targets > 0 {
+        let n = support.extra_targets;
+        lines.push(format!(
+            "Hits {n} more enem{}",
+            if n == 1 { "y" } else { "ies" }
+        ));
+    }
+    if support.repeat_chance > 0.0 {
+        lines.push(format!(
+            "{:.0}% chance to repeat the skill for free",
+            support.repeat_chance
+        ));
+    }
+    lines.extend(mod_lines(&support.mods));
+    if support.no_ailments {
+        lines.push("The skill cannot inflict ailments".into());
+    }
+    let cost = support.cost_percent - 100.0;
+    if cost > 0.0 {
+        lines.push(format!("{cost:.0}% more mana cost"));
+    } else if cost < 0.0 {
+        lines.push(format!("{:.0}% less mana cost", -cost));
+    }
+    lines.push(works_with_line(support));
+    lines
 }
 
 /// What a payoff skill cashes in, e.g. "Cashes in Chill or Freeze: +120% damage, uses it up".

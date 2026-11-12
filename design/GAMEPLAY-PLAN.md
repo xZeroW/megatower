@@ -153,12 +153,20 @@ AoE starters (Frost Nova, Arc) outscale single-target ones (Heavy Strike).
 
 ## Cut or simplify
 
-- [ ] Filler fights: cut plain fights to about half of the rooms.
-- [ ] Rest-on-entry: make Rest a room the player chooses to use (it is wasted
-      at full life today).
-- [ ] Dead design: Energy Shield has no source or use; gem XP and attribute
-      requirements are in GAME-DESIGN.md but not in the game. Implement or
-      delete.
+- [x] Filler fights: cut plain fights to about half of the rooms. Done: a
+      floor keeps about half of its rooms (minus the elites) as plain
+      fights; the surplus becomes up to 3 more Events and otherwise Empty
+      halls, which start cleared and need nothing done. The "rooms left"
+      count in the status line now shrinks accordingly.
+      Open: fewer fights means less loot and XP per floor (the bot reaches
+      level 23-25 at floor 12, was 26-29); nothing was added to make up for
+      it.
+- [x] Rest-on-entry: make Rest a room the player chooses to use. Done: walking
+      in asks (Rest button, key 1); moving on keeps the room usable until it
+      is used, once per floor. The bot rests when under 80% life or short of
+      flasks.
+- [x] Dead design: Energy Shield, gem XP and attribute requirements deleted
+      (the stat from the code, the rest from GAME-DESIGN.md).
 - [ ] Small "+10%" tree nodes: fewer, bigger nodes.
 - [ ] Regret orb: fold the respec into the merchant.
 
@@ -210,5 +218,11 @@ AoE starters (Frost Nova, Arc) outscale single-target ones (Heavy Strike).
   61%, Mirelle 69%, Pellim 77%, Orvian 68%, Nivor 70%. Pellim's sure repeat
   is the strongest; Umbrath and Thalara give the bot nothing. The unlockable
   content is not measured: the bot never owns it.
+- After cutting filler fights and choosing Rest (floor 12 cleared): Heavy
+  Strike 61%, Split Shot 75%, Fireball 67%, Frost Nova 89%, Arc 83%, Venom
+  Dart 65% (37 / 67 / 63 / 85 / 83 / 53 before). The run is a little easier:
+  fewer fights means a shorter danger clock. To floor 20 nobody clears it;
+  average last floor 12.6 (Heavy Strike) to 15.2 (Frost Nova), deaths on
+  floors 12-17. Heavy Strike is still last.
 - Re-run `cargo run -p megatower-sim --example bot --release -- 150 12` after
   each phase.

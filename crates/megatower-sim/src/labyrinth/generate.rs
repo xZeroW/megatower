@@ -66,6 +66,7 @@ pub fn generate(number: u32, rng: &mut Rng) -> Floor {
         facing: Dir::North,
         steps: 0,
         modifier,
+        rested: false,
     };
     carve_tree(&mut floor, rng);
     add_loops(&mut floor, rng);
@@ -171,6 +172,24 @@ fn place_rooms(floor: &mut Floor, rng: &mut Rng) {
         let Some(pos) = free.pop() else { break };
         floor.room_mut(pos).kind = kind;
     }
+
+    // Plain fights are about half of the floor's rooms; the surplus becomes
+    // a few more events and otherwise quiet halls.
+    let rooms = usize::from(floor.width) * usize::from(floor.height) - 2;
+    let fights = (rooms / 2)
+        .saturating_sub(elite_count(number, floor.modifier))
+        .max(3);
+    let surplus = free.len().saturating_sub(fights);
+    let events = (surplus / 4).min(3);
+    for (i, pos) in free.split_off(free.len() - surplus).into_iter().enumerate() {
+        let room = floor.room_mut(pos);
+        if i < events {
+            room.kind = RoomKind::Event;
+        } else {
+            room.kind = RoomKind::Empty;
+            room.cleared = true;
+        }
+    }
 }
 
 #[cfg(test)]
@@ -264,13 +283,40 @@ mod tests {
             assert_eq!(count(&f, |k| k == RoomKind::Treasure), 1);
             assert_eq!(count(&f, |k| k == RoomKind::Merchant), 1);
             assert_eq!(count(&f, |k| matches!(k, RoomKind::GemAltar { .. })), 1);
-            assert!((1..=2).contains(&count(&f, |k| k == RoomKind::Event)));
+            assert!((1..=5).contains(&count(&f, |k| k == RoomKind::Event)));
             assert!(count(&f, |k| k == RoomKind::Shrine) <= 1);
             assert_eq!(
                 count(&f, |k| k == RoomKind::Elite),
                 elite_count(f.number, f.modifier)
             );
             assert!(count(&f, |k| k == RoomKind::Fight) > 0);
+        }
+    }
+
+    #[test]
+    fn plain_fights_are_about_half_of_the_rooms() {
+        for f in floors() {
+            let rooms = usize::from(f.width) * usize::from(f.height) - 2;
+            let fights = count(&f, |k| k == RoomKind::Fight);
+            let fought = fights + count(&f, |k| k == RoomKind::Elite);
+            assert!(
+                fought * 2 <= rooms + 2,
+                "floor {}: {fought} of {rooms}",
+                f.number
+            );
+            assert!(
+                fought * 3 >= rooms,
+                "floor {}: {fought} of {rooms}",
+                f.number
+            );
+            // Quiet halls need nothing done in them.
+            for p in f.positions() {
+                let room = f.room(p);
+                assert_eq!(
+                    room.cleared,
+                    matches!(room.kind, RoomKind::Empty | RoomKind::Start)
+                );
+            }
         }
     }
 

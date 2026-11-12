@@ -117,7 +117,7 @@ pub struct Character {
     pub adventurer: String,
 }
 
-fn full_flasks() -> u32 {
+pub fn full_flasks() -> u32 {
     crate::combat::FLASK_CHARGES
 }
 

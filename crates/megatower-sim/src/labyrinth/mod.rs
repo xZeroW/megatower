@@ -106,6 +106,9 @@ pub enum RoomKind {
     Shrine,
     Rest,
     Event,
+    /// Nothing here: a quiet hall to walk through. Plain fights are about
+    /// half of a floor's rooms, the rest of the filler is this.
+    Empty,
     /// Upgrades a gem's rarity for free, `uses_left` more times.
     GemAltar {
         uses_left: u8,
@@ -241,6 +244,9 @@ pub struct Floor {
     pub steps: u32,
     #[serde(default)]
     pub modifier: Option<FloorModifier>,
+    /// The floor's Rest room has been used.
+    #[serde(default)]
+    pub rested: bool,
 }
 
 /// Doors a floor lets you walk through per room before danger starts to rise.
@@ -346,6 +352,51 @@ impl Floor {
         }
         path.reverse();
         path
+    }
+
+    /// The way to `to` through rooms already dealt with: every room on it
+    /// but the last is cleared, so walking it never meets a fight. `None` when
+    /// there is no such way, the hero cannot leave the room, or `to` is
+    /// still hidden. Both ends are included.
+    pub fn route(&self, to: Pos) -> Option<Vec<Pos>> {
+        if to == self.current
+            || !self.current_room().cleared
+            || self.room(to).visibility == Visibility::Hidden
+        {
+            return None;
+        }
+        let mut came: Vec<Option<Pos>> = vec![None; self.rooms.len()];
+        let mut seen = vec![false; self.rooms.len()];
+        seen[self.index(self.current)] = true;
+        let mut queue = VecDeque::from([self.current]);
+        while let Some(pos) = queue.pop_front() {
+            if pos == to {
+                break;
+            }
+            // Only cleared rooms can be walked through.
+            if !self.room(pos).cleared {
+                continue;
+            }
+            for (_, next) in self.linked(pos) {
+                let i = self.index(next);
+                if !seen[i] {
+                    seen[i] = true;
+                    came[i] = Some(pos);
+                    queue.push_back(next);
+                }
+            }
+        }
+        if !seen[self.index(to)] {
+            return None;
+        }
+        let mut path = vec![to];
+        let mut pos = to;
+        while let Some(prev) = came[self.index(pos)] {
+            path.push(prev);
+            pos = prev;
+        }
+        path.reverse();
+        Some(path)
     }
 
     pub fn stairs(&self) -> Pos {
@@ -475,7 +526,8 @@ mod tests {
         let f = floor(1, 2);
         for exit in f.exits() {
             assert_eq!(exit.known, Some(f.room(exit.pos).kind));
-            assert!(!exit.cleared);
+            // Quiet halls start out done; everything else waits to be dealt with.
+            assert_eq!(exit.cleared, f.room(exit.pos).kind == RoomKind::Empty);
         }
         let hidden = f
             .positions()
@@ -501,9 +553,52 @@ mod tests {
     }
 
     #[test]
+    fn routes_only_pass_through_cleared_rooms() {
+        for seed in 0..30 {
+            let mut f = floor(3, seed);
+            // Clear and visit a long way, then come back to the start.
+            let far = f.stairs();
+            walk_to(&mut f, far);
+            f.resolve_current();
+            let start = f.start;
+            walk_to(&mut f, start);
+            // Un-clear every room that is not next to the start.
+            let near: Vec<Pos> = f.linked(start).map(|(_, p)| p).collect();
+            for p in f.positions().collect::<Vec<_>>() {
+                if p != start && !near.contains(&p) {
+                    f.room_mut(p).cleared = false;
+                }
+            }
+            for to in f.positions().collect::<Vec<_>>() {
+                if let Some(route) = f.route(to) {
+                    assert_eq!(route.first(), Some(&f.current));
+                    assert_eq!(route.last(), Some(&to));
+                    let (_, through) = route.split_last().unwrap();
+                    assert!(
+                        through.iter().all(|&p| f.room(p).cleared),
+                        "seed {seed}: {route:?}"
+                    );
+                }
+            }
+            // Next-door rooms can still be entered, cleared or not.
+            for &n in &near {
+                assert!(f.route(n).is_some(), "seed {seed}");
+            }
+        }
+    }
+
+    #[test]
     fn cannot_leave_an_unresolved_room() {
-        let mut f = floor(1, 4);
-        let (dir, _) = f.linked(f.start).next().unwrap();
+        // A door to a room with something in it (a quiet hall is left freely).
+        let (mut f, dir) = (0..50)
+            .find_map(|seed| {
+                let f = floor(1, seed);
+                let door = f
+                    .linked(f.start)
+                    .find(|&(_, p)| f.room(p).kind != RoomKind::Empty);
+                door.map(|(dir, _)| (f, dir))
+            })
+            .unwrap();
         let entered = f.move_to(dir).unwrap();
         assert!(entered.first_visit);
         let back = dir.opposite();
